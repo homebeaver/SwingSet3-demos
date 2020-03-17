@@ -1,3 +1,13 @@
+# Automatically generated #
+.metadata
+.classpath
+.project
+.settings
+
+# Binaries #
+target
 *.class
+
+# Package Files #
 *.jar
-bin
+
