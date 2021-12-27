@@ -31,18 +31,27 @@
  */
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Panel;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.logging.Logger;
 
+import javax.accessibility.Accessible;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JApplet;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -60,9 +69,13 @@ TODO remove JApplet, Applet Deprecated since = "9" forRemoval
 JApplet extends Applet implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandler
 ==> TODO : DemoModule extends Panel implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandler
  */
-public class DemoModule extends JApplet {
+public class DemoModule extends Panel implements Accessible, RootPaneContainer {
+	// The interface TransferHandler.HasGetTransferHandler is not visible, method: public TransferHandler getTransferHandler();
 
-    // The preferred size of the demo
+	private static final long serialVersionUID = 5010903388735156025L;
+    private static final Logger LOG = Logger.getLogger(DemoModule.class.getName());
+	
+	// The preferred size of the demo
     private int PREFERRED_WIDTH = 680;
     private int PREFERRED_HEIGHT = 600;
 
@@ -236,4 +249,71 @@ public class DemoModule extends JApplet {
     }
 
     void updateDragEnabled(boolean dragEnabled) {}
+
+	@Override // interface RootPaneContainer
+	public JRootPane getRootPane() {
+		LOG.info("**TODO** methode abgeschrieben von JApplet");
+        return SwingUtilities.getRootPane(this);
+	}
+
+	@Override
+	public void setContentPane(Container contentPane) {
+		LOG.info("**TODO** methode abgeschrieben von JApplet param Container:"+contentPane);
+        getRootPane().setContentPane(contentPane);
+	}
+
+	@Override
+	public Container getContentPane() {
+		LOG.info("**TODO** methode abgeschrieben von JApplet");
+        return getRootPane().getContentPane();		
+	}
+
+	@Override
+	public void setLayeredPane(JLayeredPane layeredPane) {
+		LOG.info("**TODO** methode abgeschrieben von JApplet param JLayeredPane:"+layeredPane);
+        getRootPane().setLayeredPane(layeredPane);
+	}
+	
+	@Override
+	public JLayeredPane getLayeredPane() {
+		LOG.info("**TODO** methode abgeschrieben von JApplet");
+        return getRootPane().getLayeredPane();
+	}
+
+	@Override
+	public void setGlassPane(Component glassPane) {
+		LOG.info("**TODO** methode abgeschrieben von JApplet param Component:"+glassPane);
+        getRootPane().setGlassPane(glassPane);
+	}
+
+	@Override
+	public Component getGlassPane() {
+		LOG.info("**TODO** methode abgeschrieben von JApplet");
+        return getRootPane().getGlassPane();
+	}
+
+	// TODO aus JApplet :
+    interface HasGetTransferHandler {
+
+        /** Returns the {@code TransferHandler}.
+         *
+         * @return The {@code TransferHandler} or {@code null}
+         */
+        public TransferHandler getTransferHandler();
+    }
+
+//    @BeanProperty(hidden = true, description
+//            = "Mechanism for transfer of data into the component")
+    private TransferHandler transferHandler;
+    public void setTransferHandler(TransferHandler newHandler) {
+        TransferHandler oldHandler = transferHandler;
+        transferHandler = newHandler;
+        /* not visible:
+    static void installSwingDropTargetAsNecessary(Component c, TransferHandler t) {
+vll geht es mit Inspection????
+         */
+//        SwingUtilities.installSwingDropTargetAsNecessary(this, transferHandler);
+        firePropertyChange("transferHandler", oldHandler, newHandler);
+    }
+
 }
