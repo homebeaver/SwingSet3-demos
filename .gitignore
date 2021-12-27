@@ -11,3 +11,4 @@ target
 # Package Files #
 *.jar
 
+/bin/
