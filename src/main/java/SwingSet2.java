@@ -53,6 +53,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -97,6 +98,8 @@ import javax.swing.plaf.metal.OceanTheme;
  * @author Jeff Dinkins
  */
 public class SwingSet2 extends JPanel {
+
+    private static final Logger LOG = Logger.getLogger(SwingSet2.class.getName());
 
     String[] demos = {
       "ButtonDemo",
@@ -152,9 +155,9 @@ public class SwingSet2 extends JPanel {
     private static final int PREFERRED_WIDTH = 720;
     private static final int PREFERRED_HEIGHT = 640;
 
-    // Box spacers
-    private Dimension HGAP = new Dimension(1,5);
-    private Dimension VGAP = new Dimension(5,1);
+    // Box spacers (not used)
+//    private Dimension HGAP = new Dimension(1,5);
+//    private Dimension VGAP = new Dimension(5,1);
 
     // A place to hold on to the visible demo
     private DemoModule currentDemo = null;
@@ -788,35 +791,32 @@ public class SwingSet2 extends JPanel {
      * Bring up the SwingSet2 demo by showing the frame (only
      * applicable if coming up as an application, not an applet);
      */
-    public void showSwingSet2() {
-        if(!isApplet() && getFrame() != null) {
-            // put swingset in a frame and show it
-            JFrame f = getFrame();
-            f.setTitle(getString("Frame.title"));
-            f.getContentPane().add(this, BorderLayout.CENTER);
-            f.pack();
+	public void showSwingSet2() {
+		if (!isApplet() && getFrame() != null) {
+			// put swingset in a frame and show it
+			JFrame f = getFrame();
+			f.setTitle(getString("Frame.title"));
+			f.getContentPane().add(this, BorderLayout.CENTER);
+			f.pack();
 
-            Rectangle screenRect = f.getGraphicsConfiguration().getBounds();
-            Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(
-                    f.getGraphicsConfiguration());
+			Rectangle screenRect = f.getGraphicsConfiguration().getBounds();
+			Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(f.getGraphicsConfiguration());
 
-            // Make sure we don't place the demo off the screen.
-            int centerWidth = screenRect.width < f.getSize().width ?
-                    screenRect.x :
-                    screenRect.x + screenRect.width/2 - f.getSize().width/2;
-            int centerHeight = screenRect.height < f.getSize().height ?
-                    screenRect.y :
-                    screenRect.y + screenRect.height/2 - f.getSize().height/2;
+			// Make sure we don't place the demo off the screen.
+			int centerWidth = screenRect.width < f.getSize().width ? screenRect.x
+					: screenRect.x + screenRect.width / 2 - f.getSize().width / 2;
+			int centerHeight = screenRect.height < f.getSize().height ? screenRect.y
+					: screenRect.y + screenRect.height / 2 - f.getSize().height / 2;
 
-            centerHeight = centerHeight < screenInsets.top ?
-                    screenInsets.top : centerHeight;
+			centerHeight = centerHeight < screenInsets.top ? screenInsets.top : centerHeight;
 
-            f.setLocation(centerWidth, centerHeight);
-            f.show();
-            numSSs++;
-            swingSets.add(this);
-        }
-    }
+			f.setLocation(centerWidth, centerHeight);
+//          f.show(); // Deprecated.  As of JDK version 1.5, replaced by setVisible(boolean).
+			f.setVisible(true);
+			numSSs++;
+			swingSets.add(this);
+		}
+	}
 
     // *******************************************************
     // ****************** Utility Methods ********************
@@ -826,15 +826,18 @@ public class SwingSet2 extends JPanel {
      * Loads a demo from a classname
      */
     void loadDemo(String classname) {
+    	LOG.info(classname);
         setStatus(getString("Status.loading") + getString(classname + ".name"));
         DemoModule demo = null;
         try {
 //            Class demoClass = Class.forName(SwingSet2.class.getPackage().getName() + "." + classname);
-            Class demoClass = Class.forName(classname);
-            Constructor demoConstructor = demoClass.getConstructor(new Class[]{SwingSet2.class});
+            Class<?> demoClass = Class.forName(classname); // throws ClassNotFoundException
+            Constructor<?> demoConstructor = demoClass.getConstructor(new Class[]{SwingSet2.class}); // throws NoSuchMethodException, SecurityException
             demo = (DemoModule) demoConstructor.newInstance(new Object[]{this});
+            // throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
             addDemo(demo);
         } catch (Exception e) {
+        	LOG.warning("Error occurred loading demo: " + classname);
             System.out.println("Error occurred loading demo: " + classname);
         }
     }

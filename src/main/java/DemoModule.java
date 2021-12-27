@@ -30,26 +30,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
-import javax.accessibility.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import java.io.*;
-import java.applet.*;
-import java.net.*;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JApplet;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.SoftBevelBorder;
 
 /**
  * A generic SwingSet2 demo module
  *
  * @author Jeff Dinkins
+ */
+/*
+TODO remove JApplet, Applet Deprecated since = "9" forRemoval
+                Applet extends Panel
+JApplet extends Applet implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandler
+==> TODO : DemoModule extends Panel implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandler
  */
 public class DemoModule extends JApplet {
 
