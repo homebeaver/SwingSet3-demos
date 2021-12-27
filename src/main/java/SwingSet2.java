@@ -30,27 +30,66 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
-import javax.accessibility.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.MissingResourceException;
+import java.util.Vector;
 
-import javax.swing.plaf.metal.MetalTheme;
-import javax.swing.plaf.metal.OceanTheme;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.LookAndFeel;
+import javax.swing.SingleSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
+import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-
-import java.lang.reflect.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import java.io.*;
-import java.applet.*;
-import java.net.*;
+import javax.swing.plaf.metal.MetalTheme;
+import javax.swing.plaf.metal.OceanTheme;
 
 /**
  * A demo that shows all of the Swing components.
@@ -175,6 +214,11 @@ public class SwingSet2 extends JPanel {
 
     public SwingSet2(SwingSet2Applet applet) {
         this(applet, null);
+    }
+    
+    public SwingSet2() {
+      this(null, GraphicsEnvironment.getLocalGraphicsEnvironment().
+           getDefaultScreenDevice().getDefaultConfiguration());
     }
 
     /**
@@ -369,6 +413,8 @@ public class SwingSet2 extends JPanel {
             } else if (className == mac) {
                 createLafMenuItem(lafMenu, "LafMenu.mac_label", "LafMenu.mac_mnemonic",
                         "LafMenu.mac_accessible_description", mac)  ;
+            } else {
+              createLafMenuItem(lafMenu, lafInfo[counter]);
             }
         }
 
@@ -597,6 +643,19 @@ public class SwingSet2 extends JPanel {
     }
 
     /**
+     * Creates a JRadioButtonMenuItem for the Look and Feel menu
+     */
+    public JMenuItem createLafMenuItem(JMenu menu, UIManager.LookAndFeelInfo lafInfo) {
+        JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(lafInfo.getName()));
+        lafMenuGroup.add(mi);
+        mi.addActionListener(new ChangeLookAndFeelAction(this, lafInfo.getClassName()));
+
+        mi.setEnabled(isAvailableLookAndFeel(lafInfo.getClassName()));
+
+        return mi;
+    }
+    
+    /**
      * Creates a multi-screen menu item
      */
     public JMenuItem createMultiscreenMenuItem(JMenu menu, int screen) {
@@ -770,6 +829,7 @@ public class SwingSet2 extends JPanel {
         setStatus(getString("Status.loading") + getString(classname + ".name"));
         DemoModule demo = null;
         try {
+//            Class demoClass = Class.forName(SwingSet2.class.getPackage().getName() + "." + classname);
             Class demoClass = Class.forName(classname);
             Constructor demoConstructor = demoClass.getConstructor(new Class[]{SwingSet2.class});
             demo = (DemoModule) demoConstructor.newInstance(new Object[]{this});
