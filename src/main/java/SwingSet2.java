@@ -67,12 +67,14 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -80,6 +82,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
+import javax.swing.RootPaneContainer;
 import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -96,10 +99,12 @@ import javax.swing.plaf.metal.OceanTheme;
  * A demo that shows all of the Swing components.
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (removed usage of JApplet, Applet, now subclass Panel)
  */
 public class SwingSet2 extends JPanel {
 
-    private static final Logger LOG = Logger.getLogger(SwingSet2.class.getName());
+	private static final long serialVersionUID = 3856695829171691102L;
+	private static final Logger LOG = Logger.getLogger(SwingSet2.class.getName());
 
     String[] demos = {
       "ButtonDemo",
@@ -190,7 +195,7 @@ public class SwingSet2 extends JPanel {
     // Used only if swingset is an application
     private JFrame frame = null;
 
-    // Used only if swingset is an applet
+    // Used only if swingset is an applet (dummy stub)
     private SwingSet2Applet applet = null;
 
     // To debug or not to debug, that is the question
@@ -214,6 +219,60 @@ public class SwingSet2 extends JPanel {
     private static Vector<SwingSet2> swingSets = new Vector<SwingSet2>();
 
     private boolean dragEnabled = false;
+
+    // Dummy stub for deprecated Applet
+    @SuppressWarnings("serial")
+	public class SwingSet2Applet extends Component implements RootPaneContainer {
+    
+    	// used in initializeDemo()
+        public void setJMenuBar(final JMenuBar menuBar) {
+			LOG.warning("dummy stub menuBar"+menuBar);
+            getRootPane().setJMenuBar(menuBar);
+        }
+
+		@Override
+		public JRootPane getRootPane() {
+			LOG.info("**TODO** methode abgeschrieben von JApplet");
+	        return SwingUtilities.getRootPane(this);
+		}
+
+		@Override
+		public void setContentPane(Container contentPane) {
+			LOG.info("**TODO** methode abgeschrieben von JApplet param Container:"+contentPane);
+	        getRootPane().setContentPane(contentPane);
+		}
+
+		@Override
+		public Container getContentPane() {
+			LOG.info("**TODO** methode abgeschrieben von JApplet");
+	        return getRootPane().getContentPane();		
+		}
+
+		@Override
+		public void setLayeredPane(JLayeredPane layeredPane) {
+			LOG.info("**TODO** methode abgeschrieben von JApplet param JLayeredPane:"+layeredPane);
+	        getRootPane().setLayeredPane(layeredPane);
+		}
+
+		@Override
+		public JLayeredPane getLayeredPane() {
+			LOG.info("**TODO** methode abgeschrieben von JApplet");
+	        return getRootPane().getLayeredPane();
+		}
+
+		@Override
+		public void setGlassPane(Component glassPane) {
+			LOG.info("**TODO** methode abgeschrieben von JApplet param Component:"+glassPane);
+	        getRootPane().setGlassPane(glassPane);
+		}
+
+		@Override
+		public Component getGlassPane() {
+			LOG.info("**TODO** methode abgeschrieben von JApplet");
+	        return getRootPane().getGlassPane();
+		}
+
+    }
 
     public SwingSet2(SwingSet2Applet applet) {
         this(applet, null);
@@ -530,6 +589,7 @@ public class SwingSet2 extends JPanel {
         GraphicsDevice[] screens = GraphicsEnvironment.
                                     getLocalGraphicsEnvironment().
                                     getScreenDevices();
+        LOG.config("number of screens is "+screens.length);
         if (screens.length > 1) {
 
             JMenu multiScreenMenu = (JMenu) menuBar.add(new JMenu(
@@ -704,8 +764,7 @@ public class SwingSet2 extends JPanel {
 
         // register key binding to activate popup menu
         InputMap map = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.SHIFT_MASK),
-                "postMenuAction");
+        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.SHIFT_MASK), "postMenuAction");
         map.put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTEXT_MENU, 0), "postMenuAction");
         getActionMap().put("postMenuAction", new ActivatePopupMenuAction(this, popup));
 
@@ -855,7 +914,7 @@ public class SwingSet2 extends JPanel {
      */
      protected boolean isAvailableLookAndFeel(String laf) {
          try {
-             Class lnfClass = Class.forName(laf);
+             Class<?> lnfClass = Class.forName(laf);
              LookAndFeel newLAF = (LookAndFeel)(lnfClass.newInstance());
              return newLAF.isSupportedLookAndFeel();
          } catch(Exception e) { // If ANYTHING weird happens, return false
@@ -868,6 +927,8 @@ public class SwingSet2 extends JPanel {
      * Determines if this is an applet or application
      */
     public boolean isApplet() {
+    	if(applet==null) return false;
+    	LOG.warning("NEVER - applet is replaced by a dummy!!!");
         return (applet != null);
     }
 
@@ -932,6 +993,7 @@ public class SwingSet2 extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         } else {
             WindowListener l = new WindowAdapter() {
+            	@Override
                 public void windowClosing(WindowEvent e) {
                     numSSs--;
                     swingSets.remove(this);
@@ -1205,21 +1267,9 @@ public class SwingSet2 extends JPanel {
             this.demo = demo;
         }
 
+        // implements interface ActionListener
         public void actionPerformed(ActionEvent e) {
             swingset.setDemo(demo);
-        }
-    }
-
-    class OkAction extends AbstractAction {
-        JDialog aboutBox;
-
-        protected OkAction(JDialog aboutBox) {
-            super("OkAction");
-            this.aboutBox = aboutBox;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            aboutBox.setVisible(false);
         }
     }
 
@@ -1232,6 +1282,7 @@ public class SwingSet2 extends JPanel {
             this.laf = laf;
         }
 
+        // implements interface ActionListener
         public void actionPerformed(ActionEvent e) {
             swingset.setLookAndFeel(laf);
         }
@@ -1352,6 +1403,21 @@ public class SwingSet2 extends JPanel {
         }
     }
 
+    // used in AboutAction
+    class OkAction extends AbstractAction {
+        JDialog aboutBox;
+
+        protected OkAction(JDialog aboutBox) {
+            super("OkAction");
+            this.aboutBox = aboutBox;
+        }
+
+        // implements interface ActionListener
+        public void actionPerformed(ActionEvent e) {
+            aboutBox.setVisible(false);
+        }
+    }
+
     class AboutAction extends AbstractAction {
         SwingSet2 swingset;
         protected AboutAction(SwingSet2 swingset) {
@@ -1386,7 +1452,8 @@ public class SwingSet2 extends JPanel {
             } else {
                 aboutBox.setLocationRelativeTo(getFrame());
             }
-            aboutBox.show();
+//          aboutBox.show(); // Deprecated.  As of JDK version 1.5, replaced by setVisible(boolean).
+            aboutBox.setVisible(true);
         }
     }
 

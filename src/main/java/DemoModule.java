@@ -62,15 +62,17 @@ import javax.swing.border.SoftBevelBorder;
  * A generic SwingSet2 demo module
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (removed usage of JApplet, Applet, now subclass Panel)
  */
 /*
-TODO remove JApplet, Applet Deprecated since = "9" forRemoval
+EUG: removed usage of JApplet, Applet:  Deprecated since = "9" forRemoval
                 Applet extends Panel
 JApplet extends Applet implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandler
-==> TODO : DemoModule extends Panel implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandler
+==> DemoModule extends Panel implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandle
+- The interface TransferHandler.HasGetTransferHandler is not visible, method: public TransferHandler getTransferHandler()
+
  */
 public class DemoModule extends Panel implements Accessible, RootPaneContainer {
-	// The interface TransferHandler.HasGetTransferHandler is not visible, method: public TransferHandler getTransferHandler();
 
 	private static final long serialVersionUID = 5010903388735156025L;
     private static final Logger LOG = Logger.getLogger(DemoModule.class.getName());
@@ -139,14 +141,14 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
     }
 
 
-    public String getString(String key) {
+	public String getString(String key) {
 
-        if (getSwingSet2() != null) {
-            return getSwingSet2().getString(key);
-        }else{
-            return "nada";
-        }
-    }
+		if (getSwingSet2() != null) {
+			return getSwingSet2().getString(key);
+		} else {
+			return "nada";
+		}
+	}
 
     public char getMnemonic(String key) {
         return (getString(key)).charAt(0);
@@ -213,7 +215,8 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
         frame.getContentPane().add(getDemoPanel(), BorderLayout.CENTER);
         getDemoPanel().setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
         frame.pack();
-        frame.show();
+//      frame.show(); // Deprecated.  As of JDK version 1.5, replaced by setVisible(boolean).
+        frame.setVisible(true);
     }
 
     public JPanel createHorizontalPanel(boolean threeD) {
@@ -310,7 +313,7 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
         transferHandler = newHandler;
         /* not visible:
     static void installSwingDropTargetAsNecessary(Component c, TransferHandler t) {
-vll geht es mit Inspection????
+vll geht es mit introspection????
          */
 //        SwingUtilities.installSwingDropTargetAsNecessary(this, transferHandler);
         firePropertyChange("transferHandler", oldHandler, newHandler);
