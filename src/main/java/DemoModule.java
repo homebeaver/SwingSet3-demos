@@ -36,9 +36,10 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Panel;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.accessibility.Accessible;
@@ -169,19 +170,33 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
     }
 
     public void loadSourceCode() {
+    	LOG.config("ResourceName:"+getResourceName());
         if(getResourceName() != null) {
             String filename = getResourceName() + ".java";
+        	String dir = "src/main/java/"; // m2e folder    
+            File f = new File(dir+filename);
+        	if(f.canRead()) {
+            	LOG.info("AbsolutePath:"+f.getAbsolutePath());
+        	} else {
+        		LOG.warning("cannot read "+f + " >>> try default eclipse source folder ...");
+        		dir = "src/"; // this is default eclipse folder
+        		f = new File(dir+filename);
+        		if(!f.canRead()) {
+            		LOG.warning("cannot find source "+filename);
+        		}
+        	}
             sourceCode = new String("<html><body bgcolor=\"#ffffff\"><pre>");
             InputStream is;
-            InputStreamReader isr;
+            InputStreamReader isr = null;
             CodeViewer cv = new CodeViewer();
-            URL url;
+//            java.net.URL url;
 
             try {
-                url = getClass().getResource(filename);
-                is = url.openStream();
+//                url = getClass().getResource(filename);
+//                is = url.openStream();
+            	is = new FileInputStream(f);
                 isr = new InputStreamReader(is, "UTF-8");
-                BufferedReader reader = new BufferedReader(isr);
+                BufferedReader reader = new BufferedReader(isr); // not closed!
 
                 // Read one line at a time, htmlize using super-spiffy
                 // html java code formating utility from www.CoolServlets.com
@@ -193,6 +208,8 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
                 sourceCode += new String("</pre></body></html>");
             } catch (Exception ex) {
                 sourceCode = "Could not load file: " + filename;
+            } finally {
+            	//isr.close();
             }
         }
     }
