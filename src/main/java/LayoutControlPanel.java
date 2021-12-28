@@ -30,20 +30,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.swing.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import javax.swing.AbstractButton;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
 
 /*
- * The LayoutControlPanel contains controls for setting an
- * AbstractButton's horizontal and vertical text position and
- * horizontal and vertical alignment.
+ * The LayoutControlPanel contains controls for setting an AbstractButton's horizontal and vertical text position 
+ * and horizontal and vertical alignment for ButtonDemo
+ * 
+ * It uses DirectionPanel
  */
-
 public class LayoutControlPanel extends JPanel implements SwingConstants {
 
     private boolean  absolutePositions;
@@ -113,7 +119,7 @@ public class LayoutControlPanel extends JPanel implements SwingConstants {
         add(l);
         add(textPosition);
 
-        add(Box.createRigidArea(demo.VGAP20));
+        add(Box.createRigidArea(DemoModule.VGAP20));
 
         l = new JLabel(demo.getString("LayoutControlPanel.contentalignment_label"));
         add(l);
