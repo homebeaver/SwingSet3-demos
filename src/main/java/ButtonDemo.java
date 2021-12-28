@@ -31,35 +31,39 @@
  */
 
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
-import javax.accessibility.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.util.Vector;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import java.io.*;
-import java.applet.*;
-import java.net.*;
+import javax.swing.AbstractButton;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.SingleSelectionModel;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 /**
- * JButton, JRadioButton, JToggleButton, JCheckBox Demos
+ * JButton, JRadioButton, (JToggleButton), JCheckBox Demos
  *
  * @author Jeff Dinkins
  */
-public class ButtonDemo extends DemoModule implements ChangeListener {
+public class ButtonDemo extends DemoModule {
 
     JTabbedPane tab;
 
     JPanel buttonPanel = new JPanel();
     JPanel checkboxPanel = new JPanel();
     JPanel radioButtonPanel = new JPanel();
-    JPanel toggleButtonPanel = new JPanel();
 
     Vector buttons = new Vector();
     Vector checkboxes = new Vector();
@@ -75,9 +79,6 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
 
     EmptyBorder border5 = new EmptyBorder(5,5,5,5);
     EmptyBorder border10 = new EmptyBorder(10,10,10,10);
-
-    ItemListener buttonDisplayListener = null;
-    ItemListener buttonPadListener = null;
 
     Insets insets0 = new Insets(0,0,0,0);
     Insets insets10 = new Insets(10,10,10,10);
@@ -99,7 +100,18 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         super(swingset, "ButtonDemo", "toolbar/JButton.gif");
 
         tab = new JTabbedPane();
-        tab.getModel().addChangeListener(this);
+        tab.getModel().addChangeListener(e -> {
+            SingleSelectionModel model = (SingleSelectionModel) e.getSource();
+            if(model.getSelectedIndex() == 0) {
+                currentControls = buttons;
+            } else if(model.getSelectedIndex() == 1) {
+                currentControls = radiobuttons;
+            } else if(model.getSelectedIndex() == 2) {
+                currentControls = checkboxes;
+            } else {
+                currentControls = togglebuttons;
+            }
+        });
 
         JPanel demo = getDemoPanel();
         demo.setLayout(new BoxLayout(demo, BoxLayout.Y_AXIS));
@@ -108,7 +120,6 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         addButtons();
         addRadioButtons();
         addCheckBoxes();
-        // addToggleButtons();
         currentControls = buttons;
     }
 
@@ -117,13 +128,13 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setBorder(border5);
 
-        JPanel p1 = createVerticalPanel(true);
-        p1.setAlignmentY(TOP_ALIGNMENT);
-        buttonPanel.add(p1);
+        JPanel verticalPane = createVerticalPanel(true);
+        verticalPane.setAlignmentY(TOP_ALIGNMENT);
+        buttonPanel.add(verticalPane);
 
         // Text Buttons
         JPanel p2 = createHorizontalPanel(false);
-        p1.add(p2);
+        verticalPane.add(p2);
         p2.setBorder(new CompoundBorder(new TitledBorder(null, getString("ButtonDemo.textbuttons"),
                                                           TitledBorder.LEFT, TitledBorder.TOP), border5));
 
@@ -135,11 +146,10 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
 
         buttons.add(p2.add(new JButton(getString("ButtonDemo.button3"))));
 
-
         // Image Buttons
-        p1.add(Box.createRigidArea(VGAP30));
+        verticalPane.add(Box.createRigidArea(VGAP30));
         JPanel p3 = createHorizontalPanel(false);
-        p1.add(p3);
+        verticalPane.add(p3);
         p3.setLayout(new BoxLayout(p3, BoxLayout.X_AXIS));
         p3.setBorder(new TitledBorder(null, getString("ButtonDemo.imagebuttons"),
                                          TitledBorder.LEFT, TitledBorder.TOP));
@@ -176,7 +186,7 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         p3.add(button);
         buttons.add(button);
 
-        p1.add(Box.createVerticalGlue());
+        verticalPane.add(Box.createVerticalGlue());
 
         buttonPanel.add(Box.createHorizontalGlue());
         currentControls = buttons;
@@ -352,10 +362,22 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         checkboxPanel.add(createControls());
     }
 
-    public void addToggleButtons() {
-        tab.addTab(getString("ButtonDemo.togglebuttons"), toggleButtonPanel);
-    }
-
+    /*
+     * JPanel controls aka Controler ist im rechten Teil der Panel buttonPanel, radioButtonPanel, checkboxPanel positioniert.
+     * Es beinhaltet Controler für
+     * - JCheckBox'es : Display Options
+     * - JRadioButton's : Pad Amount
+     * - LayoutControlPanel+DirectionPanel mit 
+     * - - Text Position
+     * - - Content Alignment
+     */
+    /**
+     * creates controler panel with checkBoxes for Display Options and radioButtons for Pad Amount
+     * and LayoutControlPanel for Text Position and Content Alignment
+     * 
+     * @see LayoutControlPanel
+     * @see DirectionPanel
+     */
     public JPanel createControls() {
         JPanel controls = new JPanel() {
             public Dimension getMaximumSize() {
@@ -383,8 +405,6 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
 
         controls.add(buttonControls);
 
-        createListeners();
-
         // Display Options
         JLabel l = new JLabel(getString("ButtonDemo.controlpanel_label"));
         leftColumn.add(l);
@@ -396,7 +416,21 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         if (currentControls == buttons) {
                 bordered.setSelected(true);
         }
-        bordered.addItemListener(buttonDisplayListener);
+//        bordered.addItemListener(buttonDisplayListener);
+        // alternativ:
+        bordered.addItemListener(e -> {
+        	JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == bordered
+        	boolean isSelected = cb.isSelected();
+            Component c = (Component) currentControls.elementAt(0);
+            AbstractButton b;
+            if(c instanceof AbstractButton) {
+                for(int i = 0; i < currentControls.size(); i++) {
+                    b = (AbstractButton) currentControls.elementAt(i);
+                    b.setBorderPainted(isSelected);
+                    b.invalidate();
+                }
+            }
+        });
         leftColumn.add(bordered);
 
         JCheckBox focused = new JCheckBox(getString("ButtonDemo.paintfocus"));
@@ -404,14 +438,37 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         focused.setToolTipText(getString("ButtonDemo.paintfocus_tooltip"));
         focused.setMnemonic(getMnemonic("ButtonDemo.paintfocus_mnemonic"));
         focused.setSelected(true);
-        focused.addItemListener(buttonDisplayListener);
+//        focused.addItemListener(buttonDisplayListener);
+        focused.addItemListener(e -> {
+        	JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == focused
+        	boolean isSelected = cb.isSelected();
+            Component c = (Component) currentControls.elementAt(0);
+            AbstractButton b;
+            if(c instanceof AbstractButton) {
+                for(int i = 0; i < currentControls.size(); i++) {
+                    b = (AbstractButton) currentControls.elementAt(i);
+                    b.setBorderPainted(isSelected);
+                    b.invalidate();
+                }
+            }
+        });
         leftColumn.add(focused);
 
         JCheckBox enabled = new JCheckBox(getString("ButtonDemo.enabled"));
         enabled.setActionCommand("Enabled");
         enabled.setToolTipText(getString("ButtonDemo.enabled_tooltip"));
         enabled.setSelected(true);
-        enabled.addItemListener(buttonDisplayListener);
+//        enabled.addItemListener(buttonDisplayListener);
+        enabled.addItemListener(e -> {
+        	JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == enabled
+        	boolean isSelected = cb.isSelected();
+            Component c;
+            for(int i = 0; i < currentControls.size(); i++) {
+                c = (Component) currentControls.elementAt(i);
+                c.setEnabled(isSelected);
+                c.invalidate();
+            }
+        });
         enabled.setMnemonic(getMnemonic("ButtonDemo.enabled_mnemonic"));
         leftColumn.add(enabled);
 
@@ -419,7 +476,20 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         filled.setActionCommand("ContentFilled");
         filled.setToolTipText(getString("ButtonDemo.contentfilled_tooltip"));
         filled.setSelected(true);
-        filled.addItemListener(buttonDisplayListener);
+//        filled.addItemListener(buttonDisplayListener);
+        filled.addItemListener(e -> {
+        	JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == filled
+        	boolean isSelected = cb.isSelected();
+            Component c = (Component) currentControls.elementAt(0);
+            AbstractButton b;
+            if(c instanceof AbstractButton) {
+                for(int i = 0; i < currentControls.size(); i++) {
+                    b = (AbstractButton) currentControls.elementAt(i);
+                    b.setBorderPainted(isSelected);
+                    b.invalidate();
+                }
+            }
+        });
         filled.setMnemonic(getMnemonic("ButtonDemo.contentfilled_mnemonic"));
         leftColumn.add(filled);
 
@@ -431,7 +501,18 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         JRadioButton defaultPad = new JRadioButton(getString("ButtonDemo.default"));
         defaultPad.setToolTipText(getString("ButtonDemo.default_tooltip"));
         defaultPad.setMnemonic(getMnemonic("ButtonDemo.default_mnemonic"));
-        defaultPad.addItemListener(buttonPadListener);
+//        defaultPad.addItemListener(buttonPadListener);
+        defaultPad.addItemListener(e -> {
+        	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == defaultPad
+        	if(rb.isSelected()) {
+                AbstractButton b;
+                for(int i = 0; i < currentControls.size(); i++) {
+                    b = (AbstractButton) currentControls.elementAt(i);
+                    b.setMargin(null);
+                    b.invalidate();
+                }
+        	}
+        });
         group.add(defaultPad);
         defaultPad.setSelected(true);
         leftColumn.add(defaultPad);
@@ -439,7 +520,18 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         JRadioButton zeroPad = new JRadioButton(getString("ButtonDemo.zero"));
         zeroPad.setActionCommand("ZeroPad");
         zeroPad.setToolTipText(getString("ButtonDemo.zero_tooltip"));
-        zeroPad.addItemListener(buttonPadListener);
+//        zeroPad.addItemListener(buttonPadListener);
+        zeroPad.addItemListener(e -> {
+        	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == zeroPad
+        	if(rb.isSelected()) {
+                AbstractButton b;
+                for(int i = 0; i < currentControls.size(); i++) {
+                    b = (AbstractButton) currentControls.elementAt(i);
+                    b.setMargin(insets0);
+                    b.invalidate();
+                }
+        	}
+        });
         zeroPad.setMnemonic(getMnemonic("ButtonDemo.zero_mnemonic"));
         group.add(zeroPad);
         leftColumn.add(zeroPad);
@@ -448,105 +540,23 @@ public class ButtonDemo extends DemoModule implements ChangeListener {
         tenPad.setActionCommand("TenPad");
         tenPad.setMnemonic(getMnemonic("ButtonDemo.ten_mnemonic"));
         tenPad.setToolTipText(getString("ButtonDemo.ten_tooltip"));
-        tenPad.addItemListener(buttonPadListener);
+//        tenPad.addItemListener(buttonPadListener);
+        tenPad.addItemListener(e -> {
+        	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == tenPad
+        	if(rb.isSelected()) {
+                AbstractButton b;
+                for(int i = 0; i < currentControls.size(); i++) {
+                    b = (AbstractButton) currentControls.elementAt(i);
+                    b.setMargin(insets10);
+                    b.invalidate();
+                }
+        	}
+        });
         group.add(tenPad);
         leftColumn.add(tenPad);
 
         leftColumn.add(Box.createRigidArea(VGAP20));
         return controls;
-    }
-
-    public void createListeners() {
-        buttonDisplayListener = new ItemListener() {
-                Component c;
-                AbstractButton b;
-
-                public void itemStateChanged(ItemEvent e) {
-                    JCheckBox cb = (JCheckBox) e.getSource();
-                    String command = cb.getActionCommand();
-                    if(command == "Enabled") {
-                        for(int i = 0; i < currentControls.size(); i++) {
-                            c = (Component) currentControls.elementAt(i);
-                            c.setEnabled(cb.isSelected());
-                            c.invalidate();
-                        }
-                    } else if(command == "PaintBorder") {
-                        c = (Component) currentControls.elementAt(0);
-                        if(c instanceof AbstractButton) {
-                            for(int i = 0; i < currentControls.size(); i++) {
-                                b = (AbstractButton) currentControls.elementAt(i);
-                                b.setBorderPainted(cb.isSelected());
-                                b.invalidate();
-                            }
-                        }
-                    } else if(command == "PaintFocus") {
-                        c = (Component) currentControls.elementAt(0);
-                        if(c instanceof AbstractButton) {
-                            for(int i = 0; i < currentControls.size(); i++) {
-                                b = (AbstractButton) currentControls.elementAt(i);
-                                b.setFocusPainted(cb.isSelected());
-                                b.invalidate();
-                            }
-                        }
-                    } else if(command == "ContentFilled") {
-                        c = (Component) currentControls.elementAt(0);
-                        if(c instanceof AbstractButton) {
-                            for(int i = 0; i < currentControls.size(); i++) {
-                                b = (AbstractButton) currentControls.elementAt(i);
-                                b.setContentAreaFilled(cb.isSelected());
-                                b.invalidate();
-                            }
-                        }
-                    }
-                    invalidate();
-                    validate();
-                    repaint();
-                }
-        };
-
-        buttonPadListener = new ItemListener() {
-                Component c;
-                AbstractButton b;
-
-                public void itemStateChanged(ItemEvent e) {
-                    // *** pad = 0
-                    int pad = -1;
-                    JRadioButton rb = (JRadioButton) e.getSource();
-                    String command = rb.getActionCommand();
-                    if(command == "ZeroPad" && rb.isSelected()) {
-                        pad = 0;
-                    } else if(command == "TenPad" && rb.isSelected()) {
-                        pad = 10;
-                    }
-
-                    for(int i = 0; i < currentControls.size(); i++) {
-                        b = (AbstractButton) currentControls.elementAt(i);
-                        if(pad == -1) {
-                            b.setMargin(null);
-                        } else if(pad == 0) {
-                            b.setMargin(insets0);
-                        } else {
-                            b.setMargin(insets10);
-                        }
-                    }
-                    invalidate();
-                    validate();
-                    repaint();
-                }
-        };
-    }
-
-    public void stateChanged(ChangeEvent e) {
-        SingleSelectionModel model = (SingleSelectionModel) e.getSource();
-        if(model.getSelectedIndex() == 0) {
-            currentControls = buttons;
-        } else if(model.getSelectedIndex() == 1) {
-            currentControls = radiobuttons;
-        } else if(model.getSelectedIndex() == 2) {
-            currentControls = checkboxes;
-        } else {
-            currentControls = togglebuttons;
-        }
     }
 
     public Vector getCurrentControls() {
