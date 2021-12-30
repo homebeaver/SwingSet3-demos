@@ -1,5 +1,5 @@
 /* Copyright (c) 2004 Sun Microsystems, Inc. All Rights Reserved.
-Copyright notice, list of conditions and disclaimer see README.txt
+Copyright notice, list of conditions and disclaimer see LICENSE file
 */ 
 package swingset;
 

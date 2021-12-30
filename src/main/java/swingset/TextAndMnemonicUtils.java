@@ -1,38 +1,42 @@
-package swingset;
 /*
- *
- * Copyright (c) 2012, Oracle and/or its affiliates. All rights reserved.
- *
+ * Copyright (c) 2004 Sun Microsystems, Inc. All Rights Reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- * - Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * - Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * - Neither the name of Oracle nor the names of its contributors may be used to
- * endorse or promote products derived from this software without specific prior
- * written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * -Redistribution of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ * 
+ * -Redistribution in binary form must reproduce the above copyright notice, 
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ * 
+ * Neither the name of Sun Microsystems, Inc. or the names of contributors may 
+ * be used to endorse or promote products derived from this software without 
+ * specific prior written permission.
+ * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL 
+ * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING
+ * ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN MIDROSYSTEMS, INC. ("SUN")
+ * AND ITS LICENSORS SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE
+ * AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS
+ * DERIVATIVES. IN NO EVENT WILL SUN OR ITS LICENSORS BE LIABLE FOR ANY LOST 
+ * REVENUE, PROFIT OR DATA, OR FOR DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, 
+ * INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY 
+ * OF LIABILITY, ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, 
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ * 
+ * You acknowledge that this software is not designed, licensed or intended
+ * for use in the design, construction, operation or maintenance of any
+ * nuclear facility.
  */
+package swingset;
 
 import java.io.IOException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 /**
  * <code>TextAndMnemonicUtils</code> allows to extract text and mnemonic values
@@ -56,24 +60,38 @@ import java.util.ResourceBundle;
  * @author Alexander Scherbatiy
  */
 public class TextAndMnemonicUtils {
-
+	
+	private static final Logger LOG = Logger.getLogger(TextAndMnemonicUtils.class.getName());
+	
     // Label suffix for the text & mnemonic resource
     private static final String LABEL_SUFFIX = ".labelAndMnemonic";
 
     // Resource bundle for internationalized and accessible text
+    private static final String RESOURCEBUNDLE_BASENAME = "swingset.swingset";
     private static ResourceBundle bundle = null;
 
     // Resource properties for the mnemonic key defenition
     private static Properties properties = null;
 
     static {
-        bundle = ResourceBundle.getBundle("resources.swingset");
+    	LOG.info("ResourceBundle.getBundle(\""+RESOURCEBUNDLE_BASENAME+"\") ...");
+    	// Parameter: baseName the base name of the resource bundle, a fully qualified class name
+        bundle = ResourceBundle.getBundle(RESOURCEBUNDLE_BASENAME);
+/*
+Throws:java.lang.NullPointerException - if baseName is null
+MissingResourceException - if no resource bundle for the specified base name can be found
+ */
+    	LOG.info("bundle (Locale) :"+(bundle==null?"null":bundle.getLocale())+"<<<<");
         properties = new Properties();
         try {
-            properties.load(TextAndMnemonicUtils.class.getResourceAsStream("resources/swingset.properties"));
+        	LOG.info("properties.load ...");
+            properties.load(TextAndMnemonicUtils.class.getResourceAsStream("swingset.properties"));
+        	LOG.fine("properties:"+properties);
         } catch (IOException ex) {
-            System.out.println("java.io.IOException: Couldn't load properties from: resources/swingset.properties");
+        	LOG.warning("------------------>"+ex.getMessage());
+            System.out.println("java.io.IOException: Couldn't load swingset.properties");
         }
+    	LOG.info("ENDE properties - OK\n");
     }
 
     /**
@@ -169,7 +187,7 @@ public class TextAndMnemonicUtils {
      * For example the string "&Look && Feel" is converted to "L"
      */
     public static String getMnemonicFromTextAndMnemonic(String text) {
-        int len = text.length();
+//        int len = text.length();
         int index = text.indexOf('&');
 
         while (0 <= index && index < text.length() - 1) {

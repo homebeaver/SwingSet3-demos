@@ -1,35 +1,37 @@
-package swingset;
 /*
- *
- * Copyright (c) 2007, Oracle and/or its affiliates. All rights reserved.
- *
+ * Copyright (c) 2004 Sun Microsystems, Inc. All Rights Reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *
- *   - Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *
- *   - Neither the name of Oracle nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * -Redistribution of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ * 
+ * -Redistribution in binary form must reproduce the above copyright notice, 
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ * 
+ * Neither the name of Sun Microsystems, Inc. or the names of contributors may 
+ * be used to endorse or promote products derived from this software without 
+ * specific prior written permission.
+ * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL 
+ * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING
+ * ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN MIDROSYSTEMS, INC. ("SUN")
+ * AND ITS LICENSORS SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE
+ * AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS
+ * DERIVATIVES. IN NO EVENT WILL SUN OR ITS LICENSORS BE LIABLE FOR ANY LOST 
+ * REVENUE, PROFIT OR DATA, OR FOR DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, 
+ * INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY 
+ * OF LIABILITY, ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, 
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ * 
+ * You acknowledge that this software is not designed, licensed or intended
+ * for use in the design, construction, operation or maintenance of any
+ * nuclear facility.
  */
+package swingset;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -39,6 +41,7 @@ import java.awt.Panel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
@@ -65,14 +68,6 @@ import javax.swing.border.SoftBevelBorder;
  *
  * @author Jeff Dinkins
  * @author EUG https://github.com/homebeaver (removed usage of JApplet, Applet, now subclass Panel)
- */
-/*
-EUG: removed usage of JApplet, Applet:  Deprecated since = "9" forRemoval
-                Applet extends Panel
-JApplet extends Applet implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandler
-==> DemoModule extends Panel implements Accessible, RootPaneContainer, TransferHandler.HasGetTransferHandle
-- The interface TransferHandler.HasGetTransferHandler is not visible, method: public TransferHandler getTransferHandler()
-
  */
 public class DemoModule extends Panel implements Accessible, RootPaneContainer {
 
@@ -173,9 +168,12 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
     public void loadSourceCode() {
     	LOG.config("ResourceName:"+getResourceName());
         if(getResourceName() != null) {
-            String filename = getResourceName() + ".java";
-        	String dir = "src/main/java/"; // m2e folder    
+            // DONE: TODO BUG String resourceName ist ohne package, dieser wird für loadSourceCode() benötigt
+        	String packagename = "swingset/";
+            String filename = packagename + getResourceName() + ".java";
+        	String dir = "src/main/java/"; // m2e folder (ohne package)  
             File f = new File(dir+filename);
+            InputStream is = null;
         	if(f.canRead()) {
             	LOG.info("AbsolutePath:"+f.getAbsolutePath());
         	} else {
@@ -183,11 +181,19 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
         		dir = "src/"; // this is default eclipse folder
         		f = new File(dir+filename);
         		if(!f.canRead()) {
-            		LOG.warning("cannot find source "+filename);
+            		f = new File(getResourceName() + ".java"); // TODO aus jar und nicht file
+            		java.net.URL url = getClass().getResource(getResourceName() + ".java");
+            		try {
+            			is = url.openStream();
+						LOG.warning("cannot find eclipse source "+filename + " / " + is);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            		//+f.getAbsolutePath()+" canRead:"+f.canRead());
         		}
         	}
             sourceCode = new String("<html><body bgcolor=\"#ffffff\"><pre>");
-            InputStream is;
             InputStreamReader isr = null;
             CodeViewer cv = new CodeViewer();
 //            java.net.URL url;
@@ -195,7 +201,7 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
             try {
 //                url = getClass().getResource(filename);
 //                is = url.openStream();
-            	is = new FileInputStream(f);
+            	if(is==null) is = new FileInputStream(f);
                 isr = new InputStreamReader(is, "UTF-8");
                 BufferedReader reader = new BufferedReader(isr); // not closed!
 

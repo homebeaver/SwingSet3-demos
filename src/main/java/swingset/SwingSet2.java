@@ -1,35 +1,37 @@
-package swingset;
 /*
- *
- * Copyright (c) 2007, Oracle and/or its affiliates. All rights reserved.
- *
+ * Copyright (c) 2004 Sun Microsystems, Inc. All Rights Reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   - Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *
- *   - Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *
- *   - Neither the name of Oracle nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
- * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * -Redistribution of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ * 
+ * -Redistribution in binary form must reproduce the above copyright notice, 
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ * 
+ * Neither the name of Sun Microsystems, Inc. or the names of contributors may 
+ * be used to endorse or promote products derived from this software without 
+ * specific prior written permission.
+ * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL 
+ * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING
+ * ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * OR NON-INFRINGEMENT, ARE HEREBY EXCLUDED. SUN MIDROSYSTEMS, INC. ("SUN")
+ * AND ITS LICENSORS SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE
+ * AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS
+ * DERIVATIVES. IN NO EVENT WILL SUN OR ITS LICENSORS BE LIABLE FOR ANY LOST 
+ * REVENUE, PROFIT OR DATA, OR FOR DIRECT, INDIRECT, SPECIAL, CONSEQUENTIAL, 
+ * INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY 
+ * OF LIABILITY, ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE, 
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ * 
+ * You acknowledge that this software is not designed, licensed or intended
+ * for use in the design, construction, operation or maintenance of any
+ * nuclear facility.
  */
+package swingset;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -896,8 +898,8 @@ public class SwingSet2 extends JPanel {
         setStatus(getString("Status.loading") + getString(classname + ".name"));
         DemoModule demo = null;
         try {
-//            Class demoClass = Class.forName(SwingSet2.class.getPackage().getName() + "." + classname);
-            Class<?> demoClass = Class.forName(classname); // throws ClassNotFoundException
+            Class<?> demoClass = Class.forName(SwingSet2.class.getPackage().getName() + "." + classname);
+//            Class<?> demoClass = Class.forName(classname); // throws ClassNotFoundException
             Constructor<?> demoConstructor = demoClass.getConstructor(new Class[]{SwingSet2.class}); // throws NoSuchMethodException, SecurityException
             demo = (DemoModule) demoConstructor.newInstance(new Object[]{this});
             // throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
@@ -905,6 +907,7 @@ public class SwingSet2 extends JPanel {
         } catch (Exception e) {
         	LOG.warning("Error occurred loading demo: " + classname);
             System.out.println("Error occurred loading demo: " + classname);
+            e.printStackTrace();
         }
     }
 
@@ -922,7 +925,7 @@ public class SwingSet2 extends JPanel {
      protected boolean isAvailableLookAndFeel(String laf) {
          try {
              Class<?> lnfClass = Class.forName(laf);
-             LookAndFeel newLAF = (LookAndFeel)(lnfClass.newInstance());
+             LookAndFeel newLAF = (LookAndFeel)(lnfClass.getDeclaredConstructor().newInstance());
              return newLAF.isSupportedLookAndFeel();
          } catch(Exception e) { // If ANYTHING weird happens, return false
              return false;
@@ -1072,7 +1075,7 @@ public class SwingSet2 extends JPanel {
      * Creates an icon from an image contained in the "images" directory.
      */
     public ImageIcon createImageIcon(String filename, String description) {
-        String path = "/resources/images/" + filename;
+    	String path = "/swingset/images/" + filename; 
         return new ImageIcon(getClass().getResource(path));
     }
 
