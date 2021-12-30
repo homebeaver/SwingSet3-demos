@@ -4,9 +4,7 @@
  * package swingset contains 
  * - the main class SwingSet2 extends JPanel
  * - DemoModule : a superclass for the demos
- * - demo content classes named *Demo.java, which are subclass of DemoModule: DemoModule, ButtonDemo, ...
+ * - demo content classes named *Demo.java, which are subclass of DemoModule: InternalFrameDemo, ButtonDemo, ...
  * - helper CodeViewer, ExampleFileView, DirectionPanel, LayoutControlPanel, ...
  */
 package swingset;
-
-import javax.swing.JPanel;
