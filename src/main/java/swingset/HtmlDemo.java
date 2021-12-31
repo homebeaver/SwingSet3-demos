@@ -3,22 +3,18 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 */ 
 package swingset;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.text.html.*;
-import javax.swing.border.*;
-import javax.swing.colorchooser.*;
-import javax.swing.filechooser.*;
-import javax.accessibility.*;
+import java.awt.BorderLayout;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
-import java.util.*;
-import java.io.*;
-import java.applet.*;
-import java.net.*;
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 /**
  * Html Demo
@@ -41,8 +37,8 @@ public class HtmlDemo extends DemoModule {
      * HtmlDemo Constructor
      */
     public HtmlDemo(SwingSet2 swingset) {
-        // Set the title for this demo, and an icon used to represent this
-        // demo inside the SwingSet2 app.
+        // Set the title for this demo, and 
+    	// an icon used to represent this demo inside the SwingSet2 app.
         super(swingset, "HtmlDemo", "toolbar/JEditorPane.gif");
 
         try {
@@ -51,7 +47,7 @@ public class HtmlDemo extends DemoModule {
             // System.getProperty("file.separator");
             String path = null;
             try {
-                path = "/resources/index.html";
+                path = "/swingset/index.html";
                 url = getClass().getResource(path);
             } catch (Exception e) {
                 System.err.println("Failed to open " + path);
