@@ -34,6 +34,8 @@
 package swingset;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -81,16 +83,37 @@ public class TextAndMnemonicUtils {
 Throws:java.lang.NullPointerException - if baseName is null
 MissingResourceException - if no resource bundle for the specified base name can be found
  */
-    	LOG.info("bundle (Locale) :"+(bundle==null?"null":bundle.getLocale())+"<<<<");
         properties = new Properties();
-        try {
-        	LOG.info("properties.load ...");
-            properties.load(TextAndMnemonicUtils.class.getResourceAsStream("swingset.properties"));
-        	LOG.fine("properties:"+properties);
-        } catch (IOException ex) {
-        	LOG.warning("------------------>"+ex.getMessage());
-            System.out.println("java.io.IOException: Couldn't load swingset.properties");
+        if(bundle==null) {
+            try {
+            	LOG.info("properties.load ...");
+                properties.load(TextAndMnemonicUtils.class.getResourceAsStream("swingset.properties"));
+            	LOG.fine("properties:"+properties);
+            } catch (IOException ex) {
+            	LOG.warning("------------------>"+ex.getMessage());
+                System.out.println("java.io.IOException: Couldn't load swingset.properties");
+            }
+        } else {
+        	LOG.info("bundle.Locale:"+bundle.getLocale()+"<<<<");
+        	Enumeration<String> keys = bundle.getKeys();
+        	Iterator<String> iter =keys.asIterator();
+        	int k=0;
+        	while(iter.hasNext()) {
+        		String key = iter.next();
+        		LOG.fine(key+"<< key "+k); // props key z.B. OptionPaneDemo.inputbutton
+        		k++;
+        		properties.put(key, bundle.getObject(key));
+        	}
+        	LOG.info("#properties="+k);
         }
+//        try {
+//        	LOG.info("properties.load ...");
+//            properties.load(TextAndMnemonicUtils.class.getResourceAsStream("swingset.properties"));
+//        	LOG.fine("properties:"+properties);
+//        } catch (IOException ex) {
+//        	LOG.warning("------------------>"+ex.getMessage());
+//            System.out.println("java.io.IOException: Couldn't load swingset.properties");
+//        }
     	LOG.info("ENDE properties - OK\n");
     }
 
