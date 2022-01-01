@@ -139,7 +139,6 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
 
 
 	public String getString(String key) {
-
 		if (getSwingSet2() != null) {
 			return getSwingSet2().getString(key);
 		} else {
@@ -168,7 +167,6 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
     public void loadSourceCode() {
     	LOG.config("ResourceName:"+getResourceName());
         if(getResourceName() != null) {
-            // DONE: TODO BUG String resourceName ist ohne package, dieser wird für loadSourceCode() benötigt
         	String packagename = "swingset/";
             String filename = packagename + getResourceName() + ".java";
         	String dir = "src/main/java/"; // m2e folder (ohne package)  
@@ -181,26 +179,22 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
         		dir = "src/"; // this is default eclipse folder
         		f = new File(dir+filename);
         		if(!f.canRead()) {
-            		f = new File(getResourceName() + ".java"); // TODO aus jar und nicht file
+            		f = new File(getResourceName() + ".java"); 
+            		// get resource from jar:
             		java.net.URL url = getClass().getResource(getResourceName() + ".java");
             		try {
             			is = url.openStream();
 						LOG.warning("cannot find eclipse source "+filename + " / " + is);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-            		//+f.getAbsolutePath()+" canRead:"+f.canRead());
         		}
         	}
             sourceCode = new String("<html><body bgcolor=\"#ffffff\"><pre>");
             InputStreamReader isr = null;
             CodeViewer cv = new CodeViewer();
-//            java.net.URL url;
 
             try {
-//                url = getClass().getResource(filename);
-//                is = url.openStream();
             	if(is==null) is = new FileInputStream(f);
                 isr = new InputStreamReader(is, "UTF-8");
                 BufferedReader reader = new BufferedReader(isr); // not closed!
