@@ -31,6 +31,8 @@ import javax.swing.border.TitledBorder;
  */
 public class ButtonDemo extends DemoModule {
 
+    public static final String ICON_PATH = "toolbar/JButton.gif";
+
     JTabbedPane tab;
 
     JPanel buttonPanel = new JPanel();
@@ -69,7 +71,7 @@ public class ButtonDemo extends DemoModule {
     public ButtonDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "ButtonDemo", "toolbar/JButton.gif"); 
+        super(swingset, "ButtonDemo", ICON_PATH); 
 
         tab = new JTabbedPane();
         tab.getModel().addChangeListener(e -> {

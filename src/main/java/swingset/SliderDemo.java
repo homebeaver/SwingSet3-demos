@@ -26,6 +26,10 @@ import javax.swing.event.ChangeListener;
  */
 public class SliderDemo extends DemoModule {
 
+	private static final long serialVersionUID = 2798412694764911672L;
+	
+	public static final String ICON_PATH = "toolbar/JSlider.gif";
+
     /**
      * main method allows us to run as a standalone demo.
      */
@@ -40,7 +44,7 @@ public class SliderDemo extends DemoModule {
     public SliderDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "SliderDemo", "toolbar/JSlider.gif");
+        super(swingset, "SliderDemo", ICON_PATH);
 
         createSliderDemo();
     }

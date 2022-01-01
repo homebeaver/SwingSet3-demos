@@ -41,6 +41,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author Jeff Dinkins
  */
 public class FileChooserDemo extends DemoModule {
+	
+    public static final String ICON_PATH = "toolbar/JFileChooser.gif";
+
     JLabel theImage;
     Icon jpgIcon;
     Icon gifIcon;
@@ -59,7 +62,7 @@ public class FileChooserDemo extends DemoModule {
     public FileChooserDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "FileChooserDemo", "toolbar/JFileChooser.gif");
+        super(swingset, "FileChooserDemo", ICON_PATH);
         createFileChooserDemo();
     }
 

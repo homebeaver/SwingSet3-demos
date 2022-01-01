@@ -25,6 +25,8 @@ import javax.swing.JPanel;
  */
 public class ColorChooserDemo extends DemoModule {
 
+    public static final String ICON_PATH = "toolbar/JColorChooser.gif";
+
     BezierAnimationPanel bezAnim;
     JButton outerColorButton = null;
     JButton backgroundColorButton = null;
@@ -49,7 +51,7 @@ public class ColorChooserDemo extends DemoModule {
     public ColorChooserDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "ColorChooserDemo", "toolbar/JColorChooser.gif");
+        super(swingset, "ColorChooserDemo", ICON_PATH);
 
         // Create the bezier animation panel to put in the center of the panel.
         bezAnim = new BezierAnimationPanel();

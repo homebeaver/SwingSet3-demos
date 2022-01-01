@@ -19,6 +19,10 @@ import javax.swing.JScrollPane;
  */
 public class ScrollPaneDemo extends DemoModule {
 
+	private static final long serialVersionUID = 9199557527894145835L;
+	
+	public static final String ICON_PATH = "toolbar/JScrollPane.gif";
+
     /**
      * main method allows us to run as a standalone demo.
      */
@@ -31,7 +35,7 @@ public class ScrollPaneDemo extends DemoModule {
      * ScrollPaneDemo Constructor
      */
     public ScrollPaneDemo(SwingSet2 swingset) {
-        super(swingset, "ScrollPaneDemo", "toolbar/JScrollPane.gif");
+        super(swingset, "ScrollPaneDemo", ICON_PATH);
 
         ImageIcon crayons = createImageIcon("scrollpane/crayons.jpg",  getString("ScrollPaneDemo.crayons"));
         getDemoPanel().add(new ImageScroller(this, crayons), BorderLayout.CENTER);

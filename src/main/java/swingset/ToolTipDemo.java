@@ -20,6 +20,8 @@ import javax.swing.JPanel;
  */
 public class ToolTipDemo extends DemoModule {
 
+    public static final String ICON_PATH = "toolbar/ToolTip.gif";
+
     /**
      * main method allows us to run as a standalone demo.
      */
@@ -34,7 +36,7 @@ public class ToolTipDemo extends DemoModule {
     public ToolTipDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "ToolTipDemo", "toolbar/ToolTip.gif");
+        super(swingset, "ToolTipDemo", ICON_PATH);
 
         // Set the layout manager.
         JPanel p = getDemoPanel();

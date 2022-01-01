@@ -32,6 +32,10 @@ import javax.swing.event.ChangeListener;
  */
 public class SplitPaneDemo extends DemoModule {
 
+	private static final long serialVersionUID = 5987956209025810711L;
+
+	public static final String ICON_PATH = "toolbar/JSplitPane.gif";
+
     JSplitPane splitPane = null;
     JLabel earth = null;
     JLabel moon = null;
@@ -52,7 +56,7 @@ public class SplitPaneDemo extends DemoModule {
      * SplitPaneDemo Constructor
      */
     public SplitPaneDemo(SwingSet2 swingset) {
-        super(swingset, "SplitPaneDemo", "toolbar/JSplitPane.gif");
+        super(swingset, "SplitPaneDemo", ICON_PATH);
 
         earth = new JLabel(createImageIcon("splitpane/earth.jpg", getString("SplitPaneDemo.earth")));
         earth.setMinimumSize(new Dimension(20, 20));

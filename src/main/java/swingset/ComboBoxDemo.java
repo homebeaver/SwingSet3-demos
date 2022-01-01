@@ -28,6 +28,8 @@ import javax.swing.border.BevelBorder;
  */
 public class ComboBoxDemo extends DemoModule implements ActionListener {
 
+    public static final String ICON_PATH = "toolbar/JComboBox.gif";
+
     Face face;
     JLabel faceLabel;
 
@@ -53,7 +55,7 @@ public class ComboBoxDemo extends DemoModule implements ActionListener {
     public ComboBoxDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "ComboBoxDemo", "toolbar/JComboBox.gif");
+        super(swingset, "ComboBoxDemo", ICON_PATH);
 
         createComboBoxDemo();
     }

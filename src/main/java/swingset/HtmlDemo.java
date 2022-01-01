@@ -23,6 +23,10 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  */
 public class HtmlDemo extends DemoModule {
 
+	private static final long serialVersionUID = 1867077915822954698L;
+
+	public static final String ICON_PATH = "toolbar/JEditorPane.gif";
+
     JEditorPane html;
 
     /**
@@ -39,7 +43,7 @@ public class HtmlDemo extends DemoModule {
     public HtmlDemo(SwingSet2 swingset) {
         // Set the title for this demo, and 
     	// an icon used to represent this demo inside the SwingSet2 app.
-        super(swingset, "HtmlDemo", "toolbar/JEditorPane.gif");
+        super(swingset, "HtmlDemo", ICON_PATH);
 
         try {
             URL url = null;

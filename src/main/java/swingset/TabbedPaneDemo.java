@@ -27,7 +27,12 @@ import javax.swing.event.ChangeListener;
  * @author Jeff Dinkins
  */
 public class TabbedPaneDemo extends DemoModule implements ActionListener {
-    HeadSpin spin;
+
+	private static final long serialVersionUID = 3060212344858037094L;
+
+	public static final String ICON_PATH = "toolbar/JTabbedPane.gif";
+
+	HeadSpin spin;
 
     JTabbedPane tabbedpane;
 
@@ -52,7 +57,7 @@ public class TabbedPaneDemo extends DemoModule implements ActionListener {
     public TabbedPaneDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "TabbedPaneDemo", "toolbar/JTabbedPane.gif");
+        super(swingset, "TabbedPaneDemo", ICON_PATH);
 
         // create tab position controls
         JPanel tabControls = new JPanel();

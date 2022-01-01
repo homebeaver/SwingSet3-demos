@@ -31,6 +31,10 @@ import javax.swing.JTextField;
  */
 public class InternalFrameDemo extends DemoModule {
 	
+	private static final long serialVersionUID = 8207106273505201473L;
+
+	public static final String ICON_PATH = "toolbar/JDesktop.gif";
+
     int windowCount = 0;
     JDesktopPane desktop = null;
 
@@ -77,7 +81,7 @@ public class InternalFrameDemo extends DemoModule {
      * InternalFrameDemo Constructor
      */
     public InternalFrameDemo(SwingSet2 swingset) {
-        super(swingset, "InternalFrameDemo", "toolbar/JDesktop.gif");
+        super(swingset, "InternalFrameDemo", ICON_PATH);
 
         // preload all the icons we need for this demo
         icon1 = createImageIcon("ImageClub/misc/fish.gif", getString("InternalFrameDemo.fish"));

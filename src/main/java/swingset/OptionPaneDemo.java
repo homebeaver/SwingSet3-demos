@@ -24,6 +24,8 @@ import javax.swing.JTextField;
  */
 public class OptionPaneDemo extends DemoModule {
 
+    public static final String ICON_PATH = "toolbar/JOptionPane.gif";
+
     /**
      * main method allows us to run as a standalone demo.
      */
@@ -38,7 +40,7 @@ public class OptionPaneDemo extends DemoModule {
     public OptionPaneDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "OptionPaneDemo", "toolbar/JOptionPane.gif");
+        super(swingset, "OptionPaneDemo", ICON_PATH);
 
         JPanel demo = getDemoPanel();
 

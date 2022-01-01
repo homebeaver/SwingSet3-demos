@@ -22,6 +22,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class TreeDemo extends DemoModule {
 
+	private static final long serialVersionUID = -932066695707626601L;
+
+	public static final String ICON_PATH = "toolbar/JTree.gif";
+
     JTree tree;
 
     /**
@@ -38,7 +42,7 @@ public class TreeDemo extends DemoModule {
     public TreeDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "TreeDemo", "toolbar/JTree.gif");
+        super(swingset, "TreeDemo", ICON_PATH);
 
         getDemoPanel().add(createTree(), BorderLayout.CENTER);
     }

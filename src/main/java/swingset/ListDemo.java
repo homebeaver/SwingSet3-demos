@@ -39,6 +39,9 @@ import javax.swing.JScrollPane;
  * @author Jeff Dinkins
  */
 public class ListDemo extends DemoModule {
+	
+    public static final String ICON_PATH = "toolbar/JList.gif";
+
     JList list;
 
     JPanel prefixList;
@@ -63,7 +66,7 @@ public class ListDemo extends DemoModule {
      * ListDemo Constructor
      */
     public ListDemo(SwingSet2 swingset) {
-        super(swingset, "ListDemo", "toolbar/JList.gif");
+        super(swingset, "ListDemo", ICON_PATH);
 
         loadImages();
 

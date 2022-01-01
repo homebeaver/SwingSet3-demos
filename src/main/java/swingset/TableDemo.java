@@ -57,6 +57,9 @@ import javax.swing.table.TableRowSorter;
  * @author Steve Wilson
  */
 public class TableDemo extends DemoModule {
+	
+    public static final String ICON_PATH = "toolbar/JTable.gif";
+
     JTable      tableView;
     JScrollPane scrollpane;
     Dimension   origin = new Dimension(0, 0);
@@ -105,7 +108,7 @@ public class TableDemo extends DemoModule {
      * TableDemo Constructor
      */
     public TableDemo(SwingSet2 swingset) {
-        super(swingset, "TableDemo", "toolbar/JTable.gif");
+        super(swingset, "TableDemo", ICON_PATH);
 
         getDemoPanel().setLayout(new BorderLayout());
         controlPanel = new JPanel();

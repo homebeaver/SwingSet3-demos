@@ -25,6 +25,8 @@ import javax.swing.border.SoftBevelBorder;
  */
 public class ProgressBarDemo extends DemoModule {
 
+    public static final String ICON_PATH = "toolbar/JProgressBar.gif";
+
     /**
      * main method allows us to run as a standalone demo.
      */
@@ -39,7 +41,7 @@ public class ProgressBarDemo extends DemoModule {
     public ProgressBarDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "ProgressBarDemo", "toolbar/JProgressBar.gif");
+        super(swingset, "ProgressBarDemo", ICON_PATH);
 
         createProgressPanel();
     }
