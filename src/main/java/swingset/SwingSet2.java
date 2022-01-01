@@ -53,6 +53,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.Vector;
@@ -116,6 +118,7 @@ public class SwingSet2 extends JPanel {
 	private static final Logger LOG = Logger.getLogger(SwingSet2.class.getName());
 
     String[] demos = {
+//      "InternalFrameDemo", see preloadFirstDemo()
       "ButtonDemo",
       "ColorChooserDemo",
       "ComboBoxDemo",
@@ -133,17 +136,23 @@ public class SwingSet2 extends JPanel {
       "TreeDemo"
     };
 
-    void loadDemos() {
-        for(int i = 0; i < demos.length;) {
-            if(isApplet() && demos[i].equals("FileChooserDemo")) {
-               // don't load the file chooser demo if we are
-               // an applet
-            } else {
-               loadDemo(demos[i]);
-            }
-            i++;
-        }
-    }
+	void loadDemos() {
+		String pkgName = SwingSet2.class.getPackage().getName();
+		for (int i = 0; i < demos.length;) {
+			String demoClassName = pkgName + "." + demos[i];
+			demosClasses.add(loadDemo(demoClassName));
+			i++;
+		}
+//		for (int i = 0; i < demos.length;) {
+//			if (isApplet() && demos[i].equals("FileChooserDemo")) {
+//				// don't load the file chooser demo if we are applet
+//			} else {
+//				loadDemo(demos[i]); // EUG TODO nein, nur das erste laden
+//				// die anderen nur als icon
+//			}
+//			i++;
+//		}
+	}
 
     // Possible Look & Feels
     private static final String mac      =
@@ -164,6 +173,7 @@ public class SwingSet2 extends JPanel {
 
     // List of demos
     private ArrayList<DemoModule> demosList = new ArrayList<DemoModule>();
+    private ArrayList<Class<?>> demosClasses = new ArrayList<Class<?>>(); // TODO not used
 
     // The preferred size of the demo
     private static final int PREFERRED_WIDTH = 720;
@@ -346,56 +356,55 @@ public class SwingSet2 extends JPanel {
 
 
 
-    public void initializeDemo() {
-        JPanel top = new JPanel();
-        top.setLayout(new BorderLayout());
-        add(top, BorderLayout.NORTH);
+	public void initializeDemo() {
+		JPanel top = new JPanel();
+		top.setLayout(new BorderLayout());
+		add(top, BorderLayout.NORTH);
 
-        menuBar = createMenus();
+		menuBar = createMenus();
 
-    if (isApplet()) {
-        applet.setJMenuBar(menuBar);
-    } else {
-        frame.setJMenuBar(menuBar);
-    }
+		if (isApplet()) {
+			applet.setJMenuBar(menuBar);
+		} else {
+			frame.setJMenuBar(menuBar);
+		}
 
-        // creates popup menu accessible via keyboard
-        popupMenu = createPopupMenu();
+		ToolBarPanel toolbarPanel = new ToolBarPanel();
+		toolbarPanel.setLayout(new BorderLayout());
+		toolbar = new ToggleButtonToolBar();
+		toolbarPanel.add(toolbar, BorderLayout.CENTER);
+		top.add(toolbarPanel, BorderLayout.SOUTH);
+		toolbarPanel.addContainerListener(toolbarPanel);
 
-        ToolBarPanel toolbarPanel = new ToolBarPanel();
-        toolbarPanel.setLayout(new BorderLayout());
-        toolbar = new ToggleButtonToolBar();
-        toolbarPanel.add(toolbar, BorderLayout.CENTER);
-        top.add(toolbarPanel, BorderLayout.SOUTH);
-        toolbarPanel.addContainerListener(toolbarPanel);
+		tabbedPane = new JTabbedPane();
+		add(tabbedPane, BorderLayout.CENTER);
+		tabbedPane.getModel().addChangeListener(new TabListener());
 
-        tabbedPane = new JTabbedPane();
-        add(tabbedPane, BorderLayout.CENTER);
-        tabbedPane.getModel().addChangeListener(new TabListener());
+		statusField = new JTextField("");
+		statusField.setEditable(false);
+		add(statusField, BorderLayout.SOUTH);
 
-        statusField = new JTextField("");
-        statusField.setEditable(false);
-        add(statusField, BorderLayout.SOUTH);
+		demoPanel = new JPanel();
+		demoPanel.setLayout(new BorderLayout());
+		demoPanel.setBorder(new EtchedBorder());
+		tabbedPane.addTab("Hi There!", demoPanel);
 
-        demoPanel = new JPanel();
-        demoPanel.setLayout(new BorderLayout());
-        demoPanel.setBorder(new EtchedBorder());
-        tabbedPane.addTab("Hi There!", demoPanel);
+		// Add html src code viewer
+		demoSrcPane = new JEditorPane("text/html", getString("SourceCode.loading"));
+		demoSrcPane.setEditable(false);
 
-        // Add html src code viewer
-        demoSrcPane = new JEditorPane("text/html", getString("SourceCode.loading"));
-        demoSrcPane.setEditable(false);
+		JScrollPane scroller = new JScrollPane();
+		scroller.getViewport().add(demoSrcPane);
 
-        JScrollPane scroller = new JScrollPane();
-        scroller.getViewport().add(demoSrcPane);
-
-        tabbedPane.addTab(
-            getString("TabbedPane.src_label"),
-            null,
-            scroller,
-            getString("TabbedPane.src_tooltip")
-        );
-    }
+		tabbedPane.addTab(getString("TabbedPane.src_label")
+				, null
+				, scroller
+				, getString("TabbedPane.src_tooltip"));
+		
+		// creates popup menu accessible via keyboard
+		popupMenu = createPopupMenu();
+		LOG.config("initialized.\n");
+	}
 
     DemoModule currentTabDemo = null;
     class TabListener implements ChangeListener {
@@ -413,6 +422,19 @@ public class SwingSet2 extends JPanel {
         }
     }
 
+    /**
+     * Loads and puts the source code text into JEditorPane in the "Source Code" tab
+     */
+    public void setSourceCode(DemoModule demo) {
+        // do the following on the gui thread
+        SwingUtilities.invokeLater(new SwingSetRunnable(this, demo) {
+            public void run() {
+                swingset.demoSrcPane.setText(((DemoModule)obj).getSourceCode());
+                swingset.demoSrcPane.setCaretPosition(0);
+
+            }
+        });
+    }
 
     /**
      * Create menus
@@ -795,40 +817,49 @@ public class SwingSet2 extends JPanel {
         return mi;
     }
 
-
     /**
-     * Load the first demo. This is done separately from the remaining demos
+     * Load the first demo. 
+     * This is done separately from the remaining demos
      * so that we can get SwingSet2 up and available to the user quickly.
      */
     public void preloadFirstDemo() {
         DemoModule demo = addDemo(new InternalFrameDemo(this));
-        setDemo(demo);
+        setCurrentDemo(demo);
     }
-
 
     /**
      * Add a demo to the toolbar
      */
-    public DemoModule addDemo(DemoModule demo) {
+    private DemoModule addDemo(DemoModule demo) {
+    	return addDemo(demo, demo==null ? null : demo.getClass());
+    }
+    public DemoModule addDemo(DemoModule demo, Class<?> demoClass) {
+    	if(demoClass==null) LOG.severe("*** demoClass==null !!!!");
         demosList.add(demo);
         if (dragEnabled) {
             demo.updateDragEnabled(true);
         }
         // do the following on the gui thread
         SwingUtilities.invokeLater(new SwingSetRunnable(this, demo) {
+        	// overrides swingset.SwingSet2.SwingSetRunnable.run
             public void run() {
-                SwitchToDemoAction action = new SwitchToDemoAction(swingset, (DemoModule) obj);
+//            	super.run(); // dort, in SwingSetRunnable.run, ist nur ein LOG
+//            	LOG.info(""+demo + " == "+obj);
+            	// inner class SwitchToDemoAction
+                SwitchToDemoAction action = new SwitchToDemoAction(swingset, (DemoModule) obj, demoClass);
+//            	LOG.info("gui thread >>> (DemoModule) obj:"+obj);
                 JToggleButton tb = swingset.getToolBar().addToggleButton(action);
                 swingset.getToolBarGroup().add(tb);
                 if(swingset.getToolBarGroup().getSelection() == null) {
                     tb.setSelected(true);
                 }
                 tb.setText(null);
-                tb.setToolTipText(((DemoModule)obj).getToolTip());
-
-                if(demos[demos.length-1].equals(obj.getClass().getName())) {
-                    setStatus(getString("Status.popupMenuAccessible"));
-                }
+                tb.setToolTipText(getString(demoClass.getSimpleName() + ".tooltip"));
+// TODO obj==null:
+//                if(demos[demos.length-1].equals(obj.getClass().getSimpleName())) {
+//                    setStatus(getString("Status.popupMenuAccessible"));
+//                }
+                setStatus(getString("Status.popupMenuAccessible"));
 
             }
         });
@@ -839,7 +870,8 @@ public class SwingSet2 extends JPanel {
     /**
      * Sets the current demo
      */
-    public void setDemo(DemoModule demo) {
+    public void setCurrentDemo(DemoModule demo) {
+    	LOG.info("old:"+currentDemo + " new:"+demo); // TODO config
         currentDemo = demo;
 
         // Ensure panel's UI is current before making visible
@@ -891,25 +923,32 @@ public class SwingSet2 extends JPanel {
     // *******************************************************
 
     /**
-     * Loads a demo from a classname
+     * Loads a demo from a classname, but does not instantiate
      */
-    void loadDemo(String classname) {
-    	LOG.info(classname);
-        setStatus(getString("Status.loading") + getString(classname + ".name"));
+    Class<?> loadDemo(String classname) {
+    	// TODO BUG: java.util.MissingResourceException: Couldn't find value for: swingset.ButtonDemo.name
+//        setStatus(getString("Status.loading") + getString(classname + ".name"));
+        setStatus(getString("Status.loading") + classname);
+        
+        Class<?> demoClass = null;
         DemoModule demo = null;
         try {
-            Class<?> demoClass = Class.forName(SwingSet2.class.getPackage().getName() + "." + classname);
-//            Class<?> demoClass = Class.forName(classname); // throws ClassNotFoundException
-            Constructor<?> demoConstructor = demoClass.getConstructor(new Class[]{SwingSet2.class}); // throws NoSuchMethodException, SecurityException
-            demo = (DemoModule) demoConstructor.newInstance(new Object[]{this});
-            // throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
-            addDemo(demo);
+            demoClass = Class.forName(classname); // throws ClassNotFoundException
+            addDemo(null, demoClass);
         } catch (Exception e) {
         	LOG.warning("Error occurred loading demo: " + classname);
-            System.out.println("Error occurred loading demo: " + classname);
             e.printStackTrace();
         }
+        return demoClass;
     }
+    
+    private DemoModule getInstanceOf(Class<?> demoClass) throws NoSuchMethodException, SecurityException
+    		, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Constructor<?> demoConstructor = demoClass.getConstructor(new Class[]{SwingSet2.class}); // throws NoSuchMethodException, SecurityException
+        DemoModule demo = (DemoModule) demoConstructor.newInstance(new Object[]{this});
+        return demo;
+    }
+    
 
     /**
      * A utility function that layers on top of the LookAndFeel's
@@ -1048,13 +1087,11 @@ public class SwingSet2 extends JPanel {
         if (dragEnabled == this.dragEnabled) {
             return;
         }
-
         this.dragEnabled = dragEnabled;
-
         for (DemoModule dm : demosList) {
+        	LOG.info("DemoModule #"+demosList.size()+" dm:"+dm);
             dm.updateDragEnabled(dragEnabled);
         }
-
         demoSrcPane.setDragEnabled(dragEnabled);
     }
 
@@ -1167,20 +1204,6 @@ public class SwingSet2 extends JPanel {
         }
     }
 
-    /**
-     * Loads and puts the source code text into JEditorPane in the "Source Code" tab
-     */
-    public void setSourceCode(DemoModule demo) {
-        // do the following on the gui thread
-        SwingUtilities.invokeLater(new SwingSetRunnable(this, demo) {
-            public void run() {
-                swingset.demoSrcPane.setText(((DemoModule)obj).getSourceCode());
-                swingset.demoSrcPane.setCaretPosition(0);
-
-            }
-        });
-    }
-
     // *******************************************************
     // **************   ToggleButtonToolbar  *****************
     // *******************************************************
@@ -1259,6 +1282,7 @@ public class SwingSet2 extends JPanel {
         }
 
         public void run() {
+        	LOG.warning("run() should be overwritten by subclass!!! obj:"+obj);
         }
     }
 
@@ -1267,19 +1291,46 @@ public class SwingSet2 extends JPanel {
     // ********************   Actions  ***********************
     // *******************************************************
 
+    //                 interface Action extends ActionListener 
+    // AbstractAction implements Action, Cloneable, Serializable
     public class SwitchToDemoAction extends AbstractAction {
         SwingSet2 swingset;
         DemoModule demo;
+        Class<?> demoClass;
 
-        public SwitchToDemoAction(SwingSet2 swingset, DemoModule demo) {
-            super(demo.getName(), demo.getIcon());
+        public SwitchToDemoAction(SwingSet2 swingset, DemoModule demo, Class<?> demoClass) {
+            super(demoClass.getSimpleName(), swingset.createImageIcon(getIconPath(demoClass), null));
             this.swingset = swingset;
             this.demo = demo;
+            this.demoClass = demoClass;
+//            LOG.info("DemoModule demo:"+demo);
+        }
+
+        private static String getIconPath(Class<?> demoClass) {
+        	try {
+				Field field = demoClass.getField("ICON_PATH");
+				Object value = field.get(null);
+				return (String)value;
+			} catch (NoSuchFieldException | SecurityException e) {
+				// thrown by getField
+				e.printStackTrace();
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				// thrown by get
+				e.printStackTrace();
+			}
+        	return "toolbar/JMenu.gif"; // any default
         }
 
         // implements interface ActionListener
         public void actionPerformed(ActionEvent e) {
-            swingset.setDemo(demo);
+        	LOG.info("make an instance of "+demoClass+" ActionEvent e:"+e);
+            try {
+            	this.demo = swingset.getInstanceOf(demoClass);
+            } catch (Exception ex) {
+            	LOG.warning("Error occurred creating instance of " + demoClass);
+                ex.printStackTrace();
+            }
+            swingset.setCurrentDemo(demo);
         }
     }
 
@@ -1307,6 +1358,7 @@ public class SwingSet2 extends JPanel {
             this.popup = popup;
         }
 
+        // implements interface ActionListener
         public void actionPerformed(ActionEvent e) {
             Dimension invokerSize = getSize();
             Dimension popupSize = popup.getPreferredSize();
@@ -1379,8 +1431,10 @@ public class SwingSet2 extends JPanel {
             if (isApplet()) {
                 setDragEnabled(dragEnabled);
             } else {
+            	LOG.info("ActionEvent e:"+e);
+            	LOG.info("dragEnabled="+dragEnabled+" swingSets.size:"+(swingSets==null?"null":swingSets.size()));
                 for (SwingSet2 ss : swingSets) {
-                    ss.setDragEnabled(dragEnabled);
+                    ss.setDragEnabled(dragEnabled); // java:1393) <<<<<<<<<<< TODO
                 }
             }
         }
@@ -1506,7 +1560,7 @@ public class SwingSet2 extends JPanel {
         }
 
         public void run() {
-            swingset.loadDemos();
+            swingset.loadDemos(); // EUG TODO nur estes
         }
     }
 
