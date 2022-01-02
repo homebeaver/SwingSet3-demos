@@ -725,7 +725,7 @@ public class SwingSet2 extends JPanel {
         return mi;
     }
 
-    /* >>>PopupMenu
+    /* <snip> PopupMenu
      * a small popup menu, activated via keyboard SHIFT_DOWN+F10
      * shows items with InstalledLookAndFeels
      * and a class ActivatePopupMenuAction with ActionEvent on SHIFT_DOWN+F10
@@ -783,7 +783,7 @@ public class SwingSet2 extends JPanel {
             	);
         }
     }
-    // <<<PopupMenu
+    // </snip> PopupMenu
 
     /**
      * Load the first demo. 
