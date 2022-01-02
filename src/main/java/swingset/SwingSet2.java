@@ -93,8 +93,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.MetalTheme;
@@ -150,22 +148,22 @@ public class SwingSet2 extends JPanel {
 		}
 	}
 
-    // Possible Look & Feels
-    private static final String mac      =
-            "com.apple.laf.AquaLookAndFeel";
-    private static final String nimbus   =
-            "javax.swing.plaf.nimbus.NimbusLookAndFeel";
-    private static final String metal    =
-            "javax.swing.plaf.metal.MetalLookAndFeel";
-    private static final String motif    =
-            "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
-    private static final String windows  =
-            "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-    private static final String gtk  =
-            "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
-
+//    // Possible Look & Feels
+//    private static final String mac      =
+//            "com.apple.laf.AquaLookAndFeel";
+//    private static final String nimbus   =
+//            "javax.swing.plaf.nimbus.NimbusLookAndFeel";
+//    private static final String metal    =
+//            "javax.swing.plaf.metal.MetalLookAndFeel";
+//    private static final String motif    =
+//            "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+//    private static final String windows  =
+//            "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+//    private static final String gtk  =
+//            "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+//
     // The current Look & Feel
-    private static String currentLookAndFeel = metal;
+    private static String currentLookAndFeel;
 
     // List of demos
     private ArrayList<DemoModule> demosList = new ArrayList<DemoModule>();
@@ -495,40 +493,43 @@ public class SwingSet2 extends JPanel {
         lafMenu.getAccessibleContext().setAccessibleDescription(
             getString("LafMenu.laf_accessible_description"));
 
-        mi = createLafMenuItem(lafMenu, "LafMenu.java_label", "LafMenu.java_mnemonic",
-                       "LafMenu.java_accessible_description", metal);
-        mi.setSelected(true); // this is the default l&f
-
-        mi = createLafMenuItem(lafMenu, "LafMenu.nimbus_label", "LafMenu.nimbus_mnemonic",
-                       "LafMenu.java_accessible_description", nimbus);
-
+//        mi = createLafMenuItem(lafMenu, "LafMenu.java_label", "LafMenu.java_mnemonic",
+//                       "LafMenu.java_accessible_description", metal);
+//        mi.setSelected(true); // this is the default l&f
+//
+//        mi = createLafMenuItem(lafMenu, "LafMenu.nimbus_label", "LafMenu.nimbus_mnemonic",
+//                       "LafMenu.java_accessible_description", nimbus);
+//
         UIManager.LookAndFeelInfo[] lafInfo = UIManager.
                                        getInstalledLookAndFeels();
 
         for (int counter = 0; counter < lafInfo.length; counter++) {
             String className = lafInfo[counter].getClassName();
-            if (className == motif) {
-                createLafMenuItem(lafMenu, "LafMenu.motif_label", "LafMenu.motif_mnemonic",
-                        "LafMenu.motif_accessible_description", motif);
-            } else if (className == windows) {
-                createLafMenuItem(lafMenu, "LafMenu.windows_label", "LafMenu.windows_mnemonic",
-                        "LafMenu.windows_accessible_description", windows);
-            } else if (className == gtk) {
-                createLafMenuItem(lafMenu, "LafMenu.gtk_label", "LafMenu.gtk_mnemonic",
-                        "LafMenu.gtk_accessible_description", gtk);
-            } else if (className == mac) {
-                createLafMenuItem(lafMenu, "LafMenu.mac_label", "LafMenu.mac_mnemonic",
-                        "LafMenu.mac_accessible_description", mac)  ;
-            } else {
-              createLafMenuItem(lafMenu, lafInfo[counter]);
-            }
-        }
-
-        String lafName = getLookAndFeelLabel(currentLookAndFeel);
-
-        for (int i = 0; i < lafMenu.getItemCount(); i++) {
-            JMenuItem item = lafMenu.getItem(i);
-            item.setSelected(item.getText().equals(lafName));
+            final boolean selected = className.equals(currentLookAndFeel);
+            mi = createLafMenuItem(lafMenu, lafInfo[counter]);
+            mi.setSelected(selected);
+//            if (className == motif) {
+//                createLafMenuItem(lafMenu, "LafMenu.motif_label", "LafMenu.motif_mnemonic",
+//                        "LafMenu.motif_accessible_description", motif);
+//            } else if (className == windows) {
+//                createLafMenuItem(lafMenu, "LafMenu.windows_label", "LafMenu.windows_mnemonic",
+//                        "LafMenu.windows_accessible_description", windows);
+//            } else if (className == gtk) {
+//                createLafMenuItem(lafMenu, "LafMenu.gtk_label", "LafMenu.gtk_mnemonic",
+//                        "LafMenu.gtk_accessible_description", gtk);
+//            } else if (className == mac) {
+//                createLafMenuItem(lafMenu, "LafMenu.mac_label", "LafMenu.mac_mnemonic",
+//                        "LafMenu.mac_accessible_description", mac)  ;
+//            } else {
+//              createLafMenuItem(lafMenu, lafInfo[counter]);
+//            }
+//        }
+//
+//        String lafName = getLookAndFeelLabel(currentLookAndFeel);
+//
+//        for (int i = 0; i < lafMenu.getItemCount(); i++) {
+//            JMenuItem item = lafMenu.getItem(i);
+//            item.setSelected(item.getText().equals(lafName));
         }
 
         // ***** create themes menu
@@ -733,22 +734,22 @@ public class SwingSet2 extends JPanel {
         return mi;
     }
 
-    /**
-     * Creates a JRadioButtonMenuItem for the Look and Feel menu
-     */
-    public JMenuItem createLafMenuItem(JMenu menu, String label, String mnemonic,
-                               String accessibleDescription, String laf) {
-        JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(getString(label)));
-        lafMenuGroup.add(mi);
-        mi.setMnemonic(getMnemonic(mnemonic));
-        mi.getAccessibleContext().setAccessibleDescription(getString(accessibleDescription));
-        mi.addActionListener(new ChangeLookAndFeelAction(this, laf));
-
-        mi.setEnabled(isAvailableLookAndFeel(laf));
-
-        return mi;
-    }
-
+//    /**
+//     * Creates a JRadioButtonMenuItem for the Look and Feel menu
+//     */
+//    public JMenuItem createLafMenuItem(JMenu menu, String label, String mnemonic,
+//                               String accessibleDescription, String laf) {
+//        JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(getString(label)));
+//        lafMenuGroup.add(mi);
+//        mi.setMnemonic(getMnemonic(mnemonic));
+//        mi.getAccessibleContext().setAccessibleDescription(getString(accessibleDescription));
+//        mi.addActionListener(new ChangeLookAndFeelAction(this, laf));
+//
+//        mi.setEnabled(isAvailableLookAndFeel(laf));
+//
+//        return mi;
+//    }
+//
     /**
      * Creates a JRadioButtonMenuItem for the Look and Feel menu
      */
@@ -756,9 +757,7 @@ public class SwingSet2 extends JPanel {
         JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(lafInfo.getName()));
         lafMenuGroup.add(mi);
         mi.addActionListener(new ChangeLookAndFeelAction(this, lafInfo.getClassName()));
-
         mi.setEnabled(isAvailableLookAndFeel(lafInfo.getClassName()));
-
         return mi;
     }
     
@@ -788,23 +787,31 @@ public class SwingSet2 extends JPanel {
     public JPopupMenu createPopupMenu() {
         JPopupMenu popup = new JPopupMenu("JPopupMenu demo");
 
-        createPopupMenuItem(popup, "LafMenu.java_label", "LafMenu.java_mnemonic",
-                            "LafMenu.java_accessible_description", metal);
-
-        createPopupMenuItem(popup, "LafMenu.nimbus_label", "LafMenu.nimbus_mnemonic",
-                            "LafMenu.nimbus_accessible_description", nimbus);
-
-        createPopupMenuItem(popup, "LafMenu.mac_label", "LafMenu.mac_mnemonic",
-                            "LafMenu.mac_accessible_description", mac);
-
-        createPopupMenuItem(popup, "LafMenu.motif_label", "LafMenu.motif_mnemonic",
-                            "LafMenu.motif_accessible_description", motif);
-
-        createPopupMenuItem(popup, "LafMenu.windows_label", "LafMenu.windows_mnemonic",
-                            "LafMenu.windows_accessible_description", windows);
-
-        createPopupMenuItem(popup, "LafMenu.gtk_label", "LafMenu.gtk_mnemonic",
-                            "LafMenu.gtk_accessible_description", gtk);
+//        createPopupMenuItem(popup, "LafMenu.java_label", "LafMenu.java_mnemonic",
+//                            "LafMenu.java_accessible_description", metal);
+//
+//        createPopupMenuItem(popup, "LafMenu.nimbus_label", "LafMenu.nimbus_mnemonic",
+//                            "LafMenu.nimbus_accessible_description", nimbus);
+//
+//        createPopupMenuItem(popup, "LafMenu.mac_label", "LafMenu.mac_mnemonic",
+//                            "LafMenu.mac_accessible_description", mac);
+//
+//        createPopupMenuItem(popup, "LafMenu.motif_label", "LafMenu.motif_mnemonic",
+//                            "LafMenu.motif_accessible_description", motif);
+//
+//        createPopupMenuItem(popup, "LafMenu.windows_label", "LafMenu.windows_mnemonic",
+//                            "LafMenu.windows_accessible_description", windows);
+//
+//        createPopupMenuItem(popup, "LafMenu.gtk_label", "LafMenu.gtk_mnemonic",
+//                            "LafMenu.gtk_accessible_description", gtk);
+        UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
+        JMenuItem mi = null;
+        for (int counter = 0; counter < lafInfo.length; counter++) {
+        	String classname = lafInfo[counter].getClassName();
+        	final boolean selected = classname.equals(this.currentLookAndFeel);
+        	mi = createPopupMenuItem(popup, lafInfo[counter]);
+        	mi.setSelected(selected);
+        }
 
         // register key binding to activate popup menu
         InputMap map = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -818,16 +825,22 @@ public class SwingSet2 extends JPanel {
     /**
      * Creates a JMenuItem for the Look and Feel popup menu
      */
-    public JMenuItem createPopupMenuItem(JPopupMenu menu, String label, String mnemonic,
-                                         String accessibleDescription, String laf) {
-        JMenuItem mi = menu.add(new JMenuItem(getString(label)));
-        popupMenuGroup.add(mi);
-        mi.setMnemonic(getMnemonic(mnemonic));
-        mi.getAccessibleContext().setAccessibleDescription(getString(accessibleDescription));
-        mi.addActionListener(new ChangeLookAndFeelAction(this, laf));
-        mi.setEnabled(isAvailableLookAndFeel(laf));
-
-        return mi;
+//    public JMenuItem createPopupMenuItem(JPopupMenu menu, String label, String mnemonic,
+//                                         String accessibleDescription, String laf) {
+//        JMenuItem mi = menu.add(new JMenuItem(getString(label)));
+//        popupMenuGroup.add(mi);
+//        mi.setMnemonic(getMnemonic(mnemonic));
+//        mi.getAccessibleContext().setAccessibleDescription(getString(accessibleDescription));
+//        mi.addActionListener(new ChangeLookAndFeelAction(this, laf));
+//        mi.setEnabled(isAvailableLookAndFeel(laf));
+//
+//        return mi;
+//    }
+    public JMenuItem createPopupMenuItem(JPopupMenu menu, UIManager.LookAndFeelInfo lafInfo) {
+    	JMenuItem mi = menu.add(new JMenuItem(lafInfo.getName()));
+    	popupMenuGroup.add(mi);
+    	mi.addActionListener(new ChangeLookAndFeelAction(this, lafInfo.getClassName()));
+    	return mi;
     }
 
     /**
@@ -1109,8 +1122,18 @@ public class SwingSet2 extends JPanel {
              * The code below is a workaround and will be replaced in future
              * version of SwingSet2 demo.
              */
-            String lafName = getLookAndFeelLabel(laf);
-            themesMenu.setEnabled(laf.equals(metal));
+//            String lafName = getLookAndFeelLabel(laf);
+//            themesMenu.setEnabled(laf.equals(metal));
+            UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
+            String lafName = null;
+            for(int counter = 0; counter<lafInfo.length; counter++) {
+            	String classname = lafInfo[counter].getClassName();
+            	if(classname.equals(laf)) {
+            		lafName = lafInfo[counter].getName();
+            		break;
+            	}
+            }
+            themesMenu.setEnabled(laf.equals("javax.swing.plaf.metal.MetalLookAndFeel"));
             updateLookAndFeel();
             for(int i=0;i<lafMenu.getItemCount();i++) {
                 JMenuItem item = lafMenu.getItem(i);
@@ -1120,26 +1143,26 @@ public class SwingSet2 extends JPanel {
     }
 
 
-    private String getLookAndFeelLabel(String laf) {
-
-        switch (laf) {
-            case mac:
-                return getString("LafMenu.mac_label");
-            case metal:
-                return getString("LafMenu.java_label");
-            case nimbus:
-                return getString("LafMenu.nimbus_label");
-            case motif:
-                return getString("LafMenu.motif_label");
-            case windows:
-                return getString("LafMenu.windows_label");
-            case gtk:
-                return getString("LafMenu.gtk_label");
-            default:
-                throw new RuntimeException("Unsupported Look and Feel: " + laf);
-        }
-    }
-
+//    private String getLookAndFeelLabel(String laf) {
+//
+//        switch (laf) {
+//            case mac:
+//                return getString("LafMenu.mac_label");
+//            case metal:
+//                return getString("LafMenu.java_label");
+//            case nimbus:
+//                return getString("LafMenu.nimbus_label");
+//            case motif:
+//                return getString("LafMenu.motif_label");
+//            case windows:
+//                return getString("LafMenu.windows_label");
+//            case gtk:
+//                return getString("LafMenu.gtk_label");
+//            default:
+//                throw new RuntimeException("Unsupported Look and Feel: " + laf);
+//        }
+//    }
+//
     private void updateThisSwingSet() {
         if (isApplet()) {
             SwingUtilities.updateComponentTreeUI(getApplet());
