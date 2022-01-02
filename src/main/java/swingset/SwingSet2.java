@@ -413,8 +413,9 @@ public class SwingSet2 extends JPanel {
 				, scroller
 				, getString("TabbedPane.src_tooltip"));
 		
-		// creates popup menu accessible via keyboard
+		// creates popupMenu accessible via keyboard
 		popupMenu = createPopupMenu();
+		
 		LOG.config("initialized.\n");
 	}
 
@@ -724,29 +725,34 @@ public class SwingSet2 extends JPanel {
         return mi;
     }
 
+    /* >>>PopupMenu
+     * a small popup menu, activated via keyboard SHIFT_DOWN+F10
+     * shows items with InstalledLookAndFeels
+     * and a class ActivatePopupMenuAction with ActionEvent on SHIFT_DOWN+F10
+     */
     public JPopupMenu createPopupMenu() {
-        JPopupMenu popup = new JPopupMenu("JPopupMenu demo");
+        JPopupMenu popupMenu = new JPopupMenu("JPopupMenu demo");
 
         UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
         JMenuItem mi = null;
         for (int counter = 0; counter < lafInfo.length; counter++) {
         	String classname = lafInfo[counter].getClassName();
-        	final boolean selected = classname.equals(this.currentLookAndFeel);
-        	mi = createPopupMenuItem(popup, lafInfo[counter]);
+        	final boolean selected = classname.equals(SwingSet2.currentLookAndFeel);
+        	mi = createPopupMenuItem(popupMenu, lafInfo[counter]);
         	mi.setSelected(selected);
         }
 
-        // register key binding to activate popup menu
+        // register key binding to activate popupMenu
         InputMap map = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.SHIFT_MASK), "postMenuAction");
+        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK), "postMenuAction");
         map.put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTEXT_MENU, 0), "postMenuAction");
-        getActionMap().put("postMenuAction", new ActivatePopupMenuAction(this, popup));
+        getActionMap().put("postMenuAction", new ActivatePopupMenuAction(this, popupMenu));
 
-        return popup;
+        return popupMenu;
     }
 
     /**
-     * Creates a JMenuItem for the Look and Feel popup menu
+     * Creates a JMenuItem for the Look and Feel popupMenu
      */
     public JMenuItem createPopupMenuItem(JPopupMenu menu, UIManager.LookAndFeelInfo lafInfo) {
     	JMenuItem mi = menu.add(new JMenuItem(lafInfo.getName()));
@@ -754,6 +760,30 @@ public class SwingSet2 extends JPanel {
     	mi.addActionListener(new ChangeLookAndFeelAction(this, lafInfo.getClassName()));
     	return mi;
     }
+
+    class ActivatePopupMenuAction extends AbstractAction {
+		private static final long serialVersionUID = 3925663480989462160L;
+		SwingSet2 swingset;
+        JPopupMenu popup;
+        
+        protected ActivatePopupMenuAction(SwingSet2 swingset, JPopupMenu popupMenu) {
+            super("ActivatePopupMenu"); // the name for the action
+            this.swingset = swingset;
+            this.popup = popupMenu;
+        }
+
+        // implements interface ActionListener
+        public void actionPerformed(ActionEvent e) {
+        	LOG.fine("event:"+e);
+            Dimension invokerSize = getSize();
+            Dimension popupSize = popup.getPreferredSize();
+            popup.show(swingset, 
+            		(invokerSize.width - popupSize.width) / 2,
+            		(invokerSize.height - popupSize.height) / 2
+            	);
+        }
+    }
+    // <<<PopupMenu
 
     /**
      * Load the first demo. 
@@ -773,7 +803,7 @@ public class SwingSet2 extends JPanel {
     }
     public DemoModule addDemo(DemoModule demo, Class<?> demoClass) {
     	if(demoClass==null) LOG.severe("*** demoClass==null !!!!");
-        demosList.add(demo); // TODO auch null landet so in demosList
+        demosList.add(demo); // TODO EUG auch null landet so in demosList
         if (dragEnabled) {
             demo.updateDragEnabled(true);
         }
@@ -865,7 +895,16 @@ public class SwingSet2 extends JPanel {
              LookAndFeel newLAF = (LookAndFeel)(lnfClass.getDeclaredConstructor().newInstance());
              return newLAF.isSupportedLookAndFeel();
          } catch(Exception e) { // If ANYTHING weird happens, return false
-        	 // EUG TODO
+/*
+IllegalAccessException: class swingset.SwingSet2 cannot access class com.sun.java.swing.plaf.motif.MotifLookAndFeel (in module java.desktop) because module java.desktop does not export com.sun.java.swing.plaf.motif to unnamed module @35fb3008
+IllegalAccessException: class swingset.SwingSet2 cannot access class com.sun.java.swing.plaf.windows.WindowsLookAndFeel (in module java.desktop) because module java.desktop does not export com.sun.java.swing.plaf.windows to unnamed module @35fb3008
+IllegalAccessException: class swingset.SwingSet2 cannot access class com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel 
+	(in module java.desktop) because module java.desktop 
+	does not export com.sun.java.swing.plaf.windows to unnamed module @35fb3008
+ABER:
+via PopupMenu shift-F10 kann ich alle drei aktivieren.
+ */
+        	 LOG.config(laf + " liefert "+e);
              return false;
          }
      }
@@ -1231,24 +1270,6 @@ public class SwingSet2 extends JPanel {
         // implements interface ActionListener
         public void actionPerformed(ActionEvent e) {
             swingset.setLookAndFeel(laf);
-        }
-    }
-
-    class ActivatePopupMenuAction extends AbstractAction {
-        SwingSet2 swingset;
-        JPopupMenu popup;
-        protected ActivatePopupMenuAction(SwingSet2 swingset, JPopupMenu popup) {
-            super("ActivatePopupMenu");
-            this.swingset = swingset;
-            this.popup = popup;
-        }
-
-        // implements interface ActionListener
-        public void actionPerformed(ActionEvent e) {
-            Dimension invokerSize = getSize();
-            Dimension popupSize = popup.getPreferredSize();
-            popup.show(swingset, (invokerSize.width - popupSize.width) / 2,
-                       (invokerSize.height - popupSize.height) / 2);
         }
     }
 
