@@ -3,17 +3,22 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 */ 
 package swingset;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -28,10 +33,13 @@ import javax.swing.border.TitledBorder;
  * JButton, JRadioButton, (JToggleButton), JCheckBox Demos
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (Traffic Light Buttons)
  */
 public class ButtonDemo extends DemoModule {
 
-    public static final String ICON_PATH = "toolbar/JButton.gif";
+	public static final String ICON_PATH = "toolbar/JButton.gif";
+
+	private static final long serialVersionUID = -61808634982886166L;
 
     JTabbedPane tab;
 
@@ -39,7 +47,7 @@ public class ButtonDemo extends DemoModule {
     JPanel checkboxPanel = new JPanel();
     JPanel radioButtonPanel = new JPanel();
 
-    Vector buttons = new Vector();
+    Vector<Component> buttons = new Vector<Component>();
     Vector checkboxes = new Vector();
     Vector radiobuttons = new Vector();
     Vector togglebuttons = new Vector();
@@ -122,23 +130,121 @@ public class ButtonDemo extends DemoModule {
 
         // Image Buttons
         verticalPane.add(Box.createRigidArea(VGAP30));
-        JPanel p3 = createHorizontalPanel(false);
+        JPanel p3 = createHorizontalPanel(false); // true == loweredBorder from super
         verticalPane.add(p3);
-        p3.setLayout(new BoxLayout(p3, BoxLayout.X_AXIS));
-        p3.setBorder(new TitledBorder(null, getString("ButtonDemo.imagebuttons"),
+        createImageButtons(p3);
+        
+        // traffic lights buttons
+        verticalPane.add(Box.createRigidArea(VGAP30));
+        JPanel p4 = createHorizontalPanel(true);
+        verticalPane.add(p4);
+        createTrafficLightButtons(p4);
+
+        verticalPane.add(Box.createVerticalGlue());
+        
+        buttonPanel.add(Box.createHorizontalGlue());
+        currentControls = buttons;
+        buttonPanel.add(createControls());       
+    }
+
+    CircleIcon outoforder = new CircleIcon(CircleIcon.ACTION_ICON, null);
+    CircleIcon red = new CircleIcon(CircleIcon.ACTION_ICON, Color.RED);
+    CircleIcon yellow = new CircleIcon(CircleIcon.ACTION_ICON, Color.YELLOW);
+    CircleIcon green = new CircleIcon(CircleIcon.ACTION_ICON, Color.GREEN);
+    private void createTrafficLightButtons(JComponent pane) {
+        pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
+        pane.setBorder(new TitledBorder(null, "Traffic Light Buttons",
+                                         TitledBorder.LEFT, TitledBorder.TOP));
+        
+//        String description = "green - yellow - red";
+        
+        button = new JButton("green", green);
+        button.setName("green"); // used in listener
+        button.setPressedIcon(red);
+        button.setRolloverIcon(yellow);
+        button.setDisabledIcon(outoforder);
+        button.setMargin(new Insets(0,0,0,0));
+        pane.add(button);
+        buttons.add(button);
+        pane.add(Box.createRigidArea(HGAP10));
+        
+        button = new JButton("red", red);
+        button.setName("red");
+        button.setPressedIcon(green);
+        button.setRolloverIcon(yellow);
+        button.setDisabledIcon(outoforder);
+        button.setMargin(new Insets(0,0,0,0));
+        pane.add(button);
+        buttons.add(button);
+        pane.add(Box.createRigidArea(HGAP10));
+        
+        button = new JButton("switching", green);
+        button.setName("flipflop"); // used in listener
+        button.setMargin(new Insets(0,0,0,0));
+        JButton b = button;
+        b.addMouseListener(new MouseAdapter() {
+        	Icon old = null;
+        	Icon rem = null;
+        	// (pressed and released)
+            public void mouseClicked(MouseEvent e) {
+//            	LOG.info("Icon:"+b.getIcon());
+            	if(b.getIcon()==outoforder) {
+            		// ready
+                	old = b.getIcon();
+            	} else if(b.getIcon()==green) {
+                	b.setIcon(red);
+            	} else if(b.getIcon()==red) {
+                	b.setIcon(green);
+            	} else if(b.getIcon()==yellow && rem==green) {
+                	b.setIcon(red);
+                	b.setSelected(true);
+            	} else if(b.getIcon()==yellow && rem==red) {
+                	b.setIcon(green);
+                	b.setSelected(false);
+            	}
+            }
+            
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            	rem = b.getIcon();
+            	b.setIcon(yellow);
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void mouseExited(MouseEvent e) {
+            	b.setIcon(b.isSelected() ? red : green);
+            }          
+        });
+
+        pane.add(button);
+        buttons.add(button);
+//        pane.add(Box.createRigidArea(HGAP10)); no gap at the end
+    }
+    
+    // global 	Vector<Component> buttons
+    //		-	aus super: HGAP10 / sollten final sein, sind sie aber nicht
+    private void createImageButtons(JComponent pane) {
+        pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
+        pane.setBorder(new TitledBorder(null, getString("ButtonDemo.imagebuttons"),
                                          TitledBorder.LEFT, TitledBorder.TOP));
 
-        // home image button
+        // phone image button mit vier icons
         String description = getString("ButtonDemo.phone");
         button = new JButton(createImageIcon("buttons/b1.gif", description));
         button.setPressedIcon(createImageIcon("buttons/b1p.gif", description));
         button.setRolloverIcon(createImageIcon("buttons/b1r.gif", description));
         button.setDisabledIcon(createImageIcon("buttons/b1d.gif", description));
         button.setMargin(new Insets(0,0,0,0));
-        p3.add(button);
+        pane.add(button);
         buttons.add(button);
-        p3.add(Box.createRigidArea(HGAP10));
-
+        pane.add(Box.createRigidArea(HGAP10));
+        
         // write image button
         description = getString("ButtonDemo.write");
         button = new JButton(createImageIcon("buttons/b2.gif", description));
@@ -146,27 +252,21 @@ public class ButtonDemo extends DemoModule {
         button.setRolloverIcon(createImageIcon("buttons/b2r.gif", description));
         button.setDisabledIcon(createImageIcon("buttons/b2d.gif", description));
         button.setMargin(new Insets(0,0,0,0));
-        p3.add(button);
+        pane.add(button);
         buttons.add(button);
-        p3.add(Box.createRigidArea(HGAP10));
+        pane.add(Box.createRigidArea(HGAP10));
 
-        // write image button
+        // peace image button
         description = getString("ButtonDemo.peace");
         button = new JButton(createImageIcon("buttons/b3.gif", description));
         button.setPressedIcon(createImageIcon("buttons/b3p.gif", description));
         button.setRolloverIcon(createImageIcon("buttons/b3r.gif", description));
         button.setDisabledIcon(createImageIcon("buttons/b3d.gif", description));
         button.setMargin(new Insets(0,0,0,0));
-        p3.add(button);
+        pane.add(button);
         buttons.add(button);
-
-        verticalPane.add(Box.createVerticalGlue());
-
-        buttonPanel.add(Box.createHorizontalGlue());
-        currentControls = buttons;
-        buttonPanel.add(createControls());
     }
-
+    
     public void addRadioButtons() {
         ButtonGroup group = new ButtonGroup();
 
@@ -440,6 +540,15 @@ public class ButtonDemo extends DemoModule {
             for(int i = 0; i < currentControls.size(); i++) {
                 c = (Component) currentControls.elementAt(i);
                 c.setEnabled(isSelected);
+                if(c instanceof JButton) {
+                	JButton b = (JButton)c;
+                	if("green".equals(b.getName())) { // set the green light out of order
+                		b.setIcon(isSelected ? green : outoforder);
+                	}
+                	if("flipflop".equals(b.getName())) { // set the flipflop light out of order
+                		b.setIcon(isSelected ? green : outoforder);
+                	}
+                }
                 c.invalidate();
             }
         });
