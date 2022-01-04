@@ -266,19 +266,21 @@ public class SwingSet2 extends JPanel {
 
     }
 
-    public SwingSet2(SwingSet2Applet applet) {
-        this(applet, null);
-    }
+	public SwingSet2(SwingSet2Applet applet) {
+		this(applet, null);
+	}
     
     public SwingSet2() {
-      this(null, GraphicsEnvironment.getLocalGraphicsEnvironment().
-           getDefaultScreenDevice().getDefaultConfiguration());
+		this(null, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
     }
 
+    public SwingSet2(SwingSet2Applet applet, GraphicsConfiguration gc) {
+		this(applet, gc, true);
+    }
     /**
      * SwingSet2 Constructor
      */
-    public SwingSet2(SwingSet2Applet applet, GraphicsConfiguration gc) {
+    public SwingSet2(SwingSet2Applet applet, GraphicsConfiguration gc, boolean initAndStart) {
 
         // Note that applet may be null if this is started as an application
         this.applet = applet;
@@ -289,25 +291,25 @@ public class SwingSet2 extends JPanel {
             frame = createFrame(gc);
         }
 
-        // set the layout
-        setLayout(new BorderLayout());
+        if(initAndStart) {
+            // set the layout
+            setLayout(new BorderLayout());
+            // set the preferred size of the demo
+            setPreferredSize(new Dimension(PREFERRED_WIDTH,PREFERRED_HEIGHT));
 
-        // set the preferred size of the demo
-        setPreferredSize(new Dimension(PREFERRED_WIDTH,PREFERRED_HEIGHT));
+            initializeDemo();
+            preloadFirstDemo();
+            // Show the demo. Must do this on the GUI thread using invokeLater.
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    showSwingSet2();
+                }
+            });
 
-        initializeDemo();
-        preloadFirstDemo();
-
-        // Show the demo. Must do this on the GUI thread using invokeLater.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                showSwingSet2();
-            }
-        });
-
-        // Start loading the rest of the demo in the background
-        DemoLoadThread demoLoader = new DemoLoadThread(this);
-        demoLoader.start();
+            // Start loading the rest of the demo in the background
+            DemoLoadThread demoLoader = new DemoLoadThread(this);
+            demoLoader.start();
+        }
     }
 
     /**

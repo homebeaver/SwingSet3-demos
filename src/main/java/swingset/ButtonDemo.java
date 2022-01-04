@@ -6,10 +6,13 @@ package swingset;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractButton;
 import javax.swing.Box;
@@ -28,6 +31,7 @@ import javax.swing.SingleSelectionModel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.metal.MetalButtonUI;
 
 /**
  * JButton, JRadioButton, (JToggleButton), JCheckBox Demos
@@ -40,6 +44,7 @@ public class ButtonDemo extends DemoModule {
 	public static final String ICON_PATH = "toolbar/JButton.gif";
 
 	private static final long serialVersionUID = -61808634982886166L;
+	private static final Logger LOG = Logger.getLogger(ButtonDemo.class.getName());
 
     JTabbedPane tab;
 
@@ -69,7 +74,8 @@ public class ButtonDemo extends DemoModule {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        ButtonDemo demo = new ButtonDemo(null);
+    	GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        ButtonDemo demo = new ButtonDemo(new SwingSet2(null, gc, false));
         demo.mainImpl();
     }
 
@@ -100,8 +106,9 @@ public class ButtonDemo extends DemoModule {
         demo.add(tab);
 
         addButtons();
-        addRadioButtons();
-        addCheckBoxes();
+        // TODO NPE wenn ohne swingset2:
+        addRadioButtons(); // NPE wenn ohne swingset2
+        addCheckBoxes(); // NPE wenn ohne swingset2
         currentControls = buttons;
     }
 
@@ -120,13 +127,23 @@ public class ButtonDemo extends DemoModule {
         p2.setBorder(new CompoundBorder(new TitledBorder(null, getString("ButtonDemo.textbuttons"),
                                                           TitledBorder.LEFT, TitledBorder.TOP), border5));
 
-        buttons.add(p2.add(new JButton(getString("ButtonDemo.button1"))));
+        button = new JButton(getString("ButtonDemo.button1"));
+//        button.setMargin(new Insets(0,0,0,0));
+        buttons.add(p2.add(button));
         p2.add(Box.createRigidArea(HGAP10));
 
         buttons.add(p2.add(new JButton(getString("ButtonDemo.button2"))));
         p2.add(Box.createRigidArea(HGAP10));
 
-        buttons.add(p2.add(new JButton(getString("ButtonDemo.button3"))));
+        String buttonText = getString("ButtonDemo.button3");
+        button = new JButton(buttonText);
+//        button.setMargin(new Insets(0,0,0,0));
+//        button.setBorder(new EmptyBorder(0, 0, 0, 0));
+        LOG.info("button.Text="+buttonText + " .UI:"+button.getUI());
+//        MetalButtonUI mbu = (MetalButtonUI)button.getUI();
+//        mbu.update(getGraphics(), verticalPane);
+//        mbu.set
+        buttons.add(p2.add(button));
 
         // Image Buttons
         verticalPane.add(Box.createRigidArea(VGAP30));

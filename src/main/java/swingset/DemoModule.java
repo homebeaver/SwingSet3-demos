@@ -233,7 +233,6 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
         frame.getContentPane().add(getDemoPanel(), BorderLayout.CENTER);
         getDemoPanel().setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
         frame.pack();
-//      frame.show(); // Deprecated.  As of JDK version 1.5, replaced by setVisible(boolean).
         frame.setVisible(true);
     }
 
