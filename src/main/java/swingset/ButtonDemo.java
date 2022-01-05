@@ -124,9 +124,10 @@ public class ButtonDemo extends DemoModule {
         p2.setBorder(new CompoundBorder(new TitledBorder(null, getString("ButtonDemo.textbuttons"),
                                                           TitledBorder.LEFT, TitledBorder.TOP), border5));
 
-        button = new JButton(getString("ButtonDemo.button1"));
+        String buttonText1 = getString("ButtonDemo.button1");
+        button = new JButton(buttonText1);
         // wg. https://github.com/homebeaver/SwingSet/issues/18 :
-//        button = new JButton("<html><font size=2>One</font></html>");
+//        LOG.info("button.Text="+buttonText1 + " .UI:"+button.getUI());
         p2.add(button);
         buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
@@ -136,10 +137,10 @@ public class ButtonDemo extends DemoModule {
         buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
         
-        String buttonText = getString("ButtonDemo.button3");
+        String buttonText3 = getString("ButtonDemo.button3");
         // wg. https://github.com/homebeaver/SwingSet/issues/18 :
-//        buttonText = "<html><font size=2 color=red><bold>Three!</font></html>";
-        button = new JButton(buttonText);
+//        buttonText3 = "<html><font size=2 color=red><bold>Three!</font></html>";
+        button = new JButton(buttonText3);
         p2.add(button);
         buttons.add(button);
 
@@ -158,7 +159,7 @@ public class ButtonDemo extends DemoModule {
         verticalPane.add(Box.createVerticalGlue());
         
         buttonPanel.add(Box.createHorizontalGlue());
-        currentControls = buttons;
+        currentControls = buttons; // currentControls is global para for createControls!
         buttonPanel.add(createControls());       
     }
 
@@ -508,25 +509,22 @@ public class ButtonDemo extends DemoModule {
 
         JCheckBox bordered = new JCheckBox(getString("ButtonDemo.paintborder"));
         bordered.setActionCommand("PaintBorder");
-        bordered.setToolTipText(getString("ButtonDemo.paintborder_tooltip"));
         bordered.setMnemonic(getMnemonic("ButtonDemo.paintborder_mnemonic"));
+        bordered.setToolTipText(getString("ButtonDemo.paintborder_tooltip"));
         if (currentControls == buttons) {
-                bordered.setSelected(true);
+                bordered.setSelected(true); // initial
         }
-//        bordered.addItemListener(buttonDisplayListener);
-        // alternativ:
+
         bordered.addItemListener(e -> {
-        	JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == bordered
-        	boolean isSelected = cb.isSelected();
-            Component c = (Component) currentControls.elementAt(0);
-            AbstractButton b;
-            if(c instanceof AbstractButton) {
-                for(int i = 0; i < currentControls.size(); i++) {
-                    b = (AbstractButton) currentControls.elementAt(i);
-                    b.setBorderPainted(isSelected);
-                    b.invalidate();
-                }
-            }
+			JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == bordered
+			boolean borderPainted = cb.isSelected();
+			AbstractButton b;
+			LOG.config("bordered currentControls.size()=" + currentControls.size());
+			for (int i = 0; i < currentControls.size(); i++) {
+				b = (AbstractButton) currentControls.elementAt(i);
+				b.setBorderPainted(borderPainted);
+				b.invalidate();
+			}
         });
         leftColumn.add(bordered);
 
@@ -535,68 +533,65 @@ public class ButtonDemo extends DemoModule {
         focused.setToolTipText(getString("ButtonDemo.paintfocus_tooltip"));
         focused.setMnemonic(getMnemonic("ButtonDemo.paintfocus_mnemonic"));
         focused.setSelected(true);
-//        focused.addItemListener(buttonDisplayListener);
+
         focused.addItemListener(e -> {
         	JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == focused
-        	boolean isSelected = cb.isSelected();
-            Component c = (Component) currentControls.elementAt(0);
+        	boolean focusPainted = cb.isSelected();
             AbstractButton b;
-            if(c instanceof AbstractButton) {
-                for(int i = 0; i < currentControls.size(); i++) {
-                    b = (AbstractButton) currentControls.elementAt(i);
-                    b.setBorderPainted(isSelected);
-                    b.invalidate();
-                }
+			LOG.config("focused currentControls.size()=" + currentControls.size());
+            for(int i = 0; i < currentControls.size(); i++) {
+                b = (AbstractButton) currentControls.elementAt(i);
+                b.setFocusPainted(focusPainted);
+                b.invalidate();
             }
         });
         leftColumn.add(focused);
 
         JCheckBox enabled = new JCheckBox(getString("ButtonDemo.enabled"));
         enabled.setActionCommand("Enabled");
+        enabled.setMnemonic(getMnemonic("ButtonDemo.enabled_mnemonic"));
         enabled.setToolTipText(getString("ButtonDemo.enabled_tooltip"));
         enabled.setSelected(true);
-//        enabled.addItemListener(buttonDisplayListener);
+
         enabled.addItemListener(e -> {
         	JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == enabled
-        	boolean isSelected = cb.isSelected();
+        	boolean enable = cb.isSelected();
             Component c;
             for(int i = 0; i < currentControls.size(); i++) {
                 c = (Component) currentControls.elementAt(i);
-                c.setEnabled(isSelected);
                 if(c instanceof JButton) {
                 	JButton b = (JButton)c;
                 	if("green".equals(b.getName())) { // set the green light out of order
-                		b.setIcon(isSelected ? green : outoforder);
-                	}
-                	if("flipflop".equals(b.getName())) { // set the flipflop light out of order
-                		b.setIcon(isSelected ? green : outoforder);
+                		b.setIcon(enable ? green : outoforder);
+                	} else if("flipflop".equals(b.getName())) { // set the flipflop light out of order
+                		b.setIcon(enable ? green : outoforder);
+                	} else if("red".equals(b.getName())) { 
+                		// red light remains red!
+                	} else {
+                		c.setEnabled(enable);
                 	}
                 }
                 c.invalidate();
             }
         });
-        enabled.setMnemonic(getMnemonic("ButtonDemo.enabled_mnemonic"));
         leftColumn.add(enabled);
 
         JCheckBox filled = new JCheckBox(getString("ButtonDemo.contentfilled"));
         filled.setActionCommand("ContentFilled");
+        filled.setMnemonic(getMnemonic("ButtonDemo.contentfilled_mnemonic"));
         filled.setToolTipText(getString("ButtonDemo.contentfilled_tooltip"));
         filled.setSelected(true);
-//        filled.addItemListener(buttonDisplayListener);
+
         filled.addItemListener(e -> {
         	JCheckBox cb = (JCheckBox) e.getSource(); // cb == e.getSource() == filled
-        	boolean isSelected = cb.isSelected();
-            Component c = (Component) currentControls.elementAt(0);
+        	boolean caFilled = cb.isSelected();
             AbstractButton b;
-            if(c instanceof AbstractButton) {
-                for(int i = 0; i < currentControls.size(); i++) {
-                    b = (AbstractButton) currentControls.elementAt(i);
-                    b.setBorderPainted(isSelected);
-                    b.invalidate();
-                }
+            for(int i = 0; i < currentControls.size(); i++) {
+                b = (AbstractButton) currentControls.elementAt(i);
+                b.setContentAreaFilled(caFilled);
+                b.invalidate();
             }
         });
-        filled.setMnemonic(getMnemonic("ButtonDemo.contentfilled_mnemonic"));
         leftColumn.add(filled);
 
         leftColumn.add(Box.createRigidArea(VGAP20));
@@ -604,9 +599,10 @@ public class ButtonDemo extends DemoModule {
         l = new JLabel(getString("ButtonDemo.padamount_label"));
         leftColumn.add(l);
         ButtonGroup group = new ButtonGroup();
+        
         JRadioButton defaultPad = new JRadioButton(getString("ButtonDemo.default"));
-        defaultPad.setToolTipText(getString("ButtonDemo.default_tooltip"));
         defaultPad.setMnemonic(getMnemonic("ButtonDemo.default_mnemonic"));
+        defaultPad.setToolTipText(getString("ButtonDemo.default_tooltip"));
         defaultPad.addItemListener(e -> {
         	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == defaultPad
         	if(rb.isSelected()) {
@@ -626,12 +622,13 @@ public class ButtonDemo extends DemoModule {
 
         JRadioButton zeroPad = new JRadioButton(getString("ButtonDemo.zero"));
         zeroPad.setActionCommand("ZeroPad");
+        zeroPad.setMnemonic(getMnemonic("ButtonDemo.zero_mnemonic"));
         zeroPad.setToolTipText(getString("ButtonDemo.zero_tooltip"));
         zeroPad.addItemListener(e -> {
         	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == zeroPad
         	if(rb.isSelected()) {
                 AbstractButton b;
-                LOG.info("zeroPad currentControls.size()="+currentControls.size());
+                LOG.config("zeroPad currentControls.size()="+currentControls.size());
                 for(int i = 0; i < currentControls.size(); i++) {
                     b = (AbstractButton) currentControls.elementAt(i);
                     b.setMargin(insets0);
@@ -639,7 +636,6 @@ public class ButtonDemo extends DemoModule {
                 }
         	}
         });
-        zeroPad.setMnemonic(getMnemonic("ButtonDemo.zero_mnemonic"));
         group.add(zeroPad);
         leftColumn.add(zeroPad);
 
@@ -647,7 +643,7 @@ public class ButtonDemo extends DemoModule {
         tenPad.setActionCommand("TenPad");
         tenPad.setMnemonic(getMnemonic("ButtonDemo.ten_mnemonic"));
         tenPad.setToolTipText(getString("ButtonDemo.ten_tooltip"));
-//        tenPad.addItemListener(buttonPadListener);
+
         tenPad.addItemListener(e -> {
         	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == tenPad
         	if(rb.isSelected()) {
@@ -662,7 +658,7 @@ public class ButtonDemo extends DemoModule {
         group.add(tenPad);
         leftColumn.add(tenPad);
 
-        leftColumn.add(Box.createRigidArea(VGAP20));
+//        leftColumn.add(Box.createRigidArea(VGAP20));
         return controls;
     }
 
