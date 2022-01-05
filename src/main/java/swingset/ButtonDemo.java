@@ -26,12 +26,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
 import javax.swing.SingleSelectionModel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.plaf.metal.MetalButtonUI;
 
 /**
  * JButton, JRadioButton, (JToggleButton), JCheckBox Demos
@@ -52,17 +50,18 @@ public class ButtonDemo extends DemoModule {
     JPanel checkboxPanel = new JPanel();
     JPanel radioButtonPanel = new JPanel();
 
-    Vector<Component> buttons = new Vector<Component>();
-    Vector checkboxes = new Vector();
-    Vector radiobuttons = new Vector();
-    Vector togglebuttons = new Vector();
+    Vector<AbstractButton> buttons = new Vector<AbstractButton>();
+    Vector<AbstractButton> checkboxes = new Vector<AbstractButton>();
+    Vector<AbstractButton> radiobuttons = new Vector<AbstractButton>();
+    private Vector<AbstractButton> togglebuttons = new Vector<AbstractButton>(); // not used
 
-    Vector currentControls = buttons;
+    // radiobuttons
+    Vector<AbstractButton> currentControls = buttons;
 
     JButton button;
     JCheckBox check;
     JRadioButton radio;
-    JToggleButton toggle;
+//    private JToggleButton toggle;
 
     EmptyBorder border5 = new EmptyBorder(5,5,5,5);
     EmptyBorder border10 = new EmptyBorder(10,10,10,10);
@@ -83,8 +82,7 @@ public class ButtonDemo extends DemoModule {
      * ButtonDemo Constructor
      */
     public ButtonDemo(SwingSet2 swingset) {
-        // Set the title for this demo, and an icon used to represent this
-        // demo inside the SwingSet2 app.
+        // Set the title for this demo, and an icon used to represent this demo inside SwingSet2.
         super(swingset, "ButtonDemo", ICON_PATH); 
 
         tab = new JTabbedPane();
@@ -106,9 +104,8 @@ public class ButtonDemo extends DemoModule {
         demo.add(tab);
 
         addButtons();
-        // TODO NPE wenn ohne swingset2:
-        addRadioButtons(); // NPE wenn ohne swingset2
-        addCheckBoxes(); // NPE wenn ohne swingset2
+        addRadioButtons();
+        addCheckBoxes();
         currentControls = buttons;
     }
 
@@ -128,22 +125,23 @@ public class ButtonDemo extends DemoModule {
                                                           TitledBorder.LEFT, TitledBorder.TOP), border5));
 
         button = new JButton(getString("ButtonDemo.button1"));
-//        button.setMargin(new Insets(0,0,0,0));
-        buttons.add(p2.add(button));
+        // wg. https://github.com/homebeaver/SwingSet/issues/18 :
+//        button = new JButton("<html><font size=2>One</font></html>");
+        p2.add(button);
+        buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
 
-        buttons.add(p2.add(new JButton(getString("ButtonDemo.button2"))));
+        button = new JButton(getString("ButtonDemo.button2"));
+        p2.add(button);
+        buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
-
+        
         String buttonText = getString("ButtonDemo.button3");
+        // wg. https://github.com/homebeaver/SwingSet/issues/18 :
+//        buttonText = "<html><font size=2 color=red><bold>Three!</font></html>";
         button = new JButton(buttonText);
-//        button.setMargin(new Insets(0,0,0,0));
-//        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        LOG.info("button.Text="+buttonText + " .UI:"+button.getUI());
-//        MetalButtonUI mbu = (MetalButtonUI)button.getUI();
-//        mbu.update(getGraphics(), verticalPane);
-//        mbu.set
-        buttons.add(p2.add(button));
+        p2.add(button);
+        buttons.add(button);
 
         // Image Buttons
         verticalPane.add(Box.createRigidArea(VGAP30));
@@ -175,12 +173,12 @@ public class ButtonDemo extends DemoModule {
         
 //        String description = "green - yellow - red";
         
-        button = new JButton("green", green);
+        button = new JButton("<html>green<p>red when pressed</html>", green);
         button.setName("green"); // used in listener
         button.setPressedIcon(red);
         button.setRolloverIcon(yellow);
         button.setDisabledIcon(outoforder);
-        button.setMargin(new Insets(0,0,0,0));
+//        button.setMargin(new Insets(0,0,0,0));
         pane.add(button);
         buttons.add(button);
         pane.add(Box.createRigidArea(HGAP10));
@@ -200,11 +198,12 @@ public class ButtonDemo extends DemoModule {
         button.setMargin(new Insets(0,0,0,0));
         JButton b = button;
         b.addMouseListener(new MouseAdapter() {
-        	Icon old = null;
+        	@SuppressWarnings("unused")
+			Icon old = null;
         	Icon rem = null;
         	// (pressed and released)
             public void mouseClicked(MouseEvent e) {
-//            	LOG.info("Icon:"+b.getIcon());
+            	LOG.info("Icon:"+b.getIcon());
             	if(b.getIcon()==outoforder) {
             		// ready
                 	old = b.getIcon();
@@ -396,13 +395,19 @@ public class ButtonDemo extends DemoModule {
                         TitledBorder.LEFT, TitledBorder.TOP), border5)
         );
 
-        checkboxes.add(p2.add(new JCheckBox(getString("ButtonDemo.check1"))));
+        check = new JCheckBox(getString("ButtonDemo.check1"));
+        checkboxes.add(check);
+        p2.add(check);
         p2.add(Box.createRigidArea(HGAP10));
 
-        checkboxes.add(p2.add(new JCheckBox(getString("ButtonDemo.check2"))));
+        check = new JCheckBox(getString("ButtonDemo.check2"));
+        checkboxes.add(check);
+        p2.add(check);
         p2.add(Box.createRigidArea(HGAP10));
 
-        checkboxes.add(p2.add(new JCheckBox(getString("ButtonDemo.check3"))));
+        check = new JCheckBox(getString("ButtonDemo.check3"));
+        checkboxes.add(check);
+        p2.add(check);
 
         // Image Radio Buttons
         p1.add(Box.createRigidArea(VGAP30));
@@ -470,7 +475,8 @@ public class ButtonDemo extends DemoModule {
      * @see DirectionPanel
      */
     public JPanel createControls() {
-        JPanel controls = new JPanel() {
+        @SuppressWarnings("serial")
+		JPanel controls = new JPanel() {
             public Dimension getMaximumSize() {
                 return new Dimension(300, super.getMaximumSize().height);
             }
@@ -601,12 +607,13 @@ public class ButtonDemo extends DemoModule {
         JRadioButton defaultPad = new JRadioButton(getString("ButtonDemo.default"));
         defaultPad.setToolTipText(getString("ButtonDemo.default_tooltip"));
         defaultPad.setMnemonic(getMnemonic("ButtonDemo.default_mnemonic"));
-//        defaultPad.addItemListener(buttonPadListener);
         defaultPad.addItemListener(e -> {
         	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == defaultPad
         	if(rb.isSelected()) {
                 AbstractButton b;
+                LOG.config("defaultPad currentControls.size()="+currentControls.size());
                 for(int i = 0; i < currentControls.size(); i++) {
+//                    LOG.info("i="+i + "currentControl:"+currentControls.elementAt(i));
                     b = (AbstractButton) currentControls.elementAt(i);
                     b.setMargin(null);
                     b.invalidate();
@@ -620,11 +627,11 @@ public class ButtonDemo extends DemoModule {
         JRadioButton zeroPad = new JRadioButton(getString("ButtonDemo.zero"));
         zeroPad.setActionCommand("ZeroPad");
         zeroPad.setToolTipText(getString("ButtonDemo.zero_tooltip"));
-//        zeroPad.addItemListener(buttonPadListener);
         zeroPad.addItemListener(e -> {
         	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == zeroPad
         	if(rb.isSelected()) {
                 AbstractButton b;
+                LOG.info("zeroPad currentControls.size()="+currentControls.size());
                 for(int i = 0; i < currentControls.size(); i++) {
                     b = (AbstractButton) currentControls.elementAt(i);
                     b.setMargin(insets0);
@@ -659,7 +666,7 @@ public class ButtonDemo extends DemoModule {
         return controls;
     }
 
-    public Vector getCurrentControls() {
+    public Vector<AbstractButton> getCurrentControls() {
         return currentControls;
     }
 }
