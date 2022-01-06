@@ -27,9 +27,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.SingleSelectionModel;
+import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.BorderUIResource;
+
+import swingset.borderpatch.BasicMarginBorder;
+import swingset.borderpatch.MetalButtonBorder;
 
 /**
  * JButton, JRadioButton, (JToggleButton), JCheckBox Demos
@@ -127,12 +132,54 @@ public class ButtonDemo extends DemoModule {
         String buttonText1 = getString("ButtonDemo.button1");
         button = new JButton(buttonText1);
         // wg. https://github.com/homebeaver/SwingSet/issues/18 :
-//        LOG.info("button.Text="+buttonText1 + " .UI:"+button.getUI());
+//        -----------------------
+        LOG.info("button.Text="+buttonText1 + " .UI:"+button.getUI());
+//        MetalButtonUI mbu = (MetalButtonUI)button.getUI();
+//        button.setUI(new MyMetalButtonUI(mbu));
+//        button.addMouseListener(new MouseAdapter() {
+//        	public void mousePressed(MouseEvent e) {
+//        		LOG.info("mousePressed e:"+e.getSource());
+//        	}
+//        	public void mouseEntered(MouseEvent e) {
+//        		LOG.info("------------------mouseEntered e:"+e.getSource());
+//        		JButton b = (JButton)e.getSource();
+//        		MetalButtonUI mbu = (MetalButtonUI)button.getUI();
+//        		Dimension size = b.getSize();
+//        		if(!b.isBorderPainted() || b.isContentAreaFilled()) {
+//               		LOG.info("size:"+size + ", BorderPainted="+b.isBorderPainted() + " "+b.getBorder()
+//               			+ ", ContentAreaFilled="+b.isContentAreaFilled());
+//               		Border bd = b.getBorder();
+//               		if(bd instanceof BorderUIResource.CompoundBorderUIResource) {
+//               			BorderUIResource.CompoundBorderUIResource cb = (BorderUIResource.CompoundBorderUIResource)bd;
+//               			LOG.info("InsideBorder:"+cb.getInsideBorder() + ", OutsideBorder:"+cb.getOutsideBorder());
+////               			MyMetalButtonBorder mmb = new MyMetalButtonBorder(); // damit border ersetzen:
+//               			b.setBorder(new CompoundBorder(new MyMetalButtonBorder(), cb.getInsideBorder()));
+////: InsideBorder:javax.swing.plaf.basic.BasicBorders$MarginBorder@1424f8c4, OutsideBorder:javax.swing.plaf.metal.MetalBorders$ButtonBorder@5644cdb9
+//               			//b.paint(getGraphics());
+//               			b.repaint(getBounds());
+//            		}
+////               		EmptyBorder(int top, int left, int bottom, int right)
+////               		b.setBorder(new EmptyBorder(0,0,0,0));
+////               		b.setBorderPainted(true);
+//        		}
+//       	}   	
+//        });
+//        button = new JButton("<html><font size=2>One</font></html>");
         p2.add(button);
         buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
 
         button = new JButton(getString("ButtonDemo.button2"));
+//        ---------------------
+        // javax.swing.plaf.basic.BasicBorders$MarginBorder
+        Border bd = button.getBorder();
+        if(bd instanceof BorderUIResource.CompoundBorderUIResource) {
+        	BorderUIResource.CompoundBorderUIResource cb = (BorderUIResource.CompoundBorderUIResource)bd;
+        	LOG.info("InsideBorder:"+cb.getInsideBorder() + ", OutsideBorder:"+cb.getOutsideBorder());
+        	BasicMarginBorder mmb = new BasicMarginBorder();
+        	button.setBorder(new CompoundBorder(new MetalButtonBorder(mmb), mmb));
+        }
+//        ---------------------
         p2.add(button);
         buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
@@ -179,7 +226,13 @@ public class ButtonDemo extends DemoModule {
         button.setPressedIcon(red);
         button.setRolloverIcon(yellow);
         button.setDisabledIcon(outoforder);
-//        button.setMargin(new Insets(0,0,0,0));
+        Border bd = button.getBorder();
+        if(bd instanceof BorderUIResource.CompoundBorderUIResource) {
+        	BorderUIResource.CompoundBorderUIResource cb = (BorderUIResource.CompoundBorderUIResource)bd;
+        	LOG.info("InsideBorder:"+cb.getInsideBorder() + ", OutsideBorder:"+cb.getOutsideBorder());
+        	BasicMarginBorder mmb = new BasicMarginBorder();
+        	button.setBorder(new CompoundBorder(new MetalButtonBorder(mmb), mmb));
+        }
         pane.add(button);
         buttons.add(button);
         pane.add(Box.createRigidArea(HGAP10));
