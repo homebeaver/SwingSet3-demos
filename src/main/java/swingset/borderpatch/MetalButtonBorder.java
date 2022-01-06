@@ -2,7 +2,6 @@ package swingset.borderpatch;
 
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Insets;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractButton;
@@ -15,11 +14,10 @@ import javax.swing.plaf.metal.MetalBorders;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
 
-//import sun.swing.StringUIClientPropertyKey; // not accessible
-
 @SuppressWarnings("serial") // Superclass is not serializable across versions
 public class MetalButtonBorder extends MetalBorders.ButtonBorder {
 
+	// copy of sun.swing.StringUIClientPropertyKey; // not accessible
 	static class MyStringUIClientPropertyKey implements UIClientPropertyKey {
 
 	    private final String key;
@@ -33,6 +31,7 @@ public class MetalButtonBorder extends MetalBorders.ButtonBorder {
 	    }
 	}
 
+	// need this to implement paintOceanBorder method
     static Object NO_BUTTON_ROLLOVER =
             new MyStringUIClientPropertyKey("NoButtonRollover");
 
@@ -53,12 +52,8 @@ public class MetalButtonBorder extends MetalBorders.ButtonBorder {
         if (!(c instanceof AbstractButton)) {
             return;
         }
-//        if (MetalLookAndFeel.usingOcean()) { // not visible
-/*
-public static MetalTheme getCurrentTheme()
-public class OceanTheme extends DefaultMetalTheme
-return (getCurrentTheme() instanceof OceanTheme);
- */
+
+//      if (MetalLookAndFeel.usingOcean()) { // is not visible, but equivalent to:
         if(MetalLookAndFeel.getCurrentTheme() instanceof OceanTheme) {
             paintOceanBorder(c, g, x, y, w, h);
             return;
@@ -68,13 +63,13 @@ return (getCurrentTheme() instanceof OceanTheme);
         return;
     }
 
-    private void paintOceanBorder(Component c, Graphics g, int x, int y,
-                                  int w, int h) {
+    // copied from private super method to activate Patch
+    private void paintOceanBorder(Component c, Graphics g, int x, int y, int w, int h) {
         AbstractButton button = (AbstractButton)c;
         ButtonModel model = ((AbstractButton)c).getModel();
 
         g.translate(x, y);
-//        if (MetalUtils.isToolBarButton(button)) {
+//      if (MetalUtils.isToolBarButton(button)) { // javax.swing.plaf.metal.MetalUtils is not visible, but equivalent to:
         if (button.getParent() instanceof JToolBar) {
             if (model.isEnabled()) {
                 if (model.isPressed()) {
@@ -108,10 +103,8 @@ return (getCurrentTheme() instanceof OceanTheme);
         }
         else if (model.isEnabled()) {
             boolean pressed = model.isPressed();
-            boolean armed = model.isArmed();
+//            boolean armed = model.isArmed();
 
-//            LOG.warning("model.isEnabled, pressed="+pressed+", armed="+armed);
-            
             if ((c instanceof JButton) && ((JButton)c).isDefaultButton()) {
 //            	LOG.info("isDefaultButton");
                 g.setColor(MetalLookAndFeel.getControlDarkShadow());
@@ -125,8 +118,7 @@ return (getCurrentTheme() instanceof OceanTheme);
                 g.fillRect(w - 1, 1, 1, h - 1);
                 g.fillRect(1, h - 1, w - 2, 1);
             }
-            else if (model.isRollover() && button.getClientProperty(
-                           NO_BUTTON_ROLLOVER) == null) {
+            else if (model.isRollover() && button.getClientProperty(NO_BUTTON_ROLLOVER) == null) {
 //            	LOG.info("isRollover");
                 g.setColor(MetalLookAndFeel.getPrimaryControl());
                 g.drawRect(0, 0, w - 1, h - 1);
@@ -138,7 +130,7 @@ return (getCurrentTheme() instanceof OceanTheme);
 //            	LOG.info(" else ...");
                 g.setColor(MetalLookAndFeel.getControlDarkShadow());
                 g.drawRect(0, 0, w - 1, h - 1);
-                // EUG: aktivate Patch
+                // EUG: activate Patch
                 if(insideBorder!=null) insideBorder.setBorderInsetsPatch(true);
             }
         }
@@ -149,12 +141,6 @@ return (getCurrentTheme() instanceof OceanTheme);
                 g.drawRect(1, 1, w - 3, h - 3);
             }
         }
-    }
-
-    public Insets getBorderInsets(Component c, Insets newInsets) {
-//        newInsets.set(3, 3, 3, 3);
-//        return newInsets;
-    	return super.getBorderInsets(c, newInsets);
     }
 
 }
