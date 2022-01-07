@@ -11,7 +11,7 @@ import javax.swing.plaf.basic.BasicBorders;
 public class BasicMarginBorder extends BasicBorders.MarginBorder {
 
 	private static final Logger LOG = Logger.getLogger(BasicMarginBorder.class.getName());
-
+	private static Insets zeroInsets = new Insets(0,0,0,0);
 	private boolean mod = false;
 
 	public BasicMarginBorder() {
@@ -27,11 +27,11 @@ public class BasicMarginBorder extends BasicBorders.MarginBorder {
         if (c instanceof AbstractButton) {
             AbstractButton b = (AbstractButton)c;
             Insets margin = b.getMargin();
-            if(mod) {
-                LOG.config("margin:"+margin + " - patched margin.bottom!");
+            if(mod || zeroInsets.hashCode()==insets.hashCode()) {
+                LOG.config("margin:"+margin + " - patched margin.bottom: "+margin.bottom + " to 0");
                 insets.top = margin != null? margin.top : 0;
                 insets.left = margin != null? margin.left : 0;
-                insets.bottom = margin != null? margin.bottom -1 : 0;
+                insets.bottom = 0;
                 insets.right = margin != null? margin.right : 0;
                 return insets;
             }
