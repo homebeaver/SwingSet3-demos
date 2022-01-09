@@ -119,7 +119,7 @@ public class ButtonDemo extends DemoModule {
         buttonPanel.setBorder(border5);
 
         JPanel verticalPane = createVerticalPanel(true);
-        verticalPane.setAlignmentY(TOP_ALIGNMENT);
+        verticalPane.setAlignmentY(Component.TOP_ALIGNMENT);
         buttonPanel.add(verticalPane);
 
         // Text Buttons
@@ -314,7 +314,7 @@ public class ButtonDemo extends DemoModule {
         radioButtonPanel.setBorder(border5);
 
         JPanel p1 = createVerticalPanel(true);
-        p1.setAlignmentY(TOP_ALIGNMENT);
+        p1.setAlignmentY(Component.TOP_ALIGNMENT);
         radioButtonPanel.add(p1);
 
         // Text Radio Buttons
@@ -406,7 +406,7 @@ public class ButtonDemo extends DemoModule {
         checkboxPanel.setBorder(border5);
 
         JPanel p1 = createVerticalPanel(true);
-        p1.setAlignmentY(TOP_ALIGNMENT);
+        p1.setAlignmentY(Component.TOP_ALIGNMENT);
         checkboxPanel.add(p1);
 
         // Text Radio Buttons
@@ -505,16 +505,16 @@ public class ButtonDemo extends DemoModule {
             }
         };
         controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-        controls.setAlignmentY(TOP_ALIGNMENT);
-        controls.setAlignmentX(LEFT_ALIGNMENT);
+        controls.setAlignmentY(Component.TOP_ALIGNMENT);
+        controls.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JPanel buttonControls = createHorizontalPanel(true);
-        buttonControls.setAlignmentY(TOP_ALIGNMENT);
-        buttonControls.setAlignmentX(LEFT_ALIGNMENT);
+        buttonControls.setAlignmentY(Component.TOP_ALIGNMENT);
+        buttonControls.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JPanel leftColumn = createVerticalPanel(false);
-        leftColumn.setAlignmentX(LEFT_ALIGNMENT);
-        leftColumn.setAlignmentY(TOP_ALIGNMENT);
+        leftColumn.setAlignmentY(Component.TOP_ALIGNMENT);
+        leftColumn.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JPanel rightColumn = new LayoutControlPanel(this);
 

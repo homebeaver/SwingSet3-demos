@@ -37,7 +37,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Panel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,14 +68,14 @@ import javax.swing.border.SoftBevelBorder;
  * @author Jeff Dinkins
  * @author EUG https://github.com/homebeaver (removed usage of JApplet, Applet, now subclass Panel)
  */
-public class DemoModule extends Panel implements Accessible, RootPaneContainer {
+public class DemoModule extends JPanel implements Accessible, RootPaneContainer {
 
 	private static final long serialVersionUID = 5010903388735156025L;
     private static final Logger LOG = Logger.getLogger(DemoModule.class.getName());
 	
 	// The preferred size of the demo
-    private int PREFERRED_WIDTH = 680;
-    private int PREFERRED_HEIGHT = 600;
+    private static int PREFERRED_WIDTH = 680;
+    private static int PREFERRED_HEIGHT = 600;
 
     Border loweredBorder = new CompoundBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED),
                                               new EmptyBorder(5,5,5,5));
@@ -228,7 +227,8 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
     };
 
     public void mainImpl() {
-        JFrame frame = new JFrame(getName());
+    	JFrame frame = swingset.getFrame();
+    	frame.setName(getName());
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(getDemoPanel(), BorderLayout.CENTER);
         getDemoPanel().setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
@@ -239,8 +239,8 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
     public JPanel createHorizontalPanel(boolean threeD) {
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-        p.setAlignmentY(TOP_ALIGNMENT);
-        p.setAlignmentX(LEFT_ALIGNMENT);
+        p.setAlignmentY(Component.TOP_ALIGNMENT);
+        p.setAlignmentX(Component.LEFT_ALIGNMENT);
         if(threeD) {
             p.setBorder(loweredBorder);
         }
@@ -250,8 +250,8 @@ public class DemoModule extends Panel implements Accessible, RootPaneContainer {
     public JPanel createVerticalPanel(boolean threeD) {
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.setAlignmentY(TOP_ALIGNMENT);
-        p.setAlignmentX(LEFT_ALIGNMENT);
+        p.setAlignmentY(Component.TOP_ALIGNMENT);
+        p.setAlignmentX(Component.LEFT_ALIGNMENT);
         if(threeD) {
             p.setBorder(loweredBorder);
         }
