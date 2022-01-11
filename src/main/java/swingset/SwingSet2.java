@@ -52,6 +52,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -1013,10 +1014,12 @@ via PopupMenu shift-F10 kann ich alle drei aktivieren.
         try {
             value = TextAndMnemonicUtils.getTextAndMnemonicString(key);
         } catch (MissingResourceException e) {
-            System.out.println("java.util.MissingResourceException: Couldn't find value for: " + key);
+        	LOG.warning(e.toString());
+        	// better then
+//            System.out.println("java.util.MissingResourceException: Couldn't find value for: " + key);
         }
         if(value == null) {
-            value = "Could not find resource: " + key + "  ";
+            value = ">Could not find resource: " + key + "  ";
         }
         return value;
     }
@@ -1052,6 +1055,8 @@ via PopupMenu shift-F10 kann ich alle drei aktivieren.
      */
     public ImageIcon createImageIcon(String filename, String description) {
     	String path = "/swingset/images/" + filename; 
+    	InputStream is = StaticUtilities.getResourceAsStream(this.getClass(), path);
+    	if(is==null) return null;
         return new ImageIcon(getClass().getResource(path));
     }
 

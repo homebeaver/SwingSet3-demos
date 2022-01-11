@@ -455,6 +455,8 @@ public class TableDemo extends DemoModule {
         ImageIcon cantaloupe   = createImageIcon("ImageClub/food/cantaloupe.jpg", getString("TableDemo.cantaloupe"));
         ImageIcon carrot       = createImageIcon("ImageClub/food/carrot.jpg",     getString("TableDemo.carrot"));
         ImageIcon corn         = createImageIcon("ImageClub/food/corn.jpg",       getString("TableDemo.corn"));
+// intentionally added : MissingResource: Couldn't find value for: TableDemo.donut and image
+        ImageIcon donut        = createImageIcon("ImageClub/food/donut.jpg",      getString("TableDemo.donut"));
         ImageIcon grapes       = createImageIcon("ImageClub/food/grapes.jpg",     getString("TableDemo.grapes"));
         ImageIcon grapefruit   = createImageIcon("ImageClub/food/grapefruit.jpg", getString("TableDemo.grapefruit"));
         ImageIcon kiwi         = createImageIcon("ImageClub/food/kiwi.jpg",       getString("TableDemo.kiwi"));
@@ -483,6 +485,8 @@ public class TableDemo extends DemoModule {
         NamedColor gray        = new NamedColor(Color.gray, getString("TableDemo.gray"));
         NamedColor green       = new NamedColor(Color.green, getString("TableDemo.green"));
         NamedColor orange      = new NamedColor(new Color(255, 165, 0), getString("TableDemo.orange"));
+// intentionally added : MissingResource: Couldn't find value for: TableDemo.pink
+        NamedColor pink        = new NamedColor(Color.PINK, getString("TableDemo.pink"));
         NamedColor purple      = new NamedColor(new Color(160, 32, 240),  getString("TableDemo.purple"));
         NamedColor red         = new NamedColor(Color.red, getString("TableDemo.red"));
         NamedColor rustred     = new NamedColor(Color.red.darker(), getString("TableDemo.rustred"));
@@ -493,6 +497,7 @@ public class TableDemo extends DemoModule {
         NamedColor yellow      = new NamedColor(Color.yellow, getString("TableDemo.yellow"));
 
         // Create the dummy data (a few rows of names)
+        //  "First Name", "Last Name", "Favorite Color", Movie from props, "image", "No.", "Vegetarian" 
         final Object[][] data = {
           {"Mike", "Albers",      green,       getString("TableDemo.brazil"), Double.valueOf(44.0), strawberry},
           {"Mark", "Andrews",     blue,        getString("TableDemo.curse"), Double.valueOf(3), grapes},
@@ -506,7 +511,8 @@ public class TableDemo extends DemoModule {
           {"Amy", "Fowler",       violet,      getString("TableDemo.reservoir"), Double.valueOf(3), raspberry},
           {"Hania", "Gajewska",   purple,      getString("TableDemo.jules"), Double.valueOf(5), raspberry},
           {"David", "Geary",      blue,        getString("TableDemo.pulpfiction"), Double.valueOf(3), watermelon},
-//        {"James", "Gosling",    pink,        getString("TableDemo.tennis"), Double.valueOf(21), donut},
+// intentionally aktivated : MissingResource: Couldn't find value for: TableDemo.tennis, TableDemo.donut, ...
+        {"James", "Gosling",    pink,        getString("TableDemo.tennis"), Double.valueOf(21), donut},
           {"Eric", "Hawkes",      blue,        getString("TableDemo.bladerunner"), Double.valueOf(.693), pickle},
           {"Shannon", "Hickey",   green,       getString("TableDemo.shawshank"), Double.valueOf(2), grapes},
           {"Earl", "Johnson",     green,       getString("TableDemo.pulpfiction"), Double.valueOf(8), carrot},
