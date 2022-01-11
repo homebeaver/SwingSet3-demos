@@ -27,10 +27,13 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.SingleSelectionModel;
+import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.BorderUIResource;
+import javax.swing.plaf.basic.BasicBorders;
+import javax.swing.plaf.metal.MetalBorders;
 
 import swingset.borderpatch.BasicMarginBorder;
 import swingset.borderpatch.MetalButtonBorder;
@@ -113,6 +116,25 @@ public class ButtonDemo extends DemoModule {
         currentControls = buttons;
     }
 
+    // wg. https://github.com/homebeaver/SwingSet/issues/18 :
+    private Border patchedBorder(JButton button) {
+    	Border buttonBorder = button.getBorder();
+        if(buttonBorder instanceof BorderUIResource.CompoundBorderUIResource) {
+        	CompoundBorder cb = (CompoundBorder) buttonBorder; // cast OK, denn CompoundBorderUIResource subclass von CompoundBorder
+        	Border ob = cb.getOutsideBorder();
+        	Border ib = cb.getInsideBorder();
+        	LOG.info("plaf.metal CompoundBorder Button.border : "+cb + " "+ob + " "+ib);
+        	if(ob instanceof MetalBorders.ButtonBorder && ib instanceof BasicBorders.MarginBorder) {
+        		ob = new MetalButtonBorder();
+        		ib = new BasicMarginBorder();
+        		((MetalButtonBorder)ob).setInsideBorder(ib);
+            	return new BorderUIResource.CompoundBorderUIResource(ob, ib);
+        	}
+        	return cb;
+        }
+        return buttonBorder;
+    }
+
     public void addButtons() {
         tab.addTab(getString("ButtonDemo.buttons"), buttonPanel);
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -131,29 +153,20 @@ public class ButtonDemo extends DemoModule {
         String buttonText1 = getString("ButtonDemo.button1");
         button = new JButton(buttonText1);
         // wg. https://github.com/homebeaver/SwingSet/issues/18 :
-        if(button.getBorder() instanceof BorderUIResource.CompoundBorderUIResource) {
-        	BasicMarginBorder bmb = new BasicMarginBorder();
-        	button.setBorder(new CompoundBorder(new MetalButtonBorder(bmb), bmb));
-        }
+        button.setBorder(patchedBorder(button));
         p2.add(button);
         buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
 
         button = new JButton(getString("ButtonDemo.button2"));
-        if(button.getBorder() instanceof BorderUIResource.CompoundBorderUIResource) {
-        	BasicMarginBorder bmb = new BasicMarginBorder();
-        	button.setBorder(new CompoundBorder(new MetalButtonBorder(bmb), bmb));
-        }
+        button.setBorder(patchedBorder(button));
         p2.add(button);
         buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
         
         String buttonText3 = getString("ButtonDemo.button3");
         button = new JButton(buttonText3);
-        if(button.getBorder() instanceof BorderUIResource.CompoundBorderUIResource) {
-        	BasicMarginBorder bmb = new BasicMarginBorder();
-        	button.setBorder(new CompoundBorder(new MetalButtonBorder(bmb), bmb));
-        }
+        button.setBorder(patchedBorder(button));
         p2.add(button);
         buttons.add(button);
 
@@ -192,10 +205,7 @@ public class ButtonDemo extends DemoModule {
         button.setPressedIcon(red);
         button.setRolloverIcon(yellow);
         button.setDisabledIcon(outoforder);
-        if(button.getBorder() instanceof BorderUIResource.CompoundBorderUIResource) {
-        	BasicMarginBorder bmb = new BasicMarginBorder();
-        	button.setBorder(new CompoundBorder(new MetalButtonBorder(bmb), bmb));
-        }
+        button.setBorder(patchedBorder(button));
         pane.add(button);
         buttons.add(button);
         pane.add(Box.createRigidArea(HGAP10));
@@ -205,20 +215,14 @@ public class ButtonDemo extends DemoModule {
         button.setPressedIcon(green);
         button.setRolloverIcon(yellow);
         button.setDisabledIcon(outoforder);
-        if(button.getBorder() instanceof BorderUIResource.CompoundBorderUIResource) {
-        	BasicMarginBorder bmb = new BasicMarginBorder();
-        	button.setBorder(new CompoundBorder(new MetalButtonBorder(bmb), bmb));
-        }
+        button.setBorder(patchedBorder(button));
         pane.add(button);
         buttons.add(button);
         pane.add(Box.createRigidArea(HGAP10));
         
         button = new JButton("switching", green);
         button.setName("flipflop"); // used in listener
-        if(button.getBorder() instanceof BorderUIResource.CompoundBorderUIResource) {
-        	BasicMarginBorder bmb = new BasicMarginBorder();
-        	button.setBorder(new CompoundBorder(new MetalButtonBorder(bmb), bmb));
-        }
+        button.setBorder(patchedBorder(button));
         JButton b = button;
         b.addMouseListener(new MouseAdapter() {
         	@SuppressWarnings("unused")

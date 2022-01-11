@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.UIClientPropertyKey;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.plaf.metal.MetalBorders;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
@@ -17,7 +18,7 @@ import javax.swing.plaf.metal.OceanTheme;
 @SuppressWarnings("serial") // Superclass is not serializable across versions
 public class MetalButtonBorder extends MetalBorders.ButtonBorder {
 
-	// copy of sun.swing.StringUIClientPropertyKey; // not accessible
+	// copy of sun.swing.StringUIClientPropertyKey; // wg. not accessible
 	static class MyStringUIClientPropertyKey implements UIClientPropertyKey {
 
 	    private final String key;
@@ -39,15 +40,14 @@ public class MetalButtonBorder extends MetalBorders.ButtonBorder {
 
     public MetalButtonBorder() {
     	super();
-    }
-    public MetalButtonBorder(BasicMarginBorder myMarginBorder) {
-    	super();
-    	LOG.config("----------------- ctor ---------------------");
-    	insideBorder = myMarginBorder;
+		LOG.fine("ctor");
     }
 
     BasicMarginBorder insideBorder = null;
-    
+    public void setInsideBorder(Border border) {
+    	if(border instanceof BasicMarginBorder) insideBorder = (BasicMarginBorder)border;
+    }
+   
     public void paintBorder(Component c, Graphics g, int x, int y, int w, int h) {
         if (!(c instanceof AbstractButton)) {
             return;
@@ -55,7 +55,7 @@ public class MetalButtonBorder extends MetalBorders.ButtonBorder {
 
 //      if (MetalLookAndFeel.usingOcean()) { // is not visible, but equivalent to:
         if(MetalLookAndFeel.getCurrentTheme() instanceof OceanTheme) {
-            paintOceanBorder(c, g, x, y, w, h);
+            paintOceanBorder((AbstractButton)c, g, x, y, w, h);
             return;
         }
         
@@ -64,9 +64,8 @@ public class MetalButtonBorder extends MetalBorders.ButtonBorder {
     }
 
     // copied from private super method to activate Patch
-    private void paintOceanBorder(Component c, Graphics g, int x, int y, int w, int h) {
-        AbstractButton button = (AbstractButton)c;
-        ButtonModel model = ((AbstractButton)c).getModel();
+    private void paintOceanBorder(AbstractButton button, Graphics g, int x, int y, int w, int h) {
+        ButtonModel model = button.getModel();
 
         g.translate(x, y);
 //      if (MetalUtils.isToolBarButton(button)) { // javax.swing.plaf.metal.MetalUtils is not visible, but equivalent to:
@@ -105,7 +104,7 @@ public class MetalButtonBorder extends MetalBorders.ButtonBorder {
             boolean pressed = model.isPressed();
 //            boolean armed = model.isArmed();
 
-            if ((c instanceof JButton) && ((JButton)c).isDefaultButton()) {
+            if ((button instanceof JButton) && ((JButton)button).isDefaultButton()) {
 //            	LOG.info("isDefaultButton");
                 g.setColor(MetalLookAndFeel.getControlDarkShadow());
                 g.drawRect(0, 0, w - 1, h - 1);
@@ -131,13 +130,13 @@ public class MetalButtonBorder extends MetalBorders.ButtonBorder {
                 g.setColor(MetalLookAndFeel.getControlDarkShadow());
                 g.drawRect(0, 0, w - 1, h - 1);
                 // EUG: activate Patch
-                if(insideBorder!=null) insideBorder.setBorderInsetsPatch(true);
+                if(insideBorder!=null) insideBorder.setOutsideBorder(this);
             }
         }
         else {
             g.setColor(MetalLookAndFeel.getInactiveControlTextColor());
             g.drawRect(0, 0, w - 1, h - 1);
-            if ((c instanceof JButton) && ((JButton)c).isDefaultButton()) {
+            if ((button instanceof JButton) && ((JButton)button).isDefaultButton()) {
                 g.drawRect(1, 1, w - 3, h - 3);
             }
         }
