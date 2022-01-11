@@ -109,6 +109,12 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
         this(swingset, null, null);
     }
 
+    /**
+     * ctor
+     * @param swingset
+     * @param resourceName
+     * @param iconPath used to represent this demo inside the SwingSet2 tool bar
+     */
     public DemoModule(SwingSet2 swingset, String resourceName, String iconPath) {
         UIManager.put("swing.boldMetal", Boolean.FALSE);
         panel = new JPanel();
