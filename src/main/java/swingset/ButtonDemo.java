@@ -123,7 +123,8 @@ public class ButtonDemo extends DemoModule {
         	CompoundBorder cb = (CompoundBorder) buttonBorder; // cast OK, denn CompoundBorderUIResource subclass von CompoundBorder
         	Border ob = cb.getOutsideBorder();
         	Border ib = cb.getInsideBorder();
-        	LOG.info("plaf.metal CompoundBorder Button.border : "+cb + " "+ob + " "+ib);
+        	LOG.info("plaf.metal CompoundBorder Button.border : "+cb.getClass().getSimpleName() 
+        			+ " "+ob.getClass().getSimpleName() + " "+ib.getClass().getSimpleName());
         	if(ob instanceof MetalBorders.ButtonBorder && ib instanceof BasicBorders.MarginBorder) {
         		ob = new MetalButtonBorder();
         		ib = new BasicMarginBorder();
@@ -550,6 +551,7 @@ public class ButtonDemo extends DemoModule {
 				b = (AbstractButton) currentControls.elementAt(i);
 				b.setBorderPainted(borderPainted);
 				b.invalidate();
+				b.getParent().invalidate();
 			}
         });
         leftColumn.add(bordered);
