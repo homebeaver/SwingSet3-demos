@@ -32,8 +32,13 @@ public class StaticUtilities {
 			is = getFileAsStream(dir, resourceName);
 			if(is!=null) return is;
 			
+			// try default eclipse maven main resource folder ...
+			String src = "src/main/resources/";
+			is = getFileAsStream(src+dir, resourceName);
+			if(is!=null) return is;
+
 			// try default eclipse test folder ...
-			String src = "src/test/resources/";
+			src = "src/test/resources/";
 			is = getFileAsStream(src+dir, resourceName);
 			if(is!=null) return is;
 
