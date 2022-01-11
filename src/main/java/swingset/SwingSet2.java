@@ -118,7 +118,7 @@ public class SwingSet2 extends JPanel {
 
 	// simple lass name (without package name)
     String[] demos = {
-//      "InternalFrameDemo", see preloadFirstDemo()
+      "InternalFrameDemo",
       "ButtonDemo",
       "ColorChooserDemo",
       "ComboBoxDemo",
@@ -794,7 +794,7 @@ public class SwingSet2 extends JPanel {
      * so that we can get SwingSet2 up and available to the user quickly.
      */
     public void preloadFirstDemo() {
-        DemoModule demo = addDemo(new InternalFrameDemo(this));
+        DemoModule demo = addDemo(new IntroDemo(this));
         setCurrentDemo(demo);
     }
 
