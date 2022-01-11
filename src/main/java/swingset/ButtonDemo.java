@@ -124,7 +124,7 @@ public class ButtonDemo extends DemoModule {
         	Border ob = cb.getOutsideBorder();
         	Border ib = cb.getInsideBorder();
         	LOG.info("plaf.metal CompoundBorder Button.border : "+cb.getClass().getSimpleName() 
-        			+ " "+ob.getClass().getSimpleName() + " "+ib.getClass().getSimpleName());
+        			+ " "+ob.getClass().getSimpleName() + " "+ib.getClass().getSimpleName() + " for Button \""+button.getText());
         	if(ob instanceof MetalBorders.ButtonBorder && ib instanceof BasicBorders.MarginBorder) {
         		ob = new MetalButtonBorder();
         		ib = new BasicMarginBorder();

@@ -38,9 +38,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
@@ -164,38 +161,20 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
     }
 
     public void loadSourceCode() {
-    	LOG.config("ResourceName:"+getResourceName());
-        if(getResourceName() != null) {
-        	String packagename = "swingset/";
-            String filename = packagename + getResourceName() + ".java";
-        	String dir = "src/main/java/"; // m2e folder (ohne package)  
-            File f = new File(dir+filename);
-            InputStream is = null;
-        	if(f.canRead()) {
-            	LOG.info("AbsolutePath:"+f.getAbsolutePath());
-        	} else {
-        		LOG.warning("cannot read "+f + " >>> try default eclipse source folder ...");
-        		dir = "src/"; // this is default eclipse folder
-        		f = new File(dir+filename);
-        		if(!f.canRead()) {
-            		f = new File(getResourceName() + ".java"); 
-            		// get resource from jar:
-            		java.net.URL url = getClass().getResource(getResourceName() + ".java");
-            		try {
-            			is = url.openStream();
-						LOG.warning("cannot find eclipse source "+filename + " / " + is);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-        		}
-        	}
+        if(getResourceName() == null) {
+        	LOG.warning("No resource to load");
+        } else {
+        	String resource = getResourceName() + ".java";
+        	InputStream is = StaticUtilities.getResourceAsStream(this.getClass(), resource);
+        	
             sourceCode = new String("<html><body bgcolor=\"#ffffff\"><pre>");
             InputStreamReader isr = null;
             CodeViewer cv = new CodeViewer();
 
             try {
-            	if(is==null) is = new FileInputStream(f);
-                isr = new InputStreamReader(is, "UTF-8");
+            	if(is!=null) { 
+                    isr = new InputStreamReader(is, "UTF-8");
+            	}
                 BufferedReader reader = new BufferedReader(isr); // not closed!
 
                 // Read one line at a time, htmlize using super-spiffy
@@ -207,7 +186,7 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
                 }
                 sourceCode += new String("</pre></body></html>");
             } catch (Exception ex) {
-                sourceCode = "Could not load file: " + filename;
+                sourceCode = "Could not load resource " + resource;
             } finally {
             	//isr.close();
             }
