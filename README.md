@@ -1,47 +1,27 @@
-SwingSet2 demonstrates some of the abilities of the Swing User Interface
-Toolkit by displaying many of the components in a single showcase application.
+In Summer 2005 [SwingSet2 demo](https://github.com/homebeaver/SwingSet2-demos/releases/tag/1.0.0) has been  released for [J2SE 5.0](https://en.wikipedia.org/wiki/Java_version_history#J2SE_5.0).
+
+This is a rewritten Version of SwingSet2 demos. There are 16 classes demonstrating 
+the abilities of the <a href="https://en.wikipedia.org/wiki/Swing_(Java)">Swing User Interface</a> 
+by displaying many of the components in a single showcase application. 
 Use it to try out different components and features provided by Swing.
 
+## TO RUN SwingSet2 demo
 
-==================================
-TO RUN SWINGSET2 AS AN APPLICATION
-==================================
+- download the [latest jar](https://github.com/homebeaver/SwingSet2-demos/releases/)
+- run
 
-  java -jar SwingSet2.jar
+```
+>java -jar swingset2-demo-1.2.0.jar
 
+```
 
-=============================
-TO RUN SWINGSET2 AS AN APPLET
-=============================
+The jar was
+- Created-By: Apache Maven 3.8.1
+- Build-Jdk: 17
 
-  appletviewer SwingSet2.html
+## TO MODIFY/BUILD
+ 
+The full source for the SwingSet2 demo can be found in the "src" subdirectory.
 
-=========================
-TO MODIFY/BUILD SWINGSET2
-=========================
-
-The full source for the SwingSet2 demo can be found in the "src"
-subdirectory. If you wish to play with the source code and try
-out your changes, you can compile and run in this "src" directory:
-
-  javac *.java
-  
-  java SwingSet2
-
-You may notice a difference when running SwingSet from your compiled source
-(versus running from the packaged JAR file), in that it won't show the
-splash screen. This is expected, as the splash screen is shown using the
-java.awt.SplashScreen support, which allows specifying a splash screen
-image as an attribute in the JAR's manifest file. If you'd like to see the
-splash screen with your own compiled version, you can package your classes
-into a JAR and specify the splash screen (as outlined in the java.awt.SplashScreen
-documentation) or you can specify the splash screen image on the command line:
-
-java -splash:resources/images/splash.png SwingSet2
-
-
-Note: These instructions assume that this installation's versions of the java,
-appletviewer, and javac commands are in your path.  If they aren't, then you should
-either specify the complete path to the commands or update your PATH environment
-variable as described in the installation instructions for the
-Java(TM) SE Development Kit.
+- build with maven
+- or m2e in eclipse IDE
