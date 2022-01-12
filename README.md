@@ -23,5 +23,7 @@ The jar was
  
 The full source for the SwingSet2 demo can be found in the "src" subdirectory.
 
+- clone the git repo
 - build with maven
 - or m2e in eclipse IDE
+- there is also an eclipse launcher
