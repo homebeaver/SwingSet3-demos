@@ -10,15 +10,15 @@
 -->
 	<!-- Implementation-Vendor-Id in jar META-INF/MANIFEST.MF: -->
     <groupId>de.klst.swingset.demos</groupId>
-    <artifactId>swingset2</artifactId>
+    <artifactId>swingset3</artifactId>
 
     <packaging>jar</packaging>
-    <version>1.2.0-SNAPSHOT</version>
-    <name>swingset2</name>
+    <version>1.6.8-SNAPSHOT</version>
+    <name>swingset3</name>
     <description>Demonstrating the abilities of the Swing UI Toolkit</description>
 
 	<!-- Implementation-URL in jar META-INF/MANIFEST.MF: -->
-    <url>https://github.com/homebeaver/SwingSet2-demos</url>
+    <url>https://github.com/homebeaver/SwingSet3-demos</url>
     <inceptionYear>2005</inceptionYear>
 	
 	<build>
@@ -111,4 +111,41 @@
 
 		</plugins>
 	</build>
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
+		<dependency>
+		    <groupId>javax.inject</groupId>
+		    <artifactId>javax.inject</artifactId>
+		    <version>1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder -->
+		<dependency>
+		    <groupId>org.apache.xmlgraphics</groupId>
+		    <artifactId>batik-transcoder</artifactId>
+		    <version>1.14</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13</version>
+			<scope>test</scope>
+		</dependency>
+		<!--  compile group: 'org.easytesting', name: 'fest-swing', version: '1.2.1'
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-swing</artifactId>
+			<version>1.2.1</version>
+			<scope>test</scope>
+		</dependency>
+ -->		
+		<!-- compile group: 'net.jodah', name: 'failsafe', version: '1.1.0'
+		<dependency>
+			<groupId>net.jodah</groupId>
+			<artifactId>failsafe</artifactId>
+			<version>1.1.0</version>
+			<scope>test</scope>
+		</dependency>
+ -->
+	</dependencies>
 </project>
