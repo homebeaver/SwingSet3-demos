@@ -4,13 +4,44 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.ImageIcon;
 
 // copied from package (swingx-core test) org.jdesktop.swingx.TestUtilities
 public class StaticUtilities {
 
 	private static final Logger LOG = Logger.getLogger(StaticUtilities.class.getName());
+
+	private StaticUtilities() {}
+
+    /**
+     * This method returns a string from the demo's resource bundle.
+     */
+	// kopiert von SwingSet2.getString(String)
+    public static String getResourceAsString(String key, String def) {
+        try {
+            return TextAndMnemonicUtils.getTextAndMnemonicString(key);
+        } catch (MissingResourceException e) {
+        	LOG.warning(e.toString());
+        	return def;
+        } catch (Exception e) {
+			e.printStackTrace();
+			return null;
+        }
+    }
+
+    /**
+     * Creates an icon from an image contained in the "images" directory.
+     */
+    public static ImageIcon createImageIcon(String filename) { //, String description) {
+    	String path = "/swingset/images/" + filename; 
+    	InputStream is = StaticUtilities.getResourceAsStream(StaticUtilities.class, path);
+    	if(is==null) return null;
+        return new ImageIcon(StaticUtilities.class.getResource(path));
+    }
 
 	public static InputStream getResourceAsStream(Class<?> clazz, String resourceName) {
 		
