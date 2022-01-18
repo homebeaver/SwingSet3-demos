@@ -7,9 +7,12 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
+import java.util.logging.Logger;
 
 import javax.accessibility.AccessibleRelation;
 import javax.swing.Box;
@@ -21,17 +24,46 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
+
 /**
  * JComboBox Demo
  *
  * @author Jeff Dinkins
  */
-public class ComboBoxDemo extends DemoModule implements ActionListener {
+/*
+
+links controler:
+	comboBoxPanel
+
+rechts demo: >>>>>>>>>>>    <<<<<<<<<<<<
+	facePanel mit faceLabel aus facePaintedIcon = new Face();
+
+ */
+public class ComboBoxDemo implements ActionListener {
 
     public static final String ICON_PATH = "toolbar/JComboBox.gif";
 
-    Face face;
-    JLabel faceLabel;
+    private static final Logger LOG = Logger.getLogger(ComboBoxDemo.class.getName());
+
+    JXPanel facePanel = null;
+    Face facePaintedIcon;
+    JXLabel xfaceLabel;
+
+    public JXPanel getDemoPane() {
+    	if(facePanel!=null) {
+        	LOG.info("---------------facePanel:"+facePanel);
+    		return facePanel;
+    	}
+        facePaintedIcon = new Face();
+        facePanel = new JXPanel(new BorderLayout());
+        facePanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+
+        xfaceLabel = new JXLabel(facePaintedIcon);
+        facePanel.add(xfaceLabel, BorderLayout.CENTER);
+        return facePanel;
+    }
 
     JComboBox hairCB;
     JComboBox eyesCB;
@@ -45,152 +77,175 @@ public class ComboBoxDemo extends DemoModule implements ActionListener {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        ComboBoxDemo demo = new ComboBoxDemo(null);
+    	GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+    	ComboBoxDemo demo = new ComboBoxDemo(new SwingSet2(null, gc, false));
         demo.mainImpl();
     }
 
+    JPanel panel = new JPanel();
+    void mainImpl() {
+    	// frame ...
+//    	JFrame frame = swingset.getFrame();
+//    	frame.setName(getName());
+//        frame.getContentPane().setLayout(new BorderLayout());
+//        frame.getContentPane().add(getDemoPanel(), BorderLayout.CENTER);
+        panel.setPreferredSize(new Dimension(DemoModule.PREFERRED_WIDTH, DemoModule.PREFERRED_HEIGHT));
+//        frame.pack();
+//        frame.setVisible(true);
+
+    }
     /**
      * ComboBoxDemo Constructor
      */
     public ComboBoxDemo(SwingSet2 swingset) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
-        super(swingset, "ComboBoxDemo", ICON_PATH);
+//        super(swingset, "ComboBoxDemo", ICON_PATH);
 
-        createComboBoxDemo();
+        getComboBoxDemo();
     }
 
-    public void createComboBoxDemo() {
-        JPanel demo = getDemoPanel();
-
-        JPanel demoPanel = getDemoPanel();
-        demoPanel.setLayout(new BoxLayout(demoPanel, BoxLayout.Y_AXIS));
+    JXPanel comboBoxPanel = null;
+    public JXPanel getComboBoxDemo() {
+    	if(comboBoxPanel!=null) {
+        	LOG.info("---------------comboBoxPanel:"+comboBoxPanel);
+    		return comboBoxPanel;
+    	}
+//        JPanel demo = getDemoPanel();
+//        JPanel demoPanel = getDemoPanel();
+//        demoPanel.setLayout(new BoxLayout(demoPanel, BoxLayout.Y_AXIS));
 
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.X_AXIS));
 
-        demoPanel.add(Box.createRigidArea(VGAP20));
-        demoPanel.add(innerPanel);
-        demoPanel.add(Box.createRigidArea(VGAP20));
-
-        innerPanel.add(Box.createRigidArea(HGAP20));
+//        demoPanel.add(Box.createRigidArea(VGAP20));
+//        demoPanel.add(innerPanel);
+//        demoPanel.add(Box.createRigidArea(VGAP20));
+//
+        innerPanel.add(Box.createRigidArea(DemoModule.HGAP20));
 
         // Create a panel to hold buttons
-        JPanel comboBoxPanel = new JPanel() {
+        comboBoxPanel = new JXPanel() {
                 public Dimension getMaximumSize() {
                     return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
                 }
         };
         comboBoxPanel.setLayout(new BoxLayout(comboBoxPanel, BoxLayout.Y_AXIS));
 
-        comboBoxPanel.add(Box.createRigidArea(VGAP15));
+        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
 
-        JLabel l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.presets")));
+//        JLabel l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.presets")));
+        JLabel l = new JLabel("presets");
         l.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        comboBoxPanel.add(l);
         presetCB = (JComboBox) comboBoxPanel.add(createPresetComboBox());
         presetCB.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
         l.setLabelFor(presetCB);
-        comboBoxPanel.add(Box.createRigidArea(VGAP30));
+        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP30));
 
-        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.hair_description")));
+//        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.hair_description")));
+        l = new JLabel("hair_description");
         l.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         hairCB = (JComboBox) comboBoxPanel.add(createHairComboBox());
         hairCB.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
         l.setLabelFor(hairCB);
-        comboBoxPanel.add(Box.createRigidArea(VGAP15));
+        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
 
-        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.eyes_description")));
+//        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.eyes_description")));
+        l = new JLabel("eyes_description");
         l.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         eyesCB = (JComboBox) comboBoxPanel.add(createEyesComboBox());
         eyesCB.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
         l.setLabelFor(eyesCB);
-        comboBoxPanel.add(Box.createRigidArea(VGAP15));
+        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
 
-        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.mouth_description")));
+//        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.mouth_description")));
+        l = new JLabel("mouth_description");
         l.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         mouthCB = (JComboBox) comboBoxPanel.add(createMouthComboBox());
         mouthCB.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
         l.setLabelFor(mouthCB);
-        comboBoxPanel.add(Box.createRigidArea(VGAP15));
+        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
 
         // Fill up the remaining space
         comboBoxPanel.add(new JPanel(new BorderLayout()));
 
-        // Create and place the Face.
-
-        face = new Face();
-        JPanel facePanel = new JPanel();
-        facePanel.setLayout(new BorderLayout());
-        facePanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-
-        faceLabel = new JLabel(face);
-        facePanel.add(faceLabel, BorderLayout.CENTER);
-        // Indicate that the face panel is controlled by the hair, eyes and
-        // mouth combo boxes.
+//        // Create and place the Face. >>>>>>>>>>>>>>>>
+//
+//        facePaintedIcon = new Face();
+//        JPanel facePanel = new JPanel();
+//        facePanel.setLayout(new BorderLayout());
+//        facePanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+//
+//        faceLabel = new JLabel(facePaintedIcon);
+//        facePanel.add(faceLabel, BorderLayout.CENTER);
+////        <<<<<<<<<<<<<<<<<<<
+        // Indicate that the face panel is controlled by the hair, eyes and mouth combo boxes.
         Object [] controlledByObjects = new Object[3];
         controlledByObjects[0] = hairCB;
         controlledByObjects[1] = eyesCB;
         controlledByObjects[2] = mouthCB;
         AccessibleRelation controlledByRelation =
-            new AccessibleRelation(AccessibleRelation.CONTROLLED_BY_PROPERTY,
-                                   controlledByObjects);
-        facePanel.getAccessibleContext().getAccessibleRelationSet().add(controlledByRelation);
+            new AccessibleRelation(AccessibleRelation.CONTROLLED_BY_PROPERTY, controlledByObjects);
+        getDemoPane().getAccessibleContext().getAccessibleRelationSet().add(controlledByRelation);
 
-        // Indicate that the hair, eyes and mouth combo boxes are controllers
-        // for the face panel.
+        // Indicate that the hair, eyes and mouth combo boxes are controllers for the face panel.
         AccessibleRelation controllerForRelation =
-            new AccessibleRelation(AccessibleRelation.CONTROLLER_FOR_PROPERTY,
-                                   facePanel);
+            new AccessibleRelation(AccessibleRelation.CONTROLLER_FOR_PROPERTY, getDemoPane());
         hairCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
         eyesCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
         mouthCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
 
         // add buttons and image panels to inner panel
         innerPanel.add(comboBoxPanel);
-        innerPanel.add(Box.createRigidArea(HGAP30));
-        innerPanel.add(facePanel);
-        innerPanel.add(Box.createRigidArea(HGAP20));
+        innerPanel.add(Box.createRigidArea(DemoModule.HGAP30));
+//        innerPanel.add(facePanel);
+        innerPanel.add(Box.createRigidArea(DemoModule.HGAP20));
 
         // load up the face parts
-        addFace("brent",     getString("ComboBoxDemo.brent"));
-        addFace("georges",   getString("ComboBoxDemo.georges"));
-        addFace("hans",      getString("ComboBoxDemo.hans"));
-        addFace("howard",    getString("ComboBoxDemo.howard"));
-        addFace("james",     getString("ComboBoxDemo.james"));
-        addFace("jeff",      getString("ComboBoxDemo.jeff"));
-        addFace("jon",       getString("ComboBoxDemo.jon"));
-        addFace("lara",      getString("ComboBoxDemo.lara"));
-        addFace("larry",     getString("ComboBoxDemo.larry"));
-        addFace("lisa",      getString("ComboBoxDemo.lisa"));
-        addFace("michael",   getString("ComboBoxDemo.michael"));
-        addFace("philip",    getString("ComboBoxDemo.philip"));
-        addFace("scott",     getString("ComboBoxDemo.scott"));
+        addFace("brent",     ("ComboBoxDemo.brent"));
+        addFace("georges",   ("ComboBoxDemo.georges"));
+        addFace("hans",      ("ComboBoxDemo.hans"));
+        addFace("howard",    ("ComboBoxDemo.howard"));
+        addFace("james",     ("ComboBoxDemo.james"));
+        addFace("jeff",      ("ComboBoxDemo.jeff"));
+        addFace("jon",       ("ComboBoxDemo.jon"));
+        addFace("lara",      ("ComboBoxDemo.lara"));
+        addFace("larry",     ("ComboBoxDemo.larry"));
+        addFace("lisa",      ("ComboBoxDemo.lisa"));
+        addFace("michael",   ("ComboBoxDemo.michael"));
+        addFace("philip",    ("ComboBoxDemo.philip"));
+        addFace("scott",     ("ComboBoxDemo.scott"));
 
         // set the default face
         presetCB.setSelectedIndex(0);
+		return comboBoxPanel;
     }
 
     void addFace(String name, String i18n_name) {
         ImageIcon i;
-        String i18n_hair = getString("ComboBoxDemo.hair");
-        String i18n_eyes = getString("ComboBoxDemo.eyes");
-        String i18n_mouth = getString("ComboBoxDemo.mouth");
+//        String i18n_hair = getString("ComboBoxDemo.hair");
+//        String i18n_eyes = getString("ComboBoxDemo.eyes");
+//        String i18n_mouth = getString("ComboBoxDemo.mouth");
+        String i18n_hair = ("ComboBoxDemo.hair");
+        String i18n_eyes = ("ComboBoxDemo.eyes");
+        String i18n_mouth = ("ComboBoxDemo.mouth");
 
         parts.put(i18n_name, name); // i18n name lookup
         parts.put(name, i18n_name); // reverse name lookup
 
-        i = createImageIcon("combobox/" + name + "hair.jpg", i18n_name + i18n_hair);
+        i = StaticUtilities.createImageIcon("combobox/" + name + "hair.jpg"); //, i18n_name + i18n_hair);
         parts.put(name +  "hair", i);
 
-        i = createImageIcon("combobox/" + name + "eyes.jpg", i18n_name + i18n_eyes);
+        i = StaticUtilities.createImageIcon("combobox/" + name + "eyes.jpg"); //, i18n_name + i18n_eyes);
         parts.put(name +  "eyes", i);
 
-        i = createImageIcon("combobox/" + name + "mouth.jpg", i18n_name + i18n_mouth);
+        i = StaticUtilities.createImageIcon("combobox/" + name + "mouth.jpg"); //, i18n_name + i18n_mouth);
         parts.put(name +  "mouth", i);
     }
 
     Face getFace() {
-        return face;
+        return facePaintedIcon;
     }
 
     JComboBox createHairComboBox() {
@@ -223,49 +278,49 @@ public class ComboBoxDemo extends DemoModule implements ActionListener {
 
     JComboBox createPresetComboBox() {
         JComboBox cb = new JComboBox();
-        cb.addItem(getString("ComboBoxDemo.preset1"));
-        cb.addItem(getString("ComboBoxDemo.preset2"));
-        cb.addItem(getString("ComboBoxDemo.preset3"));
-        cb.addItem(getString("ComboBoxDemo.preset4"));
-        cb.addItem(getString("ComboBoxDemo.preset5"));
-        cb.addItem(getString("ComboBoxDemo.preset6"));
-        cb.addItem(getString("ComboBoxDemo.preset7"));
-        cb.addItem(getString("ComboBoxDemo.preset8"));
-        cb.addItem(getString("ComboBoxDemo.preset9"));
-        cb.addItem(getString("ComboBoxDemo.preset10"));
+        cb.addItem(("ComboBoxDemo.preset1"));
+        cb.addItem(("ComboBoxDemo.preset2"));
+        cb.addItem(("ComboBoxDemo.preset3"));
+        cb.addItem(("ComboBoxDemo.preset4"));
+        cb.addItem(("ComboBoxDemo.preset5"));
+        cb.addItem(("ComboBoxDemo.preset6"));
+        cb.addItem(("ComboBoxDemo.preset7"));
+        cb.addItem(("ComboBoxDemo.preset8"));
+        cb.addItem(("ComboBoxDemo.preset9"));
+        cb.addItem(("ComboBoxDemo.preset10"));
         cb.addActionListener(this);
         return cb;
     }
 
     void fillComboBox(JComboBox cb) {
-        cb.addItem(getString("ComboBoxDemo.brent"));
-        cb.addItem(getString("ComboBoxDemo.georges"));
-        cb.addItem(getString("ComboBoxDemo.hans"));
-        cb.addItem(getString("ComboBoxDemo.howard"));
-        cb.addItem(getString("ComboBoxDemo.james"));
-        cb.addItem(getString("ComboBoxDemo.jeff"));
-        cb.addItem(getString("ComboBoxDemo.jon"));
-        cb.addItem(getString("ComboBoxDemo.lara"));
-        cb.addItem(getString("ComboBoxDemo.larry"));
-        cb.addItem(getString("ComboBoxDemo.lisa"));
-        cb.addItem(getString("ComboBoxDemo.michael"));
-        cb.addItem(getString("ComboBoxDemo.philip"));
-        cb.addItem(getString("ComboBoxDemo.scott"));
+        cb.addItem(("ComboBoxDemo.brent"));
+        cb.addItem(("ComboBoxDemo.georges"));
+        cb.addItem(("ComboBoxDemo.hans"));
+        cb.addItem(("ComboBoxDemo.howard"));
+        cb.addItem(("ComboBoxDemo.james"));
+        cb.addItem(("ComboBoxDemo.jeff"));
+        cb.addItem(("ComboBoxDemo.jon"));
+        cb.addItem(("ComboBoxDemo.lara"));
+        cb.addItem(("ComboBoxDemo.larry"));
+        cb.addItem(("ComboBoxDemo.lisa"));
+        cb.addItem(("ComboBoxDemo.michael"));
+        cb.addItem(("ComboBoxDemo.philip"));
+        cb.addItem(("ComboBoxDemo.scott"));
     }
 
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == hairCB) {
             String name = (String) parts.get((String) hairCB.getSelectedItem());
-            face.setHair((ImageIcon) parts.get(name + "hair"));
-            faceLabel.repaint();
+            facePaintedIcon.setHair((ImageIcon) parts.get(name + "hair"));
+            xfaceLabel.repaint();
         } else if(e.getSource() == eyesCB) {
             String name = (String) parts.get((String) eyesCB.getSelectedItem());
-            face.setEyes((ImageIcon) parts.get(name + "eyes"));
-            faceLabel.repaint();
+            facePaintedIcon.setEyes((ImageIcon) parts.get(name + "eyes"));
+            xfaceLabel.repaint();
         } else if(e.getSource() == mouthCB) {
             String name = (String) parts.get((String) mouthCB.getSelectedItem());
-            face.setMouth((ImageIcon) parts.get(name + "mouth"));
-            faceLabel.repaint();
+            facePaintedIcon.setMouth((ImageIcon) parts.get(name + "mouth"));
+            xfaceLabel.repaint();
         } else if(e.getSource() == presetCB) {
             String hair = null;
             String eyes = null;
@@ -326,7 +381,7 @@ public class ComboBoxDemo extends DemoModule implements ActionListener {
                 hairCB.setSelectedItem(hair);
                 eyesCB.setSelectedItem(eyes);
                 mouthCB.setSelectedItem(mouth);
-                faceLabel.repaint();
+                xfaceLabel.repaint();
             }
         }
     }
