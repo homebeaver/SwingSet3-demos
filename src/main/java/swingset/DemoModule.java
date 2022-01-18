@@ -71,8 +71,8 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
     private static final Logger LOG = Logger.getLogger(DemoModule.class.getName());
 	
 	// The preferred size of the demo
-    private static int PREFERRED_WIDTH = 680;
-    private static int PREFERRED_HEIGHT = 600;
+    static int PREFERRED_WIDTH = 680;
+    static int PREFERRED_HEIGHT = 600;
 
     Border loweredBorder = new CompoundBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED),
                                               new EmptyBorder(5,5,5,5));
