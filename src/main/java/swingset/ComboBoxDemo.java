@@ -19,25 +19,25 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
 /**
  * JComboBox Demo
  *
- * @author Jeff Dinkins
+ * @author Jeff Dinkins (inception)
+ * @author EUG https://github.com/homebeaver (reorg)
  */
 /*
 
 links controler:
 	comboBoxPanel
 
-rechts demo: >>>>>>>>>>>    <<<<<<<<<<<<
+rechts demo:
 	facePanel mit faceLabel aus facePaintedIcon = new Face();
 
  */
@@ -46,6 +46,11 @@ public class ComboBoxDemo implements ActionListener {
     public static final String ICON_PATH = "toolbar/JComboBox.gif";
 
     private static final Logger LOG = Logger.getLogger(ComboBoxDemo.class.getName());
+    
+    private String getString(String resourceKey) { // TODO -> AbstractDemo
+    	String key = this.getClass().getSimpleName() + '.' + resourceKey;
+    	return StaticUtilities.getResourceAsString(key, resourceKey);
+    }
 
     JXPanel facePanel = null;
     Face facePaintedIcon;
@@ -65,13 +70,13 @@ public class ComboBoxDemo implements ActionListener {
         return facePanel;
     }
 
-    JComboBox hairCB;
-    JComboBox eyesCB;
-    JComboBox mouthCB;
+    JXComboBox<String> hairCB;
+    JXComboBox<String> eyesCB;
+    JXComboBox<String> mouthCB;
 
-    JComboBox presetCB;
+    JXComboBox<String> presetCB;
 
-    Hashtable parts = new Hashtable();
+    private Hashtable parts = new Hashtable();
 
     /**
      * main method allows us to run as a standalone demo.
@@ -102,11 +107,11 @@ public class ComboBoxDemo implements ActionListener {
         // demo inside the SwingSet2 app.
 //        super(swingset, "ComboBoxDemo", ICON_PATH);
 
-        getComboBoxDemo();
+        getControlPane();
     }
 
     JXPanel comboBoxPanel = null;
-    public JXPanel getComboBoxDemo() {
+    public JXPanel getControlPane() {
     	if(comboBoxPanel!=null) {
         	LOG.info("---------------comboBoxPanel:"+comboBoxPanel);
     		return comboBoxPanel;
@@ -134,52 +139,45 @@ public class ComboBoxDemo implements ActionListener {
 
         comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
 
-//        JLabel l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.presets")));
-        JLabel l = new JLabel("presets");
-        l.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        JXLabel l = new JXLabel(getString("presets"));
+        l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
         comboBoxPanel.add(l);
-        presetCB = (JComboBox) comboBoxPanel.add(createPresetComboBox());
-        presetCB.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
+        presetCB = createPresetComboBox();
+        presetCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
+        comboBoxPanel.add(presetCB);
         l.setLabelFor(presetCB);
         comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP30));
 
-//        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.hair_description")));
-        l = new JLabel("hair_description");
-        l.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        hairCB = (JComboBox) comboBoxPanel.add(createHairComboBox());
-        hairCB.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
+        l = new JXLabel(getString("hair_description"));
+        l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+        comboBoxPanel.add(l);
+        hairCB = createHairComboBox();
+        hairCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
+        comboBoxPanel.add(hairCB);
         l.setLabelFor(hairCB);
         comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
 
-//        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.eyes_description")));
-        l = new JLabel("eyes_description");
-        l.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        eyesCB = (JComboBox) comboBoxPanel.add(createEyesComboBox());
-        eyesCB.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
+        l = new JXLabel(getString("eyes_description"));
+        l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+        comboBoxPanel.add(l);
+        eyesCB = createEyesComboBox();
+        eyesCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
+        comboBoxPanel.add(eyesCB);
         l.setLabelFor(eyesCB);
         comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
 
-//        l = (JLabel) comboBoxPanel.add(new JLabel(getString("ComboBoxDemo.mouth_description")));
-        l = new JLabel("mouth_description");
-        l.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        mouthCB = (JComboBox) comboBoxPanel.add(createMouthComboBox());
-        mouthCB.setAlignmentX(JComboBox.LEFT_ALIGNMENT);
+        l = new JXLabel(getString("mouth_description"));
+        l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+        comboBoxPanel.add(l);
+        mouthCB = createMouthComboBox();
+        mouthCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
+        comboBoxPanel.add(mouthCB);
         l.setLabelFor(mouthCB);
         comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
 
         // Fill up the remaining space
         comboBoxPanel.add(new JPanel(new BorderLayout()));
 
-//        // Create and place the Face. >>>>>>>>>>>>>>>>
-//
-//        facePaintedIcon = new Face();
-//        JPanel facePanel = new JPanel();
-//        facePanel.setLayout(new BorderLayout());
-//        facePanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-//
-//        faceLabel = new JLabel(facePaintedIcon);
-//        facePanel.add(faceLabel, BorderLayout.CENTER);
-////        <<<<<<<<<<<<<<<<<<<
         // Indicate that the face panel is controlled by the hair, eyes and mouth combo boxes.
         Object [] controlledByObjects = new Object[3];
         controlledByObjects[0] = hairCB;
@@ -203,19 +201,19 @@ public class ComboBoxDemo implements ActionListener {
         innerPanel.add(Box.createRigidArea(DemoModule.HGAP20));
 
         // load up the face parts
-        addFace("brent",     ("ComboBoxDemo.brent"));
-        addFace("georges",   ("ComboBoxDemo.georges"));
-        addFace("hans",      ("ComboBoxDemo.hans"));
-        addFace("howard",    ("ComboBoxDemo.howard"));
-        addFace("james",     ("ComboBoxDemo.james"));
-        addFace("jeff",      ("ComboBoxDemo.jeff"));
-        addFace("jon",       ("ComboBoxDemo.jon"));
-        addFace("lara",      ("ComboBoxDemo.lara"));
-        addFace("larry",     ("ComboBoxDemo.larry"));
-        addFace("lisa",      ("ComboBoxDemo.lisa"));
-        addFace("michael",   ("ComboBoxDemo.michael"));
-        addFace("philip",    ("ComboBoxDemo.philip"));
-        addFace("scott",     ("ComboBoxDemo.scott"));
+        addFace("brent",     getString("brent"));
+        addFace("georges",   getString("georges"));
+        addFace("hans",      getString("hans"));
+        addFace("howard",    getString("howard"));
+        addFace("james",     getString("james"));
+        addFace("jeff",      getString("jeff"));
+        addFace("jon",       getString("jon"));
+        addFace("lara",      getString("lara"));
+        addFace("larry",     getString("larry"));
+        addFace("lisa",      getString("lisa"));
+        addFace("michael",   getString("michael"));
+        addFace("philip",    getString("philip"));
+        addFace("scott",     getString("scott"));
 
         // set the default face
         presetCB.setSelectedIndex(0);
@@ -248,64 +246,64 @@ public class ComboBoxDemo implements ActionListener {
         return facePaintedIcon;
     }
 
-    JComboBox createHairComboBox() {
-        JComboBox cb = new JComboBox();
+    JXComboBox<String> createHairComboBox() {
+    	JXComboBox<String> cb = new JXComboBox<String>();
         fillComboBox(cb);
         cb.addActionListener(this);
         return cb;
     }
 
-    JComboBox createEyesComboBox() {
-        JComboBox cb = new JComboBox();
+    JXComboBox<String> createEyesComboBox() {
+    	JXComboBox<String> cb = new JXComboBox<String>();
         fillComboBox(cb);
         cb.addActionListener(this);
         return cb;
     }
 
-    JComboBox createNoseComboBox() {
-        JComboBox cb = new JComboBox();
+    JXComboBox<String> createNoseComboBox() {
+    	JXComboBox<String> cb = new JXComboBox<String>();
         fillComboBox(cb);
         cb.addActionListener(this);
         return cb;
     }
 
-    JComboBox createMouthComboBox() {
-        JComboBox cb = new JComboBox();
+    JXComboBox<String> createMouthComboBox() {
+    	JXComboBox<String> cb = new JXComboBox<String>();
         fillComboBox(cb);
         cb.addActionListener(this);
         return cb;
     }
 
-    JComboBox createPresetComboBox() {
-        JComboBox cb = new JComboBox();
-        cb.addItem(("ComboBoxDemo.preset1"));
-        cb.addItem(("ComboBoxDemo.preset2"));
-        cb.addItem(("ComboBoxDemo.preset3"));
-        cb.addItem(("ComboBoxDemo.preset4"));
-        cb.addItem(("ComboBoxDemo.preset5"));
-        cb.addItem(("ComboBoxDemo.preset6"));
-        cb.addItem(("ComboBoxDemo.preset7"));
-        cb.addItem(("ComboBoxDemo.preset8"));
-        cb.addItem(("ComboBoxDemo.preset9"));
-        cb.addItem(("ComboBoxDemo.preset10"));
+    JXComboBox<String> createPresetComboBox() {
+    	JXComboBox<String> cb = new JXComboBox<String>();
+        cb.addItem(getString("preset1"));
+        cb.addItem(getString("preset2"));
+        cb.addItem(getString("preset3"));
+        cb.addItem(getString("preset4"));
+        cb.addItem(getString("preset5"));
+        cb.addItem(getString("preset6"));
+        cb.addItem(getString("preset7"));
+        cb.addItem(getString("preset8"));
+        cb.addItem(getString("preset9"));
+        cb.addItem(getString("preset10"));
         cb.addActionListener(this);
         return cb;
     }
 
-    void fillComboBox(JComboBox cb) {
-        cb.addItem(("ComboBoxDemo.brent"));
-        cb.addItem(("ComboBoxDemo.georges"));
-        cb.addItem(("ComboBoxDemo.hans"));
-        cb.addItem(("ComboBoxDemo.howard"));
-        cb.addItem(("ComboBoxDemo.james"));
-        cb.addItem(("ComboBoxDemo.jeff"));
-        cb.addItem(("ComboBoxDemo.jon"));
-        cb.addItem(("ComboBoxDemo.lara"));
-        cb.addItem(("ComboBoxDemo.larry"));
-        cb.addItem(("ComboBoxDemo.lisa"));
-        cb.addItem(("ComboBoxDemo.michael"));
-        cb.addItem(("ComboBoxDemo.philip"));
-        cb.addItem(("ComboBoxDemo.scott"));
+    void fillComboBox(JXComboBox<String> cb) {
+        cb.addItem(getString("brent"));
+        cb.addItem(getString("georges"));
+        cb.addItem(getString("hans"));
+        cb.addItem(getString("howard"));
+        cb.addItem(getString("james"));
+        cb.addItem(getString("jeff"));
+        cb.addItem(getString("jon"));
+        cb.addItem(getString("lara"));
+        cb.addItem(getString("larry"));
+        cb.addItem(getString("lisa"));
+        cb.addItem(getString("michael"));
+        cb.addItem(getString("philip"));
+        cb.addItem(getString("scott"));
     }
 
     public void actionPerformed(ActionEvent e) {
