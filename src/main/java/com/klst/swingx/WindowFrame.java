@@ -31,6 +31,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.SwingXUtilities;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.icon.PauseIcon;
 import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
@@ -299,6 +300,7 @@ aus super:
         	LOG.info("makeFrame #"+frameNumber+" ... rootFrame:"+getRootFrame());
         	WindowFrame frame = getRootFrame().makeFrame(frameNumber, getRootFrame(), 1, null);
         	if(frame!=null) {
+        		frame.setStartPosition(StartPosition.CenterInScreen);
         		AbstractDemo demo = null;
 				try {
 					demo = getInstanceOf(democlass, frame); // ctor 
