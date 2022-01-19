@@ -39,7 +39,7 @@ ControlPane:
 	comboBoxPanel
 
 DemoPane:
-	facePanel + faceLabel aus facePaintedIcon = new Face();
+	facePanel + faceLabel : face = new Face();
 
  */
 public class ComboBoxDemo extends AbstractDemo implements ActionListener {
@@ -48,21 +48,22 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
     private static final Logger LOG = Logger.getLogger(ComboBoxDemo.class.getName());
     
-    JXPanel facePanel = null;
-    Face facePaintedIcon;
+    JXPanel facePanel = null; // presentationPanel
+    Face face;
     JXLabel xfaceLabel;
 
     @Override
     public JXPanel getDemoPane() {
     	if(facePanel!=null) {
-        	LOG.info("---------------facePanel:"+facePanel);
+        	LOG.fine("---------------facePanel:"+facePanel);
     		return facePanel;
     	}
-        facePaintedIcon = new Face();
+        face = new Face();
         facePanel = new JXPanel(new BorderLayout());
+        facePanel.setPreferredSize(PREFERRED_SIZE);
         facePanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-        xfaceLabel = new JXLabel(facePaintedIcon);
+        xfaceLabel = new JXLabel(face);
         facePanel.add(xfaceLabel, BorderLayout.CENTER);
         return facePanel;
     }
@@ -84,18 +85,6 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 //        demo.mainImpl();
     }
 
-//    private JPanel panel = new JPanel();
-//    void mainImpl() {
-//    	// frame ...
-////    	JFrame frame = swingset.getFrame();
-////    	frame.setName(getName());
-////        frame.getContentPane().setLayout(new BorderLayout());
-////        frame.getContentPane().add(getDemoPanel(), BorderLayout.CENTER);
-//        panel.setPreferredSize(new Dimension(DemoModule.PREFERRED_WIDTH, DemoModule.PREFERRED_HEIGHT));
-////        frame.pack();
-////        frame.setVisible(true);
-//
-//    }
     /**
      * ComboBoxDemo Constructor
      */
@@ -111,21 +100,9 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
     @Override
    public JXPanel getControlPane() {
     	if(comboBoxPanel!=null) {
-        	LOG.info("---------------comboBoxPanel:"+comboBoxPanel);
+        	LOG.fine("---------------comboBoxPanel:"+comboBoxPanel);
     		return comboBoxPanel;
     	}
-//        JPanel demo = getDemoPanel();
-//        JPanel demoPanel = getDemoPanel();
-//        demoPanel.setLayout(new BoxLayout(demoPanel, BoxLayout.Y_AXIS));
-
-        JPanel innerPanel = new JPanel();
-        innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.X_AXIS));
-
-//        demoPanel.add(Box.createRigidArea(VGAP20));
-//        demoPanel.add(innerPanel);
-//        demoPanel.add(Box.createRigidArea(VGAP20));
-//
-        innerPanel.add(Box.createRigidArea(DemoModule.HGAP20));
 
         // Create a panel to hold buttons
         comboBoxPanel = new JXPanel() {
@@ -192,12 +169,6 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         eyesCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
         mouthCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
 
-        // add buttons and image panels to inner panel
-        innerPanel.add(comboBoxPanel);
-        innerPanel.add(Box.createRigidArea(DemoModule.HGAP30));
-//        innerPanel.add(facePanel);
-        innerPanel.add(Box.createRigidArea(DemoModule.HGAP20));
-
         // load up the face parts
         addFace("brent",     getString("brent"));
         addFace("georges",   getString("georges"));
@@ -220,12 +191,9 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
     void addFace(String name, String i18n_name) {
         ImageIcon i;
-//        String i18n_hair = getString("ComboBoxDemo.hair");
-//        String i18n_eyes = getString("ComboBoxDemo.eyes");
-//        String i18n_mouth = getString("ComboBoxDemo.mouth");
-        String i18n_hair = ("ComboBoxDemo.hair");
-        String i18n_eyes = ("ComboBoxDemo.eyes");
-        String i18n_mouth = ("ComboBoxDemo.mouth");
+        String i18n_hair = getString("hair");
+        String i18n_eyes = getString("eyes");
+        String i18n_mouth = getString("mouth");
 
         parts.put(i18n_name, name); // i18n name lookup
         parts.put(name, i18n_name); // reverse name lookup
@@ -238,10 +206,6 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
         i = StaticUtilities.createImageIcon("combobox/" + name + "mouth.jpg"); //, i18n_name + i18n_mouth);
         parts.put(name +  "mouth", i);
-    }
-
-    Face getFace() {
-        return facePaintedIcon;
     }
 
     JXComboBox<String> createHairComboBox() {
@@ -307,15 +271,15 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == hairCB) {
             String name = (String) parts.get((String) hairCB.getSelectedItem());
-            facePaintedIcon.setHair((ImageIcon) parts.get(name + "hair"));
+            face.setHair((ImageIcon) parts.get(name + "hair"));
             xfaceLabel.repaint();
         } else if(e.getSource() == eyesCB) {
             String name = (String) parts.get((String) eyesCB.getSelectedItem());
-            facePaintedIcon.setEyes((ImageIcon) parts.get(name + "eyes"));
+            face.setEyes((ImageIcon) parts.get(name + "eyes"));
             xfaceLabel.repaint();
         } else if(e.getSource() == mouthCB) {
             String name = (String) parts.get((String) mouthCB.getSelectedItem());
-            facePaintedIcon.setMouth((ImageIcon) parts.get(name + "mouth"));
+            face.setMouth((ImageIcon) parts.get(name + "mouth"));
             xfaceLabel.repaint();
         } else if(e.getSource() == presetCB) {
             String hair = null;
