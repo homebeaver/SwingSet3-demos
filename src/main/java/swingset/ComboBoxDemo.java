@@ -52,6 +52,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
     Face facePaintedIcon;
     JXLabel xfaceLabel;
 
+    @Override
     public JXPanel getDemoPane() {
     	if(facePanel!=null) {
         	LOG.info("---------------facePanel:"+facePanel);
@@ -107,7 +108,8 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
     }
 
     JXPanel comboBoxPanel = null;
-    public JXPanel getControlPane() {
+    @Override
+   public JXPanel getControlPane() {
     	if(comboBoxPanel!=null) {
         	LOG.info("---------------comboBoxPanel:"+comboBoxPanel);
     		return comboBoxPanel;
