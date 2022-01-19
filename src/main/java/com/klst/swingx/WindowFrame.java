@@ -2,10 +2,13 @@ package com.klst.swingx;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,8 +35,7 @@ import org.jdesktop.swingx.icon.PauseIcon;
 import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
 
-import swingset.ComboBoxDemo;
-import swingset.StaticUtilities;
+import swingset.AbstractDemo;
 
 @SuppressWarnings("serial")
 public class WindowFrame extends JXFrame {
@@ -51,7 +53,6 @@ public class WindowFrame extends JXFrame {
 	JXPanel jPanel = new JXPanel(new BorderLayout());
 	@Deprecated
 	AbstractAction addFrameAction;
-	AbstractAction runDemoAction;
 	
 	/*
 	 * window_ID==-1 is used for RootFrame
@@ -93,8 +94,6 @@ public class WindowFrame extends JXFrame {
         addFrameAction.putValue(Action.LARGE_ICON_KEY, new PlayIcon(SizingConstants.N, Color.GREEN));
         JXButton addFrameBtn = new JXButton(addFrameAction);
         
-        runDemoAction = new DemoAction("runDemo", StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH));
-        
 		AbstractAction disableFrameMgrAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -113,8 +112,8 @@ public class WindowFrame extends JXFrame {
 //		JToolBar toolbar = new ToggleButtonToolBar();
 		getRootPaneExt().setToolBar(new ToggleButtonToolBar()); // inner Class
         AbstractButton addFrameTbBtn = addActionToToolBar(this, addFrameAction);
-        AbstractButton runDemoTbBtn = addActionToToolBar(this, runDemoAction);
-        LOG.info("Toolbat Button addFrameAction:"+addFrameTbBtn);
+        LOG.info("Toolbar Button addFrameAction:"+addFrameTbBtn);
+        
         
 //		super.setSize(600, 200); ==> pack()
         
@@ -277,34 +276,38 @@ aus super:
     	return getStatusBar(this);
     }
 
-/*
-        runDemoAction.putValue(Action.NAME, "runDemo");
-        runDemoAction.putValue(Action.LARGE_ICON_KEY, StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH));
-
- */
     public class DemoAction extends AbstractAction {
 
     	// TODO Tooltip
 //   JToggleButton tb.setToolTipText(getString(demoClass.getSimpleName() + ".tooltip"));
+    	Class<?> democlass = null;
 
-    	public DemoAction(String name, Icon icon) {
-    		this(name, null, icon);
+    	public DemoAction(Class<?> democlass, String name, Icon icon) {
+    		this(democlass, name, null, icon);
     	}
-    	public DemoAction(String name, Icon smallIcon, Icon icon) {
-    		super(name, icon);		
+    	public DemoAction(Class<?> democlass, String name, Icon smallIcon, Icon icon) {
+    		super(name, icon);
+    		this.democlass = democlass;
             super.putValue(Action.LARGE_ICON_KEY, icon);
     	}
     	
         @Override
         public void actionPerformed(ActionEvent e) {
-        	// TODO: frame erstellen - demo starten: controler in root
+        	// frame erstellen - demo starten: TODO: controler in root registrieren
         	
         	int frameNumber = windowCounter;
         	LOG.info("makeFrame #"+frameNumber+" ... rootFrame:"+getRootFrame());
         	WindowFrame frame = getRootFrame().makeFrame(frameNumber, getRootFrame(), 1, null);
         	if(frame!=null) {
-            	ComboBoxDemo demo = new ComboBoxDemo(null); // ctor
-            	getRootFrame().getContentPane().add(demo.getComboBoxDemo()); // controler
+        		AbstractDemo demo = null;
+				try {
+					demo = getInstanceOf(democlass, frame); // ctor 
+				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+						| IllegalArgumentException | InvocationTargetException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            	getRootFrame().getContentPane().add(demo.getControlPane()); // controler
             	getRootFrame().pack();
             	
             	frame.getContentPane().add(demo.getDemoPane());
@@ -312,7 +315,16 @@ aus super:
             	frame.setVisible(true);
         	}
         }
-    	
+    
+		private AbstractDemo getInstanceOf(Class<?> demoClass, Frame frame) throws NoSuchMethodException, SecurityException,
+				InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			Constructor<?> demoConstructor = demoClass.getConstructor(new Class[] { Frame.class }); // throws
+																										// NoSuchMethodException,
+																										// SecurityException
+			AbstractDemo demo = (AbstractDemo) demoConstructor.newInstance(new Object[] { frame });
+			return demo;
+		}
+
     }
     
     /**
