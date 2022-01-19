@@ -6,6 +6,7 @@ package swingset;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -34,24 +35,19 @@ import org.jdesktop.swingx.JXPanel;
  */
 /*
 
-links controler:
+ControlPane:
 	comboBoxPanel
 
-rechts demo:
-	facePanel mit faceLabel aus facePaintedIcon = new Face();
+DemoPane:
+	facePanel + faceLabel aus facePaintedIcon = new Face();
 
  */
-public class ComboBoxDemo implements ActionListener {
+public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
     public static final String ICON_PATH = "toolbar/JComboBox.gif";
 
     private static final Logger LOG = Logger.getLogger(ComboBoxDemo.class.getName());
     
-    private String getString(String resourceKey) { // TODO -> AbstractDemo
-    	String key = this.getClass().getSimpleName() + '.' + resourceKey;
-    	return StaticUtilities.getResourceAsString(key, resourceKey);
-    }
-
     JXPanel facePanel = null;
     Face facePaintedIcon;
     JXLabel xfaceLabel;
@@ -81,28 +77,28 @@ public class ComboBoxDemo implements ActionListener {
     /**
      * main method allows us to run as a standalone demo.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) {  // TODO
     	GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-    	ComboBoxDemo demo = new ComboBoxDemo(new SwingSet2(null, gc, false));
-        demo.mainImpl();
+//    	ComboBoxDemo demo = new ComboBoxDemo(new SwingSet2(null, gc, false));
+//        demo.mainImpl();
     }
 
-    JPanel panel = new JPanel();
-    void mainImpl() {
-    	// frame ...
-//    	JFrame frame = swingset.getFrame();
-//    	frame.setName(getName());
-//        frame.getContentPane().setLayout(new BorderLayout());
-//        frame.getContentPane().add(getDemoPanel(), BorderLayout.CENTER);
-        panel.setPreferredSize(new Dimension(DemoModule.PREFERRED_WIDTH, DemoModule.PREFERRED_HEIGHT));
-//        frame.pack();
-//        frame.setVisible(true);
-
-    }
+//    private JPanel panel = new JPanel();
+//    void mainImpl() {
+//    	// frame ...
+////    	JFrame frame = swingset.getFrame();
+////    	frame.setName(getName());
+////        frame.getContentPane().setLayout(new BorderLayout());
+////        frame.getContentPane().add(getDemoPanel(), BorderLayout.CENTER);
+//        panel.setPreferredSize(new Dimension(DemoModule.PREFERRED_WIDTH, DemoModule.PREFERRED_HEIGHT));
+////        frame.pack();
+////        frame.setVisible(true);
+//
+//    }
     /**
      * ComboBoxDemo Constructor
      */
-    public ComboBoxDemo(SwingSet2 swingset) {
+    public ComboBoxDemo(Frame frame) {
         // Set the title for this demo, and an icon used to represent this
         // demo inside the SwingSet2 app.
 //        super(swingset, "ComboBoxDemo", ICON_PATH);
