@@ -37,6 +37,7 @@ import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
 
 import swingset.AbstractDemo;
+import swingset.StaticUtilities;
 
 @SuppressWarnings("serial")
 public class WindowFrame extends JXFrame {
@@ -279,8 +280,6 @@ aus super:
 
     public class DemoAction extends AbstractAction {
 
-    	// TODO Tooltip
-//   JToggleButton tb.setToolTipText(getString(demoClass.getSimpleName() + ".tooltip"));
     	Class<?> democlass = null;
 
     	public DemoAction(Class<?> democlass, String name, Icon icon) {
@@ -290,6 +289,11 @@ aus super:
     		super(name, icon);
     		this.democlass = democlass;
             super.putValue(Action.LARGE_ICON_KEY, icon);
+            
+            // SHORT_DESCRIPTION will setToolTipText in addActionToToolBar
+            String key = this.democlass.getSimpleName() + '.' + "tooltip";
+            String short_description = StaticUtilities.getResourceAsString(key, null);
+            super.putValue(Action.SHORT_DESCRIPTION, short_description);
     	}
     	
         @Override
