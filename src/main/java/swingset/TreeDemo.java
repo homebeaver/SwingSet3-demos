@@ -28,26 +28,30 @@ import org.jdesktop.swingx.JXTree;
  */
 public class TreeDemo extends AbstractDemo {
 
-//	private static final long serialVersionUID = -932066695707626601L;
-
 	public static final String ICON_PATH = "toolbar/JTree.gif";
 
-    JXPanel presentationPanel = null;
+	private static final long serialVersionUID = -932066695707626601L;
+
     JXTree tree;
 
-    @Override
-    public JXPanel getDemoPane() {
-    	if(presentationPanel!=null) {
-    		return presentationPanel;
-    	}
-    	presentationPanel = new JXPanel(new BorderLayout());
-    	presentationPanel.setPreferredSize(PREFERRED_SIZE);
-    	presentationPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-
-        presentationPanel.add(createTree(), BorderLayout.CENTER);
-        return presentationPanel;
+    /**
+     * main method allows us to run as a standalone demo.
+     */
+    public static void main(String[] args) { // TODO
+        TreeDemo demo = new TreeDemo(null);
+//        demo.mainImpl();
     }
-    
+
+    /**
+     * TreeDemo Constructor
+     */
+    public TreeDemo(Frame frame) {
+    	super(new BorderLayout());
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        super.add(createTree(), BorderLayout.CENTER);
+    }
+
     private JXButton expandButton;
     private JXButton collapseButton;
 /*
@@ -77,20 +81,6 @@ public class TreeDemo extends AbstractDemo {
 		// no controller TODO alles ausklappen! ==> expandButton
 		return new JXPanel(); // TODO default EmptyControler
 	}
-
-    /**
-     * main method allows us to run as a standalone demo.
-     */
-    public static void main(String[] args) { // TODO
-        TreeDemo demo = new TreeDemo(null);
-//        demo.mainImpl();
-    }
-
-    /**
-     * TreeDemo Constructor
-     */
-    public TreeDemo(Frame frame) {
-    }
 
     public JScrollPane createTree() {
         DefaultMutableTreeNode top = new DefaultMutableTreeNode(getString("music"));

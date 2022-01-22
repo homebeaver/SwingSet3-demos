@@ -2,6 +2,7 @@ package com.klst.swingx;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
@@ -31,9 +32,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.SwingXUtilities;
-import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.icon.PauseIcon;
-import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
 
 import swingset.AbstractDemo;
@@ -53,8 +52,6 @@ public class WindowFrame extends JXFrame {
 	
 	private int window_ID;
 	JXPanel jPanel = new JXPanel(new BorderLayout());
-	@Deprecated
-	AbstractAction addFrameAction;
 	
 	/*
 	 * window_ID==-1 is used for RootFrame
@@ -77,59 +74,24 @@ public class WindowFrame extends JXFrame {
 //			JMenuBar jMenuBar = createAndFillMenuBar(null);
 			setJMenuBar(createAndFillMenuBar(null));
 		}
-		
-		addFrameAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	//int frameNumber = rootFrame.frames.size(); - nicht aus frames.size (!), 
-            	// denn frame n kann noch existeren, aber frames.size=n sein, wenn ein "ältere" geschlossen wurde
-            	int frameNumber = windowCounter;
-            	LOG.info("makeFrame #"+frameNumber+" ... rootFrame:"+getRootFrame());
-            	WindowFrame frame = getRootFrame().makeFrame(frameNumber, getRootFrame(), 1, null);
-            	if(frame!=null) {
-                	frame.pack();
-                	frame.setVisible(true);
-            	}
-            }
-        };
-        addFrameAction.putValue(Action.NAME, "addFrame");
-        addFrameAction.putValue(Action.LARGE_ICON_KEY, new PlayIcon(SizingConstants.N, Color.GREEN));
-        JXButton addFrameBtn = new JXButton(addFrameAction);
-        
-		AbstractAction disableFrameMgrAction = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	LOG.info("disable FrameMgr");
-            	if(getRootFrame().enable) {
-                	getRootFrame().enable = false;
-                	// TODO for all frames:
-                    //addFrameAction.putValue(Action.LARGE_ICON_KEY, new StopIcon(SizingConstants.ACTION_ICON, Color.RED));
-            	}
-            }
-        };
-        disableFrameMgrAction.putValue(Action.NAME, "disableFrameMgr");
-        disableFrameMgrAction.putValue(Action.LARGE_ICON_KEY, new PauseIcon(SizingConstants.LAUNCHER_ICON, Color.MAGENTA));
-    	JXButton pause = new JXButton(disableFrameMgrAction);
 
-//		JToolBar toolbar = new ToggleButtonToolBar();
+//		AbstractAction disableFrameMgrAction = new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//            	LOG.info("disable FrameMgr");
+//            	if(getRootFrame().enable) {
+//                	getRootFrame().enable = false;
+//                	// TODO for all frames:
+//                    //addFrameAction.putValue(Action.LARGE_ICON_KEY, new StopIcon(SizingConstants.ACTION_ICON, Color.RED));
+//            	}
+//            }
+//        };
+//        disableFrameMgrAction.putValue(Action.NAME, "disableFrameMgr");
+//        disableFrameMgrAction.putValue(Action.LARGE_ICON_KEY, new PauseIcon(SizingConstants.LAUNCHER_ICON, Color.MAGENTA));
+//    	JXButton pause = new JXButton(disableFrameMgrAction);
+
 		getRootPaneExt().setToolBar(new ToggleButtonToolBar()); // inner Class
-        AbstractButton addFrameTbBtn = addActionToToolBar(this, addFrameAction);
-        LOG.info("Toolbar Button addFrameAction:"+addFrameTbBtn);
-        
-        
-//		super.setSize(600, 200); ==> pack()
-        
-//		getContentPane().add(jPanel);
-//		
-//    	jPanel.add(addFrameBtn, BorderLayout.WEST);
-//
-//    	if(this.window_ID==-1) jPanel.add(new JXLabel("empty", SwingConstants.CENTER), BorderLayout.CENTER);
-//    	
-//    	jPanel.add(pause, BorderLayout.EAST);
-
-//		jPanel.add(statusBar, BorderLayout.PAGE_END); // == SOUTH
-//		
-//		addWindowListener(this); // wg. - JFrame.DISPOSE_ON_CLOSE
+//		super.setSize(600, 200); fex size or better ==> pack()
 	}
 	
 	WindowFrame(String title) { // für RootFrame
@@ -149,11 +111,8 @@ Demnach können die JToggleButton in der ToolBar nicht JXButton sein, denn
 - public class JXButton extends JButton
 Es sei denn man implementiert JXToggleButton TODO
 
-	JToolBar.add(Action a) kann man nicht überschrieben, dess es liefert JButton,
-	daher:
-	ToggleButtonToolBar.addToggleButton(Action a)
-	
-------------------
+	JToolBar.add(Action a) kann man nicht überschreben, denn es liefert JButton,
+	daher: (aus Swingset2)
         JToggleButton addToggleButton(Action a) {
             JToggleButton tb = new JToggleButton(
                 (String)a.getValue(Action.NAME),            // Text wie Action.NAME
@@ -301,7 +260,8 @@ aus super:
         	// frame erstellen - demo starten: TODO: controler in root registrieren
         	
         	int frameNumber = windowCounter;
-        	LOG.info("makeFrame #"+frameNumber+" ... rootFrame:"+getRootFrame());
+        	//------------
+        	//------------
         	WindowFrame frame = getRootFrame().makeFrame(frameNumber, getRootFrame(), 1, null);
         	if(frame!=null) {
         		frame.setStartPosition(StartPosition.CenterInScreen);
@@ -316,7 +276,7 @@ aus super:
             	getRootFrame().getContentPane().add(demo.getControlPane()); // controler
             	getRootFrame().pack();
             	
-            	frame.getContentPane().add(demo.getDemoPane());
+            	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
         	}
@@ -325,8 +285,8 @@ aus super:
 		private AbstractDemo getInstanceOf(Class<?> demoClass, Frame frame) throws NoSuchMethodException, SecurityException,
 				InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 			Constructor<?> demoConstructor = demoClass.getConstructor(new Class[] { Frame.class }); // throws
-																										// NoSuchMethodException,
-																										// SecurityException
+																									// NoSuchMethodException,
+																									// SecurityException
 			AbstractDemo demo = (AbstractDemo) demoConstructor.newInstance(new Object[] { frame });
 			return demo;
 		}

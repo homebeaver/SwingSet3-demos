@@ -22,41 +22,9 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class ToolTipDemo extends AbstractDemo {
 
-    public static final String ICON_PATH = "toolbar/ToolTip.gif";
+	public static final String ICON_PATH = "toolbar/ToolTip.gif";
 
-    JXPanel presentationPanel = null;
-
-    @Override
-    public JXPanel getDemoPane() {
-    	if(presentationPanel!=null) {
-    		return presentationPanel;
-    	}
-    	presentationPanel = new JXPanel();
-//    	presentationPanel.setPreferredSize(PREFERRED_SIZE);
-    	presentationPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-
-    	presentationPanel.setLayout(new BoxLayout(presentationPanel, BoxLayout.Y_AXIS));
-    	presentationPanel.setBackground(Color.white);
-
-        // Create a Cow to put in the center of the panel.
-        Cow cow = new Cow();
-        cow.getAccessibleContext().setAccessibleName(getString("accessible_cow"));
-
-        // Set the tooltip text. Note, for fun, we also set more tooltip text
-        // descriptions for the cow down below in the Cow.contains() method.
-        cow.setToolTipText(getString("cow"));
-
-        // Add the cow midway down the panel
-//        presentationPanel.add(Box.createRigidArea(new Dimension(1, 150)));
-        presentationPanel.add(cow);
-        return presentationPanel;
-    }
-
-    @Override
-	public JXPanel getControlPane() {
-		// no controller
-		return new JXPanel(); // TODO default EmptyControler
-	}
+	private static final long serialVersionUID = 8981063652293220475L;
 
     /**
      * main method allows us to run as a standalone demo.
@@ -70,28 +38,31 @@ public class ToolTipDemo extends AbstractDemo {
      * ToolTipDemo Constructor
      */
     public ToolTipDemo(Frame frame) {
-        // Set the title for this demo, and an icon used to represent this
-        // demo inside the SwingSet2 app.
-//        super(swingset, "ToolTipDemo", ICON_PATH);
+    	super();
+//    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-//        // Set the layout manager.
-//        JPanel p = getDemoPanel();
-//        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-//        p.setBackground(Color.white);
-//
-//        // Create a Cow to put in the center of the panel.
-//        Cow cow = new Cow();
-//        cow.getAccessibleContext().setAccessibleName(getString("ToolTipDemo.accessible_cow"));
-//
-//        // Set the tooltip text. Note, for fun, we also set more tooltip text
-//        // descriptions for the cow down below in the Cow.contains() method.
-//        cow.setToolTipText(getString("ToolTipDemo.cow"));
-//
-//        // Add the cow midway down the panel
-//        p.add(Box.createRigidArea(new Dimension(1, 150)));
-//        p.add(cow);
+    	super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    	super.setBackground(Color.white);
+
+        // Create a Cow to put in the center of the panel.
+        Cow cow = new Cow();
+        cow.getAccessibleContext().setAccessibleName(getString("accessible_cow"));
+
+        // Set the tooltip text. Note, for fun, we also set more tooltip text
+        // descriptions for the cow down below in the Cow.contains() method.
+        cow.setToolTipText(getString("cow"));
+
+        // Add the cow midway down the panel
+//        super.add(Box.createRigidArea(new Dimension(1, 150)));
+        super.add(cow);
     }
 
+    @Override
+	public JXPanel getControlPane() {
+		// no controller
+		return new JXPanel(); // TODO default EmptyControler
+	}
 
     class Cow extends JXLabel {
         Polygon cowgon = new Polygon();

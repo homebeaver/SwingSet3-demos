@@ -33,49 +33,16 @@ import org.jdesktop.swingx.JXPanel;
  * @author Jeff Dinkins (inception)
  * @author EUG https://github.com/homebeaver (reorg)
  */
-/*
-
-ControlPane:
-	comboBoxPanel
-
-DemoPane:
-	facePanel + faceLabel : face = new Face();
-
- */
 public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
-    public static final String ICON_PATH = "toolbar/JComboBox.gif";
+	public static final String ICON_PATH = "toolbar/JComboBox.gif";
 
+	private static final long serialVersionUID = 6157959394784801204L;
     private static final Logger LOG = Logger.getLogger(ComboBoxDemo.class.getName());
     
-    JXPanel facePanel = null; // presentationPanel
     Face face;
     JXLabel xfaceLabel;
-
-    @Override
-    public JXPanel getDemoPane() {
-    	if(facePanel!=null) {
-        	LOG.fine("---------------facePanel:"+facePanel);
-    		return facePanel;
-    	}
-        face = new Face();
-        facePanel = new JXPanel(new BorderLayout());
-        facePanel.setPreferredSize(PREFERRED_SIZE);
-        facePanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-
-        xfaceLabel = new JXLabel(face);
-        facePanel.add(xfaceLabel, BorderLayout.CENTER);
-        return facePanel;
-    }
-
-    JXComboBox<String> hairCB;
-    JXComboBox<String> eyesCB;
-    JXComboBox<String> mouthCB;
-
-    JXComboBox<String> presetCB;
-
-    private Hashtable parts = new Hashtable();
-
+    
     /**
      * main method allows us to run as a standalone demo.
      */
@@ -89,16 +56,28 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
      * ComboBoxDemo Constructor
      */
     public ComboBoxDemo(Frame frame) {
-        // Set the title for this demo, and an icon used to represent this
-        // demo inside the SwingSet2 app.
-//        super(swingset, "ComboBoxDemo", ICON_PATH);
+        super(new BorderLayout());
+        super.setPreferredSize(PREFERRED_SIZE);
+        super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+
+        face = new Face();
+        xfaceLabel = new JXLabel(face);
+        super.add(xfaceLabel, BorderLayout.CENTER);
 
         getControlPane();
     }
 
-    JXPanel comboBoxPanel = null;
+    JXPanel comboBoxPanel = null; // Controller
+    JXComboBox<String> hairCB;
+    JXComboBox<String> eyesCB;
+    JXComboBox<String> mouthCB;
+
+    JXComboBox<String> presetCB;
+
+    private Hashtable parts = new Hashtable();
+
     @Override
-   public JXPanel getControlPane() {
+    public JXPanel getControlPane() {
     	if(comboBoxPanel!=null) {
         	LOG.fine("---------------comboBoxPanel:"+comboBoxPanel);
     		return comboBoxPanel;
@@ -112,7 +91,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         };
         comboBoxPanel.setLayout(new BoxLayout(comboBoxPanel, BoxLayout.Y_AXIS));
 
-        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
+        comboBoxPanel.add(Box.createRigidArea(VGAP15));
 
         JXLabel l = new JXLabel(getString("presets"));
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
@@ -121,7 +100,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         presetCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
         comboBoxPanel.add(presetCB);
         l.setLabelFor(presetCB);
-        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP30));
+        comboBoxPanel.add(Box.createRigidArea(VGAP30));
 
         l = new JXLabel(getString("hair_description"));
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
@@ -130,7 +109,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         hairCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
         comboBoxPanel.add(hairCB);
         l.setLabelFor(hairCB);
-        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
+        comboBoxPanel.add(Box.createRigidArea(VGAP15));
 
         l = new JXLabel(getString("eyes_description"));
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
@@ -139,7 +118,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         eyesCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
         comboBoxPanel.add(eyesCB);
         l.setLabelFor(eyesCB);
-        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
+        comboBoxPanel.add(Box.createRigidArea(VGAP15));
 
         l = new JXLabel(getString("mouth_description"));
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
@@ -148,7 +127,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         mouthCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
         comboBoxPanel.add(mouthCB);
         l.setLabelFor(mouthCB);
-        comboBoxPanel.add(Box.createRigidArea(DemoModule.VGAP15));
+        comboBoxPanel.add(Box.createRigidArea(VGAP15));
 
         // Fill up the remaining space
         comboBoxPanel.add(new JPanel(new BorderLayout()));
@@ -160,11 +139,11 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         controlledByObjects[2] = mouthCB;
         AccessibleRelation controlledByRelation =
             new AccessibleRelation(AccessibleRelation.CONTROLLED_BY_PROPERTY, controlledByObjects);
-        getDemoPane().getAccessibleContext().getAccessibleRelationSet().add(controlledByRelation);
+        this.getAccessibleContext().getAccessibleRelationSet().add(controlledByRelation);
 
         // Indicate that the hair, eyes and mouth combo boxes are controllers for the face panel.
         AccessibleRelation controllerForRelation =
-            new AccessibleRelation(AccessibleRelation.CONTROLLER_FOR_PROPERTY, getDemoPane());
+            new AccessibleRelation(AccessibleRelation.CONTROLLER_FOR_PROPERTY, this);
         hairCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
         eyesCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
         mouthCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
