@@ -1,7 +1,6 @@
 package com.klst.swingx;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
@@ -27,13 +26,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.SwingXUtilities;
-import org.jdesktop.swingx.icon.PauseIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
 
 import swingset.AbstractDemo;
 import swingset.StaticUtilities;
@@ -44,6 +40,9 @@ public class WindowFrame extends JXFrame {
     private static final Logger LOG = Logger.getLogger(WindowFrame.class.getName());
 
 	private static int windowCounter = 0; // für windowNo, wird pro ctor hochgezählt
+	int getWindowCounter() {
+		return windowCounter;
+	}
 	private int windowNo;
 	RootFrame rootFrame; // mit FrameManager
 	public RootFrame getRootFrame() {
@@ -67,31 +66,20 @@ public class WindowFrame extends JXFrame {
 		this.rootFrame = rootFrame;
 		this.window_ID = window_ID;
 		
+		getRootPaneExt().setToolBar(new ToggleButtonToolBar()); // inner Class
+		
 		// bei RootFrame: setJMenuBar:
 		if(this instanceof RootFrame) {
 			LOG.info("\nthis:"+this);
 //			JMenu jMenu = createPlafMenu(); // aus InteractiveTestCase
 //			JMenuBar jMenuBar = createAndFillMenuBar(null);
 			setJMenuBar(createAndFillMenuBar(null));
+
+//			JXPanel empty = new JXPanel();
+//			empty.setSize(680, 200);
+//        	getContentPane().add(empty); // no controler
+//        	pack();
 		}
-
-//		AbstractAction disableFrameMgrAction = new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//            	LOG.info("disable FrameMgr");
-//            	if(getRootFrame().enable) {
-//                	getRootFrame().enable = false;
-//                	// TODO for all frames:
-//                    //addFrameAction.putValue(Action.LARGE_ICON_KEY, new StopIcon(SizingConstants.ACTION_ICON, Color.RED));
-//            	}
-//            }
-//        };
-//        disableFrameMgrAction.putValue(Action.NAME, "disableFrameMgr");
-//        disableFrameMgrAction.putValue(Action.LARGE_ICON_KEY, new PauseIcon(SizingConstants.LAUNCHER_ICON, Color.MAGENTA));
-//    	JXButton pause = new JXButton(disableFrameMgrAction);
-
-		getRootPaneExt().setToolBar(new ToggleButtonToolBar()); // inner Class
-//		super.setSize(600, 200); fex size or better ==> pack()
 	}
 	
 	WindowFrame(String title) { // für RootFrame
@@ -172,6 +160,9 @@ aus super:
             AbstractButton button = tbtb.addToggleButton(action);
             button.setToolTipText((String)action.getValue(Action.SHORT_DESCRIPTION));
             button.setFocusable(false);
+            if(action instanceof DemoAction) {
+            	((DemoAction)action).setToggleButton(button);
+            }
             return button;
         }
         if (toolbar != null) {
@@ -240,12 +231,19 @@ aus super:
     public class DemoAction extends AbstractAction {
 
     	Class<?> democlass = null;
+    	AbstractButton jToggleButton = null;
+    	void setToggleButton(AbstractButton toggleButton) {
+    		jToggleButton = toggleButton;
+    	}
+    	AbstractButton getToggleButton() {
+    		return jToggleButton;
+    	}
 
     	public DemoAction(Class<?> democlass, String name, Icon icon) {
     		this(democlass, name, null, icon);
     	}
     	public DemoAction(Class<?> democlass, String name, Icon smallIcon, Icon icon) {
-    		super(name, icon);
+    		super(name, smallIcon);
     		this.democlass = democlass;
             super.putValue(Action.LARGE_ICON_KEY, icon);
             
@@ -259,10 +257,33 @@ aus super:
         public void actionPerformed(ActionEvent e) {
         	// frame erstellen - demo starten: TODO: controler in root registrieren
         	
-        	int frameNumber = windowCounter;
+//        	int frameNumber = windowCounter;
         	//------------
+//        	Object o = e.getSource(); 
+//        	JToolBar tb= (JToolBar) e.getSource(); // TODO cast nicht möglich !!!!!!!!!!!!!!!!!!!!
+//        	class com.klst.swingx.WindowFrame$ToggleButtonToolBar$1 cannot be cast to class javax.swing.JToolBar 
+//        	(com.klst.swingx.WindowFrame$ToggleButtonToolBar$1 is in unnamed module of loader 'app'; javax.swing.JToolBar is in module java.desktop of loader 'bootstrap')
+//
+//        	LOG.info("makeFrame #"+frameNumber+" ... e.Source="+tb );
+//        			//+ "rootFrame:"+getRootFrame());
+//    		Component[] cs = tb.getComponents();
+//    		for(int i=0;i<cs.length;i++) {
+//    			JToggleButton b = (JToggleButton)cs[i];
+//    			LOG.info("i="+i + " "+b.isSelected());
+//    		}
+        	JToolBar tb = getRootFrame().getToolBar();
+        	Component[] cs = tb.getComponents();
+        	// alle buttons auf NOT selected bis auf den, der zu dieser action gehört
+        	for(int i=0;i<cs.length;i++) {
+    			JToggleButton b = (JToggleButton)cs[i];
+    			if(b==this.getToggleButton()) {
+        			LOG.info("i="+i + " ----->button.isSelected="+b.isSelected() + " isthisButton="+(b==this.getToggleButton()));        		
+    			} else {
+    				b.setSelected(false);
+    			}
+        	}
         	//------------
-        	WindowFrame frame = getRootFrame().makeFrame(frameNumber, getRootFrame(), 1, null);
+        	WindowFrame frame = getRootFrame().makeFrame(getRootFrame(), 1, null);
         	if(frame!=null) {
         		frame.setStartPosition(StartPosition.CenterInScreen);
         		AbstractDemo demo = null;

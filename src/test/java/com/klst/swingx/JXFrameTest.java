@@ -37,8 +37,8 @@ public class JXFrameTest {
         WindowFrame gossip = new RootFrame(); // RootFrame contains a simple frame manager
         @SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
-//        gossip.pack(); // auto or fix:
-        gossip.setSize(600, 200);
+        gossip.pack(); // auto or fix:
+//        gossip.setSize(680, 200);
     	gossip.setVisible(true);
     }
 
