@@ -128,21 +128,6 @@ public class RootFrame extends WindowFrame {
     		LOG.info("------------ close/dispose "+current);
     		if(current!=null) {
     			current.dispose();
-
-//    			/*
-//
-//der Button für current hat isSelected() == true
-//und auch der für frame, dh hier ist es zu spät current zurückzusetzen
-//
-//    			 */
-//        		Component[] cs = ((ToggleButtonToolBar)this.getToolBar()).getComponents();
-//    			LOG.info("cs.length="+cs.length + " "+this.getToolBar());
-//        		for(int i=0;i<cs.length;i++) {
-//        			//LOG.info("i="+i + " "+cs[i]);
-//        			JToggleButton b = (JToggleButton)cs[i];
-//        			LOG.info("i="+i + " button.isSelected"+b.isSelected());
-//        		}
-        		
     		}
     		demos.put(null, frame);
     		

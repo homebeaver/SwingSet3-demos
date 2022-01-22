@@ -257,23 +257,9 @@ aus super:
         public void actionPerformed(ActionEvent e) {
         	// frame erstellen - demo starten: TODO: controler in root registrieren
         	
-//        	int frameNumber = windowCounter;
-        	//------------
-//        	Object o = e.getSource(); 
-//        	JToolBar tb= (JToolBar) e.getSource(); // TODO cast nicht möglich !!!!!!!!!!!!!!!!!!!!
-//        	class com.klst.swingx.WindowFrame$ToggleButtonToolBar$1 cannot be cast to class javax.swing.JToolBar 
-//        	(com.klst.swingx.WindowFrame$ToggleButtonToolBar$1 is in unnamed module of loader 'app'; javax.swing.JToolBar is in module java.desktop of loader 'bootstrap')
-//
-//        	LOG.info("makeFrame #"+frameNumber+" ... e.Source="+tb );
-//        			//+ "rootFrame:"+getRootFrame());
-//    		Component[] cs = tb.getComponents();
-//    		for(int i=0;i<cs.length;i++) {
-//    			JToggleButton b = (JToggleButton)cs[i];
-//    			LOG.info("i="+i + " "+b.isSelected());
-//    		}
+        	// deselect all toolbar buttons except this action button 
         	JToolBar tb = getRootFrame().getToolBar();
         	Component[] cs = tb.getComponents();
-        	// alle buttons auf NOT selected bis auf den, der zu dieser action gehört
         	for(int i=0;i<cs.length;i++) {
     			JToggleButton b = (JToggleButton)cs[i];
     			if(b==this.getToggleButton()) {
@@ -282,7 +268,10 @@ aus super:
     				b.setSelected(false);
     			}
         	}
-        	//------------
+        	
+        	// make new frame in center of screen - close the current demo frame, 
+        	// create instance of demo and add it to frame
+        	// add controller for demo to rootFrame
         	WindowFrame frame = getRootFrame().makeFrame(getRootFrame(), 1, null);
         	if(frame!=null) {
         		frame.setStartPosition(StartPosition.CenterInScreen);
@@ -294,7 +283,7 @@ aus super:
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-            	getRootFrame().getContentPane().add(demo.getControlPane()); // controler
+            	getRootFrame().getContentPane().add(demo.getControlPane()); // controller
             	getRootFrame().pack();
             	
             	frame.getContentPane().add(demo);
