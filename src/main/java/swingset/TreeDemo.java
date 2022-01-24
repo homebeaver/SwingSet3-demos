@@ -4,6 +4,7 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package swingset;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.io.BufferedReader;
@@ -47,42 +48,39 @@ public class TreeDemo extends AbstractDemo {
      */
     public TreeDemo(Frame frame) {
     	super(new BorderLayout());
-    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setPreferredSize(new Dimension(PREFERRED_WIDTH/2, PREFERRED_HEIGHT));
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        super.add(createTree(), BorderLayout.CENTER);
+        super.add(new JScrollPane(createTree()), BorderLayout.CENTER);
     }
 
     private JXButton expandButton;
     private JXButton collapseButton;
-/*
-        expandButton.setAction(DemoUtils.getAction(this, "expandAll"));
-        collapseButton.setAction(DemoUtils.getAction(this, "collapseAll"));
-    // <snip> JXTree convenience api
-    // expand/collapse all nodes
-    @Action
-    public void expandAll() {
-        tree.expandAll();
-    }
 
-    @Action
-    public void collapseAll() {
-        tree.collapseAll();
-    }
-    // </snip>
-
- */
-    public void collapseAll() {
-        tree.collapseAll(); // method in XTree
-    }
-
-    
     @Override
 	public JXPanel getControlPane() {
-		// no controller TODO alles ausklappen! ==> expandButton
-		return new JXPanel(); // TODO default EmptyControler
+		JXPanel buttons = new JXPanel();
+
+		// <snip> JXTree convenience api
+		expandButton = new JXButton(getString("expandAll"));
+		expandButton.setName("expandButton");
+		expandButton.addActionListener(ae -> {
+			tree.expandAll();
+		});
+		buttons.add(expandButton);
+		// </snip>
+
+		collapseButton = new JXButton(getString("collapseAll"));
+		collapseButton.setName("collapseButton");
+		collapseButton.addActionListener(ae -> {
+			tree.collapseAll();
+		});
+		buttons.add(collapseButton);
+
+		return buttons;
 	}
 
-    public JScrollPane createTree() {
+    private JXTree createTree() {
+    	
         DefaultMutableTreeNode top = new DefaultMutableTreeNode(getString("music"));
         DefaultMutableTreeNode catagory = null ;
         DefaultMutableTreeNode artist = null;
@@ -137,8 +135,7 @@ public class TreeDemo extends AbstractDemo {
         };
 
         tree.setEditable(true);
-
-        return new JScrollPane(tree);
+        return tree;
     }
 
     void updateDragEnabled(boolean dragEnabled) {
