@@ -283,8 +283,8 @@ aus super:
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-            	getRootFrame().getContentPane().add(demo.getControlPane()); // controller
-            	getRootFrame().pack();
+//				getRootFrame().getContentPane().removeAll(); // damit ist auch die toolbar weg
+				getRootFrame().addControler(demo.getControlPane()); // remove and add a controller
             	
             	frame.getContentPane().add(demo);
             	frame.pack();

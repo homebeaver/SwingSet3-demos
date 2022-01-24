@@ -10,6 +10,7 @@ import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 
 import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXPanel;
 
 import swingset.ButtonDemo;
 import swingset.ColorChooserDemo;
@@ -137,5 +138,13 @@ public class RootFrame extends WindowFrame {
 	}
 	// ...
 	// <<<
+
+	JXPanel currentController = null;
+	public void addControler(JXPanel controlPane) {
+		if(currentController!=null) getContentPane().remove(currentController);
+		currentController = controlPane;
+		getContentPane().add(currentController);
+		pack();
+	}
 
 }
