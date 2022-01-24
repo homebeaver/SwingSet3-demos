@@ -56,4 +56,8 @@ public abstract class AbstractDemo extends JXPanel {
     	return StaticUtilities.getResourceAsString(key, resourceKey);
     }
 
+    char getMnemonic(String key) {
+        return (getString(key)).charAt(0);
+    }
+
 }
