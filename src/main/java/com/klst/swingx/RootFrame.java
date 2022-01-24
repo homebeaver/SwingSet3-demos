@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
+import javax.swing.UIManager;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
@@ -43,6 +44,7 @@ public class RootFrame extends WindowFrame {
 	public RootFrame() {
 		super(TITLE);
 		super.rootFrame = this;
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
 		demos = new HashMap<Class<?>, WindowFrame>();
 		// TODO ... so initialisieren geht angeblich auch für static var
 //		demos = Map.ofEntries(
