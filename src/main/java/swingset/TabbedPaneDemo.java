@@ -5,6 +5,7 @@ package swingset;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,27 +15,75 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.SingleSelectionModel;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.jdesktop.swingx.JXPanel;
 
 /**
  * JTabbedPane Demo
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-public class TabbedPaneDemo extends DemoModule implements ActionListener {
-
-	private static final long serialVersionUID = 3060212344858037094L;
+public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
 
 	public static final String ICON_PATH = "toolbar/JTabbedPane.gif";
 
-	HeadSpin spin;
+	private static final long serialVersionUID = 3060212344858037094L;
+
+    /**
+     * main method allows us to run as a standalone demo.
+     */
+    public static void main(String[] args) {
+//        TabbedPaneDemo demo = new TabbedPaneDemo(null);
+//        demo.mainImpl();
+    }
 
     JTabbedPane tabbedpane;
+	HeadSpin spin;
+
+    /**
+     * TabbedPaneDemo Constructor
+     */
+    private static final String IMG_PATH = "tabbedpane/"; // prefix dir
+    public TabbedPaneDemo(Frame frame) {
+    	super(new BorderLayout());
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        // create tab
+        tabbedpane = new JTabbedPane();
+        super.add(tabbedpane, BorderLayout.CENTER);
+
+        JLabel pix = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"laine.jpg"));
+        tabbedpane.add(getString("laine"), pix);
+
+        pix = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"ewan.jpg"));
+        tabbedpane.add(getString("ewan"), pix);
+
+        pix = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"hania.jpg"));
+        tabbedpane.add(getString("hania"), pix);
+
+        spin = new HeadSpin();
+        tabbedpane.add(getString("bounce"), spin);
+
+        tabbedpane.getModel().addChangeListener(
+           new ChangeListener() {
+              public void stateChanged(ChangeEvent e) {
+                  SingleSelectionModel model = (SingleSelectionModel) e.getSource();
+                  if(model.getSelectedIndex() == tabbedpane.getTabCount()-1) {
+                      spin.go();
+                  }
+              }
+           }
+        );
+
+    }
+
 
     ButtonGroup group;
 
@@ -43,30 +92,16 @@ public class TabbedPaneDemo extends DemoModule implements ActionListener {
     JRadioButton left;
     JRadioButton right;
 
-    /**
-     * main method allows us to run as a standalone demo.
-     */
-    public static void main(String[] args) {
-        TabbedPaneDemo demo = new TabbedPaneDemo(null);
-        demo.mainImpl();
-    }
-
-    /**
-     * TabbedPaneDemo Constructor
-     */
-    public TabbedPaneDemo(SwingSet2 swingset) {
-        // Set the title for this demo, and an icon used to represent this
-        // demo inside the SwingSet2 app.
-        super(swingset, "TabbedPaneDemo", ICON_PATH);
+    @Override
+	public JXPanel getControlPane() {
 
         // create tab position controls
-        JPanel tabControls = new JPanel();
-        tabControls.add(new JLabel(getString("TabbedPaneDemo.label")));
-        top    = (JRadioButton) tabControls.add(new JRadioButton(getString("TabbedPaneDemo.top")));
-        left   = (JRadioButton) tabControls.add(new JRadioButton(getString("TabbedPaneDemo.left")));
-        bottom = (JRadioButton) tabControls.add(new JRadioButton(getString("TabbedPaneDemo.bottom")));
-        right  = (JRadioButton) tabControls.add(new JRadioButton(getString("TabbedPaneDemo.right")));
-        getDemoPanel().add(tabControls, BorderLayout.NORTH);
+        JXPanel tabControls = new JXPanel();
+        tabControls.add(new JLabel(getString("label")));
+        top    = (JRadioButton) tabControls.add(new JRadioButton(getString("top")));
+        left   = (JRadioButton) tabControls.add(new JRadioButton(getString("left")));
+        bottom = (JRadioButton) tabControls.add(new JRadioButton(getString("bottom")));
+        right  = (JRadioButton) tabControls.add(new JRadioButton(getString("right")));
 
         group = new ButtonGroup();
         group.add(top);
@@ -81,36 +116,7 @@ public class TabbedPaneDemo extends DemoModule implements ActionListener {
         left.addActionListener(this);
         right.addActionListener(this);
 
-        // create tab
-        tabbedpane = new JTabbedPane();
-        getDemoPanel().add(tabbedpane, BorderLayout.CENTER);
-
-        String name = getString("TabbedPaneDemo.laine");
-        JLabel pix = new JLabel(createImageIcon("tabbedpane/laine.jpg", name));
-        tabbedpane.add(name, pix);
-
-        name = getString("TabbedPaneDemo.ewan");
-        pix = new JLabel(createImageIcon("tabbedpane/ewan.jpg", name));
-        tabbedpane.add(name, pix);
-
-        name = getString("TabbedPaneDemo.hania");
-        pix = new JLabel(createImageIcon("tabbedpane/hania.jpg", name));
-        tabbedpane.add(name, pix);
-
-        name = getString("TabbedPaneDemo.bounce");
-        spin = new HeadSpin();
-        tabbedpane.add(name, spin);
-
-        tabbedpane.getModel().addChangeListener(
-           new ChangeListener() {
-              public void stateChanged(ChangeEvent e) {
-                  SingleSelectionModel model = (SingleSelectionModel) e.getSource();
-                  if(model.getSelectedIndex() == tabbedpane.getTabCount()-1) {
-                      spin.go();
-                  }
-              }
-           }
-        );
+        return tabControls;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -144,12 +150,12 @@ public class TabbedPaneDemo extends DemoModule implements ActionListener {
 
         public HeadSpin() {
             setBackground(Color.black);
-            icon[0] = createImageIcon("tabbedpane/ewan.gif", getString("TabbedPaneDemo.ewan"));
-            icon[1] = createImageIcon("tabbedpane/stephen.gif", getString("TabbedPaneDemo.stephen"));
-            icon[2] = createImageIcon("tabbedpane/david.gif", getString("TabbedPaneDemo.david"));
-            icon[3] = createImageIcon("tabbedpane/matthew.gif", getString("TabbedPaneDemo.matthew"));
-            icon[4] = createImageIcon("tabbedpane/blake.gif", getString("TabbedPaneDemo.blake"));
-            icon[5] = createImageIcon("tabbedpane/brooke.gif", getString("TabbedPaneDemo.brooke"));
+            icon[0] = StaticUtilities.createImageIcon(IMG_PATH+"ewan.gif");
+            icon[1] = StaticUtilities.createImageIcon(IMG_PATH+"stephen.gif");
+            icon[2] = StaticUtilities.createImageIcon(IMG_PATH+"david.gif");
+            icon[3] = StaticUtilities.createImageIcon(IMG_PATH+"matthew.gif");
+            icon[4] = StaticUtilities.createImageIcon(IMG_PATH+"blake.gif");
+            icon[5] = StaticUtilities.createImageIcon(IMG_PATH+"brooke.gif");
 
             /*
             for(int i = 0; i < 6; i++) {
