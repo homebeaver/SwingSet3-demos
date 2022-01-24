@@ -35,6 +35,7 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
 	public static final String ICON_PATH = "toolbar/JTabbedPane.gif";
 
 	private static final long serialVersionUID = 3060212344858037094L;
+    private static final String IMG_PATH = "tabbedpane/"; // prefix dir
 
     /**
      * main method allows us to run as a standalone demo.
@@ -50,7 +51,6 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
     /**
      * TabbedPaneDemo Constructor
      */
-    private static final String IMG_PATH = "tabbedpane/"; // prefix dir
     public TabbedPaneDemo(Frame frame) {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
