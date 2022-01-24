@@ -63,7 +63,12 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class TableDemo extends AbstractDemo {
 	
-    public static final String ICON_PATH = "toolbar/JTable.gif";
+	public static final String ICON_PATH = "toolbar/JTable.gif";
+
+	private static final long serialVersionUID = -3563812140907870880L;
+    
+    private static final int INITIAL_ROWHEIGHT = 33;
+    private static final String IMG_PATH = "ImageClub/food/"; // prefix dir
 
     /**
      * main method allows us to run as a standalone demo.
@@ -72,8 +77,8 @@ public class TableDemo extends AbstractDemo {
 //        TableDemo demo = new TableDemo(null);
 //        demo.mainImpl();
     }
-    
-    JScrollPane tableAggregate;
+
+    JScrollPane scrollpane;
     JTable      tableView;
 
     /**
@@ -85,11 +90,11 @@ public class TableDemo extends AbstractDemo {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
     	
         // Create the table.
-        tableAggregate = createTable();
-        super.add(tableAggregate, BorderLayout.CENTER);
+    	tableView = createTable();
+        scrollpane = new JScrollPane(tableView);
+        super.add(scrollpane, BorderLayout.CENTER);
         
-        super.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-        	.put(KeyStroke.getKeyStroke("ctrl P"), "print");
+        super.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("ctrl P"), "print");
 
 		super.getActionMap().put("print", new AbstractAction() {
 			public void actionPerformed(ActionEvent ae) {
@@ -98,9 +103,186 @@ public class TableDemo extends AbstractDemo {
 		});
     }
 
+    private JTable createTable() {
+
+        final String[] names = {
+          getString("first_name"),
+          getString("last_name"),
+          getString("favorite_color"),
+          getString("favorite_movie"),
+          getString("favorite_number"),
+          getString("favorite_food")
+        };
+
+        ImageIcon apple        = StaticUtilities.createImageIcon(IMG_PATH+"apple.jpg"); //,      getString("apple"));
+        ImageIcon asparagus    = StaticUtilities.createImageIcon(IMG_PATH+"asparagus.jpg"); //,  getString("asparagus"));
+        ImageIcon banana       = StaticUtilities.createImageIcon(IMG_PATH+"banana.jpg"); //,     getString("banana"));
+        ImageIcon broccoli     = StaticUtilities.createImageIcon(IMG_PATH+"broccoli.jpg"); //,   getString("broccoli"));
+        ImageIcon cantaloupe   = StaticUtilities.createImageIcon(IMG_PATH+"cantaloupe.jpg"); //, getString("cantaloupe"));
+        ImageIcon carrot       = StaticUtilities.createImageIcon(IMG_PATH+"carrot.jpg"); //,     getString("carrot"));
+        ImageIcon corn         = StaticUtilities.createImageIcon(IMG_PATH+"corn.jpg"); //,       getString("corn"));
+// intentionally added : MissingResource: Couldn't find value for: TableDemo.donut and image
+        ImageIcon donut        = StaticUtilities.createImageIcon(IMG_PATH+"donut.jpg"); //,      getString("donut"));
+        ImageIcon grapes       = StaticUtilities.createImageIcon(IMG_PATH+"grapes.jpg"); //,     getString("grapes"));
+        ImageIcon grapefruit   = StaticUtilities.createImageIcon(IMG_PATH+"grapefruit.jpg"); //, getString("grapefruit"));
+        ImageIcon kiwi         = StaticUtilities.createImageIcon(IMG_PATH+"kiwi.jpg"); //,       getString("kiwi"));
+        ImageIcon onion        = StaticUtilities.createImageIcon(IMG_PATH+"onion.jpg"); //,      getString("onion"));
+        ImageIcon pear         = StaticUtilities.createImageIcon(IMG_PATH+"pear.jpg"); //,       getString("pear"));
+        ImageIcon peach        = StaticUtilities.createImageIcon(IMG_PATH+"peach.jpg"); //,      getString("peach"));
+        ImageIcon pepper       = StaticUtilities.createImageIcon(IMG_PATH+"pepper.jpg"); //,     getString("pepper"));
+        ImageIcon pickle       = StaticUtilities.createImageIcon(IMG_PATH+"pickle.jpg"); //,     getString("pickle"));
+        ImageIcon pineapple    = StaticUtilities.createImageIcon(IMG_PATH+"pineapple.jpg"); //,  getString("pineapple"));
+        ImageIcon raspberry    = StaticUtilities.createImageIcon(IMG_PATH+"raspberry.jpg"); //,  getString("raspberry"));
+        ImageIcon sparegrass   = StaticUtilities.createImageIcon(IMG_PATH+"asparagus.jpg"); //,  getString("sparegrass"));
+        ImageIcon strawberry   = StaticUtilities.createImageIcon(IMG_PATH+"strawberry.jpg"); //, getString("strawberry"));
+        ImageIcon tomato       = StaticUtilities.createImageIcon(IMG_PATH+"tomato.jpg"); //,     getString("tomato"));
+        ImageIcon watermelon   = StaticUtilities.createImageIcon(IMG_PATH+"watermelon.jpg"); //, getString("watermelon"));
+
+        NamedColor aqua        = new NamedColor(new Color(127, 255, 212), getString("aqua"));
+        NamedColor beige       = new NamedColor(new Color(245, 245, 220), getString("beige"));
+        NamedColor black       = new NamedColor(Color.black, getString("black"));
+        NamedColor blue        = new NamedColor(new Color(0, 0, 222), getString("blue"));
+        NamedColor eblue       = new NamedColor(Color.blue, getString("eblue"));
+        NamedColor jfcblue     = new NamedColor(new Color(204, 204, 255), getString("jfcblue"));
+        NamedColor jfcblue2    = new NamedColor(new Color(153, 153, 204), getString("jfcblue2"));
+        NamedColor cybergreen  = new NamedColor(Color.green.darker().brighter(), getString("cybergreen"));
+        NamedColor darkgreen   = new NamedColor(new Color(0, 100, 75), getString("darkgreen"));
+        NamedColor forestgreen = new NamedColor(Color.green.darker(), getString("forestgreen"));
+        NamedColor gray        = new NamedColor(Color.gray, getString("gray"));
+        NamedColor green       = new NamedColor(Color.green, getString("green"));
+        NamedColor orange      = new NamedColor(new Color(255, 165, 0), getString("orange"));
+// intentionally added : MissingResource: Couldn't find value for: TableDemo.pink
+        NamedColor pink        = new NamedColor(Color.PINK, getString("pink"));
+        NamedColor purple      = new NamedColor(new Color(160, 32, 240),  getString("purple"));
+        NamedColor red         = new NamedColor(Color.red, getString("red"));
+        NamedColor rustred     = new NamedColor(Color.red.darker(), getString("rustred"));
+        NamedColor sunpurple   = new NamedColor(new Color(100, 100, 255), getString("sunpurple"));
+        NamedColor suspectpink = new NamedColor(new Color(255, 105, 180), getString("suspectpink"));
+        NamedColor turquoise   = new NamedColor(new Color(0, 255, 255), getString("turquoise"));
+        NamedColor violet      = new NamedColor(new Color(238, 130, 238), getString("violet"));
+        NamedColor yellow      = new NamedColor(Color.yellow, getString("yellow"));
+
+        // Create the dummy data (a few rows of names)
+        //  "First Name", "Last Name", "Favorite Color", Movie from props, "image", "No.", "Vegetarian" 
+        final Object[][] data = {
+          {"Mike", "Albers",      green,       getString("brazil"), Double.valueOf(44.0), strawberry},
+          {"Mark", "Andrews",     blue,        getString("curse"), Double.valueOf(3), grapes},
+          {"Brian", "Beck",       black,       getString("bluesbros"), Double.valueOf(2.7182818285), raspberry},
+          {"Lara", "Bunni",       red,         getString("airplane"), Double.valueOf(15), strawberry},
+          {"Roger", "Brinkley",   blue,        getString("man"), Double.valueOf(13), peach},
+          {"Brent", "Christian",  black,       getString("bladerunner"), Double.valueOf(23), broccoli},
+          {"Mark", "Davidson",    darkgreen,   getString("brazil"), Double.valueOf(27), asparagus},
+          {"Jeff", "Dinkins",     blue,        getString("ladyvanishes"), Double.valueOf(8), kiwi},
+          {"Ewan", "Dinkins",     yellow,      getString("bugs"), Double.valueOf(2), strawberry},
+          {"Amy", "Fowler",       violet,      getString("reservoir"), Double.valueOf(3), raspberry},
+          {"Hania", "Gajewska",   purple,      getString("jules"), Double.valueOf(5), raspberry},
+          {"David", "Geary",      blue,        getString("pulpfiction"), Double.valueOf(3), watermelon},
+// intentionally aktivated : MissingResource: Couldn't find value for: TableDemo.tennis, TableDemo.donut, ...
+        {"James", "Gosling",    pink,        getString("tennis"), Double.valueOf(21), donut},
+          {"Eric", "Hawkes",      blue,        getString("bladerunner"), Double.valueOf(.693), pickle},
+          {"Shannon", "Hickey",   green,       getString("shawshank"), Double.valueOf(2), grapes},
+          {"Earl", "Johnson",     green,       getString("pulpfiction"), Double.valueOf(8), carrot},
+          {"Robi", "Khan",        green,       getString("goodfellas"), Double.valueOf(89), apple},
+          {"Robert", "Kim",       blue,        getString("mohicans"), Double.valueOf(655321), strawberry},
+          {"Janet", "Koenig",     turquoise,   getString("lonestar"), Double.valueOf(7), peach},
+          {"Jeff", "Kesselman",   blue,        getString("stuntman"), Double.valueOf(17), pineapple},
+          {"Onno", "Kluyt",       orange,      getString("oncewest"), Double.valueOf(8), broccoli},
+          {"Peter", "Korn",       sunpurple,   getString("musicman"), Double.valueOf(12), sparegrass},
+          {"Rick", "Levenson",    black,       getString("harold"), Double.valueOf(1327), raspberry},
+          {"Brian", "Lichtenwalter", jfcblue,  getString("fifthelement"), Double.valueOf(22), pear},
+          {"Malini", "Minasandram", beige,     getString("joyluck"), Double.valueOf(9), corn},
+          {"Michael", "Martak",   green,       getString("city"), Double.valueOf(3), strawberry},
+          {"David", "Mendenhall", forestgreen, getString("schindlerslist"), Double.valueOf(7), peach},
+          {"Phil", "Milne",       suspectpink, getString("withnail"), Double.valueOf(3), banana},
+          {"Lynn", "Monsanto",    cybergreen,  getString("dasboot"), Double.valueOf(52), peach},
+          {"Hans", "Muller",      rustred,     getString("eraserhead"), Double.valueOf(0), pineapple},
+          {"Joshua", "Outwater",  blue,        getString("labyrinth"), Double.valueOf(3), pineapple},
+          {"Tim", "Prinzing",     blue,        getString("firstsight"), Double.valueOf(69), pepper},
+          {"Raj", "Premkumar",    jfcblue2,    getString("none"), Double.valueOf(7), broccoli},
+          {"Howard", "Rosen",     green,       getString("defending"), Double.valueOf(7), strawberry},
+          {"Ray", "Ryan",         black,       getString("buckaroo"),
+           Double.valueOf(3.141592653589793238462643383279502884197169399375105820974944), banana},
+          {"Georges", "Saab",     aqua,        getString("bicycle"), Double.valueOf(290), cantaloupe},
+          {"Tom", "Santos",       blue,        getString("spinaltap"), Double.valueOf(241), pepper},
+          {"Rich", "Schiavi",     blue,        getString("repoman"), Double.valueOf(0xFF), pepper},
+          {"Nancy", "Schorr",     green,       getString("fifthelement"), Double.valueOf(47), watermelon},
+          {"Keith", "Sprochi",    darkgreen,   getString("2001"), Double.valueOf(13), watermelon},
+          {"Matt", "Tucker",      eblue,       getString("starwars"), Double.valueOf(2), broccoli},
+          {"Dmitri", "Trembovetski", red,      getString("aliens"), Double.valueOf(222), tomato},
+          {"Scott", "Violet",     violet,      getString("raiders"), Double.valueOf(-97), banana},
+          {"Kathy", "Walrath",    darkgreen,   getString("thinman"), Double.valueOf(8), pear},
+          {"Nathan", "Walrath",   black,       getString("chusingura"), Double.valueOf(3), grapefruit},
+          {"Steve", "Wilson",     green,       getString("raiders"), Double.valueOf(7), onion},
+          {"Kathleen", "Zelony",  gray,        getString("dog"), Double.valueOf(13), grapes}
+        };
+
+        // Create a model of the data.
+        TableModel dataModel = new AbstractTableModel() {
+            public int getColumnCount() { return names.length; }
+            public int getRowCount() { return data.length;}
+            public Object getValueAt(int row, int col) {return data[row][col];}
+            public String getColumnName(int column) {return names[column];}
+            public Class<?> getColumnClass(int c) {return getValueAt(0, c).getClass();}
+            public boolean isCellEditable(int row, int col) {return col != 5;}
+            public void setValueAt(Object aValue, int row, int column) { data[row][column] = aValue; }
+         };
+
+
+        // Create the table
+        tableView = new JTable(dataModel);
+        TableRowSorter sorter = new TableRowSorter(dataModel);
+        tableView.setRowSorter(sorter);
+
+        // Show colors by rendering them in their own color.
+        DefaultTableCellRenderer colorRenderer = new DefaultTableCellRenderer() {
+            public void setValue(Object value) {
+                if (value instanceof NamedColor) {
+                    NamedColor c = (NamedColor) value;
+                    setBackground(c);
+                    setForeground(c.getTextColor());
+                    setText(c.toString());
+                } else {
+                    super.setValue(value);
+                }
+            }
+        };
+
+        // Create a combo box to show that you can use one in a table.
+        JComboBox<NamedColor> comboBox = new JComboBox<NamedColor>();
+        comboBox.addItem(aqua);
+        comboBox.addItem(beige);
+        comboBox.addItem(black);
+        comboBox.addItem(blue);
+        comboBox.addItem(eblue);
+        comboBox.addItem(jfcblue);
+        comboBox.addItem(jfcblue2);
+        comboBox.addItem(cybergreen);
+        comboBox.addItem(darkgreen);
+        comboBox.addItem(forestgreen);
+        comboBox.addItem(gray);
+        comboBox.addItem(green);
+        comboBox.addItem(orange);
+        comboBox.addItem(purple);
+        comboBox.addItem(red);
+        comboBox.addItem(rustred);
+        comboBox.addItem(sunpurple);
+        comboBox.addItem(suspectpink);
+        comboBox.addItem(turquoise);
+        comboBox.addItem(violet);
+        comboBox.addItem(yellow);
+
+        TableColumn colorColumn = tableView.getColumn(getString("favorite_color"));
+        // Use the combo box as the editor in the "Favorite Color" column.
+        colorColumn.setCellEditor(new DefaultCellEditor(comboBox));
+
+        colorRenderer.setHorizontalAlignment(JLabel.CENTER);
+        colorColumn.setCellRenderer(colorRenderer);
+
+        tableView.setRowHeight(INITIAL_ROWHEIGHT);
+        return tableView;
+    }
 
     // Controller:
-    JScrollPane scrollpane;
     Dimension   origin = new Dimension(0, 0);
 
     JCheckBox   isColumnReorderingAllowedCheckBox;
@@ -130,19 +312,8 @@ public class TableDemo extends AbstractDemo {
 
     JXPanel      controlPanel;
 
-    String path = "ImageClub/food/";
-
-    final int INITIAL_ROWHEIGHT = 33;
-
     @Override
 	public JXPanel getControlPane() {
-//    /**
-//     * TableDemo Constructor
-//     */
-//    public TableDemo(SwingSet2 swingset) {
-//        super(swingset, "TableDemo", ICON_PATH);
-//
-//        getDemoPanel().setLayout(new BorderLayout());
         controlPanel = new JXPanel();
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
         JPanel cbPanel = new JPanel(new GridLayout(3, 2));
@@ -159,7 +330,6 @@ public class TableDemo extends AbstractDemo {
         JPanel comboPanel = new JPanel(new GridLayout(2, 1));
         JPanel printPanel = new JPanel(new ColumnLayout());
 
-//        getDemoPanel().add(controlPanel, BorderLayout.NORTH);
         Vector relatedComponents = new Vector();
 
 
@@ -266,12 +436,6 @@ public class TableDemo extends AbstractDemo {
         relatedComponents.add(interCellSpacingSlider);
         relatedComponents.add(rowHeightSlider);
         buildAccessibleGroup(relatedComponents);
-
-
-        // Create the table.
-//        tableAggregate = createTable();
-//        getDemoPanel().add(tableAggregate, BorderLayout.CENTER);
-
 
         // ComboBox for selection modes.
         JPanel selectMode = new JPanel();
@@ -381,15 +545,7 @@ public class TableDemo extends AbstractDemo {
         controlPanel.add(printPanel);
 
         setTableControllers(); // Set accessibility information
-
-//        getDemoPanel().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-//            .put(KeyStroke.getKeyStroke("ctrl P"), "print");
-//
-//        getDemoPanel().getActionMap().put("print", new AbstractAction() {
-//            public void actionPerformed(ActionEvent ae) {
-//                printTable();
-//            }
-//        });
+        
         return controlPanel;
     }
 
@@ -425,27 +581,17 @@ public class TableDemo extends AbstractDemo {
      * back to the controllers.
      */
     private void setTableControllers() {
-
         // Set up the relationships to show what controls the table
-        setAccessibleController(isColumnReorderingAllowedCheckBox,
-                                tableAggregate);
-        setAccessibleController(showHorizontalLinesCheckBox,
-                                tableAggregate);
-        setAccessibleController(showVerticalLinesCheckBox,
-                                tableAggregate);
-        setAccessibleController(isColumnSelectionAllowedCheckBox,
-                                tableAggregate);
-        setAccessibleController(isRowSelectionAllowedCheckBox,
-                                tableAggregate);
-        setAccessibleController(interCellSpacingSlider,
-                                tableAggregate);
-        setAccessibleController(rowHeightSlider,
-                                tableAggregate);
-        setAccessibleController(selectionModeComboBox,
-                                tableAggregate);
-        setAccessibleController(resizeModeComboBox,
-                                tableAggregate);
-    } // setTableControllers()
+        setAccessibleController(isColumnReorderingAllowedCheckBox, scrollpane);
+        setAccessibleController(showHorizontalLinesCheckBox, scrollpane);
+        setAccessibleController(showVerticalLinesCheckBox, scrollpane);
+        setAccessibleController(isColumnSelectionAllowedCheckBox, scrollpane);
+        setAccessibleController(isRowSelectionAllowedCheckBox, scrollpane);
+        setAccessibleController(interCellSpacingSlider, scrollpane);
+        setAccessibleController(rowHeightSlider, scrollpane);
+        setAccessibleController(selectionModeComboBox, scrollpane);
+        setAccessibleController(resizeModeComboBox, scrollpane);
+    }
 
     /**
      * Sets up accessibility relationships to denote that one
@@ -453,8 +599,7 @@ public class TableDemo extends AbstractDemo {
      * set on the controller object, and the CONTROLLED_BY
      * property is set on the target object.
      */
-    private void setAccessibleController(JComponent controller,
-                                        JComponent target) {
+    private void setAccessibleController(JComponent controller, JComponent target) {
         AccessibleRelationSet controllerRelations =
             controller.getAccessibleContext().getAccessibleRelationSet();
         AccessibleRelationSet targetRelations =
@@ -467,189 +612,6 @@ public class TableDemo extends AbstractDemo {
             new AccessibleRelation(
                 AccessibleRelation.CONTROLLED_BY, controller));
     } // setAccessibleController()
-
-    public JScrollPane createTable() {
-
-        final String[] names = {
-          getString("first_name"),
-          getString("last_name"),
-          getString("favorite_color"),
-          getString("favorite_movie"),
-          getString("favorite_number"),
-          getString("favorite_food")
-        };
-
-//        ImageIconi = StaticUtilities.createImageIcon("combobox/" + name + "hair.jpg"); //, i18n_name + i18n_hair);
-        String pd = "ImageClub/food/"; // prefix dir
-        ImageIcon apple        = StaticUtilities.createImageIcon(pd+"apple.jpg"); //,      getString("apple"));
-        ImageIcon asparagus    = StaticUtilities.createImageIcon(pd+"asparagus.jpg"); //,  getString("asparagus"));
-        ImageIcon banana       = StaticUtilities.createImageIcon(pd+"banana.jpg"); //,     getString("banana"));
-        ImageIcon broccoli     = StaticUtilities.createImageIcon(pd+"broccoli.jpg"); //,   getString("broccoli"));
-        ImageIcon cantaloupe   = StaticUtilities.createImageIcon(pd+"cantaloupe.jpg"); //, getString("cantaloupe"));
-        ImageIcon carrot       = StaticUtilities.createImageIcon(pd+"carrot.jpg"); //,     getString("carrot"));
-        ImageIcon corn         = StaticUtilities.createImageIcon(pd+"corn.jpg"); //,       getString("corn"));
-// intentionally added : MissingResource: Couldn't find value for: TableDemo.donut and image
-        ImageIcon donut        = StaticUtilities.createImageIcon(pd+"donut.jpg"); //,      getString("donut"));
-        ImageIcon grapes       = StaticUtilities.createImageIcon(pd+"grapes.jpg"); //,     getString("grapes"));
-        ImageIcon grapefruit   = StaticUtilities.createImageIcon(pd+"grapefruit.jpg"); //, getString("grapefruit"));
-        ImageIcon kiwi         = StaticUtilities.createImageIcon(pd+"kiwi.jpg"); //,       getString("kiwi"));
-        ImageIcon onion        = StaticUtilities.createImageIcon(pd+"onion.jpg"); //,      getString("onion"));
-        ImageIcon pear         = StaticUtilities.createImageIcon(pd+"pear.jpg"); //,       getString("pear"));
-        ImageIcon peach        = StaticUtilities.createImageIcon(pd+"peach.jpg"); //,      getString("peach"));
-        ImageIcon pepper       = StaticUtilities.createImageIcon(pd+"pepper.jpg"); //,     getString("pepper"));
-        ImageIcon pickle       = StaticUtilities.createImageIcon(pd+"pickle.jpg"); //,     getString("pickle"));
-        ImageIcon pineapple    = StaticUtilities.createImageIcon(pd+"pineapple.jpg"); //,  getString("pineapple"));
-        ImageIcon raspberry    = StaticUtilities.createImageIcon(pd+"raspberry.jpg"); //,  getString("raspberry"));
-        ImageIcon sparegrass   = StaticUtilities.createImageIcon(pd+"asparagus.jpg"); //,  getString("sparegrass"));
-        ImageIcon strawberry   = StaticUtilities.createImageIcon(pd+"strawberry.jpg"); //, getString("strawberry"));
-        ImageIcon tomato       = StaticUtilities.createImageIcon(pd+"tomato.jpg"); //,     getString("tomato"));
-        ImageIcon watermelon   = StaticUtilities.createImageIcon(pd+"watermelon.jpg"); //, getString("watermelon"));
-
-        NamedColor aqua        = new NamedColor(new Color(127, 255, 212), getString("aqua"));
-        NamedColor beige       = new NamedColor(new Color(245, 245, 220), getString("beige"));
-        NamedColor black       = new NamedColor(Color.black, getString("black"));
-        NamedColor blue        = new NamedColor(new Color(0, 0, 222), getString("blue"));
-        NamedColor eblue       = new NamedColor(Color.blue, getString("eblue"));
-        NamedColor jfcblue     = new NamedColor(new Color(204, 204, 255), getString("jfcblue"));
-        NamedColor jfcblue2    = new NamedColor(new Color(153, 153, 204), getString("jfcblue2"));
-        NamedColor cybergreen  = new NamedColor(Color.green.darker().brighter(), getString("cybergreen"));
-        NamedColor darkgreen   = new NamedColor(new Color(0, 100, 75), getString("darkgreen"));
-        NamedColor forestgreen = new NamedColor(Color.green.darker(), getString("forestgreen"));
-        NamedColor gray        = new NamedColor(Color.gray, getString("gray"));
-        NamedColor green       = new NamedColor(Color.green, getString("green"));
-        NamedColor orange      = new NamedColor(new Color(255, 165, 0), getString("orange"));
-// intentionally added : MissingResource: Couldn't find value for: TableDemo.pink
-        NamedColor pink        = new NamedColor(Color.PINK, getString("pink"));
-        NamedColor purple      = new NamedColor(new Color(160, 32, 240),  getString("purple"));
-        NamedColor red         = new NamedColor(Color.red, getString("red"));
-        NamedColor rustred     = new NamedColor(Color.red.darker(), getString("rustred"));
-        NamedColor sunpurple   = new NamedColor(new Color(100, 100, 255), getString("sunpurple"));
-        NamedColor suspectpink = new NamedColor(new Color(255, 105, 180), getString("suspectpink"));
-        NamedColor turquoise   = new NamedColor(new Color(0, 255, 255), getString("turquoise"));
-        NamedColor violet      = new NamedColor(new Color(238, 130, 238), getString("violet"));
-        NamedColor yellow      = new NamedColor(Color.yellow, getString("yellow"));
-
-        // Create the dummy data (a few rows of names)
-        //  "First Name", "Last Name", "Favorite Color", Movie from props, "image", "No.", "Vegetarian" 
-        final Object[][] data = {
-          {"Mike", "Albers",      green,       getString("brazil"), Double.valueOf(44.0), strawberry},
-          {"Mark", "Andrews",     blue,        getString("curse"), Double.valueOf(3), grapes},
-          {"Brian", "Beck",       black,       getString("bluesbros"), Double.valueOf(2.7182818285), raspberry},
-          {"Lara", "Bunni",       red,         getString("airplane"), Double.valueOf(15), strawberry},
-          {"Roger", "Brinkley",   blue,        getString("man"), Double.valueOf(13), peach},
-          {"Brent", "Christian",  black,       getString("bladerunner"), Double.valueOf(23), broccoli},
-          {"Mark", "Davidson",    darkgreen,   getString("brazil"), Double.valueOf(27), asparagus},
-          {"Jeff", "Dinkins",     blue,        getString("ladyvanishes"), Double.valueOf(8), kiwi},
-          {"Ewan", "Dinkins",     yellow,      getString("bugs"), Double.valueOf(2), strawberry},
-          {"Amy", "Fowler",       violet,      getString("reservoir"), Double.valueOf(3), raspberry},
-          {"Hania", "Gajewska",   purple,      getString("jules"), Double.valueOf(5), raspberry},
-          {"David", "Geary",      blue,        getString("pulpfiction"), Double.valueOf(3), watermelon},
-// intentionally aktivated : MissingResource: Couldn't find value for: TableDemo.tennis, TableDemo.donut, ...
-        {"James", "Gosling",    pink,        getString("tennis"), Double.valueOf(21), donut},
-          {"Eric", "Hawkes",      blue,        getString("bladerunner"), Double.valueOf(.693), pickle},
-          {"Shannon", "Hickey",   green,       getString("shawshank"), Double.valueOf(2), grapes},
-          {"Earl", "Johnson",     green,       getString("pulpfiction"), Double.valueOf(8), carrot},
-          {"Robi", "Khan",        green,       getString("goodfellas"), Double.valueOf(89), apple},
-          {"Robert", "Kim",       blue,        getString("mohicans"), Double.valueOf(655321), strawberry},
-          {"Janet", "Koenig",     turquoise,   getString("lonestar"), Double.valueOf(7), peach},
-          {"Jeff", "Kesselman",   blue,        getString("stuntman"), Double.valueOf(17), pineapple},
-          {"Onno", "Kluyt",       orange,      getString("oncewest"), Double.valueOf(8), broccoli},
-          {"Peter", "Korn",       sunpurple,   getString("musicman"), Double.valueOf(12), sparegrass},
-          {"Rick", "Levenson",    black,       getString("harold"), Double.valueOf(1327), raspberry},
-          {"Brian", "Lichtenwalter", jfcblue,  getString("fifthelement"), Double.valueOf(22), pear},
-          {"Malini", "Minasandram", beige,     getString("joyluck"), Double.valueOf(9), corn},
-          {"Michael", "Martak",   green,       getString("city"), Double.valueOf(3), strawberry},
-          {"David", "Mendenhall", forestgreen, getString("schindlerslist"), Double.valueOf(7), peach},
-          {"Phil", "Milne",       suspectpink, getString("withnail"), Double.valueOf(3), banana},
-          {"Lynn", "Monsanto",    cybergreen,  getString("dasboot"), Double.valueOf(52), peach},
-          {"Hans", "Muller",      rustred,     getString("eraserhead"), Double.valueOf(0), pineapple},
-          {"Joshua", "Outwater",  blue,        getString("labyrinth"), Double.valueOf(3), pineapple},
-          {"Tim", "Prinzing",     blue,        getString("firstsight"), Double.valueOf(69), pepper},
-          {"Raj", "Premkumar",    jfcblue2,    getString("none"), Double.valueOf(7), broccoli},
-          {"Howard", "Rosen",     green,       getString("defending"), Double.valueOf(7), strawberry},
-          {"Ray", "Ryan",         black,       getString("buckaroo"),
-           Double.valueOf(3.141592653589793238462643383279502884197169399375105820974944), banana},
-          {"Georges", "Saab",     aqua,        getString("bicycle"), Double.valueOf(290), cantaloupe},
-          {"Tom", "Santos",       blue,        getString("spinaltap"), Double.valueOf(241), pepper},
-          {"Rich", "Schiavi",     blue,        getString("repoman"), Double.valueOf(0xFF), pepper},
-          {"Nancy", "Schorr",     green,       getString("fifthelement"), Double.valueOf(47), watermelon},
-          {"Keith", "Sprochi",    darkgreen,   getString("2001"), Double.valueOf(13), watermelon},
-          {"Matt", "Tucker",      eblue,       getString("starwars"), Double.valueOf(2), broccoli},
-          {"Dmitri", "Trembovetski", red,      getString("aliens"), Double.valueOf(222), tomato},
-          {"Scott", "Violet",     violet,      getString("raiders"), Double.valueOf(-97), banana},
-          {"Kathy", "Walrath",    darkgreen,   getString("thinman"), Double.valueOf(8), pear},
-          {"Nathan", "Walrath",   black,       getString("chusingura"), Double.valueOf(3), grapefruit},
-          {"Steve", "Wilson",     green,       getString("raiders"), Double.valueOf(7), onion},
-          {"Kathleen", "Zelony",  gray,        getString("dog"), Double.valueOf(13), grapes}
-        };
-
-        // Create a model of the data.
-        TableModel dataModel = new AbstractTableModel() {
-            public int getColumnCount() { return names.length; }
-            public int getRowCount() { return data.length;}
-            public Object getValueAt(int row, int col) {return data[row][col];}
-            public String getColumnName(int column) {return names[column];}
-            public Class getColumnClass(int c) {return getValueAt(0, c).getClass();}
-            public boolean isCellEditable(int row, int col) {return col != 5;}
-            public void setValueAt(Object aValue, int row, int column) { data[row][column] = aValue; }
-         };
-
-
-        // Create the table
-        tableView = new JTable(dataModel);
-        TableRowSorter sorter = new TableRowSorter(dataModel);
-        tableView.setRowSorter(sorter);
-
-        // Show colors by rendering them in their own color.
-        DefaultTableCellRenderer colorRenderer = new DefaultTableCellRenderer() {
-            public void setValue(Object value) {
-                if (value instanceof NamedColor) {
-                    NamedColor c = (NamedColor) value;
-                    setBackground(c);
-                    setForeground(c.getTextColor());
-                    setText(c.toString());
-                } else {
-                    super.setValue(value);
-                }
-            }
-        };
-
-        // Create a combo box to show that you can use one in a table.
-        JComboBox comboBox = new JComboBox();
-        comboBox.addItem(aqua);
-        comboBox.addItem(beige);
-        comboBox.addItem(black);
-        comboBox.addItem(blue);
-        comboBox.addItem(eblue);
-        comboBox.addItem(jfcblue);
-        comboBox.addItem(jfcblue2);
-        comboBox.addItem(cybergreen);
-        comboBox.addItem(darkgreen);
-        comboBox.addItem(forestgreen);
-        comboBox.addItem(gray);
-        comboBox.addItem(green);
-        comboBox.addItem(orange);
-        comboBox.addItem(purple);
-        comboBox.addItem(red);
-        comboBox.addItem(rustred);
-        comboBox.addItem(sunpurple);
-        comboBox.addItem(suspectpink);
-        comboBox.addItem(turquoise);
-        comboBox.addItem(violet);
-        comboBox.addItem(yellow);
-
-        TableColumn colorColumn = tableView.getColumn(getString("favorite_color"));
-        // Use the combo box as the editor in the "Favorite Color" column.
-        colorColumn.setCellEditor(new DefaultCellEditor(comboBox));
-
-        colorRenderer.setHorizontalAlignment(JLabel.CENTER);
-        colorColumn.setCellRenderer(colorRenderer);
-
-        tableView.setRowHeight(INITIAL_ROWHEIGHT);
-
-        scrollpane = new JScrollPane(tableView);
-        return scrollpane;
-    }
 
     private void printTable() {
         MessageFormat headerFmt;
