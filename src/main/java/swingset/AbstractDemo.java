@@ -6,7 +6,7 @@ import java.awt.LayoutManager;
 import org.jdesktop.swingx.JXPanel;
 
 /**
- * a super class for all (swingset 2) demos.
+ * a super class for all (swingset 2 and swingset 3) demos.
  * Each demo has a control pane (can be empty, but not null)
  *
  * @author EUG https://github.com/homebeaver
@@ -18,7 +18,7 @@ public abstract class AbstractDemo extends JXPanel {
 	// The preferred size of the demo
     static int PREFERRED_WIDTH = 680;
     static int PREFERRED_HEIGHT = 600;
-    static final Dimension PREFERRED_SIZE = new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT);
+    public static final Dimension PREFERRED_SIZE = new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT);
 
     // Premade convenience dimensions, for use wherever you need 'em.
     public static Dimension HGAP2 = new Dimension(2,1);
@@ -51,7 +51,7 @@ public abstract class AbstractDemo extends JXPanel {
 
     public abstract JXPanel getControlPane();
     
-    String getString(String resourceKey) {
+    public String getString(String resourceKey) {
     	String key = this.getClass().getSimpleName() + '.' + resourceKey;
     	return StaticUtilities.getResourceAsString(key, resourceKey);
     }

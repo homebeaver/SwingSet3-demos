@@ -3,6 +3,7 @@ package swingset;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.MissingResourceException;
 import java.util.logging.Level;
@@ -42,6 +43,18 @@ public class StaticUtilities {
     	if(is==null) return null;
         return new ImageIcon(StaticUtilities.class.getResource(path));
     }
+    public static ImageIcon createImageIcon(Class<?> clazz, String filename) {
+    	String path = clazz.getPackageName().replace('.', '/')+'/' + filename; 
+    	InputStream is = StaticUtilities.getResourceAsStream(clazz, path);
+    	if(is==null) return null;
+        try {
+			return new ImageIcon(is.readAllBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
+    }
 
 	public static InputStream getResourceAsStream(Class<?> clazz, String resourceName) {
 		
@@ -66,6 +79,10 @@ public class StaticUtilities {
 			// try default eclipse maven main resource folder ...
 			String src = "src/main/resources/";
 			is = getFileAsStream(src+dir, resourceName);
+			if(is!=null) return is;
+
+			// try default eclipse maven main resource folder ...
+			is = getFileAsStream(src, resourceName);
 			if(is!=null) return is;
 
 			// try default eclipse test folder ...
