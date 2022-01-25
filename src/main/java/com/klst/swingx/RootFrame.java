@@ -13,6 +13,7 @@ import javax.swing.UIManager;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.demos.tree.XTreeDemo;
+import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
 
 import swingset.ButtonDemo;
 import swingset.ColorChooserDemo;
@@ -117,6 +118,8 @@ public class RootFrame extends WindowFrame {
 		// swingset 3:
 		demoActions.add(new DemoAction(XTreeDemo.class, "runDemo", StaticUtilities.createImageIcon(XTreeDemo.class, XTreeDemo.ICON_PATH)));
 		demos.put(XTreeDemo.class, null);
+		demoActions.add(new DemoAction(TreeTableDemo.class, "runDemo", StaticUtilities.createImageIcon(TreeTableDemo.class, TreeTableDemo.ICON_PATH)));
+		demos.put(TreeTableDemo.class, null);
 	}
 
 	// simple frame manager

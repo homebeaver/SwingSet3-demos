@@ -11,16 +11,11 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Window;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -28,7 +23,6 @@ import javax.swing.table.TableModel;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXButton;
-//import org.jdesktop.application.Action;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
@@ -37,7 +31,6 @@ import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
 import org.jdesktop.swingx.demos.tree.XTreeDemo;
-//import org.jdesktop.swingx.event.AbstractInputEventDispatcher;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
@@ -48,11 +41,6 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.util.PaintUtils;
-//import org.jdesktop.swingxset.JXDemoFrame;
-//import org.jdesktop.swingxset.util.ComponentModels;
-//import org.jdesktop.swingxset.util.DemoUtils;
-//
-//import com.sun.swingset3.DemoProperties;
 
 import swingset.AbstractDemo;
 
@@ -99,6 +87,7 @@ public class TreeTableDemo extends AbstractDemo {
 //        });
     }
 
+    private boolean initialized = false;
     private JXTreeTable treeTable;
     
     /**
@@ -115,31 +104,11 @@ public class TreeTableDemo extends AbstractDemo {
         add(new JScrollPane(treeTable));
         LOG.info("done initComponents treeTable:"+treeTable);
 
-//        JComponent control = new JXPanel();
-//        refreshButton = new JButton();
-//        refreshButton.setName("refreshButton");
-//
-//        expandButton = new JButton();
-//        expandButton.setName("expandTreeTableButton");
-//        
-//        collapseButton = new JButton();
-//        collapseButton.setName("collapseTreeTableButton");
-        
-//        control.add(refreshButton);
-//        control.add(expandButton);
-//        control.add(collapseButton);
-//        add(control, BorderLayout.SOUTH);
-    	
-//        super(new BorderLayout());
-//        initComponents();
-//        configureComponents();
-//        DemoUtils.injectResources(this);
-//        bind();
+        configureComponents();
+        bind();
     }
 
     // Controller:
-    private boolean initialized = false;
-//    private JButton refreshButton;
     private JXButton loadButton;
     private JXButton expandButton;
     private JXButton collapseButton;
@@ -176,53 +145,32 @@ public class TreeTableDemo extends AbstractDemo {
 
 		return buttons;
     }
-//---------------- public api for Binding/Action control
-//    
-//
-//    @Action
-    public void refreshModel() {
+
+    private void refreshModel() {
         treeTable.setTreeTableModel(createTreeModel());
         treeTable.expandAll();
         treeTable.packColumn(treeTable.getHierarchicalColumn(), -1);
     }
-//    
-//    // <snip> JXTreeTable convenience api
-//    // expand/collapse all nodes
-//    @Action
-//    public void expandAll() {
-//        treeTable.expandAll();
-//    }
-//
-//    @Action
-//    public void collapseAll() {
-//        treeTable.collapseAll();
-//    }
-//    // </snip>
-//    
-//------------------- config/bind  
-    
 
-//    private void bind() {
-//        // <snip>JXTreeTable column customization
-//        // configure and install a custom columnFactory, arguably data related ;-)
-//        ColumnFactory factory = new ColumnFactory() {
-//            String[] columnNameKeys = { "componentType", "componentName", "componentLocation", "componentSize" };
-//
-//            @Override
-//            public void configureTableColumn(TableModel model,
-//                    TableColumnExt columnExt) {
-//                super.configureTableColumn(model, columnExt);
-//                if (columnExt.getModelIndex() < columnNameKeys.length) {
-//                    columnExt.setTitle(DemoUtils.getResourceString(TreeTableDemo.class, 
-//                            columnNameKeys[columnExt.getModelIndex()]));
-//                }
-//            }
-//            
-//        };
-//        treeTable.setColumnFactory(factory);
-//        // </snip>
-//
-//    }
+    private void bind() {
+        // <snip>JXTreeTable column customization
+        // configure and install a custom columnFactory, arguably data related ;-)
+        ColumnFactory factory = new ColumnFactory() {
+            String[] columnNameKeys = { "componentType", "componentName", "componentLocation", "componentSize" };
+
+            @Override
+            public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
+                super.configureTableColumn(model, columnExt);
+                if (columnExt.getModelIndex() < columnNameKeys.length) {
+//                    columnExt.setTitle(DemoUtils.getResourceString(TreeTableDemo.class, columnNameKeys[columnExt.getModelIndex()]));
+                    columnExt.setTitle(columnNameKeys[columnExt.getModelIndex()]);
+                }
+            }
+            
+        };
+        treeTable.setColumnFactory(factory);
+        // </snip>
+    }
    
     private void configureComponents() {
         // <snip> JXTreeTable rendering
@@ -287,20 +235,10 @@ public class TreeTableDemo extends AbstractDemo {
         treeTable.setDefaultRenderer(Dimension.class, treeTable.getDefaultRenderer(Point.class));
         // </snip>
         
-        mouseOverHighlighter = new ColorHighlighter(HighlightPredicate.NEVER, 
-                PaintUtils.setSaturation(Color.MAGENTA, 0.3f), null);
+        mouseOverHighlighter = new ColorHighlighter(HighlightPredicate.NEVER, PaintUtils.setSaturation(Color.MAGENTA, 0.3f), null);
         treeTable.addHighlighter(mouseOverHighlighter);
         
         treeTable.setColumnControlVisible(true);
-        
-        
-//        refreshButton.setAction(DemoUtils.getAction(this, "refreshModel"));
-//        expandButton.setAction(DemoUtils.getAction(this, "expandAll"));
-//        collapseButton.setAction(DemoUtils.getAction(this, "collapseAll"));
-//        
-//        // Demo specific config
-//        DemoUtils.setSnippet("JXTreeTable convenience api", expandButton, collapseButton);
-//        DemoUtils.setSnippet("JXTreeTable rendering", treeTable);
     }
 
     
