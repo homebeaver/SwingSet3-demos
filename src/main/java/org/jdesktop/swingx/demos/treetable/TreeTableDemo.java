@@ -23,8 +23,10 @@ import javax.swing.table.TableModel;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXButton;
+import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
@@ -72,19 +74,23 @@ public class TreeTableDemo extends AbstractDemo {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                JFrame frame = new JFrame(TreeTableDemo.class.getAnnotation(DemoProperties.class).value());
-//                
-//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                frame.getContentPane().add(new TreeTableDemo());
-//                frame.setPreferredSize(new Dimension(800, 600));
-//                frame.pack();
-//                frame.setLocationRelativeTo(null);
-//                frame.setVisible(true);
-//            }
-//        });
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new TreeTableDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
 
     private boolean initialized = false;
@@ -109,7 +115,7 @@ public class TreeTableDemo extends AbstractDemo {
     }
 
     // Controller:
-    private JXButton loadButton;
+//    private JXButton loadButton;
     private JXButton expandButton;
     private JXButton collapseButton;
 //    private AbstractInputEventDispatcher inputEventDispatcher;
@@ -120,12 +126,12 @@ public class TreeTableDemo extends AbstractDemo {
 	public JXPanel getControlPane() {
 		JXPanel buttons = new JXPanel();
 
-		loadButton = new JXButton(getString("reloadTreeData"));
-		loadButton.setName("loadButton");
-		loadButton.addActionListener(ae -> {
-			treeTable.setTreeTableModel(createTreeModel());
-		});
-		buttons.add(loadButton);
+//		loadButton = new JXButton(getString("reloadTreeData"));
+//		loadButton.setName("loadButton");
+//		loadButton.addActionListener(ae -> {
+//			treeTable.setTreeTableModel(createTreeModel());
+//		});
+//		buttons.add(loadButton);
 		
 		// <snip> JXTree convenience api
 		expandButton = new JXButton(getString("expandAll"));
