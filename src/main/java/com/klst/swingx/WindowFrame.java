@@ -155,7 +155,7 @@ aus super:
     public AbstractButton addActionToToolBar(JXFrame frame, Action action) {
         JToolBar toolbar = frame.getRootPaneExt().getToolBar();
         if(toolbar instanceof ToggleButtonToolBar) {
-        	LOG.info("action:"+action);
+//        	LOG.info("action:"+action);
         	ToggleButtonToolBar tbtb = (ToggleButtonToolBar)toolbar;
             AbstractButton button = tbtb.addToggleButton(action);
             button.setToolTipText((String)action.getValue(Action.SHORT_DESCRIPTION));
@@ -187,6 +187,11 @@ aus super:
 //        createAndAddMenus(bar, component); // == bar.add(createPlafMenu());
         bar.add(createPlafMenu(null));
         return bar;
+    }
+
+    public JMenu createDemosMenu() {
+    	LOG.warning("**** nix ****");
+    	return null;
     }
 
     /**

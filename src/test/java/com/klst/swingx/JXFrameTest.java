@@ -1,5 +1,7 @@
 package com.klst.swingx;
 
+import javax.swing.JMenu;
+
 import org.jdesktop.swingx.JXStatusBar;
 
 public class JXFrameTest {
@@ -37,6 +39,10 @@ public class JXFrameTest {
         WindowFrame gossip = new RootFrame(); // RootFrame contains a simple frame manager
         @SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
+
+        JMenu demoMenu = gossip.createDemosMenu();
+        if(demoMenu!=null) gossip.getJMenuBar().add(demoMenu);
+
         gossip.pack(); // auto or fix:
 //        gossip.setSize(680, 200);
     	gossip.setVisible(true);

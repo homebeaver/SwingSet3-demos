@@ -1,5 +1,6 @@
 package com.klst.swingx;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,12 +9,17 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JMenu;
 import javax.swing.UIManager;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.demos.tree.XTreeDemo;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
+import org.jdesktop.swingx.icon.PlayIcon;
+import org.jdesktop.swingx.icon.SizingConstants;
 
 import swingset.ButtonDemo;
 import swingset.ColorChooserDemo;
@@ -82,6 +88,9 @@ public class RootFrame extends WindowFrame {
 		// wie oben
 		// oder addDemo zusammen mit demoActions
 	}
+	static Icon PLAY_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.GREEN);
+	// SwingSet3 Data: JXTable, JXList, JXTree, JXTreeTable
+	static Icon SS3DATA_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.BLUE);
 	List<AbstractAction> demoActions = new ArrayList<AbstractAction>();
 	private void addDemos() {
 		demos.put(null, null); // current presentation frame
@@ -103,24 +112,38 @@ public class RootFrame extends WindowFrame {
 		demos.put(ProgressBarDemo.class, null);
 		demoActions.add(new DemoAction(ScrollPaneDemo.class, "runDemo", StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
 		demos.put(ScrollPaneDemo.class, null);
-		demoActions.add(new DemoAction(SliderDemo.class, "runDemo", StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
+		demoActions.add(new DemoAction(SliderDemo.class, "Slider", PLAY_ICON, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
 		demos.put(SliderDemo.class, null);
-		demoActions.add(new DemoAction(SplitPaneDemo.class, "runDemo", StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
+		demoActions.add(new DemoAction(SplitPaneDemo.class, "SplitPane", PLAY_ICON, StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
 		demos.put(SplitPaneDemo.class, null);
-		demoActions.add(new DemoAction(TabbedPaneDemo.class, "runDemo", StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
+		demoActions.add(new DemoAction(TabbedPaneDemo.class, "TabbedPane", PLAY_ICON, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
 		demos.put(TabbedPaneDemo.class, null);
-		demoActions.add(new DemoAction(TableDemo.class, "runDemo", StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
+		demoActions.add(new DemoAction(TableDemo.class, "Table", PLAY_ICON, StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
 		demos.put(TableDemo.class, null);
-		demoActions.add(new DemoAction(ToolTipDemo.class, "runDemo", StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
+		demoActions.add(new DemoAction(ToolTipDemo.class, "ToolTip", PLAY_ICON, StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
 		demos.put(ToolTipDemo.class, null);
-		demoActions.add(new DemoAction(TreeDemo.class, "runDemo", StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
+		demoActions.add(new DemoAction(TreeDemo.class, "Tree", PLAY_ICON, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
 		demos.put(TreeDemo.class, null);
 		// swingset 3:
-		demoActions.add(new DemoAction(XTreeDemo.class, "runDemo", StaticUtilities.createImageIcon(XTreeDemo.class, XTreeDemo.ICON_PATH)));
+		demoActions.add(new DemoAction(XTreeDemo.class, "XTree", SS3DATA_ICON, StaticUtilities.createImageIcon(XTreeDemo.class, XTreeDemo.ICON_PATH)));
 		demos.put(XTreeDemo.class, null);
-		demoActions.add(new DemoAction(TreeTableDemo.class, "runDemo", StaticUtilities.createImageIcon(TreeTableDemo.class, TreeTableDemo.ICON_PATH)));
+		demoActions.add(new DemoAction(TreeTableDemo.class, "XTreeTable", SS3DATA_ICON, StaticUtilities.createImageIcon(TreeTableDemo.class, TreeTableDemo.ICON_PATH)));
 		demos.put(TreeTableDemo.class, null);
 	}
+
+    public JMenu createDemosMenu() {
+    	JMenu menu = new JMenu("Demos");
+    	JMenu ss2menu = (JMenu) menu.add(new JMenu("SwingSet2"));
+    	JMenu ss3menu = (JMenu) menu.add(new JMenu("SwingSet3"));
+    	this.demoActions.forEach( action -> {
+    		if(PLAY_ICON==action.getValue(Action.SMALL_ICON)) {
+            	ss2menu.add(action);
+    		} else if(action.getValue(Action.SMALL_ICON)!=null) {
+    			ss3menu.add(action);
+    		}
+    	});
+        return menu;
+    }
 
 	// simple frame manager
 	List<JXFrame> frames;
