@@ -1,6 +1,8 @@
 package com.klst.swingx;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +14,15 @@ import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.demos.tree.XTreeDemo;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
 import org.jdesktop.swingx.icon.PlayIcon;
@@ -82,8 +89,59 @@ public class RootFrame extends WindowFrame {
     		AbstractButton ab = addActionToToolBar(this, a);
     	});
 
-	}
+    	// TODO
+/* Alternative 1:
+JSplitPane splitPane = null; ???
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, demotree, source+controller);
 
+Alternative 2: hier implementiert
+getContentPane(): BorderLayout ==> content
+WEST:   demoTree
+CENTER: JXPanel currentController
+ - tabbedpane = new JTabbedPane(); mit
+ - source
+ - controller : currentController
+
+ */
+    	content = new JXPanel(new BorderLayout());
+    	demoTree = createDemoTree();
+    	content.add(new JScrollPane(demoTree), BorderLayout.WEST);
+    	tabbedpane = new JTabbedPane();
+    	tabbedpane.add("source", new JXLabel("TODO enpty"));
+    	currentController = new JXPanel(); //empty
+    	tabbedpane.add("controller", currentController);
+    	content.add(tabbedpane, BorderLayout.CENTER);
+    	getContentPane().add(content);
+	}
+	JXTree demoTree;
+	public JXTree createDemoTree() {
+//		LOG.info("?????????????????????ss2menu:"+this.ss2menu); // == noch null!
+		Object userObject = null; // demoTree top aka root
+		userObject = new String("swing set demos");
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode(userObject);
+        DefaultMutableTreeNode ss2 = new DefaultMutableTreeNode("SwingSet2");
+        top.add(ss2);
+        DefaultMutableTreeNode catagory = null;
+    	this.demoActions.forEach( action -> {
+    		if(PLAY_ICON==action.getValue(Action.SMALL_ICON)) {
+            	ss2.add(new DefaultMutableTreeNode(action.getValue(Action.NAME)));
+    		} else if(action.getValue(Action.SMALL_ICON)!=null) {
+//    			ss3menu.add(action);
+    		}
+    	});
+    	// tree farbe ist weiss! ; TODO tree action ==> action
+    	
+        // open tree data
+//        URL url = getClass().getResource("/swingset/tree.txt");
+        URL url = getClass().getResource("/demotree.txt");
+
+		JXTree tree = new JXTree(top);
+		tree.setName("demoMenuTree");
+		// TODO background ist immer weiss!!! und die icons passen auch nicht ==> renderer
+//        tree.setBackground(null); // nicht weiss, ABER beim Umschalten auf Nimbus wieder weiss!!!
+		return tree;
+	}
+	
 	private void initDemos() {
 		// wie oben
 		// oder addDemo zusammen mit demoActions
@@ -135,6 +193,15 @@ public class RootFrame extends WindowFrame {
     	JMenu menu = new JMenu("Demos");
     	JMenu ss2menu = (JMenu) menu.add(new JMenu("SwingSet2"));
     	JMenu ss3menu = (JMenu) menu.add(new JMenu("SwingSet3"));
+    	
+    	// so kann ich menu nicht erweitern:
+//    	TreeModel tm = demoTree.getModel();
+//    	DefaultMutableTreeNode top = (DefaultMutableTreeNode)tm.getRoot();
+//    	top.add( new DefaultMutableTreeNode(ss2menu) );
+//    	top.add( new DefaultMutableTreeNode(ss3menu) );
+//    	demoTree.setModel(tm);
+//    	demoTree.invalidate();
+    	
     	this.demoActions.forEach( action -> {
     		if(PLAY_ICON==action.getValue(Action.SMALL_ICON)) {
             	ss2menu.add(action);
@@ -171,12 +238,16 @@ public class RootFrame extends WindowFrame {
 	// ...
 	// <<<
 
+	JXPanel content = null;
+	JTabbedPane tabbedpane = null;
 	JXPanel currentController = null;
-	public void addControler(JXPanel controlPane) {
-		if(currentController!=null) getContentPane().remove(currentController);
+	public void addController(JXPanel controlPane) {
+		if(currentController!=null) tabbedpane.remove(currentController);
 		currentController = controlPane;
-		getContentPane().add(currentController);
-		pack();
+		tabbedpane.add("controller", currentController);
+		tabbedpane.setSelectedComponent(currentController);
+		tabbedpane.invalidate();
+    	pack();
 	}
 
 }

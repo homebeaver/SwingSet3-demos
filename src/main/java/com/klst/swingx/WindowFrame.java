@@ -289,7 +289,7 @@ aus super:
 					e1.printStackTrace();
 				}
 //				getRootFrame().getContentPane().removeAll(); // damit ist auch die toolbar weg
-				getRootFrame().addControler(demo.getControlPane()); // remove and add a controller
+				getRootFrame().addController(demo.getControlPane()); // remove and add a controller
             	
             	frame.getContentPane().add(demo);
             	frame.pack();
