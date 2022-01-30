@@ -3,7 +3,6 @@ package com.klst.swingx;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,20 +12,22 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.demos.tree.XTreeDemo;
-import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
 import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
@@ -123,25 +124,6 @@ CENTER: JXPanel currentController
     	getContentPane().add(content);
 	}
 	JXTree demoTree = null;
-//	private JXTree createDemoTree(JMenu menu) {
-//		DefaultMutableTreeNode top = new DefaultMutableTreeNode(menu.getAction());
-//
-//		Component[] compArray = menu.getMenuComponents();
-//		for(int i=0; i<compArray.length; i++) {
-//			JMenu comp = (JMenu)compArray[i];
-//			Action action = comp.getAction();
-//			LOG.info("comp "+i + ":"+(action==null?"null":action.getClass())+" - "+action);
-//			if(action!=null) {
-//				top.add(new DefaultMutableTreeNode(action));
-//			}
-//		}
-//
-//		JXTree tree = new JXTree(top);
-//		//tree.setName("demoMenuTree");
-//		DefaultTreeRenderer treeRenderer = new MenuTreeRenderer(menu); //iv, sv);
-//		tree.setCellRenderer(treeRenderer);
-//		return tree;
-//	}
 	public class MenuTreeRenderer extends DefaultTreeRenderer {
         static IconValue getIconValue(TreeNode tn) {
         	IconValue iv = new IconValue() {
@@ -167,16 +149,6 @@ CENTER: JXPanel currentController
                 		DemoMenuAction ma = (DemoMenuAction)tn;
                 		return StringValues.TO_STRING.getString((String)ma.getValue(Action.NAME));
                 	}
-//                	LOG.info(" ### value:"+value);
-//                    if (value instanceof Component) {
-//                        Component component = (Component) value;
-//                        String simpleName = component.getClass().getSimpleName();
-//                        if (simpleName.length() == 0){
-//                            // anonymous class
-//                            simpleName = component.getClass().getSuperclass().getSimpleName();
-//                        }
-//                        return simpleName + "(" + component.getName() + ")";
-//                    }
                     return StringValues.TO_STRING.getString(tn);
                 }
             };
@@ -184,74 +156,11 @@ CENTER: JXPanel currentController
             return sv;
         }
 
-		public MenuTreeRenderer(TreeNode ma) {
-//			LOG.info("           TreeNode:"+ma);
-			// super.(IconValue iv, StringValue sv)
-			super(getIconValue(ma), getStringValue(ma));
+		public MenuTreeRenderer(TreeNode tn) {
+			super(getIconValue(tn), getStringValue(tn));
 		}
 	}
-	public JXTree createDemoTreeXX() {
-		Object userObject = this.menu; // demoTree top aka root
-		userObject = new String("swing set demos");
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode(userObject);
-        DefaultMutableTreeNode ss2 = new DefaultMutableTreeNode("SwingSet2");
-        top.add(ss2);
-        DefaultMutableTreeNode catagory = null;
-    	this.demoActions.forEach( action -> {
-    		if(PLAY_ICON==action.getValue(Action.SMALL_ICON)) {
-//            	ss2.add(new DefaultMutableTreeNode(action.getValue(Action.NAME)));
-            	ss2.add(new DefaultMutableTreeNode(action));
-    		} else if(action.getValue(Action.SMALL_ICON)!=null) {
-//    			ss3menu.add(action);
-    		}
-    	});
-    	// tree farbe ist weiss! ; TODO tree action ==> action
-    	
-        // open tree data
-//        URL url = getClass().getResource("/swingset/tree.txt");
-        URL url = getClass().getResource("/demotree.txt");
 
-		JXTree tree = new JXTree(top);
-		tree.setName("demoMenuTree");
-		
-		// TODO background ist immer weiss!!! und die icons passen auch nicht ==> renderer
-//        tree.setBackground(null); // nicht weiss, ABER beim Umschalten auf Nimbus wieder weiss!!!
-		
-//        StringValue keyValue = new StringValue() {         
-//            @Override // simple converter to return a String representation of an object
-//            public String getString(Object value) {
-//                if (value == null) return "";
-//                return "JXTree.png";
-//            }
-//        };
-//        IconValue iv = new LazyLoadingIconValue(JXTree.class, keyValue, "fallback.png");
-//        // StringValue provides node text: concat several 
-//        StringValue sv = new StringValue() {        
-//            @Override
-//            public String getString(Object value) {
-//            	LOG.info(" ### "+value.getClass()+" value:"+value);
-//                if (value instanceof Component) {
-//                    Component component = (Component) value;
-//                    String simpleName = component.getClass().getSimpleName();
-//                    if (simpleName.length() == 0){
-//                        // anonymous class
-//                        simpleName = component.getClass().getSuperclass().getSimpleName();
-//                    }
-//                    return simpleName + "(" + component.getName() + ")";
-//                }
-//                return StringValues.TO_STRING.getString(value);
-//            }
-//        };
-//    	LOG.info("-------iv, sv:"+iv +", "+sv);
-//    	DefaultTreeRenderer treeRenderer = new DefaultTreeRenderer(iv, sv);
-//		tree.setCellRenderer(treeRenderer);
-		return tree;
-	}
-	
-	private void initDemos() {
-		// wie oben
-		// oder addDemo zusammen mit demoActions
-	}
 	static Icon SS2_ICON = new StopIcon(SizingConstants.SMALL_ICON, Color.GREEN);
 	static Icon PLAY_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.GREEN);
 	// SwingSet3 Data: JXTable, JXList, JXTree, JXTreeTable
@@ -298,46 +207,96 @@ CENTER: JXPanel currentController
 
 	JMenu menu;
     public JMenu createDemosMenu() {
-    	this.menu = new JMenu(new DemoAction(null, "Demos"));
-    	AbstractAction ss2Action = new DemoAction(null, "SwingSet2", SS2_ICON, null); 	
-    	JMenu ss2menu = (JMenu) menu.add(new JMenu(ss2Action));
-    	AbstractAction ss3Action = new DemoAction(null, "SwingSet3", PLAY_ICON, null); 	
-    	JMenu ss3menu = (JMenu) menu.add(new JMenu(ss3Action));
-    	
-    	// so kann ich menu nicht erweitern:
-//    	TreeModel tm = demoTree.getModel();
-//    	DefaultMutableTreeNode top = (DefaultMutableTreeNode)tm.getRoot();
-//    	top.add( new DefaultMutableTreeNode(ss2menu) );
-//    	top.add( new DefaultMutableTreeNode(ss3menu) );
-//    	demoTree.setModel(tm);
-//    	demoTree.invalidate();
-    	
-    	this.demoActions.forEach( action -> {
-    		if(SS2_ICON==action.getValue(Action.SMALL_ICON)) {
-            	ss2menu.add(action);
-    		} else if(action.getValue(Action.SMALL_ICON)!=null) {
-    			ss3menu.add(action);
-    		}
-    	});
-    	
-		Component[] compArray = menu.getMenuComponents();
-		for(int i=0; i<compArray.length; i++) {
-			JMenu comp = (JMenu)compArray[i];
-			LOG.info("comp "+i + ":"+comp.getAction());
-		}
-//		demoTree = createDemoTree(menu);
-//		content.add(new JScrollPane(demoTree), BorderLayout.WEST);
+//    	this.menu = new JMenu(new DemoAction(null, "Demos"));
+//    	AbstractAction ss2Action = new DemoAction(null, "SwingSet2", SS2_ICON, null); 	
+//    	JMenu ss2menu = (JMenu) menu.add(new JMenu(ss2Action));
+//    	AbstractAction ss3Action = new DemoAction(null, "SwingSet3", PLAY_ICON, null); 	
+//    	JMenu ss3menu = (JMenu) menu.add(new JMenu(ss3Action));
+//    	
+//    	this.demoActions.forEach( action -> {
+//    		if(SS2_ICON==action.getValue(Action.SMALL_ICON)) {
+//            	ss2menu.add(action);
+//    		} else if(action.getValue(Action.SMALL_ICON)!=null) {
+//    			ss3menu.add(action);
+//    		}
+//    	});
+//    	
+//		Component[] compArray = menu.getMenuComponents();
+//		for(int i=0; i<compArray.length; i++) {
+//			JMenu comp = (JMenu)compArray[i];
+//			LOG.info("comp "+i + ":"+comp.getAction());
+//		}
     	
     	//DemoMenuAction root = DemoMenuAction.getRootAction();
 		TreeNode rootNode = DemoMenuAction.createTree();
     	TreeTableModel model = DemoMenuAction.createMenuModel(rootNode);
-    	// macht new AbstractTreeTableModel(root)
+    	// --------------
+    	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
+    	this.menu = new JMenu((Action)root.getUserObject());
+//    	for(int i=0;i<model.getChildCount(root);i++) {
+//    		Object o = model.getChild(root,i);
+//    		menu.add(new JMenu((Action)o));
+//    	}
+    	Object o2 = model.getChild(root,0);
+    	JMenu ss2 = (JMenu) menu.add(new JMenu((Action)o2));
+    	this.demoActions.forEach( action -> {
+    		if(SS2_ICON==action.getValue(Action.SMALL_ICON)) {
+            	ss2.add(action);
+    		}
+    	});
+    	Object o3 = model.getChild(root,1);
+    	JMenu ss3 = (JMenu) menu.add(new JMenu((Action)o3));
+    	for(int i=0;i<model.getChildCount(o3);i++) {
+    		Object o = model.getChild(o3,i);
+    		LOG.info("------------ add:"+o);
+    		ss3.add((DemoMenuAction)o);
+    	}
     	
-    	// private static class DummyTreeTableModel extends AbstractTreeTableModel
-    	// DummyTreeTableModel dummyModel = new DummyTreeTableModel(createTree());
+    	// --------------
     	demoTree = new JXTree(model);
+
+    	demoTree.setName("demoTree");
+    	demoTree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+    	// white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
+    	demoTree.setBackground(null); // so sind nur die texte weiss
+    	demoTree.expandAll();
+    	demoTree.setEditable(false);
+    	
+//    	demoTree.setComponentPopupMenu(JPopupMenu popup); ????
+//    	demoTree.setSelectionModel(...);
+    	
+    	demoTree.addTreeSelectionListener( treeSelectionEvent -> {
+    		JXTree source = (JXTree)(JXTree)treeSelectionEvent.getSource();
+    		LOG.info("treeSelectionEvent +.Source: Foreground:"+((JXTree)treeSelectionEvent.getSource()).getForeground()
+                +"\n SelectionModel:"+source.getSelectionModel()
+                +"\n SelectionModel.SelectionMode:"+source.getSelectionModel().getSelectionMode()
+    			//	public int[] getSelectionRows() :
+            	+"\n"+((JXTree)treeSelectionEvent.getSource()).getSelectionRows()[0]
+        		+"\n"+treeSelectionEvent
+    			+"\n"+treeSelectionEvent.getSource());
+    		TreeSelectionModel tsm = source.getSelectionModel();
+    		if(tsm.getSelectionMode()==TreeSelectionModel.SINGLE_TREE_SELECTION) {
+    			LOG.info("SINGLE_TREE_SELECTION SelectionPath:"+tsm.getSelectionPath());
+    		} else if(tsm.getSelectionMode()==TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION) {
+    			LOG.info("DISCONTIGUOUS_TREE_SELECTION SelectionPath:"+tsm.getSelectionPath());
+    			Object o = tsm.getSelectionPath().getLastPathComponent();
+    			LOG.info("LastPathComponent:"+o);
+    			DemoMenuAction action = (DemoMenuAction)o;
+    			LOG.info("LastPathComponent.NAME:"+action.getValue(Action.NAME));
+//    			Object[] path = tsm.getSelectionPath().getPath(); // The first element is the root
+//    			for(int i=0;i<path.length;i++) {
+//    				LOG.info(""+i+":"+path[i]);
+////    				DemoMenuAction action = (DemoMenuAction)path[i];
+////    				LOG.info(""+i+":"+action.getValue(Action.NAME));
+//    			}
+    			
+    		}
+    	});
+
+    	// nicht wie gewünscht:
 		DefaultTreeRenderer treeRenderer = new MenuTreeRenderer(rootNode);
-		demoTree.setCellRenderer(treeRenderer);
+//		demoTree.setCellRenderer(treeRenderer);
+		
 		content.add(new JScrollPane(demoTree), BorderLayout.WEST);
        return menu;
     }
