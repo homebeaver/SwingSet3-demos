@@ -244,19 +244,47 @@ aus super:
     		return jToggleButton;
     	}
 
+/* super ctors:
+
+    public AbstractAction() {
+    public AbstractAction(String name) {    putValue(Action.NAME, name);
+>>  public AbstractAction(String name, Icon icon) {        this(name);        putValue(Action.SMALL_ICON, icon);
+
+ */
+    	public DemoAction(Class<?> democlass, String name) {
+    		this(democlass, name, null, null);
+    	}
     	public DemoAction(Class<?> democlass, String name, Icon icon) {
     		this(democlass, name, null, icon);
     	}
+        /**
+         * Creates an {@code DemoAction} with the specified name/Value({@code Action.NAME}) and small icon.
+         *
+         * @param democlass the demo class
+         * @param name the name ({@code Action.NAME}) for the action; a
+         *        value of {@code null} is ignored
+         * @param smallIcon the icon ({@code Action.SMALL_ICON}) for the action; a
+         *        value of {@code null} is ignored
+         * @param icon the large icon ({@code Action.LARGE_ICON_KEY}) for the action; a
+         *        value of {@code null} is ignored
+         */
     	public DemoAction(Class<?> democlass, String name, Icon smallIcon, Icon icon) {
     		super(name, smallIcon);
     		this.democlass = democlass;
-            super.putValue(Action.LARGE_ICON_KEY, icon);
+            if(icon!=null) super.putValue(Action.LARGE_ICON_KEY, icon);
             
             // SHORT_DESCRIPTION will setToolTipText in addActionToToolBar
-            String key = this.democlass.getSimpleName() + '.' + "tooltip";
-            String short_description = StaticUtilities.getResourceAsString(key, null);
-            super.putValue(Action.SHORT_DESCRIPTION, short_description);
+            if(this.democlass!=null) {
+                String key = this.democlass.getSimpleName() + '.' + "tooltip";
+                String short_description = StaticUtilities.getResourceAsString(key, null);
+                super.putValue(Action.SHORT_DESCRIPTION, short_description);
+            }
     	}
+    	
+        @Override
+        public String toString() {
+        	return (String)super.getValue(Action.NAME);
+        }
     	
         @Override
         public void actionPerformed(ActionEvent e) {
