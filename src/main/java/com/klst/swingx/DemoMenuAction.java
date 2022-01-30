@@ -9,6 +9,7 @@ import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JMenu;
 import javax.swing.JToolBar;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -152,13 +153,13 @@ public class DemoMenuAction extends AbstractAction {
 
     	ss3Actions.add(new DemoMenuAction(XTreeDemo.class, "XTree", SS3DATA_ICON, StaticUtilities.createImageIcon(XTreeDemo.class, XTreeDemo.ICON_PATH)));
     	ss3Actions.add(new DemoMenuAction(TreeTableDemo.class, "XTreeTable", SS3DATA_ICON, StaticUtilities.createImageIcon(TreeTableDemo.class, TreeTableDemo.ICON_PATH)));
-    	for(int i=0;i<ss3Actions.size();i++) {
-    		LOG.info("ss3Actions "+i + ":"+ss3Actions.get(i));
-    		ss3.add(new DefaultMutableTreeNode(ss3Actions.get(i)));
-    	}
-//    	ss3Actions.forEach( action -> {
-//        	ss3.add(new DefaultMutableTreeNode(action));
-//    	});
+//    	for(int i=0;i<ss3Actions.size();i++) {
+//    		LOG.info("ss3Actions "+i + ":"+ss3Actions.get(i));
+//    		ss3.add(new DefaultMutableTreeNode(ss3Actions.get(i)));
+//    	}
+    	ss3Actions.forEach( action -> {
+        	ss3.add(new DefaultMutableTreeNode(action));
+    	});
 
         return root;
     }
@@ -270,9 +271,13 @@ public class DemoMenuAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		LOG.info("Source:"+o);
+		LOG.info("Source:"+o + "\n "+e.getActionCommand()); // TODO String ActionCommand/Name to Action
 		if(o instanceof JToolBar) {
 			JToolBar tb= (JToolBar)o;
+		}
+		if(o instanceof JMenu) {
+			JMenu menu = (JMenu)o;
+			LOG.info("Action:"+menu.getAction());
 		}
 //		JToolBar tb= (JToolBar) e.getSource(); // TODO cast nicht möglich !!!!!!!!!!!!!!!!!!!!
 //        	class com.klst.swingx.WindowFrame$ToggleButtonToolBar$1 cannot be cast to class javax.swing.JToolBar 
