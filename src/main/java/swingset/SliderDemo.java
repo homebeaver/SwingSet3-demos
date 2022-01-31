@@ -249,7 +249,7 @@ public class SliderDemo extends AbstractDemo {
 
     @Override
 	public JXPanel getControlPane() {
-		return new JXPanel(); // TODO default EmptyControler
+		return emptyControlPane();
 	}
 
     class SliderListener implements ChangeListener {

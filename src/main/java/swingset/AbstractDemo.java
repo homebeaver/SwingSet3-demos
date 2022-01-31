@@ -3,6 +3,10 @@ package swingset;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+
+import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
 /**
@@ -50,7 +54,16 @@ public abstract class AbstractDemo extends JXPanel {
     }
 
     public abstract JXPanel getControlPane();
-    
+
+    JXPanel emptyControlPane() {
+    	JXPanel pane = new JXPanel();
+    	pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
+    	pane.add(Box.createRigidArea(HGAP30));
+    	pane.add(new JXLabel("no controller for this demo", JXLabel.CENTER));
+    	pane.add(Box.createRigidArea(HGAP30));
+    	return pane;
+    }
+
     public String getString(String resourceKey) {
     	String key = this.getClass().getSimpleName() + '.' + resourceKey;
     	return StaticUtilities.getResourceAsString(key, resourceKey);
