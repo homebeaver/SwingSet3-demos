@@ -218,13 +218,13 @@ public class DemoMenuAction extends AbstractAction {
     }
     public static DemoMenuAction getSS2Action() {
     	if(ss2==null) {
-    		ss2 = new DemoMenuAction((String)null, "SwingSet2", SS2_ICON);
+    		ss2 = new DemoMenuAction((String)null, "SwingSet2", SS2_ICON, null);
     	}
     	return ss2;
     }
     public static DemoMenuAction getSS3Action() {
     	if(ss3==null) {
-    		ss3 = new DemoMenuAction((String)null, "SwingSet3", SS3_ICON);
+    		ss3 = new DemoMenuAction((String)null, "SwingSet3", SS3_ICON, null);
     	}
     	return ss3;
     }

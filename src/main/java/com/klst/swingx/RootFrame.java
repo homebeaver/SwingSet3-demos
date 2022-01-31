@@ -1,14 +1,10 @@
 package com.klst.swingx;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -25,9 +21,6 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTree;
-import org.jdesktop.swingx.icon.PlayIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
-import org.jdesktop.swingx.icon.StopIcon;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
@@ -80,49 +73,6 @@ CENTER: JXPanel currentController
     	getContentPane().add(content);
 	}
 	JXTree demoTree = null;
-	public class MenuTreeRenderer extends DefaultTreeRenderer {
-        static IconValue getIconValue(TreeNode tn) {
-        	IconValue iv = new IconValue() {
-        		@Override
-				public Icon getIcon(Object value) {
-        			if(tn==null) return null;
-        			if(tn instanceof DemoMenuAction) {
-        				DemoMenuAction ma = (DemoMenuAction)tn;
-        				return (Icon)ma.getValue(Action.SMALL_ICON);
-        			}
-        			return null;
-        		}
-        	};
-            LOG.info("           IconValue iv:"+iv);
-        	return iv;
-        }
-
-        static StringValue getStringValue(TreeNode tn) {
-            StringValue sv = new StringValue() {            
-                @Override
-                public String getString(Object value) {
-                	if(tn instanceof DemoMenuAction) {
-                		DemoMenuAction ma = (DemoMenuAction)tn;
-                		return StringValues.TO_STRING.getString((String)ma.getValue(Action.NAME));
-                	}
-                    return StringValues.TO_STRING.getString(tn);
-                }
-            };
-            LOG.info("           StringValue sv:"+sv.getString(tn));
-            return sv;
-        }
-
-		public MenuTreeRenderer(TreeNode tn) {
-			super(getIconValue(tn), getStringValue(tn));
-		}
-	}
-
-	static Icon SS2_ICON = new StopIcon(SizingConstants.SMALL_ICON, Color.GREEN);
-	static Icon PLAY_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.GREEN);
-	// SwingSet3 Data: JXTable, JXList, JXTree, JXTreeTable
-	static Icon SS3DATA_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.BLUE);
-	List<AbstractAction> demoActions = new ArrayList<AbstractAction>();
-
 	JMenu menu;
     public JMenu createDemosMenu() {
     	//DemoMenuAction root = DemoMenuAction.getRootAction();
@@ -190,46 +140,27 @@ CENTER: JXPanel currentController
     		}
     	});
 
-    	// nicht wie gewünscht: TODO
-//		DefaultTreeRenderer treeRenderer = new MenuTreeRenderer(rootNode);
-    	
-/* aus TreeRendererTest:
-        StringValue format = new StringValue() {
-
-            public String getString(Object value) {
-                if (value instanceof File) {
-                    return ((File) value).getName();
+    	IconValue iv = new IconValue() {
+       		@Override
+			public Icon getIcon(Object value) {
+                if (value instanceof DemoMenuAction) {
+                	DemoMenuAction dma = (DemoMenuAction)value;
+                	return (Icon)dma.getValue(Action.SMALL_ICON);
                 }
-                return StringValues.TO_STRING.getString(value);
-            }
-            
-        };
-
-   	        StringValue converter = new StringValue() {
-
-            public String getString(Object value) {
-                if (value instanceof Component) {
-                    return "Name: " + ((Component) value).getName();
-                }
-                return StringValues.TO_STRING.getString(value);
-            }
-
- */
-    	
-//		DefaultTreeRenderer treeRenderer = new DefaultTreeRenderer(format); // StringValue format
+    			return null;
+    		}
+    	};
         StringValue sv = new StringValue() {
-
+       		@Override
             public String getString(Object value) {
-//            	LOG.info("?????????????????? value:"+value);
                 if (value instanceof DemoMenuAction) {
                 	DemoMenuAction dma = (DemoMenuAction)value;
                 	return (String)dma.getValue(Action.NAME);
                 }
                 return StringValues.TO_STRING.getString(value);
-            }
-            
+            }            
         };
-		DefaultTreeRenderer treeRenderer = new DefaultTreeRenderer(sv);
+		DefaultTreeRenderer treeRenderer = new DefaultTreeRenderer(iv, sv);
 		
 		demoTree.setCellRenderer(treeRenderer);
 		
