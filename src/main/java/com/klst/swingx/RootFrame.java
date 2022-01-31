@@ -228,7 +228,7 @@ CENTER: JXPanel currentController
 //		}
     	
     	//DemoMenuAction root = DemoMenuAction.getRootAction();
-		TreeNode rootNode = DemoMenuAction.createTree();
+		TreeNode rootNode = DemoMenuAction.createTree(this);
     	TreeTableModel model = DemoMenuAction.createMenuModel(rootNode);
     	// --------------
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
@@ -281,7 +281,7 @@ CENTER: JXPanel currentController
     			LOG.info("DISCONTIGUOUS_TREE_SELECTION SelectionPath:"+tsm.getSelectionPath());
     			Object o = tsm.getSelectionPath().getLastPathComponent();
     			LOG.info("LastPathComponent:"+o);
-    			DemoMenuAction action = (DemoMenuAction)o;
+    			DemoMenuAction action = (DemoMenuAction)o; // root ist DefaultMutableTreeNode! ClassCastException TODO
     			LOG.info("LastPathComponent.NAME:"+action.getValue(Action.NAME));
 //    			Object[] path = tsm.getSelectionPath().getPath(); // The first element is the root
 //    			for(int i=0;i<path.length;i++) {
@@ -289,11 +289,11 @@ CENTER: JXPanel currentController
 ////    				DemoMenuAction action = (DemoMenuAction)path[i];
 ////    				LOG.info(""+i+":"+action.getValue(Action.NAME));
 //    			}
-    			
+    			action.actionPerformed(null); // ohne para  			
     		}
     	});
 
-    	// nicht wie gewünscht:
+    	// nicht wie gewünscht: TODO
 		DefaultTreeRenderer treeRenderer = new MenuTreeRenderer(rootNode);
 //		demoTree.setCellRenderer(treeRenderer);
 		

@@ -1,7 +1,11 @@
 package com.klst.swingx;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -9,12 +13,16 @@ import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
+import javax.swing.MenuElement;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.demos.tree.XTreeDemo;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
 import org.jdesktop.swingx.icon.PlayIcon;
@@ -25,6 +33,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
+import swingset.AbstractDemo;
 import swingset.StaticUtilities;
 
 public class DemoMenuAction extends AbstractAction {
@@ -35,6 +44,7 @@ public class DemoMenuAction extends AbstractAction {
 	Class<?> democlass = null;
 	String className = null;
 	AbstractButton jToggleButton = null;
+	RootFrame rootframe = null; // nur in root!
 
 /* super ctors:
 
@@ -143,8 +153,8 @@ public class DemoMenuAction extends AbstractAction {
 	static Icon GO3_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.GREEN);
 	static Icon SS3DATA_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.BLUE);
 	static ArrayList<DemoMenuAction> ss3Actions = new ArrayList<DemoMenuAction>();
-    public static TreeNode createTree() {
-    	DefaultMutableTreeNode root = new DefaultMutableTreeNode(getRootAction());
+    public static TreeNode createTree(RootFrame rootframe) {
+    	DefaultMutableTreeNode root = new DefaultMutableTreeNode(getRootAction(rootframe));
     	
     	DefaultMutableTreeNode ss2 = new DefaultMutableTreeNode(getSS2Action());
     	DefaultMutableTreeNode ss3 = new DefaultMutableTreeNode(getSS3Action());
@@ -153,10 +163,6 @@ public class DemoMenuAction extends AbstractAction {
 
     	ss3Actions.add(new DemoMenuAction(XTreeDemo.class, "XTree", SS3DATA_ICON, StaticUtilities.createImageIcon(XTreeDemo.class, XTreeDemo.ICON_PATH)));
     	ss3Actions.add(new DemoMenuAction(TreeTableDemo.class, "XTreeTable", SS3DATA_ICON, StaticUtilities.createImageIcon(TreeTableDemo.class, TreeTableDemo.ICON_PATH)));
-//    	for(int i=0;i<ss3Actions.size();i++) {
-//    		LOG.info("ss3Actions "+i + ":"+ss3Actions.get(i));
-//    		ss3.add(new DefaultMutableTreeNode(ss3Actions.get(i)));
-//    	}
     	ss3Actions.forEach( action -> {
         	ss3.add(new DefaultMutableTreeNode(action));
     	});
@@ -167,8 +173,12 @@ public class DemoMenuAction extends AbstractAction {
     static DemoMenuAction ss2 = null;
     static DemoMenuAction ss3 = null;
     public static DemoMenuAction getRootAction() {
+    	return getRootAction(null);
+    }
+    public static DemoMenuAction getRootAction(RootFrame rootframe) {
     	if(root==null) {
     		root = new DemoMenuAction((String)null, "Demo");
+    		if(rootframe!=null) root.rootframe = rootframe;
     	}
     	return root;
     }
@@ -270,19 +280,66 @@ public class DemoMenuAction extends AbstractAction {
      */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		LOG.info("Source:"+o + "\n "+e.getActionCommand()); // TODO String ActionCommand/Name to Action
-		if(o instanceof JToolBar) {
-			JToolBar tb= (JToolBar)o;
+//		Object o = e.getSource();
+//		LOG.info("Source:"+o + "\n "+e.getActionCommand());
+//		if(o instanceof JToolBar) {
+//			JToolBar tb= (JToolBar)o;
+//		}
+//		if(o instanceof JMenu) {
+//			JMenu menu = (JMenu)o;
+//			LOG.info("Action:"+menu.getAction());
+//		}
+//		JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor((Component)o);
+//		LOG.info("topFrame:"+topFrame); //null
+//		JFrame f1 = (JFrame) SwingUtilities.windowForComponent((Component)o);
+//		LOG.info("topFrame f1:"+f1); //null
+//		JFrame f2 = (JFrame) SwingUtilities.getWindowAncestor((Component)o);
+//		LOG.info("topFrame f2:"+f2); //null
+//		MenuElement me= (MenuElement)o;
+//		Component comp = me.getComponent();
+//		topFrame = (JFrame) SwingUtilities.getWindowAncestor(comp);
+//		LOG.info("topFrame:"+topFrame + ", comp:"+comp); //null
+//		JFrame f3 = (JFrame) SwingUtilities.getAncestorOfClass(JFrame.class, comp);
+//		JFrame f4 = (JFrame) SwingUtilities.getRoot(comp);
+////		JFrame f5 = (JFrame) 
+//				SwingUtilities.getRootPane(comp); //.getParent();
+//		LOG.info("topFrame f3:"+f3); //null
+//		LOG.info("topFrame f4:"+f4); //null
+//		LOG.info("topFrame JRootPane:"+SwingUtilities.getRootPane(comp)); //null
+		if(democlass==null) {
+			if(className==null) {
+				// node ohne demo klasse, root, ss2, ss3, ... ==> nix tun
+				return;
+			}
+			// später TODO aus className classe laden
 		}
-		if(o instanceof JMenu) {
-			JMenu menu = (JMenu)o;
-			LOG.info("Action:"+menu.getAction());
-		}
-//		JToolBar tb= (JToolBar) e.getSource(); // TODO cast nicht möglich !!!!!!!!!!!!!!!!!!!!
-//        	class com.klst.swingx.WindowFrame$ToggleButtonToolBar$1 cannot be cast to class javax.swing.JToolBar 
-//        	(com.klst.swingx.WindowFrame$ToggleButtonToolBar$1 is in unnamed module of loader 'app'; javax.swing.JToolBar is in module java.desktop of loader 'bootstrap')
-		// TODO Auto-generated method stub		
+		RootFrame rf = root.rootframe;
+		WindowFrame frame = rf.makeFrame(rf, 1, null);
+    	if(frame!=null) {
+    		frame.setStartPosition(StartPosition.CenterInScreen);
+    		AbstractDemo demo = null;
+			try {
+				demo = getInstanceOf(democlass, frame); // ctor 
+			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+					| IllegalArgumentException | InvocationTargetException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			rf.addController(demo.getControlPane()); // remove and add a controller
+        	
+        	frame.getContentPane().add(demo);
+        	frame.pack();
+        	frame.setVisible(true);
+    	}
+	}
+
+	private AbstractDemo getInstanceOf(Class<?> demoClass, Frame frame) throws NoSuchMethodException, SecurityException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Constructor<?> demoConstructor = demoClass.getConstructor(new Class[] { Frame.class }); // throws
+																								// NoSuchMethodException,
+																								// SecurityException
+		AbstractDemo demo = (AbstractDemo) demoConstructor.newInstance(new Object[] { frame });
+		return demo;
 	}
 
 }
