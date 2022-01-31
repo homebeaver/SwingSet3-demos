@@ -2,6 +2,8 @@ package com.klst.swingx;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -189,8 +191,47 @@ CENTER: JXPanel currentController
     	});
 
     	// nicht wie gewünscht: TODO
-		DefaultTreeRenderer treeRenderer = new MenuTreeRenderer(rootNode);
-//		demoTree.setCellRenderer(treeRenderer);
+//		DefaultTreeRenderer treeRenderer = new MenuTreeRenderer(rootNode);
+    	
+/* aus TreeRendererTest:
+        StringValue format = new StringValue() {
+
+            public String getString(Object value) {
+                if (value instanceof File) {
+                    return ((File) value).getName();
+                }
+                return StringValues.TO_STRING.getString(value);
+            }
+            
+        };
+
+   	        StringValue converter = new StringValue() {
+
+            public String getString(Object value) {
+                if (value instanceof Component) {
+                    return "Name: " + ((Component) value).getName();
+                }
+                return StringValues.TO_STRING.getString(value);
+            }
+
+ */
+    	
+//		DefaultTreeRenderer treeRenderer = new DefaultTreeRenderer(format); // StringValue format
+        StringValue sv = new StringValue() {
+
+            public String getString(Object value) {
+//            	LOG.info("?????????????????? value:"+value);
+                if (value instanceof DemoMenuAction) {
+                	DemoMenuAction dma = (DemoMenuAction)value;
+                	return (String)dma.getValue(Action.NAME);
+                }
+                return StringValues.TO_STRING.getString(value);
+            }
+            
+        };
+		DefaultTreeRenderer treeRenderer = new DefaultTreeRenderer(sv);
+		
+		demoTree.setCellRenderer(treeRenderer);
 		
 		content.add(new JScrollPane(demoTree), BorderLayout.WEST);
        return menu;

@@ -320,12 +320,12 @@ public class DemoMenuAction extends AbstractAction {
      */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		LOG.info("Source:"+o + "\n "+this);
-		if(o instanceof WindowFrame.ToggleButtonToolBar) { // ist nie der Fall????????
-			JToolBar tb= (JToolBar)o;
-			LOG.info("JToolBar:\n "+tb);
-		}
+//		Object o = e.getSource();
+//		LOG.info("Source:"+o + "\n "+this);
+//		if(o instanceof WindowFrame.ToggleButtonToolBar) { // ist nie der Fall????????
+//			JToolBar tb= (JToolBar)o;
+//			LOG.info("JToolBar:\n "+tb);
+//		}
 //		if(o instanceof JMenu) {
 //			JMenu menu = (JMenu)o;
 //			LOG.info("Action:"+menu.getAction());
