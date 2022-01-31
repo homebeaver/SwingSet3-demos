@@ -160,8 +160,8 @@ aus super:
             AbstractButton button = tbtb.addToggleButton(action);
             button.setToolTipText((String)action.getValue(Action.SHORT_DESCRIPTION));
             button.setFocusable(false);
-            if(action instanceof DemoAction) {
-            	((DemoAction)action).setToggleButton(button);
+            if(action instanceof DemoMenuAction) {
+            	((DemoMenuAction)action).setToggleButton(button);
             }
             return button;
         }

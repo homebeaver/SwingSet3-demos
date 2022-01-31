@@ -95,9 +95,6 @@ public class RootFrame extends WindowFrame {
 		frames.add(this);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		LOG.info(TITLE+" frame ctor. frames#="+frames.size() + " super.rootFrame:"+super.rootFrame);
-    	getRootFrame().demoActions.forEach( a -> {
-    		AbstractButton ab = addActionToToolBar(this, a);
-    	});
 
     	// TODO
 /* Alternative 1:
@@ -114,7 +111,6 @@ CENTER: JXPanel currentController
 
  */
     	content = new JXPanel(new BorderLayout());
-//    	demoTree = createDemoTree();
     	content.add(new JScrollPane(demoTree), BorderLayout.WEST);
     	tabbedpane = new JTabbedPane();
     	tabbedpane.add("source", new JXLabel("TODO enpty"));
@@ -168,41 +164,41 @@ CENTER: JXPanel currentController
 	List<AbstractAction> demoActions = new ArrayList<AbstractAction>();
 	private void addDemos() {
 		demos.put(null, null); // current presentation frame
-		demoActions.add(new DemoAction(ButtonDemo.class, "runDemo", StaticUtilities.createImageIcon(ButtonDemo.ICON_PATH)));
-		demos.put(ButtonDemo.class, null);
-		demoActions.add(new DemoAction(ColorChooserDemo.class, "runDemo", StaticUtilities.createImageIcon(ColorChooserDemo.ICON_PATH)));
-		demos.put(ColorChooserDemo.class, null);
-		demoActions.add(new DemoAction(ComboBoxDemo.class, "runDemo", StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH)));
-		demos.put(ComboBoxDemo.class, null);
-		demoActions.add(new DemoAction(FileChooserDemo.class, "runDemo", StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
-		demos.put(FileChooserDemo.class, null);
-		demoActions.add(new DemoAction(HtmlDemo.class, "runDemo", StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
-		demos.put(HtmlDemo.class, null);
-		demoActions.add(new DemoAction(ListDemo.class, "runDemo", StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
-		demos.put(ListDemo.class, null);
-		demoActions.add(new DemoAction(OptionPaneDemo.class, "runDemo", StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
-		demos.put(OptionPaneDemo.class, null);		
-		demoActions.add(new DemoAction(ProgressBarDemo.class, "runDemo", StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
-		demos.put(ProgressBarDemo.class, null);
-		demoActions.add(new DemoAction(ScrollPaneDemo.class, "runDemo", StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
-		demos.put(ScrollPaneDemo.class, null);
-		demoActions.add(new DemoAction(SliderDemo.class, "Slider", SS2_ICON, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
-		demos.put(SliderDemo.class, null);
-		demoActions.add(new DemoAction(SplitPaneDemo.class, "SplitPane", SS2_ICON, StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
-		demos.put(SplitPaneDemo.class, null);
-		demoActions.add(new DemoAction(TabbedPaneDemo.class, "TabbedPane", SS2_ICON, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
-		demos.put(TabbedPaneDemo.class, null);
-		demoActions.add(new DemoAction(TableDemo.class, "Table", SS2_ICON, StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
-		demos.put(TableDemo.class, null);
-		demoActions.add(new DemoAction(ToolTipDemo.class, "ToolTip", SS2_ICON, StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
-		demos.put(ToolTipDemo.class, null);
-		demoActions.add(new DemoAction(TreeDemo.class, "Tree", SS2_ICON, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
-		demos.put(TreeDemo.class, null);
-		// swingset 3:
+//		demoActions.add(new DemoAction(ButtonDemo.class, "runDemo", StaticUtilities.createImageIcon(ButtonDemo.ICON_PATH)));
+//		demos.put(ButtonDemo.class, null);
+//		demoActions.add(new DemoAction(ColorChooserDemo.class, "runDemo", StaticUtilities.createImageIcon(ColorChooserDemo.ICON_PATH)));
+//		demos.put(ColorChooserDemo.class, null);
+//		demoActions.add(new DemoAction(ComboBoxDemo.class, "runDemo", StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH)));
+//		demos.put(ComboBoxDemo.class, null);
+//		demoActions.add(new DemoAction(FileChooserDemo.class, "runDemo", StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
+//		demos.put(FileChooserDemo.class, null);
+//		demoActions.add(new DemoAction(HtmlDemo.class, "runDemo", StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
+//		demos.put(HtmlDemo.class, null);
+//		demoActions.add(new DemoAction(ListDemo.class, "runDemo", StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
+//		demos.put(ListDemo.class, null);
+//		demoActions.add(new DemoAction(OptionPaneDemo.class, "runDemo", StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
+//		demos.put(OptionPaneDemo.class, null);		
+//		demoActions.add(new DemoAction(ProgressBarDemo.class, "runDemo", StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
+//		demos.put(ProgressBarDemo.class, null);
+//		demoActions.add(new DemoAction(ScrollPaneDemo.class, "runDemo", StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
+//		demos.put(ScrollPaneDemo.class, null);
+//		demoActions.add(new DemoAction(SliderDemo.class, "Slider", SS2_ICON, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
+//		demos.put(SliderDemo.class, null);
+//		demoActions.add(new DemoAction(SplitPaneDemo.class, "SplitPane", SS2_ICON, StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
+//		demos.put(SplitPaneDemo.class, null);
+//		demoActions.add(new DemoAction(TabbedPaneDemo.class, "TabbedPane", SS2_ICON, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
+//		demos.put(TabbedPaneDemo.class, null);
+//		demoActions.add(new DemoAction(TableDemo.class, "Table", SS2_ICON, StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
+//		demos.put(TableDemo.class, null);
+//		demoActions.add(new DemoAction(ToolTipDemo.class, "ToolTip", SS2_ICON, StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
+//		demos.put(ToolTipDemo.class, null);
+//		demoActions.add(new DemoAction(TreeDemo.class, "Tree", SS2_ICON, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
+//		demos.put(TreeDemo.class, null);
+//		// swingset 3:
 //		demoActions.add(new DemoAction(XTreeDemo.class, "XTree", SS3DATA_ICON, StaticUtilities.createImageIcon(XTreeDemo.class, XTreeDemo.ICON_PATH)));
-		demos.put(XTreeDemo.class, null);
+//		demos.put(XTreeDemo.class, null);
 //		demoActions.add(new DemoAction(TreeTableDemo.class, "XTreeTable", SS3DATA_ICON, StaticUtilities.createImageIcon(TreeTableDemo.class, TreeTableDemo.ICON_PATH)));
-		demos.put(TreeTableDemo.class, null);
+//		demos.put(TreeTableDemo.class, null);
 	}
 
 	JMenu menu;
@@ -233,17 +229,16 @@ CENTER: JXPanel currentController
     	// --------------
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
     	this.menu = new JMenu((Action)root.getUserObject());
-//    	for(int i=0;i<model.getChildCount(root);i++) {
-//    		Object o = model.getChild(root,i);
-//    		menu.add(new JMenu((Action)o));
-//    	}
+
     	Object o2 = model.getChild(root,0);
     	JMenu ss2 = (JMenu) menu.add(new JMenu((Action)o2));
-    	this.demoActions.forEach( action -> {
-    		if(SS2_ICON==action.getValue(Action.SMALL_ICON)) {
-            	ss2.add(action);
-    		}
-    	});
+    	for(int i=0;i<model.getChildCount(o2);i++) {
+    		Object o = model.getChild(o2,i);
+    		AbstractButton ab = addActionToToolBar(this, (DemoMenuAction)o); // add ToggleButton to ToolBar
+    		LOG.info("AbstractButton:"+ab +" menu add:"+o);
+    		ss2.add((DemoMenuAction)o);
+    	}
+    	
     	Object o3 = model.getChild(root,1);
     	JMenu ss3 = (JMenu) menu.add(new JMenu((Action)o3));
     	for(int i=0;i<model.getChildCount(o3);i++) {

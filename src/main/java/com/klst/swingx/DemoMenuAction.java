@@ -13,11 +13,8 @@ import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.MenuElement;
-import javax.swing.SwingUtilities;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -34,7 +31,22 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import swingset.AbstractDemo;
+import swingset.ButtonDemo;
+import swingset.ColorChooserDemo;
+import swingset.ComboBoxDemo;
+import swingset.FileChooserDemo;
+import swingset.HtmlDemo;
+import swingset.ListDemo;
+import swingset.OptionPaneDemo;
+import swingset.ProgressBarDemo;
+import swingset.ScrollPaneDemo;
+import swingset.SliderDemo;
+import swingset.SplitPaneDemo;
 import swingset.StaticUtilities;
+import swingset.TabbedPaneDemo;
+import swingset.TableDemo;
+import swingset.ToolTipDemo;
+import swingset.TreeDemo;
 
 public class DemoMenuAction extends AbstractAction {
 
@@ -152,6 +164,7 @@ public class DemoMenuAction extends AbstractAction {
 	static Icon SS3_ICON = new PlayIcon(SizingConstants.SMALL_ICON);
 	static Icon GO3_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.GREEN);
 	static Icon SS3DATA_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.BLUE);
+	static ArrayList<DemoMenuAction> ss2Actions = new ArrayList<DemoMenuAction>();
 	static ArrayList<DemoMenuAction> ss3Actions = new ArrayList<DemoMenuAction>();
     public static TreeNode createTree(RootFrame rootframe) {
     	DefaultMutableTreeNode root = new DefaultMutableTreeNode(getRootAction(rootframe));
@@ -160,6 +173,27 @@ public class DemoMenuAction extends AbstractAction {
     	DefaultMutableTreeNode ss3 = new DefaultMutableTreeNode(getSS3Action());
     	root.add(ss2);
     	root.add(ss3);
+
+    	// TODOs:
+    	ss2Actions.add(new DemoMenuAction(ButtonDemo.class, "Button", GO2_ICON, StaticUtilities.createImageIcon(ButtonDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ColorChooserDemo.class, "ColorChooser", GO2_ICON, StaticUtilities.createImageIcon(ColorChooserDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ComboBoxDemo.class, "ComboBox", GO2_ICON, StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(FileChooserDemo.class, "FileChooser", GO2_ICON, StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(HtmlDemo.class, "Html", GO2_ICON, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", GO2_ICON, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(OptionPaneDemo.class, "OptionPane", GO2_ICON, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ProgressBarDemo.class, "ProgressBar", GO2_ICON, StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ScrollPaneDemo.class, "ScrollPane", GO2_ICON, StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
+    	// Done:
+    	ss2Actions.add(new DemoMenuAction(SliderDemo.class, "Slider", GO2_ICON, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(SplitPaneDemo.class, "SplitPane", GO2_ICON, StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(TabbedPaneDemo.class, "TabbedPane", GO2_ICON, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(TableDemo.class, "Table", GO2_ICON, StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ToolTipDemo.class, "ToolTip", GO2_ICON, StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(TreeDemo.class, "Tree", GO2_ICON, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
+    	ss2Actions.forEach( action -> {
+        	ss2.add(new DefaultMutableTreeNode(action));
+    	});
 
     	ss3Actions.add(new DemoMenuAction(XTreeDemo.class, "XTree", SS3DATA_ICON, StaticUtilities.createImageIcon(XTreeDemo.class, XTreeDemo.ICON_PATH)));
     	ss3Actions.add(new DemoMenuAction(TreeTableDemo.class, "XTreeTable", SS3DATA_ICON, StaticUtilities.createImageIcon(TreeTableDemo.class, TreeTableDemo.ICON_PATH)));
@@ -241,6 +275,10 @@ public class DemoMenuAction extends AbstractAction {
             		if(index==1) return getSS3Action();
             	}
 //		    	LOG.info("nicht root ----------- parent:"+parent);
+            	if(parent==getSS2Action()) {
+    		    	LOG.info("index="+index+", parent is SS2Action:"+parent);
+            		if(index>=0 && index<ss2Actions.size()) return ss2Actions.get(index);
+            	}
             	if(parent==getSS3Action()) {
     		    	LOG.info("index="+index+", parent is SS3Action:"+parent);
             		if(index>=0 && index<ss3Actions.size()) return ss3Actions.get(index);
@@ -253,7 +291,7 @@ public class DemoMenuAction extends AbstractAction {
 //		    	LOG.info("parent:"+parent);
             	if(parent==this.getRoot()) return 2;
 		    	LOG.info("nicht root ----------- parent:"+parent);
-//            	if(parent==getRootAction()) return 2;
+            	if(parent==getSS2Action()) return ss2Actions.size();
             	if(parent==getSS3Action()) return ss3Actions.size();
 		    	LOG.info("return 0 ------ bei parent:"+parent);
 				return 0;
@@ -264,10 +302,12 @@ public class DemoMenuAction extends AbstractAction {
 		    	LOG.info("parent:"+parent);
             	if(parent==getRootAction() && child==getSS2Action()) return 0;
             	if(parent==getRootAction() && child==getSS3Action()) return 1;
+            	if(parent==getSS2Action()) {
+            		return ss2Actions.indexOf(child);
+            	}
             	if(parent==getSS3Action()) {
             		return ss3Actions.indexOf(child);
             	}
-				// TODO getSS2Action Auto-generated method stub
 				return -1;
 			}
     		
@@ -280,11 +320,12 @@ public class DemoMenuAction extends AbstractAction {
      */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-//		Object o = e.getSource();
-//		LOG.info("Source:"+o + "\n "+e.getActionCommand());
-//		if(o instanceof JToolBar) {
-//			JToolBar tb= (JToolBar)o;
-//		}
+		Object o = e.getSource();
+		LOG.info("Source:"+o + "\n "+this);
+		if(o instanceof WindowFrame.ToggleButtonToolBar) { // ist nie der Fall????????
+			JToolBar tb= (JToolBar)o;
+			LOG.info("JToolBar:\n "+tb);
+		}
 //		if(o instanceof JMenu) {
 //			JMenu menu = (JMenu)o;
 //			LOG.info("Action:"+menu.getAction());
@@ -314,6 +355,20 @@ public class DemoMenuAction extends AbstractAction {
 			// später TODO aus className classe laden
 		}
 		RootFrame rf = root.rootframe;
+		
+    	// ss2: deselect all toolbar buttons except this action button 
+    	JToolBar tb = rf.getToolBar();
+    	Component[] cs = tb.getComponents();
+    	for(int i=0;i<cs.length;i++) {
+			JToggleButton b = (JToggleButton)cs[i];
+			if(b==this.getToggleButton()) {
+    			LOG.info("swingset2 button "+i + " selected, "+super.getValue(Action.NAME));        		
+				b.setSelected(true);
+			} else {
+				b.setSelected(false);
+			}
+    	}
+
 		WindowFrame frame = rf.makeFrame(rf, 1, null);
     	if(frame!=null) {
     		frame.setStartPosition(StartPosition.CenterInScreen);
