@@ -102,8 +102,9 @@ public class XTreeDemo extends AbstractDemo {
         tree = new JXTree(); 
         tree.setName("componentTree");
         tree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        add(new JScrollPane(tree), BorderLayout.CENTER);
-        LOG.info("done initComponents tree:"+tree);
+        tree.setBackground(null); // is white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
+        add(new JScrollPane(tree), BorderLayout.CENTER);        
+        LOG.info("done initComponents Background:"+tree.getBackground() + " tree:"+tree);
 
         configureComponents();
         // create and install the component tree model:
@@ -155,6 +156,7 @@ public class XTreeDemo extends AbstractDemo {
             
             @Override
             public String getString(Object value) {
+//            	LOG.info(" ### value:"+value);
                 if (value instanceof Component) {
                     Component component = (Component) value;
                     String simpleName = component.getClass().getSimpleName();
