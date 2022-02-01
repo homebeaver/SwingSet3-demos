@@ -162,7 +162,12 @@ public class TreeTableDemo extends AbstractDemo {
         // <snip>JXTreeTable column customization
         // configure and install a custom columnFactory, arguably data related ;-)
         ColumnFactory factory = new ColumnFactory() {
-            String[] columnNameKeys = { "componentType", "componentName", "componentLocation", "componentSize" };
+            String[] columnNameKeys = 
+            	{ getString("componentType")
+            	, getString("componentName")
+            	, getString("componentLocation")
+            	, getString("componentSize")
+            	};
 
             @Override
             public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
