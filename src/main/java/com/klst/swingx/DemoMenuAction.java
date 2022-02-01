@@ -20,8 +20,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import org.jdesktop.swingx.JXFrame.StartPosition;
-import org.jdesktop.swingx.demos.tree.XTreeDemo;
-import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
 import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.icon.StopIcon;
@@ -183,8 +181,8 @@ public class DemoMenuAction extends AbstractAction {
     	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", GO2_ICON, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(OptionPaneDemo.class, "OptionPane", GO2_ICON, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ProgressBarDemo.class, "ProgressBar", GO2_ICON, StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ScrollPaneDemo.class, "ScrollPane", GO2_ICON, StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
     	// Done:
+    	ss2Actions.add(new DemoMenuAction(ScrollPaneDemo.class, "ScrollPane", GO2_ICON, StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(SliderDemo.class, "Slider", GO2_ICON, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(SplitPaneDemo.class, "SplitPane", GO2_ICON, StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(TabbedPaneDemo.class, "TabbedPane", GO2_ICON, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
@@ -195,8 +193,8 @@ public class DemoMenuAction extends AbstractAction {
         	ss2.add(new DefaultMutableTreeNode(action));
     	});
 
-    	ss3Actions.add(new DemoMenuAction(XTreeDemo.class, "XTree", SS3DATA_ICON, StaticUtilities.createImageIcon(XTreeDemo.class, XTreeDemo.ICON_PATH)));
-    	ss3Actions.add(new DemoMenuAction(TreeTableDemo.class, "XTreeTable", SS3DATA_ICON, StaticUtilities.createImageIcon(TreeTableDemo.class, TreeTableDemo.ICON_PATH)));
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.tree.XTreeDemo", "XTree", SS3DATA_ICON, null));
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.treetable.TreeTableDemo", "XTreeTable", SS3DATA_ICON, null));
     	ss3Actions.forEach( action -> {
         	ss3.add(new DefaultMutableTreeNode(action));
     	});
@@ -352,7 +350,7 @@ public class DemoMenuAction extends AbstractAction {
 				// node ohne demo klasse, root, ss2, ss3, ... ==> nix tun
 				return;
 			}
-			// später TODO aus className classe laden
+			democlass = loadDemo(className);
 		}
 		RootFrame rf = root.rootframe;
 		
@@ -387,6 +385,21 @@ public class DemoMenuAction extends AbstractAction {
         	frame.setVisible(true);
     	}
 	}
+
+    /**
+     * Loads a demo from a classname, but does not instantiate
+     */
+    private Class<?> loadDemo(String classname) {
+    	// setStatus("loading" + classname);
+        Class<?> demoClass = null;
+        try {
+            demoClass = Class.forName(classname); // throws ClassNotFoundException
+        } catch (Exception e) {
+        	LOG.warning("Error occurred loading class: " + classname);
+            e.printStackTrace();
+        }
+        return demoClass;
+    }
 
 	private AbstractDemo getInstanceOf(Class<?> demoClass, Frame frame) throws NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
