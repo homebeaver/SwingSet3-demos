@@ -86,6 +86,9 @@ public class WindowFrame extends JXFrame {
 		this(title, null, -1, null);
 	}
 
+	public void setTitle(String title) {
+		super.setTitle("#"+this.windowNo+":"+title);
+	}
 	/*
 
 in SwingSet2 gibt es eine inner Klasse ToggleButtonToolBar extends JToolBar
