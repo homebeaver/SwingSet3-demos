@@ -20,6 +20,7 @@ import javax.swing.tree.TreeSelectionModel;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
@@ -32,6 +33,22 @@ TODO RootFrame <> JXRootPane
  */
 @SuppressWarnings("serial")
 public class RootFrame extends WindowFrame {
+
+	/**
+	 * starts swingset demo application
+	 */
+	public static void main(String[] args) {
+		WindowFrame gossip = new RootFrame(); // RootFrame contains a simple frame manager
+		@SuppressWarnings("unused")
+		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
+
+		JMenu demoMenu = gossip.createDemosMenu();
+		if(demoMenu != null) gossip.getJMenuBar().add(demoMenu);
+
+		gossip.pack(); // auto or fix:
+		//gossip.setSize(680, 200);
+		gossip.setVisible(true);
+	}
 
     private static final Logger LOG = Logger.getLogger(RootFrame.class.getName());
 
