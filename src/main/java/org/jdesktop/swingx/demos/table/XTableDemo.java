@@ -52,7 +52,7 @@ import swingset.AbstractDemo;
  * @author Karl George Schaefer
  * @author Jeanette Winzenberg (Devoxx '08 version)
  * @author aim (original TableDemo)
- * @author EUG https://github.com/homebeaver (reorg)
+ * @author EUG https://github.com/homebeaver (reorg+simplify)
  */
 //@DemoProperties(
 //        value = "JXTable Demo",
@@ -98,16 +98,21 @@ public class XTableDemo extends AbstractDemo {
 
     private OscarTableModel oscarModel;
 
+    // Controller/NORTH:
+    private JXPanel controlPanel;
+    private JTextField filterField;
+    private JCheckBox winnersCheckbox;
+    private OscarFiltering filterController;
+
     private Stacker dataPanel; // com.sun.swingset3.demos.Stacker extends JLayeredPane mit timing.Animator
     private JXTable oscarTable;
+    
+    // SOUTH:
     private JComponent statusBarLeft;
     private JLabel actionStatus;
     private JLabel tableStatus;
     private JLabel tableRows;
-
     private JProgressBar progressBar;
-
-    private OscarFiltering filterController;
 
     /**
      * XTableDemo Constructor
@@ -118,6 +123,8 @@ public class XTableDemo extends AbstractDemo {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
     	// initComponents:
+        add(getControlPanel(), BorderLayout.NORTH);
+    	
         oscarTable = createXTable();
         oscarTable.setName("oscarTable");
         
@@ -125,24 +132,42 @@ public class XTableDemo extends AbstractDemo {
         dataPanel = new Stacker(scrollpane);
         add(dataPanel, BorderLayout.CENTER);
 
-        add(createStatusBar(), BorderLayout.SOUTH);
+        add(createStatusBar(), BorderLayout.SOUTH); // Alternativ JXStatusBar im frame
 
         configureDisplayProperties();
         
         // Filter control create the controller
         filterController = new OscarFiltering(oscarTable);
         
-        bind();
+        //<snip> JXTable data properties
+        oscarModel = new OscarTableModel();
+        // set the table model after setting the factory
+        oscarTable.setModel(oscarModel);
+        //</snip>
+        oscarModel.addTableModelListener( tableModelEvent -> {
+        	updateStatusBar();
+        });
+
+        //<snip> JXTable column properties
+        // some display properties can be configured only after the model has been set, 
+        // here: configure the view sequence of columns to be different from the model
+        oscarTable.setColumnSequence(new Object[] 
+        		{ "yearColumn"
+        		, "categoryColumn"
+        		, "movieTitleColumn"
+        		, "nomineesColumn"
+        		});
+        //</snip>
+        
         start();
     }
 
-    // Controller:
-    private JXPanel controlPanel;
-    private JTextField filterField;
-    private JCheckBox winnersCheckbox;
-
     @Override
 	public JXPanel getControlPane() {
+		return emptyControlPane();
+	}
+    
+	private JXPanel getControlPanel() {
         GridBagLayout gridbag = new GridBagLayout();
     	controlPanel = new JXPanel(gridbag);
 
@@ -224,53 +249,17 @@ public class XTableDemo extends AbstractDemo {
     }
 
     /**
-     * Binds components to data and user interaction.
-     */
-    protected void bind() {
-        
-        //<snip> JXTable data properties
-        oscarModel = new OscarTableModel();
-        // set the table model after setting the factory
-        oscarTable.setModel(oscarModel);
-//        </snip>
-        
-//        oscarModel.addTableModelListener(new TableModelListener() {
-//            public void tableChanged(TableModelEvent e) {
-//                updateStatusBar();
-//            }
-//        });
-        oscarModel.addTableModelListener( tableModelEvent -> {
-        	updateStatusBar();
-        });
-
-        //<snip> JXTable column properties
-        // some display properties can be configured only after the model has been set, here:
-        // configure the view sequence of columns to be different from the model
-        oscarTable.setColumnSequence(new Object[] 
-        		{ "yearColumn"
-        		, "categoryColumn"
-        		, "movieTitleColumn"
-        		, "nomineesColumn"
-        		});
-        // </snip>
-    }
-
-//    /**
-//     * Binding artefact method: 
-//     * crude hack to update the status bar on state changes from the controller. 
-//     */
-//    public void setStatusContent(Object dummy) {
-//        updateStatusBar();
-//    }
-
-    /**
-     * Updates status labels. Called during loading and on 
-     * changes to the filter controller state.
+     * Updates status labels. 
+     * Called during loading and on changes to the filter controller state.
      */
     protected void updateStatusBar() {
-        tableStatus.setName(filterController.isFilteringByString() ? "searchCountLabel" : "rowCountLabel");
-        tableStatus.setText(filterController.isFilteringByString() ? 
-        		getString("searchCountLabel.text") : getString("rowCountLabel.text") );
+    	if(filterController.isFilteringByString()) {
+    		tableStatus.setName("searchCountLabel");
+    		tableStatus.setText(getString("searchCountLabel.text"));
+    	} else {
+    		tableStatus.setName("rowCountLabel");
+    		tableStatus.setText(getString("rowCountLabel.text"));
+    	}
         tableRows.setText("" + oscarTable.getRowCount());
     }
     
@@ -283,22 +272,28 @@ public class XTableDemo extends AbstractDemo {
         // create SwingWorker which will load the data on a separate thread
         SwingWorker<?, ?> loader = new OscarDataLoader(XTableDemo.class.getResource("resources/oscars.xml"), oscarModel);
         
-        // display progress bar while data loads
-        progressBar = new JProgressBar();
-        statusBarLeft.add(progressBar);   
-        // ohne bind (bind benötigt artifact/org.jdesktop/beansbinding):
+        // ohne bind:
         loader.addPropertyChangeListener( propertyChangeEvent -> {
         	if ("state".equals(propertyChangeEvent.getPropertyName())) {
         		StateValue state = (StateValue)propertyChangeEvent.getNewValue();
                 LOG.info("loader StateValue:" + state); // damit ampel steuern
+                updateStatusBar();
+                if (state == StateValue.DONE) {
+                	statusBarLeft.remove(progressBar);
+                	statusBarLeft.remove(actionStatus);
+                	revalidate();
+                	repaint();
+                }
         	}
         	if ("progress".equals(propertyChangeEvent.getPropertyName())) {
         		int progress = (Integer)propertyChangeEvent.getNewValue();
+                //LOG.info("loader progress:" + progress);
         		progressBar.setValue(progress);
-//                LOG.info("loader progress:" + propertyChangeEvent.getNewValue().getClass());
+        		updateStatusBar();
         	}
         });
         
+        // alternativly / needs artifact/org.jdesktop/beansbinding
         // bind the worker's progress notification to the progressBar
         // and the worker's state notification to this
 //        BindingGroup group = new BindingGroup();
@@ -317,21 +312,6 @@ public class XTableDemo extends AbstractDemo {
 //        </snip>
     }
 
-    /**
-     * Callback for worker's state notification: cleanup if done.
-     * @param state
-     */
-    public void setLoadState(StateValue state) {
-        //<snip>Use SwingWorker to asynchronously load the data
-        // remove progressbar if done loading
-        if (state != StateValue.DONE) return;
-        statusBarLeft.remove(progressBar);
-        statusBarLeft.remove(actionStatus);
-        revalidate();
-        repaint();
-//        </snip>
-    }
-    
     //<snip>Use SwingWorker to asynchronously load the data specialized on OscarCandidate
 /*
  * @param <T> the result type returned by this {@code SwingWorker's}
@@ -347,6 +327,7 @@ public class XTableDemo extends AbstractDemo {
 //        </snip>
         
         private JLabel credits;
+        private final int expectedNumber = 8540;
         
         // ctor:
         private OscarDataLoader(URL oscarURL, OscarTableModel oscarTableModel) {
@@ -354,8 +335,7 @@ public class XTableDemo extends AbstractDemo {
             this.oscarModel = oscarTableModel;
         }
 
-/* BUG: ? TODO
- * nach dem Laden: swingset3 8522 , hier: 8516
+/* nach dem Laden: swingset3 8522/8545 (BUG dort) , hier: 8540
  * showOnlyWinners: beide 1758
  */
         //<snip>Use SwingWorker to asynchronously load the data
@@ -373,26 +353,34 @@ public class XTableDemo extends AbstractDemo {
                         }
                     }
                     publish(candidate);
-                    setProgress(100 * candidates.size() / 8545);
+                    setProgress(100 * candidates.size() / expectedNumber);
                 }
             };
             parser.parseDocument(oscarData);
             
             if(super.isCancelled()) {
-            	// TODO
+    			LOG.warning("cancelled "+candidates.size()+"/"+expectedNumber + " "+100 * candidates.size() / expectedNumber + "%");
+    			super.firePropertyChange("cancelled", false, true);
+            } else {
+    			LOG.info("DONE "+candidates.size()+"/"+expectedNumber + " "+100 * candidates.size() / expectedNumber + "%");
             }
             return candidates;
         }
 //        </snip>
 
-        @Override
-        protected void process(List<OscarCandidate> moreCandidates) {
-//    		LOG.info("chunks#:"+moreCandidates.size());
-            if (credits == null) {
-                showCredits();
-            }
-            oscarModel.add(moreCandidates);
-        }
+        /**
+         * Receives data chunks asynchronously on the EDT
+         * 
+         * @param chunks intermediate results to process
+         */
+		@Override
+		protected void process(List<OscarCandidate> moreCandidates) {
+			//LOG.info("chunks#:"+moreCandidates.size());
+			if (credits == null) {
+				showCredits();
+			}
+			oscarModel.add(moreCandidates);
+		}
 
         // For older Java 6 on OS X
         @SuppressWarnings("unused")
@@ -468,6 +456,9 @@ public class XTableDemo extends AbstractDemo {
         actionStatus.setText(getString("loadingStatusLabel.text"));
         actionStatus.setHorizontalAlignment(JLabel.LEADING);
         statusBarLeft.add(actionStatus);
+        // display progress bar while data loads
+        progressBar = new JProgressBar();
+        statusBarLeft.add(progressBar);   
 
         // Middle (should stretch)
 //        statusBar.add(Box.createHorizontalGlue());
@@ -488,15 +479,5 @@ public class XTableDemo extends AbstractDemo {
         statusBar.add(Box.createHorizontalStrut(12));
         return statusBar;
     }
-
-//-----do nothing methods (keep beansbinding happy)
-//    
-//    public Object getStatusContent() {
-//        return null;
-//    }
-//    
-//    public StateValue getLoadState() {
-//        return null;
-//    }
 
 }
