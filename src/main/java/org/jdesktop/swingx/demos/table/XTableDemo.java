@@ -73,7 +73,7 @@ import swingset.AbstractDemo;
 /*
 Grob ok: TODO s:
 erl. : Col Überschriften nicht aus props
-Bei Nominee fehlen Sterne: props: winnerIcon = images/goldstar.png
+erl. : Bei Nominee fehlen Sterne: props: winnerIcon = images/goldstar.png
 Status läuft nicht und verschwindet nicht
 erl. : Beschriftungsn beim Controller fehlen
 erl. : Intro nicht da

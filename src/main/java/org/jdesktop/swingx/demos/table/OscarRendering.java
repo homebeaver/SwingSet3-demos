@@ -33,17 +33,16 @@ import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 
 import swingset.StaticUtilities;
-//import org.jdesktop.swingxset.util.DemoUtils;
 
 public class OscarRendering {
 
-	@SuppressWarnings("unused")
-    private static final Logger LOG = Logger.getLogger(OscarRendering.class.getName());
+	private static final Logger LOG = Logger.getLogger(OscarRendering.class.getName());
     
     //<snip> JXTable column properties
     // Note: the custom column factory is a feature enhanced factory
     // which allows column configuration based on column identifier
     public static void configureColumnFactory(CustomColumnFactory factory, Class<?> resourceBase) {
+    	LOG.info("resourceBase:"+resourceBase);
         // set location to load resources from
         factory.setBaseClass(resourceBase);
         // mark the isWinner column as hidden
@@ -108,9 +107,8 @@ public class OscarRendering {
         factory.addHighlighter("movieTitleColumn", movieToolTip);
         
         // ToolTips for nominees column
-//        Icon winnerIcon = DemoUtils.getResourceIcon(resourceBase, "winnerIcon");
-        Icon winnerIcon = StaticUtilities.createImageIcon(resourceBase, "winnerIcon");
-        Icon nomineeIcon = StaticUtilities.createImageIcon(resourceBase, "nomineeIcon");
+        Icon winnerIcon = StaticUtilities.createImageIcon(resourceBase, "resources/images/goldstar.png");
+        Icon nomineeIcon = StaticUtilities.createImageIcon(resourceBase, "resources/images/nominee.png");
         
         // Icon and tool tip decorator for winners
         IconHighlighter winner = new IconHighlighter(winnerIcon);
@@ -132,8 +130,7 @@ public class OscarRendering {
         // compound per-predicate and add as column highlighter to the factory
         factory.addHighlighter("nomineesColumn", new CompoundHighlighter(
                 new CompoundHighlighter(winnerPredicate, winner, winnerToolTip), 
-                new CompoundHighlighter(new NotHighlightPredicate(winnerPredicate), 
-                        nominee, nomineeToolTip)));
+                new CompoundHighlighter(new NotHighlightPredicate(winnerPredicate), nominee, nomineeToolTip)));
 //        </snip>
 
     }
@@ -192,8 +189,7 @@ public class OscarRendering {
          */
         private URI lookupURI(URI imdbURI) throws IOException, URISyntaxException {
             // lookup uri if not yet set
-            String imdbString = IMDBLink.getMovieURIString(target
-                    .getMovieTitle(), target.getYear());
+            String imdbString = IMDBLink.getMovieURIString(target.getMovieTitle(), target.getYear());
             if (imdbString != null) {
                 imdbURI = new URI(imdbString);
                 target.setIMDBMovieURI(imdbURI);
@@ -256,8 +252,7 @@ public class OscarRendering {
         }
         
         @Override
-        protected Component doHighlight(Component component,
-                ComponentAdapter adapter) {
+        protected Component doHighlight(Component component, ComponentAdapter adapter) {
             String toolTip = getToolTipText(component, adapter);
             // PENDING: treetableCellRenderer doesn't reset tooltip!
             if (toolTip != null) {
@@ -266,8 +261,7 @@ public class OscarRendering {
             return component;
         }
         
-        private String getToolTipText(Component component,
-                ComponentAdapter adapter) {
+        private String getToolTipText(Component component, ComponentAdapter adapter) {
             if ((stringValues == null) || stringValues.isEmpty()) return null;
             String text = "";
             for (int i = 0; i < stringValues.size(); i++) {
@@ -290,8 +284,7 @@ public class OscarRendering {
          * Overridden to check for JComponent type.
          */
         @Override
-        protected boolean canHighlight(Component component,
-                ComponentAdapter adapter) {
+        protected boolean canHighlight(Component component, ComponentAdapter adapter) {
             return component instanceof JComponent;
         }
         
