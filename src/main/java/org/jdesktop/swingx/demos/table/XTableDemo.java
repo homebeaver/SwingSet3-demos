@@ -36,6 +36,10 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.JTableHeader;
 
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
@@ -74,7 +78,7 @@ import swingset.AbstractDemo;
 Grob ok: TODO s:
 erl. : Col Überschriften nicht aus props
 erl. : Bei Nominee fehlen Sterne: props: winnerIcon = images/goldstar.png
-Status läuft nicht 
+erl. : Status läuft nicht 
 erl. : Beschriftungsn beim Controller fehlen
 erl. : Intro nicht da
  */
@@ -103,7 +107,7 @@ public class XTableDemo extends AbstractDemo {
 				controller.getContentPane().add(demo.getControlPane());
 				controller.pack();
 				controller.setVisible(true);
-				((XTableDemo)demo).start();
+				//((XTableDemo)demo).start();
 			}		
     	});
     }
@@ -321,23 +325,39 @@ winnersLabel.text=Show Only Winners
         if (oscarModel.getRowCount() != 0) return;
         //<snip>Use SwingWorker to asynchronously load the data
         // create SwingWorker which will load the data on a separate thread
-        SwingWorker<?, ?> loader = new OscarDataLoader(
-                XTableDemo.class.getResource("resources/oscars.xml"), oscarModel);
+        SwingWorker<?, ?> loader = new OscarDataLoader(XTableDemo.class.getResource("resources/oscars.xml"), oscarModel);
         
         // display progress bar while data loads
         progressBar = new JProgressBar();
         statusBarLeft.add(progressBar);
+        
+/*
+        BindingGroup group = new BindingGroup();
+        group.addBinding(Bindings.createAutoBinding(READ, dataLoader, BeanProperty.create("progress"), frame.progressBar, BeanProperty.create("value")));
+        group.addBinding(Bindings.createAutoBinding(READ, dataLoader, BeanProperty.create("state"), this, BeanProperty.create("loadState"))); // call setLoadState 
+// TODO Tab.setLoadState: Unposted Documents StateValue:DONE wird ZWEI mal gerufen ??????????
+        group.bind();
+        dataLoader.addPropertyChangeListener(event -> {
+        	if ("state".equals(event.getPropertyName())) {
+        		setLoadState((StateValue)event.getNewValue());
+        	}
+        });
+
+ */
         // bind the worker's progress notification to the progressBar
         // and the worker's state notification to this
-//        BindingGroup group = new BindingGroup();
-//        group.addBinding(Bindings.createAutoBinding(READ, 
-//                loader, BeanProperty.create("progress"),
-//                progressBar, BeanProperty.create("value")));
-//        group.addBinding(Bindings.createAutoBinding(READ, 
-//                loader, BeanProperty.create("state"),
-//                this, BeanProperty.create("loadState")));
-//        group.bind();
-        // TODO
+        BindingGroup group = new BindingGroup();
+        group.addBinding(Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ
+        		, loader, BeanProperty.create("progress")
+        		, progressBar, BeanProperty.create("value")
+        		));
+        group.addBinding(Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ
+        		, loader, BeanProperty.create("state")
+        		, this, BeanProperty.create("loadState")
+        		));
+        group.bind();
+        StateValue state = loader.getState(); // PENDING - STARTED - DONE
+        LOG.info("loader StateValue:" + state);
         loader.execute();
 //        </snip>
     }
@@ -379,12 +399,53 @@ winnersLabel.text=Show Only Winners
             this.oscarModel = oscarTableModel;
         }
 
+/* BUG, es werden nur 17047/8525? rec nach showOnlyWinners angezeigt (won?) manche doppelt
+
+	protected List<Object[]> doInBackground() throws Exception {
+		// zuerst die erwartete Menge ermitteln mit SELECT COUNT(*)
+		sql = this.getSelectCountStar(getSelectWhereClause());
+		LOG.config(sql + "; trxName:"+getTrxName());
+		pstmt = DB.prepareStatement(sql, getTrxName());
+		try {
+			resultSet = pstmt.executeQuery();
+			resultSet.next();
+		} catch (SQLException ex) {
+			LOG.log(Level.SEVERE, ex.toString() + " sql:\n"+sql);
+			throw ex;
+		}
+		int expectedNumberofRows = resultSet.getInt(1);	
+		setRowsToLoad(expectedNumberofRows);
+		close();
+		
+		// jetzt die tatsächlichen Daten holen
+		sql = getSelectAll(getSelectWhereClause());
+		LOG.config(expectedNumberofRows + " rows expected, trxName:"+getTrxName() + ", sql query=\n"+sql);
+		dbResultRows = new ArrayList<Object[]>(expectedNumberofRows);
+		pstmt = DB.prepareStatement(sql, getTrxName());
+		resultSet = pstmt.executeQuery();
+		while(resultSet.next() && (dbResultRows.size() < expectedNumberofRows) && !super.isCancelled()) {
+			Object[] rowData = readData(resultSet, dbResultRows.size());
+			dbResultRows.add(rowData);
+//			LOG.warning("vor publish "+dbResultRows.size());
+			super.publish(rowData);
+			super.setProgress(100 * dbResultRows.size() / expectedNumberofRows);
+		}
+		close();
+		if(super.isCancelled()) {
+			LOG.warning("cancelled "+dbResultRows.size()+"/"+expectedNumberofRows + " "+100 * dbResultRows.size() / expectedNumberofRows);
+			super.firePropertyChange("cancelled", false, true);
+		}
+		return dbResultRows;
+	}
+
+
+ */
         //<snip>Use SwingWorker to asynchronously load the data
         // background task let a parser do its stuff and update a progress bar
         @Override
         public List<OscarCandidate> doInBackground() {
             OscarDataParser parser = new OscarDataParser() {
-                @Override
+                @Override // implement abstract addCandidate
                 protected void addCandidate(OscarCandidate candidate) {
                     candidates.add(candidate);
                     if (candidates.size() % 3 == 0) {
@@ -398,12 +459,17 @@ winnersLabel.text=Show Only Winners
                 }
             };
             parser.parseDocument(oscarData);
+            
+            if(super.isCancelled()) {
+            	// TODO
+            }
             return candidates;
         }
 //        </snip>
 
         @Override
         protected void process(List<OscarCandidate> moreCandidates) {
+//    		LOG.info("chunks#:"+moreCandidates.size());
             if (credits == null) {
                 showCredits();
             }
@@ -429,7 +495,7 @@ winnersLabel.text=Show Only Winners
             credits.setBorder(new CompoundBorder(new TitledBorder(""), new EmptyBorder(20,20,20,20)));
 
             dataPanel.showMessageLayer(credits, .75f);
-//            DemoUtils.injectResources(XTableDemo.this, dataPanel);
+//            DemoUtils.injectResources(XTableDemo.this, dataPanel); // wahscheinlich macht es credits.setText(...
         }
 //        </snip>
         

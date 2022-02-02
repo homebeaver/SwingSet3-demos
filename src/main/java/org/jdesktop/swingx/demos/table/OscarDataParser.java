@@ -118,8 +118,8 @@ public abstract class OscarDataParser extends DefaultHandler {
             if (qName.equalsIgnoreCase(CATEGORIES_IN[i])) {
                 tempOscarCandidate = new OscarCandidate(CATEGORIES_OUT[i]);
                 tempOscarCandidate.setYear(Integer.parseInt(attributes.getValue("year")));
-                if (CATEGORIES_IN[i].equals("screenplayOriginal") &&
-                     tempOscarCandidate.getYear() == 2007) {
+                if (CATEGORIES_IN[i].equals("screenplayOriginal") && tempOscarCandidate.getYear() == 2007) {
+                	// ???
                 }
                 return;
             }
