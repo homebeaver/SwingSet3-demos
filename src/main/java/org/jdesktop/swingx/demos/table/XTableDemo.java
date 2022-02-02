@@ -74,7 +74,7 @@ import swingset.AbstractDemo;
 Grob ok: TODO s:
 erl. : Col Überschriften nicht aus props
 erl. : Bei Nominee fehlen Sterne: props: winnerIcon = images/goldstar.png
-Status läuft nicht und verschwindet nicht
+Status läuft nicht 
 erl. : Beschriftungsn beim Controller fehlen
 erl. : Intro nicht da
  */
@@ -481,6 +481,7 @@ winnersLabel.text=Show Only Winners
         statusBar.add(statusBarLeft, JXStatusBar.Constraint.ResizeBehavior.FILL);
         actionStatus = new JLabel();
         actionStatus.setName("loadingStatusLabel");
+        actionStatus.setText(getString("loadingStatusLabel.text"));
         actionStatus.setHorizontalAlignment(JLabel.LEADING);
         statusBarLeft.add(actionStatus);
 
@@ -493,6 +494,7 @@ winnersLabel.text=Show Only Winners
         // Right status area
         tableStatus = new JLabel(); 
         tableStatus.setName("rowCountLabel");
+        tableStatus.setText(getString("rowCountLabel.text"));
         JComponent bar = Box.createHorizontalBox();
         bar.add(tableStatus);
         tableRows = new JLabel("0");
