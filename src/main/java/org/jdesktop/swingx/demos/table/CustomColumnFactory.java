@@ -21,6 +21,8 @@ import org.jdesktop.swingx.table.ColumnFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
 //import org.jdesktop.swingxset.util.DemoUtils;
 
+import swingset.StaticUtilities;
+
 //<snip> JXTable column properties
 /**
  * A ColumnFactory is used by JXTable to create and configure all columns.
@@ -39,7 +41,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
  * </ul>
  */
 //</snip>
-public  class CustomColumnFactory extends ColumnFactory {
+public class CustomColumnFactory extends ColumnFactory {
 	
     @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(CustomColumnFactory.class.getName());
@@ -87,10 +89,12 @@ public  class CustomColumnFactory extends ColumnFactory {
     }
 //    </snip>
     private void configureTitle(TableColumnExt columnExt) {
-//        columnExt.setTitle(DemoUtils.getResourceString(baseClass, columnExt.getIdentifier().toString()));
-        columnExt.setTitle(OscarTableModel.columnIds[columnExt.getModelIndex()]);
+        columnExt.setTitle(getString(OscarTableModel.columnIds[columnExt.getModelIndex()]));
     }
-    
+    private String getString(String resourceKey) {
+    	String key = this.getClass().getSimpleName() + '.' + resourceKey;
+    	return StaticUtilities.getResourceAsString(key, resourceKey);
+    }
     /**
      * {@inheritDoc} <p>
      * Overridden to check if the wants to limit the count of rows when

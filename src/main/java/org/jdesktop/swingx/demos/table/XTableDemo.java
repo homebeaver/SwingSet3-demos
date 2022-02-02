@@ -72,11 +72,11 @@ import swingset.AbstractDemo;
 //    )
 /*
 Grob ok: TODO s:
-Col Überschriften nicht aus props
+erl. : Col Überschriften nicht aus props
 Bei Nominee fehlen Sterne: props: winnerIcon = images/goldstar.png
 Status läuft nicht und verschwindet nicht
 erl. : Beschriftungsn beim Controller fehlen
-Intro nicht da
+erl. : Intro nicht da
  */
 public class XTableDemo extends AbstractDemo {
 
@@ -163,7 +163,7 @@ public class XTableDemo extends AbstractDemo {
         c.anchor = GridBagConstraints.SOUTHWEST;
         JLabel searchLabel = new JLabel();
         searchLabel.setName("searchLabel");
-        searchLabel.setText(getString("searchLabel"));
+        searchLabel.setText(getString("searchLabel.text"));
         controlPanel.add(searchLabel, c);
 
         c.gridx = 0;
@@ -197,7 +197,7 @@ winnersLabel.text=Show Only Winners
         c.fill = GridBagConstraints.NONE;
         winnersCheckbox = new JCheckBox();
         winnersCheckbox.setName("winnersLabel");
-        winnersCheckbox.setText(getString("winnersLabel"));        
+        winnersCheckbox.setText(getString("winnersLabel.text"));        
         winnersCheckbox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean showOnlyWinners = ((JCheckBox)e.getSource()).isSelected();
@@ -284,7 +284,12 @@ winnersLabel.text=Show Only Winners
         //<snip> JXTable column properties
         // some display properties can be configured only after the model has been set, here:
         // configure the view sequence of columns to be different from the model
-        oscarTable.setColumnSequence(new Object[] {"yearColumn", "categoryColumn", "movieTitleColumn", "nomineesColumn"});
+        oscarTable.setColumnSequence(new Object[] 
+        		{ "yearColumn"
+        		, "categoryColumn"
+        		, "movieTitleColumn"
+        		, "nomineesColumn"
+        		});
         // </snip>
     }
 
@@ -418,6 +423,7 @@ winnersLabel.text=Show Only Winners
         private void showCredits() {
             credits = new JLabel(); 
             credits.setName("credits");
+            credits.setText(getString("credits.text"));
             credits.setFont(UIManager.getFont("Table.font").deriveFont(24f));
             credits.setHorizontalAlignment(JLabel.CENTER);
             credits.setBorder(new CompoundBorder(new TitledBorder(""), new EmptyBorder(20,20,20,20)));
@@ -497,20 +503,6 @@ winnersLabel.text=Show Only Winners
         return statusBar;
     }
 
-//    public static void main(String args[]) {
-//
-//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                JXFrame frame = new JXFrame("JXTable Demo", true);
-//                XTableDemo demo = new XTableDemo();
-//                frame.add(demo);
-//                frame.setSize(700, 400);
-//                frame.setVisible(true);
-//                demo.start();
-//            }
-//        });
-//    }
-    
 //-----do nothing methods (keep beansbinding happy)
     
     public Object getStatusContent() {
