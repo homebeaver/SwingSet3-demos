@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -179,9 +180,9 @@ public class DemoMenuAction extends AbstractAction {
     	ss2Actions.add(new DemoMenuAction(FileChooserDemo.class, "FileChooser", GO2_ICON, StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(HtmlDemo.class, "Html", GO2_ICON, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", GO2_ICON, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
+    	// Done:
     	ss2Actions.add(new DemoMenuAction(OptionPaneDemo.class, "OptionPane", GO2_ICON, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ProgressBarDemo.class, "ProgressBar", GO2_ICON, StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
-    	// Done:
     	ss2Actions.add(new DemoMenuAction(ScrollPaneDemo.class, "ScrollPane", GO2_ICON, StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(SliderDemo.class, "Slider", GO2_ICON, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(SplitPaneDemo.class, "SplitPane", GO2_ICON, StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
@@ -395,6 +396,23 @@ public class DemoMenuAction extends AbstractAction {
         Class<?> demoClass = null;
         try {
             demoClass = Class.forName(classname); // throws ClassNotFoundException
+//            LOG.info("_____________ getBundle ...");
+//            ResourceBundle bundle = ResourceBundle.getBundle(classname);
+//            LOG.info("_____________ Bundle:"+bundle);
+/* findet TreeTableDemo.properties nicht
+ * auch nicht TreeTableDemo_de_DE.properties
+ * auch nicht TreeTableDemo_de.properties
+ * auch nicht TreeTableDemo_de.properties mit getBundle(classname, Locale.GERMAN);
+WARNUNG: Error occurred loading class: org.jdesktop.swingx.demos.treetable.TreeTableDemo
+java.util.MissingResourceException: Can't find bundle for base name org.jdesktop.swingx.demos.treetable.TreeTableDemo, locale de_DE
+	at java.base/java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2045)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1683): baseBundle == null
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1586): return getBundleImpl(callerModule, unnamedModule, baseName, locale, control);
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1549): return getBundleImpl(baseName, locale, caller, caller.getClassLoader(), control);
+	at java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:858) : return getBundleImpl(baseName, Locale.getDefault(), caller, getDefaultControl(caller, baseName));
+	at com.klst.swingx.DemoMenuAction.loadDemo(DemoMenuAction.java:400)
+
+ */
         } catch (Exception e) {
         	LOG.warning("Error occurred loading class: " + classname);
             e.printStackTrace();

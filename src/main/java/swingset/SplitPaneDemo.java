@@ -22,11 +22,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 
 /**
  * Split Pane demo
@@ -46,8 +49,24 @@ public class SplitPaneDemo extends AbstractDemo {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-//        SplitPaneDemo demo = new SplitPaneDemo(null);
-//        demo.mainImpl();
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new SplitPaneDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
 
     JSplitPane splitPane = null;
@@ -66,6 +85,7 @@ public class SplitPaneDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
 
     	earth = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"earth.jpg"));
         earth.setMinimumSize(new Dimension(20, 20));

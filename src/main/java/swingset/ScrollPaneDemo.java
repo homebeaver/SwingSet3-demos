@@ -63,6 +63,8 @@ public class ScrollPaneDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
+    	
     	ImageIcon crayons = StaticUtilities.createImageIcon(IMG_PATH+"crayons.jpg");
     	super.add(new ImageScroller(this, crayons), BorderLayout.CENTER);
     }

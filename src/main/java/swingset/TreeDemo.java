@@ -14,10 +14,13 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.jdesktop.swingx.JXButton;
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTree;
 
@@ -38,9 +41,25 @@ public class TreeDemo extends AbstractDemo {
     /**
      * main method allows us to run as a standalone demo.
      */
-    public static void main(String[] args) { // TODO
-        TreeDemo demo = new TreeDemo(null);
-//        demo.mainImpl();
+    public static void main(String[] args) {
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new TreeDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
 
     /**
@@ -48,6 +67,7 @@ public class TreeDemo extends AbstractDemo {
      */
     public TreeDemo(Frame frame) {
     	super(new BorderLayout());
+    	frame.setTitle(getString("name"));
     	super.setPreferredSize(new Dimension(PREFERRED_WIDTH/2, PREFERRED_HEIGHT));
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
         super.add(new JScrollPane(createTree()), BorderLayout.CENTER);
@@ -129,11 +149,14 @@ public class TreeDemo extends AbstractDemo {
         }
 
         tree = new JXTree(top) {
+        	// BasicTreeUI.installDefaults() :
+        	//             tree.setBackground(UIManager.getColor("Tree.background"));
+        	// Background ist immer weiss!!!
             public Insets getInsets() {
                 return new Insets(5,5,5,5);
             }
         };
-
+        tree.setBackground(null); // nicht weiss, ABER beim Umschalten auf Nimbus wieder weiss!!! TODO
         tree.setEditable(true);
         return tree;
     }

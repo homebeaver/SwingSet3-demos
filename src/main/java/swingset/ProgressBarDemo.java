@@ -74,6 +74,7 @@ public class ProgressBarDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
 
         JPanel textWrapper = new JPanel(new BorderLayout());
         textWrapper.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
