@@ -55,7 +55,7 @@ public abstract class AbstractDemo extends JXPanel {
 
     public abstract JXPanel getControlPane();
 
-    JXPanel emptyControlPane() {
+    protected JXPanel emptyControlPane() {
     	JXPanel pane = new JXPanel();
     	pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
     	pane.add(Box.createRigidArea(HGAP30));
