@@ -75,7 +75,7 @@ Grob ok: TODO s:
 Col Überschriften nicht aus props
 Bei Nominee fehlen Sterne: props: winnerIcon = images/goldstar.png
 Status läuft nicht und verschwindet nicht
-Beschriftungsn beim Controller fehlen
+erl. : Beschriftungsn beim Controller fehlen
 Intro nicht da
  */
 public class XTableDemo extends AbstractDemo {
@@ -131,10 +131,6 @@ public class XTableDemo extends AbstractDemo {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
     	// initComponents:
-//        setLayout(new BorderLayout());
-
-//        controlPanel = createControlPanel();
-//        add(controlPanel, BorderLayout.NORTH);
         oscarTable = createXTable();
         oscarTable.setName("oscarTable");
         
@@ -144,10 +140,7 @@ public class XTableDemo extends AbstractDemo {
 
         add(createStatusBar(), BorderLayout.SOUTH);
 
-//    public XTableDemo() {
-//        initComponents();
         configureDisplayProperties();
-//        DemoUtils.injectResources(this);
         bind();
         start();
     }
@@ -159,11 +152,10 @@ public class XTableDemo extends AbstractDemo {
 
     @Override
 	public JXPanel getControlPane() {
-    	controlPanel = new JXPanel(); // ====> controlPanel = createControlPanel():
         GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        controlPanel.setLayout(gridbag);
+    	controlPanel = new JXPanel(gridbag);
 
+        GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 1;
         c.gridheight = 1;
@@ -171,6 +163,7 @@ public class XTableDemo extends AbstractDemo {
         c.anchor = GridBagConstraints.SOUTHWEST;
         JLabel searchLabel = new JLabel();
         searchLabel.setName("searchLabel");
+        searchLabel.setText(getString("searchLabel"));
         controlPanel.add(searchLabel, c);
 
         c.gridx = 0;
@@ -180,13 +173,15 @@ public class XTableDemo extends AbstractDemo {
         c.insets.bottom = 12;
         c.anchor = GridBagConstraints.SOUTHWEST;
         //c.fill = GridBagConstraints.HORIZONTAL;
-        filterField = new JTextField(24);
+        
+/* props
+searchLabel.text=Search Titles and Recipients
+winnersLabel.text=Show Only Winners
+
+ */
+        filterField = new JTextField(24); // String text ---- getString("searchLabel"), 
         filterField.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-//                LOG.info("--------e:"+e.getSource());
-//                JTextField f = (JTextField)e.getSource();
-//                e.getActionCommand();
-                //public void setFilterString(String filterString) {
                 filterController.setFilterString(e.getActionCommand());
         	}
         });
@@ -202,12 +197,10 @@ public class XTableDemo extends AbstractDemo {
         c.fill = GridBagConstraints.NONE;
         winnersCheckbox = new JCheckBox();
         winnersCheckbox.setName("winnersLabel");
+        winnersCheckbox.setText(getString("winnersLabel"));        
         winnersCheckbox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean showOnlyWinners = ((JCheckBox)e.getSource()).isSelected();
-//                tableView.getTableHeader().setReorderingAllowed(flag);
-//                tableView.repaint();
-                // TODO filterController, BeanProperty.create("showOnlyWinners")));
                 filterController.setShowOnlyWinners(showOnlyWinners);
             }
         });
@@ -472,61 +465,6 @@ public class XTableDemo extends AbstractDemo {
         return table;
     }
    
-//    protected void initComponents() {
-//        setLayout(new BorderLayout());
-//
-//        controlPanel = createControlPanel();
-//        add(controlPanel, BorderLayout.NORTH);
-//        oscarTable = createXTable();
-//        oscarTable.setName("oscarTable");
-//        
-//        JScrollPane scrollpane = new JScrollPane(oscarTable);
-//        dataPanel = new Stacker(scrollpane);
-//        add(dataPanel, BorderLayout.CENTER);
-//
-//        add(createStatusBar(), BorderLayout.SOUTH);
-//    }
-
-//    protected JPanel createControlPanel() {
-//        JPanel controlPanel = new JPanel();
-//        GridBagLayout gridbag = new GridBagLayout();
-//        GridBagConstraints c = new GridBagConstraints();
-//        controlPanel.setLayout(gridbag);
-//
-//        c.gridx = 0;
-//        c.gridy = 1;
-//        c.gridheight = 1;
-//        c.insets = new Insets(20, 10, 0, 10);
-//        c.anchor = GridBagConstraints.SOUTHWEST;
-//        JLabel searchLabel = new JLabel();
-//        searchLabel.setName("searchLabel");
-//        controlPanel.add(searchLabel, c);
-//
-//        c.gridx = 0;
-//        c.gridy = 2;
-//        c.weightx = 1.0;
-//        c.insets.top = 0;
-//        c.insets.bottom = 12;
-//        c.anchor = GridBagConstraints.SOUTHWEST;
-//        //c.fill = GridBagConstraints.HORIZONTAL;
-//        filterField = new JTextField(24);
-//        controlPanel.add(filterField, c);
-//
-//        c.gridx = 1;
-//        c.gridy = 2;
-//        c.gridwidth = GridBagConstraints.REMAINDER;
-//        //c.insets.right = 24;
-//        //c.insets.left = 12;
-//        c.weightx = 0.0;
-//        c.anchor = GridBagConstraints.EAST;
-//        c.fill = GridBagConstraints.NONE;
-//        winnersCheckbox = new JCheckBox();
-//        winnersCheckbox.setName("winnersLabel");
-//        controlPanel.add(winnersCheckbox, c);
-//
-//        return controlPanel;
-//    }
-
     protected Container createStatusBar() {
 
         JXStatusBar statusBar = new JXStatusBar();
