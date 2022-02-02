@@ -5,6 +5,7 @@ package swingset;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -14,36 +15,50 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
+
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 
 /**
  * JProgressBar Demo
  *
  * @author Jeff Dinkins
- # @author Peter Korn (accessibility support)
+ * @author Peter Korn (accessibility support)
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-public class ProgressBarDemo extends DemoModule {
+public class ProgressBarDemo extends AbstractDemo {
 
-    public static final String ICON_PATH = "toolbar/JProgressBar.gif";
+	public static final String ICON_PATH = "toolbar/JProgressBar.gif";
+
+	private static final long serialVersionUID = -5132422584566294096L;
+	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = true;
 
     /**
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        ProgressBarDemo demo = new ProgressBarDemo(null);
-        demo.mainImpl();
-    }
-
-    /**
-     * ProgressBarDemo Constructor
-     */
-    public ProgressBarDemo(SwingSet2 swingset) {
-        // Set the title for this demo, and an icon used to represent this
-        // demo inside the SwingSet2 app.
-        super(swingset, "ProgressBarDemo", ICON_PATH);
-
-        createProgressPanel();
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new ProgressBarDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
 
     javax.swing.Timer timer = new javax.swing.Timer(18, createTextLoadAction());
@@ -52,12 +67,13 @@ public class ProgressBarDemo extends DemoModule {
     JProgressBar progressBar;
     JTextArea progressTextArea;
 
-    void updateDragEnabled(boolean dragEnabled) {
-        progressTextArea.setDragEnabled(dragEnabled);
-    }
-
-    public void createProgressPanel() {
-        getDemoPanel().setLayout(new BorderLayout());
+    /**
+     * ProgressBarDemo Constructor
+     */
+    public ProgressBarDemo(Frame frame) {
+    	super(new BorderLayout());
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         JPanel textWrapper = new JPanel(new BorderLayout());
         textWrapper.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
@@ -68,10 +84,10 @@ public class ProgressBarDemo extends DemoModule {
         progressTextArea.getAccessibleContext().setAccessibleName(getString("ProgressBarDemo.accessible_text_area_description"));
         textWrapper.add(new JScrollPane(progressTextArea), BorderLayout.CENTER);
 
-        getDemoPanel().add(textWrapper, BorderLayout.CENTER);
+        super.add(textWrapper, BorderLayout.CENTER);
 
         JPanel progressPanel = new JPanel();
-        getDemoPanel().add(progressPanel, BorderLayout.SOUTH);
+        super.add(progressPanel, BorderLayout.SOUTH);
 
         progressBar = new JProgressBar(JProgressBar.HORIZONTAL, 0, text.length()) {
             public Dimension getPreferredSize() {
@@ -81,12 +97,28 @@ public class ProgressBarDemo extends DemoModule {
         progressBar.getAccessibleContext().setAccessibleName(getString("ProgressBarDemo.accessible_text_loading_progress"));
 
         progressPanel.add(progressBar);
-        progressPanel.add(createLoadButton());
-        progressPanel.add(createStopButton());
+        if(CONTROLLER_IN_PRESENTATION_FRAME) {
+        	progressPanel.add(createLoadButton());
+        	progressPanel.add(createStopButton());
+        }
     }
 
-    public JButton createLoadButton() {
-        loadAction = new AbstractAction(getString("ProgressBarDemo.start_button")) {
+    @Override
+	public JXPanel getControlPane() {
+        if(CONTROLLER_IN_PRESENTATION_FRAME) return emptyControlPane();
+        	
+        JXPanel controller = new JXPanel();
+        controller.add(createLoadButton());
+        controller.add(createStopButton());
+    	return controller;
+    }
+
+    private void updateDragEnabled(boolean dragEnabled) {
+        progressTextArea.setDragEnabled(dragEnabled);
+    }
+
+    private JButton createLoadButton() {
+        loadAction = new AbstractAction(getString("start_button")) {
             public void actionPerformed(ActionEvent e) {
                 loadAction.setEnabled(false);
                 stopAction.setEnabled(true);
@@ -101,8 +133,8 @@ public class ProgressBarDemo extends DemoModule {
         return createButton(loadAction);
     }
 
-    public JButton createStopButton() {
-        stopAction = new AbstractAction(getString("ProgressBarDemo.stop_button")) {
+    private JButton createStopButton() {
+        stopAction = new AbstractAction(getString("stop_button")) {
             public void actionPerformed(ActionEvent e) {
                 timer.stop();
                 loadAction.setEnabled(true);
@@ -112,7 +144,7 @@ public class ProgressBarDemo extends DemoModule {
         return createButton(stopAction);
     }
 
-    public JButton createButton(Action a) {
+    private JButton createButton(Action a) {
         JButton b = new JButton();
         // setting the following client property informs the button to show
         // the action text as it's name. The default is to not show the
@@ -125,7 +157,7 @@ public class ProgressBarDemo extends DemoModule {
 
     int textLocation = 0;
 
-    String text = getString("ProgressBarDemo.text");
+    String text = getString("text");
 
     public Action createTextLoadAction() {
         return new AbstractAction("text load action") {
