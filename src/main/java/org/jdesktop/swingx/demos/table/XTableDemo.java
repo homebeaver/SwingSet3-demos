@@ -10,8 +10,6 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +30,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.JTableHeader;
 
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
@@ -74,14 +66,6 @@ import swingset.AbstractDemo;
 //            "org/jdesktop/swingx/demos/table/resources/XTableDemo.properties"
 //        }
 //    )
-/*
-Grob ok: TODO s:
-erl. : Col Überschriften nicht aus props
-erl. : Bei Nominee fehlen Sterne: props: winnerIcon = images/goldstar.png
-erl. : Status läuft nicht 
-erl. : Beschriftungsn beim Controller fehlen
-erl. : Intro nicht da
- */
 public class XTableDemo extends AbstractDemo {
 
 	private static final long serialVersionUID = -2616149327587528185L;
@@ -107,7 +91,6 @@ public class XTableDemo extends AbstractDemo {
 				controller.getContentPane().add(demo.getControlPane());
 				controller.pack();
 				controller.setVisible(true);
-				//((XTableDemo)demo).start();
 			}		
     	});
     }
@@ -115,7 +98,7 @@ public class XTableDemo extends AbstractDemo {
 
     private OscarTableModel oscarModel;
 
-    private Stacker dataPanel; // com.sun.swingset3.demos.Stacker extends JLayeredPane TODO mit timing.Animator
+    private Stacker dataPanel; // com.sun.swingset3.demos.Stacker extends JLayeredPane mit timing.Animator
     private JXTable oscarTable;
     private JComponent statusBarLeft;
     private JLabel actionStatus;
@@ -145,6 +128,10 @@ public class XTableDemo extends AbstractDemo {
         add(createStatusBar(), BorderLayout.SOUTH);
 
         configureDisplayProperties();
+        
+        // Filter control create the controller
+        filterController = new OscarFiltering(oscarTable);
+        
         bind();
         start();
     }
@@ -178,16 +165,10 @@ public class XTableDemo extends AbstractDemo {
         c.anchor = GridBagConstraints.SOUTHWEST;
         //c.fill = GridBagConstraints.HORIZONTAL;
         
-/* props
-searchLabel.text=Search Titles and Recipients
-winnersLabel.text=Show Only Winners
-
- */
-        filterField = new JTextField(24); // String text ---- getString("searchLabel"), 
-        filterField.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-                filterController.setFilterString(e.getActionCommand());
-        	}
+        filterField = new JTextField(24);
+        filterField.addActionListener( event -> {
+            filterController.setFilterString(event.getActionCommand());
+            updateStatusBar();
         });
         controlPanel.add(filterField, c);
 
@@ -202,16 +183,16 @@ winnersLabel.text=Show Only Winners
         winnersCheckbox = new JCheckBox();
         winnersCheckbox.setName("winnersLabel");
         winnersCheckbox.setText(getString("winnersLabel.text"));        
-        winnersCheckbox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                boolean showOnlyWinners = ((JCheckBox)e.getSource()).isSelected();
-                filterController.setShowOnlyWinners(showOnlyWinners);
-            }
+        winnersCheckbox.addActionListener( event -> {
+            boolean showOnlyWinners = ((JCheckBox)event.getSource()).isSelected();
+            filterController.setShowOnlyWinners(showOnlyWinners);
+            updateStatusBar();
         });
         controlPanel.add(winnersCheckbox, c);
 
         return controlPanel;
     }
+
     /**
      * Customizes display properties of contained components.
      * This is data-unrelated.
@@ -253,36 +234,13 @@ winnersLabel.text=Show Only Winners
         oscarTable.setModel(oscarModel);
 //        </snip>
         
-        // <snip> Filter control
-        // create the controller
-        filterController = new OscarFiltering(oscarTable);
-        // bind controller properties to input components
-//        BindingGroup filterGroup = new BindingGroup();
-//        filterGroup.addBinding(Bindings.createAutoBinding(READ, 
-//                winnersCheckbox, BeanProperty.create("selected"),
-//                filterController, BeanProperty.create("showOnlyWinners")));
-//        filterGroup.addBinding(Bindings.createAutoBinding(READ, 
-//                filterField, BeanProperty.create("text"),
-//                filterController, BeanProperty.create("filterString")));
-// EUG TODO controller winnersCheckbox   
-        //public void setFilterString(String filterString) {
-  
-        // PENDING JW: crude hack to update the statusbar - fake property
-        // how-to do cleanly?
-//        filterGroup.addBinding(Bindings.createAutoBinding(READ, 
-//                filterController, BeanProperty.create("showOnlyWinners"),
-//                this, BeanProperty.create("statusContent")));
-//        filterGroup.addBinding(Bindings.createAutoBinding(READ, 
-//                filterController, BeanProperty.create("filterString"),
-//                this, BeanProperty.create("statusContent")));
-//        filterGroup.bind();
-// EUG TODO controller filterController
-        
-//        </snip>
-        oscarModel.addTableModelListener(new TableModelListener() {
-            public void tableChanged(TableModelEvent e) {
-                updateStatusBar();
-            }
+//        oscarModel.addTableModelListener(new TableModelListener() {
+//            public void tableChanged(TableModelEvent e) {
+//                updateStatusBar();
+//            }
+//        });
+        oscarModel.addTableModelListener( tableModelEvent -> {
+        	updateStatusBar();
         });
 
         //<snip> JXTable column properties
@@ -297,13 +255,13 @@ winnersLabel.text=Show Only Winners
         // </snip>
     }
 
-    /**
-     * Binding artefact method: 
-     * crude hack to update the status bar on state changes from the controller. 
-     */
-    public void setStatusContent(Object dummy) {
-        updateStatusBar();
-    }
+//    /**
+//     * Binding artefact method: 
+//     * crude hack to update the status bar on state changes from the controller. 
+//     */
+//    public void setStatusContent(Object dummy) {
+//        updateStatusBar();
+//    }
 
     /**
      * Updates status labels. Called during loading and on 
@@ -311,10 +269,8 @@ winnersLabel.text=Show Only Winners
      */
     protected void updateStatusBar() {
         tableStatus.setName(filterController.isFilteringByString() ? "searchCountLabel" : "rowCountLabel");
-        //DemoUtils.injectResources(this, tableStatus); // JLabel tableStatus
-// macht:
-//  Application.getInstance().getContext().getResourceMap(parent.getClass()).injectComponents(child);
-// also tableStatus und alle subcomp zu this
+        tableStatus.setText(filterController.isFilteringByString() ? 
+        		getString("searchCountLabel.text") : getString("rowCountLabel.text") );
         tableRows.setText("" + oscarTable.getRowCount());
     }
     
@@ -329,33 +285,32 @@ winnersLabel.text=Show Only Winners
         
         // display progress bar while data loads
         progressBar = new JProgressBar();
-        statusBarLeft.add(progressBar);
-        
-/*
-        BindingGroup group = new BindingGroup();
-        group.addBinding(Bindings.createAutoBinding(READ, dataLoader, BeanProperty.create("progress"), frame.progressBar, BeanProperty.create("value")));
-        group.addBinding(Bindings.createAutoBinding(READ, dataLoader, BeanProperty.create("state"), this, BeanProperty.create("loadState"))); // call setLoadState 
-// TODO Tab.setLoadState: Unposted Documents StateValue:DONE wird ZWEI mal gerufen ??????????
-        group.bind();
-        dataLoader.addPropertyChangeListener(event -> {
-        	if ("state".equals(event.getPropertyName())) {
-        		setLoadState((StateValue)event.getNewValue());
+        statusBarLeft.add(progressBar);   
+        // ohne bind (bind benötigt artifact/org.jdesktop/beansbinding):
+        loader.addPropertyChangeListener( propertyChangeEvent -> {
+        	if ("state".equals(propertyChangeEvent.getPropertyName())) {
+        		StateValue state = (StateValue)propertyChangeEvent.getNewValue();
+                LOG.info("loader StateValue:" + state); // damit ampel steuern
+        	}
+        	if ("progress".equals(propertyChangeEvent.getPropertyName())) {
+        		int progress = (Integer)propertyChangeEvent.getNewValue();
+        		progressBar.setValue(progress);
+//                LOG.info("loader progress:" + propertyChangeEvent.getNewValue().getClass());
         	}
         });
-
- */
+        
         // bind the worker's progress notification to the progressBar
         // and the worker's state notification to this
-        BindingGroup group = new BindingGroup();
-        group.addBinding(Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ
-        		, loader, BeanProperty.create("progress")
-        		, progressBar, BeanProperty.create("value")
-        		));
-        group.addBinding(Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ
-        		, loader, BeanProperty.create("state")
-        		, this, BeanProperty.create("loadState")
-        		));
-        group.bind();
+//        BindingGroup group = new BindingGroup();
+//        group.addBinding(Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ
+//        		, loader, BeanProperty.create("progress")
+//        		, progressBar, BeanProperty.create("value")
+//        		));
+//        group.addBinding(Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ
+//        		, loader, BeanProperty.create("state")
+//        		, this, BeanProperty.create("loadState")
+//        		));
+//        group.bind();
         StateValue state = loader.getState(); // PENDING - STARTED - DONE
         LOG.info("loader StateValue:" + state);
         loader.execute();
@@ -399,46 +354,9 @@ winnersLabel.text=Show Only Winners
             this.oscarModel = oscarTableModel;
         }
 
-/* BUG, es werden nur 17047/8525? rec nach showOnlyWinners angezeigt (won?) manche doppelt
-
-	protected List<Object[]> doInBackground() throws Exception {
-		// zuerst die erwartete Menge ermitteln mit SELECT COUNT(*)
-		sql = this.getSelectCountStar(getSelectWhereClause());
-		LOG.config(sql + "; trxName:"+getTrxName());
-		pstmt = DB.prepareStatement(sql, getTrxName());
-		try {
-			resultSet = pstmt.executeQuery();
-			resultSet.next();
-		} catch (SQLException ex) {
-			LOG.log(Level.SEVERE, ex.toString() + " sql:\n"+sql);
-			throw ex;
-		}
-		int expectedNumberofRows = resultSet.getInt(1);	
-		setRowsToLoad(expectedNumberofRows);
-		close();
-		
-		// jetzt die tatsächlichen Daten holen
-		sql = getSelectAll(getSelectWhereClause());
-		LOG.config(expectedNumberofRows + " rows expected, trxName:"+getTrxName() + ", sql query=\n"+sql);
-		dbResultRows = new ArrayList<Object[]>(expectedNumberofRows);
-		pstmt = DB.prepareStatement(sql, getTrxName());
-		resultSet = pstmt.executeQuery();
-		while(resultSet.next() && (dbResultRows.size() < expectedNumberofRows) && !super.isCancelled()) {
-			Object[] rowData = readData(resultSet, dbResultRows.size());
-			dbResultRows.add(rowData);
-//			LOG.warning("vor publish "+dbResultRows.size());
-			super.publish(rowData);
-			super.setProgress(100 * dbResultRows.size() / expectedNumberofRows);
-		}
-		close();
-		if(super.isCancelled()) {
-			LOG.warning("cancelled "+dbResultRows.size()+"/"+expectedNumberofRows + " "+100 * dbResultRows.size() / expectedNumberofRows);
-			super.firePropertyChange("cancelled", false, true);
-		}
-		return dbResultRows;
-	}
-
-
+/* BUG: ? TODO
+ * nach dem Laden: swingset3 8522 , hier: 8516
+ * showOnlyWinners: beide 1758
  */
         //<snip>Use SwingWorker to asynchronously load the data
         // background task let a parser do its stuff and update a progress bar
@@ -572,13 +490,13 @@ winnersLabel.text=Show Only Winners
     }
 
 //-----do nothing methods (keep beansbinding happy)
-    
-    public Object getStatusContent() {
-        return null;
-    }
-    
-    public StateValue getLoadState() {
-        return null;
-    }
+//    
+//    public Object getStatusContent() {
+//        return null;
+//    }
+//    
+//    public StateValue getLoadState() {
+//        return null;
+//    }
 
 }
