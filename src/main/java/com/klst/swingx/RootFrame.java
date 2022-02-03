@@ -38,6 +38,7 @@ public class RootFrame extends WindowFrame {
 	 * starts swingset demo application
 	 */
 	public static void main(String[] args) {
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
 		WindowFrame gossip = new RootFrame(); // RootFrame contains a simple frame manager
 		@SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
@@ -60,7 +61,6 @@ public class RootFrame extends WindowFrame {
 	public RootFrame() {
 		super(TITLE);
 		super.rootFrame = this;
-        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
 		frames = new ArrayList<JXFrame>();
 		frames.add(this);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
