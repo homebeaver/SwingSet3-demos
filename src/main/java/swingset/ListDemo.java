@@ -5,6 +5,7 @@ package swingset;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 
 /**
  * List Demo. This demo shows that it is not
@@ -37,10 +44,38 @@ import javax.swing.JScrollPane;
  * on the fly as only those elements are needed.
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-public class ListDemo extends DemoModule {
+public class ListDemo extends AbstractDemo {
+
+	public static final String ICON_PATH = "toolbar/JList.gif";
 	
-    public static final String ICON_PATH = "toolbar/JList.gif";
+	private static final long serialVersionUID = -6590141127414585946L;
+	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = true;
+
+    /**
+     * main method allows us to run as a standalone demo.
+     */
+    public static void main(String[] args) {
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new ListDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
+    }
 
     JList list;
 
@@ -52,31 +87,28 @@ public class ListDemo extends DemoModule {
 
     GeneratedListModel listModel;
 
-    Vector checkboxes = new Vector();
-
-    /**
-     * main method allows us to run as a standalone demo.
-     */
-    public static void main(String[] args) {
-        ListDemo demo = new ListDemo(null);
-        demo.mainImpl();
-    }
+    Vector<JCheckBox> checkboxes = new Vector<JCheckBox>();
 
     /**
      * ListDemo Constructor
      */
-    public ListDemo(SwingSet2 swingset) {
-        super(swingset, "ListDemo", ICON_PATH);
+    public ListDemo(Frame frame) {
+    	super(new BorderLayout());
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
+
+        if(CONTROLLER_IN_PRESENTATION_FRAME) {
+            JLabel description = new JLabel(getString("description"));
+            super.add(description, BorderLayout.NORTH);
+        }
 
         loadImages();
-
-        JLabel description = new JLabel(getString("ListDemo.description"));
-        getDemoPanel().add(description, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
         centerPanel.add(Box.createRigidArea(HGAP10));
-        getDemoPanel().add(centerPanel, BorderLayout.CENTER);
+        super.add(centerPanel, BorderLayout.CENTER);
 
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
@@ -157,6 +189,18 @@ public class ListDemo extends DemoModule {
         addSuffix("Concepts", false);
     }
 
+    @Override
+	public JXPanel getControlPane() {
+        if(CONTROLLER_IN_PRESENTATION_FRAME) return emptyControlPane();
+
+        JLabel description = new JLabel(getString("description"));
+        
+        JXPanel controller = new JXPanel();
+        controller.add(description, BorderLayout.NORTH);
+    	return controller;
+    }
+
+
     void updateDragEnabled(boolean dragEnabled) {
         list.setDragEnabled(dragEnabled);
     }
@@ -172,11 +216,11 @@ public class ListDemo extends DemoModule {
 
         JPanel prefixPanel = new JPanel();
         prefixPanel.setLayout(new BoxLayout(prefixPanel, BoxLayout.Y_AXIS));
-        prefixPanel.add(new JLabel(getString("ListDemo.prefixes")));
+        prefixPanel.add(new JLabel(getString("prefixes")));
 
         JPanel suffixPanel = new JPanel();
         suffixPanel.setLayout(new BoxLayout(suffixPanel, BoxLayout.Y_AXIS));
-        suffixPanel.add(new JLabel(getString("ListDemo.suffixes")));
+        suffixPanel.add(new JLabel(getString("suffixes")));
 
         prefixList = new JPanel() {
             Insets insets = new Insets(0, 4, 0, 0);
@@ -335,13 +379,13 @@ public class ListDemo extends DemoModule {
 
     ImageIcon images[] = new ImageIcon[7];
     void loadImages() {
-            images[0] = createImageIcon("list/red.gif",  getString("ListDemo.red"));
-            images[1] = createImageIcon("list/blue.gif",  getString("ListDemo.blue"));
-            images[2] = createImageIcon("list/yellow.gif",  getString("ListDemo.yellow"));
-            images[3] = createImageIcon("list/green.gif",  getString("ListDemo.green"));
-            images[4] = createImageIcon("list/gray.gif",  getString("ListDemo.gray"));
-            images[5] = createImageIcon("list/cyan.gif",  getString("ListDemo.cyan"));
-            images[6] = createImageIcon("list/magenta.gif",  getString("ListDemo.magenta"));
+            images[0] = StaticUtilities.createImageIcon("list/red.gif");
+            images[1] = StaticUtilities.createImageIcon("list/blue.gif");
+            images[2] = StaticUtilities.createImageIcon("list/yellow.gif");
+            images[3] = StaticUtilities.createImageIcon("list/green.gif");
+            images[4] = StaticUtilities.createImageIcon("list/gray.gif");
+            images[5] = StaticUtilities.createImageIcon("list/cyan.gif");
+            images[6] = StaticUtilities.createImageIcon("list/magenta.gif");
     }
 
     class CompanyLogoListCellRenderer extends DefaultListCellRenderer {
