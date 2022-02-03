@@ -174,12 +174,13 @@ public class DemoMenuAction extends AbstractAction {
     	root.add(ss3);
 
     	// TODOs:
+    	// InternalFrameDemo
     	ss2Actions.add(new DemoMenuAction(ButtonDemo.class, "Button", GO2_ICON, StaticUtilities.createImageIcon(ButtonDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ColorChooserDemo.class, "ColorChooser", GO2_ICON, StaticUtilities.createImageIcon(ColorChooserDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ComboBoxDemo.class, "ComboBox", GO2_ICON, StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(FileChooserDemo.class, "FileChooser", GO2_ICON, StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(HtmlDemo.class, "Html", GO2_ICON, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
     	// Done:
+    	ss2Actions.add(new DemoMenuAction(HtmlDemo.class, "Html", GO2_ICON, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", GO2_ICON, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(OptionPaneDemo.class, "OptionPane", GO2_ICON, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ProgressBarDemo.class, "ProgressBar", GO2_ICON, StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));

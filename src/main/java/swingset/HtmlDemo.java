@@ -4,6 +4,7 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package swingset;
 
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,39 +12,65 @@ import java.net.URL;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
+
 /**
  * Html Demo
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-public class HtmlDemo extends DemoModule {
-
-	private static final long serialVersionUID = 1867077915822954698L;
+public class HtmlDemo extends AbstractDemo {
 
 	public static final String ICON_PATH = "toolbar/JEditorPane.gif";
 
-    JEditorPane html;
+	private static final long serialVersionUID = 1867077915822954698L;
 
     /**
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        HtmlDemo demo = new HtmlDemo(null);
-        demo.mainImpl();
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new HtmlDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
+
+    JEditorPane html;
 
     /**
      * HtmlDemo Constructor
      */
-    public HtmlDemo(SwingSet2 swingset) {
-        // Set the title for this demo, and 
-    	// an icon used to represent this demo inside the SwingSet2 app.
-        super(swingset, "HtmlDemo", ICON_PATH);
+    public HtmlDemo(Frame frame) {
+    	super(new BorderLayout());
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
 
         try {
             URL url = null;
@@ -66,13 +93,18 @@ public class HtmlDemo extends DemoModule {
                 JScrollPane scroller = new JScrollPane();
                 JViewport vp = scroller.getViewport();
                 vp.add(html);
-                getDemoPanel().add(scroller, BorderLayout.CENTER);
+                super.add(scroller, BorderLayout.CENTER);
             }
         } catch (MalformedURLException e) {
             System.out.println("Malformed URL: " + e);
         } catch (IOException e) {
             System.out.println("IOException: " + e);
         }
+    }
+
+    @Override
+	public JXPanel getControlPane() {
+        return emptyControlPane();
     }
 
     public HyperlinkListener createHyperLinkListener() {
