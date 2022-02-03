@@ -179,8 +179,8 @@ public class DemoMenuAction extends AbstractAction {
     	ss2Actions.add(new DemoMenuAction(ComboBoxDemo.class, "ComboBox", GO2_ICON, StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(FileChooserDemo.class, "FileChooser", GO2_ICON, StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(HtmlDemo.class, "Html", GO2_ICON, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", GO2_ICON, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
     	// Done:
+    	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", GO2_ICON, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(OptionPaneDemo.class, "OptionPane", GO2_ICON, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ProgressBarDemo.class, "ProgressBar", GO2_ICON, StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ScrollPaneDemo.class, "ScrollPane", GO2_ICON, StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
@@ -270,17 +270,17 @@ public class DemoMenuAction extends AbstractAction {
 			@Override
 			public Object getChild(Object parent, int index) {
             	if(parent==this.getRoot()) {            		
-    		    	LOG.info("index="+index+", parent is root:"+parent);
+//    		    	LOG.info("index="+index+", parent is root:"+parent);
             		if(index==0) return getSS2Action();
             		if(index==1) return getSS3Action();
             	}
 //		    	LOG.info("nicht root ----------- parent:"+parent);
             	if(parent==getSS2Action()) {
-    		    	LOG.info("index="+index+", parent is SS2Action:"+parent);
+//    		    	LOG.info("index="+index+", parent is SS2Action:"+parent);
             		if(index>=0 && index<ss2Actions.size()) return ss2Actions.get(index);
             	}
             	if(parent==getSS3Action()) {
-    		    	LOG.info("index="+index+", parent is SS3Action:"+parent);
+//    		    	LOG.info("index="+index+", parent is SS3Action:"+parent);
             		if(index>=0 && index<ss3Actions.size()) return ss3Actions.get(index);
             	}
 				return null;
@@ -290,10 +290,10 @@ public class DemoMenuAction extends AbstractAction {
 			public int getChildCount(Object parent) {
 //		    	LOG.info("parent:"+parent);
             	if(parent==this.getRoot()) return 2;
-		    	LOG.info("nicht root ----------- parent:"+parent);
+//		    	LOG.info("nicht root ----------- parent:"+parent);
             	if(parent==getSS2Action()) return ss2Actions.size();
             	if(parent==getSS3Action()) return ss3Actions.size();
-		    	LOG.info("return 0 ------ bei parent:"+parent);
+//		    	LOG.info("return 0 ------ bei parent:"+parent);
 				return 0;
 			}
 
