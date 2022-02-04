@@ -43,9 +43,8 @@ import javax.swing.filechooser.FileView;
  * A convenience implementation of the FileView interface that
  * manages name, icon, traversable, and file type information.
  *
- * This this implemention will work well with file systems that use
- * "dot" extensions to indicate file type. For example: "picture.gif"
- * as a gif image.
+ * This implemention will work well with file systems that use "dot" extensions 
+ * to indicate file type. For example: "picture.gif" as a gif image.
  *
  * If the java.io.File ever contains some of this information, such as
  * file type, icon, and hidden file inforation, this implementation may

@@ -31,73 +31,69 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 
 /**
  * JFileChooserDemo
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-public class FileChooserDemo extends DemoModule {
-	
-    public static final String ICON_PATH = "toolbar/JFileChooser.gif";
+public class FileChooserDemo extends AbstractDemo {
 
-    JLabel theImage;
-    Icon jpgIcon;
-    Icon gifIcon;
+	public static final String ICON_PATH = "toolbar/JFileChooser.gif";
+	
+	private static final long serialVersionUID = 3758119595406064166L;
 
     /**
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        FileChooserDemo demo = new FileChooserDemo(null);
-        demo.mainImpl();
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new FileChooserDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
+
+    JLabel theImage;
 
     /**
      * FileChooserDemo Constructor
      */
-    public FileChooserDemo(SwingSet2 swingset) {
-        // Set the title for this demo, and an icon used to represent this
-        // demo inside the SwingSet2 app.
-        super(swingset, "FileChooserDemo", ICON_PATH);
-        createFileChooserDemo();
-    }
+    public FileChooserDemo(Frame frame) {
+    	super(new BorderLayout());
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
 
-    public void createFileChooserDemo() {
         theImage = new JLabel("");
-        jpgIcon = createImageIcon("filechooser/jpgIcon.jpg", "jpg image");
-        gifIcon = createImageIcon("filechooser/gifIcon.gif", "gif image");
-
-        JPanel demoPanel = getDemoPanel();
-        demoPanel.setLayout(new BoxLayout(demoPanel, BoxLayout.Y_AXIS));
 
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.X_AXIS));
 
-        demoPanel.add(Box.createRigidArea(VGAP20));
-        demoPanel.add(innerPanel);
-        demoPanel.add(Box.createRigidArea(VGAP20));
-
-        innerPanel.add(Box.createRigidArea(HGAP20));
-
-        // Create a panel to hold buttons
-        JPanel buttonPanel = new JPanel() {
-            public Dimension getMaximumSize() {
-                return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
-            }
-        };
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-
-        buttonPanel.add(Box.createRigidArea(VGAP15));
-        buttonPanel.add(createPlainFileChooserButton());
-        buttonPanel.add(Box.createRigidArea(VGAP15));
-        buttonPanel.add(createPreviewFileChooserButton());
-        buttonPanel.add(Box.createRigidArea(VGAP15));
-        buttonPanel.add(createCustomFileChooserButton());
-        buttonPanel.add(Box.createVerticalGlue());
+        super.add(innerPanel, BorderLayout.CENTER);
 
         // Create a panel to hold the image
         JPanel imagePanel = new JPanel();
@@ -108,19 +104,58 @@ public class FileChooserDemo extends DemoModule {
         scroller.getHorizontalScrollBar().setUnitIncrement(10);
         imagePanel.add(scroller, BorderLayout.CENTER);
 
-        // add buttons and image panels to inner panel
-        innerPanel.add(buttonPanel);
-        innerPanel.add(Box.createRigidArea(HGAP30));
         innerPanel.add(imagePanel);
-        innerPanel.add(Box.createRigidArea(HGAP20));
+    }
+    
+    JDialog dialog;
+    JFileChooser fc;
+
+    Icon jpgIcon;
+    Icon gifIcon;
+    Icon pngIcon;
+
+    @Override
+	public JXPanel getControlPane() {
+        JXPanel controller = new JXPanel();
+        controller.setLayout(new BoxLayout(controller, BoxLayout.X_AXIS));
+        
+        controller.add(Box.createRigidArea(HGAP20));
+
+        jpgIcon = StaticUtilities.createImageIcon("filechooser/jpgIcon.jpg");
+        gifIcon = StaticUtilities.createImageIcon("filechooser/gifIcon.gif");
+        pngIcon = StaticUtilities.createImageIcon("filechooser/pngIcon.gif");
+
+        // Create a panel to hold buttons
+        JXPanel buttonPanel = new JXPanel() {
+            public Dimension getMaximumSize() {
+                return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
+            }
+        };
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+
+        buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createPlainFileChooserButton());
+        
+        buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createPreviewFileChooserButton());
+        
+        buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createCustomFileChooserButton());
+        
+        buttonPanel.add(Box.createVerticalGlue());
+        buttonPanel.add(Box.createRigidArea(VGAP15));
+        controller.add(buttonPanel);
+        
+        controller.add(Box.createRigidArea(HGAP20));
+    	return controller;
     }
 
     public JFileChooser createFileChooser() {
         // create a filechooser
         JFileChooser fc = new JFileChooser();
-        if (getSwingSet2() != null && getSwingSet2().isDragEnabled()) {
-            fc.setDragEnabled(true);
-        }
+//        if (getSwingSet2() != null && getSwingSet2().isDragEnabled()) {
+//            fc.setDragEnabled(true);
+//        }
 
         // set the current directory to be the images directory
         File swingFile = new File("resources/images/About.jpg");
@@ -132,14 +167,14 @@ public class FileChooserDemo extends DemoModule {
         return fc;
     }
 
-
-    public JButton createPlainFileChooserButton() {
-        Action a = new AbstractAction(getString("FileChooserDemo.plainbutton")) {
+    // controller
+    private JButton createPlainFileChooserButton() {
+        Action a = new AbstractAction(getString("plainbutton")) {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = createFileChooser();
 
                 // show the filechooser
-                int result = fc.showOpenDialog(getDemoPanel());
+                int result = fc.showOpenDialog(FileChooserDemo.this);
 
                 // if we selected an image, load the image
                 if(result == JFileChooser.APPROVE_OPTION) {
@@ -150,18 +185,19 @@ public class FileChooserDemo extends DemoModule {
         return createButton(a);
     }
 
-    public JButton createPreviewFileChooserButton() {
-        Action a = new AbstractAction(getString("FileChooserDemo.previewbutton")) {
+    // controller
+    private JButton createPreviewFileChooserButton() {
+        Action a = new AbstractAction(getString("previewbutton")) {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = createFileChooser();
 
                 // Add filefilter & fileview
                 javax.swing.filechooser.FileFilter filter = createFileFilter(
-                    getString("FileChooserDemo.filterdescription"),
-                    "jpg", "gif");
+                    getString("filterdescription"), "jpg", "gif", "png");
                 ExampleFileView fileView = new ExampleFileView();
                 fileView.putIcon("jpg", jpgIcon);
                 fileView.putIcon("gif", gifIcon);
+                fileView.putIcon("png", pngIcon);
                 fc.setFileView(fileView);
                 fc.addChoosableFileFilter(filter);
                 fc.setFileFilter(filter);
@@ -170,7 +206,7 @@ public class FileChooserDemo extends DemoModule {
                 fc.setAccessory(new FilePreviewer(fc));
 
                 // show the filechooser
-                int result = fc.showOpenDialog(getDemoPanel());
+                int result = fc.showOpenDialog(FileChooserDemo.this);
 
                 // if we selected an image, load the image
                 if(result == JFileChooser.APPROVE_OPTION) {
@@ -181,13 +217,8 @@ public class FileChooserDemo extends DemoModule {
         return createButton(a);
     }
 
-    JDialog dialog;
-    JFileChooser fc;
-
-    private javax.swing.filechooser.FileFilter createFileFilter(
-            String description, String...extensions) {
-        description = createFileNameFilterDescriptionFromExtensions(
-                    description, extensions);
+    private javax.swing.filechooser.FileFilter createFileFilter(String description, String...extensions) {
+        description = createFileNameFilterDescriptionFromExtensions(description, extensions);
         return new FileNameExtensionFilter(description, extensions);
     }
 
@@ -205,18 +236,19 @@ public class FileChooserDemo extends DemoModule {
         return fullDescription;
     }
 
-    public JButton createCustomFileChooserButton() {
-        Action a = new AbstractAction(getString("FileChooserDemo.custombutton")) {
+    // controller
+    private JButton createCustomFileChooserButton() {
+        Action a = new AbstractAction(getString("custombutton")) {
             public void actionPerformed(ActionEvent e) {
                 fc = createFileChooser();
 
                 // Add filefilter & fileview
                 javax.swing.filechooser.FileFilter filter = createFileFilter(
-                    getString("FileChooserDemo.filterdescription"),
-                    "jpg", "gif");
+                    getString("filterdescription"), "jpg", "gif", "png");
                 ExampleFileView fileView = new ExampleFileView();
                 fileView.putIcon("jpg", jpgIcon);
                 fileView.putIcon("gif", gifIcon);
+                fileView.putIcon("png", pngIcon);
                 fc.setFileView(fileView);
                 fc.addChoosableFileFilter(filter);
 
@@ -231,7 +263,7 @@ public class FileChooserDemo extends DemoModule {
                 JPanel custom = new JPanel();
                 custom.setLayout(new BoxLayout(custom, BoxLayout.Y_AXIS));
                 custom.add(Box.createRigidArea(VGAP10));
-                JLabel description = new JLabel(getString("FileChooserDemo.description"));
+                JLabel description = new JLabel(getString("description"));
                 description.setAlignmentX(JLabel.CENTER_ALIGNMENT);
                 custom.add(description);
                 custom.add(Box.createRigidArea(VGAP10));
@@ -258,12 +290,12 @@ public class FileChooserDemo extends DemoModule {
                 custom.add(Box.createRigidArea(VGAP10));
 
                 // show the filechooser
-                Frame parent = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, getDemoPanel());
-                dialog = new JDialog(parent, getString("FileChooserDemo.dialogtitle"), true);
+                Frame parent = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, FileChooserDemo.this);
+                dialog = new JDialog(parent, getString("dialogtitle"), true);
                 dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 dialog.getContentPane().add(custom, BorderLayout.CENTER);
                 dialog.pack();
-                dialog.setLocationRelativeTo(getDemoPanel());
+                dialog.setLocationRelativeTo(FileChooserDemo.this);
 //              dialog.show(); // Deprecated.  As of JDK version 1.5, replaced by setVisible(boolean).
                 dialog.setVisible(true);
             }
@@ -272,24 +304,24 @@ public class FileChooserDemo extends DemoModule {
     }
 
     public Action createAboutAction() {
-        return new AbstractAction(getString("FileChooserDemo.about")) {
+        return new AbstractAction(getString("about")) {
             public void actionPerformed(ActionEvent e) {
                 File file = fc.getSelectedFile();
                 String text;
                 if(file == null) {
-                    text = getString("FileChooserDemo.nofileselected");
+                    text = getString("nofileselected");
                 } else {
-                    text = "<html>" + getString("FileChooserDemo.thefile");
+                    text = "<html>" + getString("thefile");
                     text += "<br><font color=green>" + file.getName() + "</font><br>";
-                    text += getString("FileChooserDemo.isprobably") + "</html>";
+                    text += getString("isprobably") + "</html>";
                 }
-                JOptionPane.showMessageDialog(getDemoPanel(), text);
+                JOptionPane.showMessageDialog(FileChooserDemo.this, text);
             }
         };
     }
 
     public Action createOKAction() {
-        return new AbstractAction(getString("FileChooserDemo.ok")) {
+        return new AbstractAction(getString("ok")) {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
                 if (!e.getActionCommand().equals(JFileChooser.CANCEL_SELECTION)
@@ -302,7 +334,7 @@ public class FileChooserDemo extends DemoModule {
     }
 
     public Action createCancelAction() {
-        return new AbstractAction(getString("FileChooserDemo.cancel")) {
+        return new AbstractAction(getString("cancel")) {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
             }
@@ -310,22 +342,22 @@ public class FileChooserDemo extends DemoModule {
     }
 
     public Action createFindAction() {
-        Icon icon = createImageIcon("filechooser/find.gif", getString("FileChooserDemo.find"));
+        Icon icon = StaticUtilities.createImageIcon("filechooser/find.gif");
         return new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
-                String result = JOptionPane.showInputDialog(getDemoPanel(), getString("FileChooserDemo.findquestion"));
+                String result = JOptionPane.showInputDialog(FileChooserDemo.this, getString("findquestion"));
                 if (result != null) {
-                    JOptionPane.showMessageDialog(getDemoPanel(), getString("FileChooserDemo.findresponse"));
+                    JOptionPane.showMessageDialog(FileChooserDemo.this, getString("findresponse"));
                 }
             }
         };
     }
 
     public Action createHelpAction() {
-        Icon icon = createImageIcon("filechooser/help.gif", getString("FileChooserDemo.help"));
+        Icon icon = StaticUtilities.createImageIcon("filechooser/help.gif");
         return new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(getDemoPanel(), getString("FileChooserDemo.helptext"));
+                JOptionPane.showMessageDialog(FileChooserDemo.this, getString("helptext"));
             }
         };
     }
@@ -392,8 +424,7 @@ class FilePreviewer extends JComponent implements PropertyChangeListener {
         } else {
             ImageIcon tmpIcon = new ImageIcon(f.getPath());
             if(tmpIcon.getIconWidth() > 90) {
-                thumbnail = new ImageIcon(
-                    tmpIcon.getImage().getScaledInstance(90, -1, Image.SCALE_DEFAULT));
+                thumbnail = new ImageIcon(tmpIcon.getImage().getScaledInstance(90, -1, Image.SCALE_DEFAULT));
             } else {
                 thumbnail = tmpIcon;
             }
