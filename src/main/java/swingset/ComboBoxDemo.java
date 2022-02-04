@@ -8,8 +8,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -21,9 +19,13 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXComboBox;
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
@@ -47,9 +49,25 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {  // TODO
-    	GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-//    	ComboBoxDemo demo = new ComboBoxDemo(new SwingSet2(null, gc, false));
-//        demo.mainImpl();
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new ButtonDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
 
     /**
@@ -59,6 +77,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         super(new BorderLayout());
         super.setPreferredSize(PREFERRED_SIZE);
         super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
 
         face = new Face();
         xfaceLabel = new JXLabel(face);
@@ -247,6 +266,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         cb.addItem(getString("scott"));
     }
 
+    @Override // implements ActionListener
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == hairCB) {
             String name = (String) parts.get((String) hairCB.getSelectedItem());
