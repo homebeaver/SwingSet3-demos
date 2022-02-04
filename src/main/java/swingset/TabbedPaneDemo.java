@@ -18,11 +18,14 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.SingleSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 
 /**
  * JTabbedPane Demo
@@ -41,8 +44,24 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-//        TabbedPaneDemo demo = new TabbedPaneDemo(null);
-//        demo.mainImpl();
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new TabbedPaneDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
 
     JTabbedPane tabbedpane;
@@ -55,6 +74,8 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
+    	
         // create tab
         tabbedpane = new JTabbedPane();
         super.add(tabbedpane, BorderLayout.CENTER);
