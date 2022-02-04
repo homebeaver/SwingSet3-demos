@@ -55,7 +55,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 			@Override
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new ButtonDemo(controller);
+				AbstractDemo demo = new ComboBoxDemo(controller);
 				JXFrame frame = new JXFrame("demo", exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
