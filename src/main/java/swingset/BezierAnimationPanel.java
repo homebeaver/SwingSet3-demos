@@ -196,7 +196,7 @@ class BezierAnimationPanel extends JPanel implements Runnable {
         Thread me = Thread.currentThread();
         while (getSize().width <= 0) {
             try {
-                anim.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 return;
             }
@@ -235,12 +235,11 @@ class BezierAnimationPanel extends JPanel implements Runnable {
                 img = (BufferedImage) createImage(size.width, size.height);
             }
 
-        if (BufferG2D == null) {
-                BufferG2D = img.createGraphics();
-                BufferG2D.setRenderingHint(RenderingHints.KEY_RENDERING,
-                                           RenderingHints.VALUE_RENDER_DEFAULT);
-                BufferG2D.setClip(clippath);
-            }
+			if (BufferG2D == null) {
+				BufferG2D = img.createGraphics();
+				BufferG2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
+				BufferG2D.setClip(clippath);
+			}
             g2d = BufferG2D;
 
             float[] ctrlpts;
@@ -279,49 +278,45 @@ class BezierAnimationPanel extends JPanel implements Runnable {
             }
             gp.closePath();
 
-            synchronized(lock) {
-        g2d.setComposite(set);
-            g2d.setBackground(backgroundColor);
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                 RenderingHints.VALUE_ANTIALIAS_OFF);
+			synchronized (lock) {
+				g2d.setComposite(set);
+				g2d.setBackground(backgroundColor);
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
-            if(bgChanged || bounds == null) {
-                bounds = new Rectangle(0, 0, getWidth(), getHeight());
-                bgChanged = false;
-            }
+				if (bgChanged || bounds == null) {
+					bounds = new Rectangle(0, 0, getWidth(), getHeight());
+					bgChanged = false;
+				}
 
-        // g2d.clearRect(bounds.x-5, bounds.y-5, bounds.x + bounds.width + 5, bounds.y + bounds.height + 5);
-            g2d.clearRect(0, 0, getWidth(), getHeight());
+				g2d.clearRect(0, 0, getWidth(), getHeight());
 
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                 RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setColor(outerColor);
-            g2d.setComposite(opaque);
-            g2d.setStroke(solid);
-            g2d.draw(gp);
-            g2d.setPaint(gradient);
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2d.setColor(outerColor);
+				g2d.setComposite(opaque);
+				g2d.setStroke(solid);
+				g2d.draw(gp);
+				g2d.setPaint(gradient);
 
-            if(!bgChanged) {
-                bounds = gp.getBounds();
-            } else {
-                bounds = new Rectangle(0, 0, getWidth(), getHeight());
-                bgChanged = false;
-            }
-            gradient = new GradientPaint(bounds.x, bounds.y, gradientColorA,
-                                         bounds.x + bounds.width, bounds.y + bounds.height,
-                                         gradientColorB, true);
-            g2d.setComposite(blend);
-            g2d.fill(gp);
-        }
-            if (g2d == BufferG2D) {
-                repaint();
-            }
-            ++frame;
-            Thread.yield();
-        }
-        if (g2d != null) {
-            g2d.dispose();
-        }
+				if (!bgChanged) {
+					bounds = gp.getBounds();
+				} else {
+					bounds = new Rectangle(0, 0, getWidth(), getHeight());
+					bgChanged = false;
+				}
+				gradient = new GradientPaint(bounds.x, bounds.y, gradientColorA, bounds.x + bounds.width,
+						bounds.y + bounds.height, gradientColorB, true);
+				g2d.setComposite(blend);
+				g2d.fill(gp);
+			}
+			if (g2d == BufferG2D) {
+				repaint();
+			}
+			++frame;
+			Thread.yield();
+		}
+		if (g2d != null) {
+			g2d.dispose();
+		}
     }
 
     public void paint(Graphics g) {

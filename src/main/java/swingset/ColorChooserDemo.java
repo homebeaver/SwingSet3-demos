@@ -3,9 +3,10 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 */ 
 package swingset;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,15 +18,50 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 
 /**
  * JColorChooserDemo
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-public class ColorChooserDemo extends DemoModule {
+public class ColorChooserDemo extends AbstractDemo {
 
-    public static final String ICON_PATH = "toolbar/JColorChooser.gif";
+	public static final String ICON_PATH = "toolbar/JColorChooser.gif";
+
+	private static final long serialVersionUID = 6436900967666892689L;
+
+    /**
+     * main method allows us to run as a standalone demo.
+     */
+    public static void main(String[] args) {
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new ColorChooserDemo(controller);
+				JXFrame frame = new JXFrame("demo", exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
+    }
 
     BezierAnimationPanel bezAnim;
     JButton outerColorButton = null;
@@ -37,35 +73,27 @@ public class ColorChooserDemo extends DemoModule {
     private Color chosen;
 
     /**
-     * main method allows us to run as a standalone demo.
-     */
-    public static void main(String[] args) {
-        ColorChooserDemo demo = new ColorChooserDemo(null);
-        demo.mainImpl();
-    }
-
-
-    /**
      * ColorChooserDemo Constructor
      */
-    public ColorChooserDemo(SwingSet2 swingset) {
-        // Set the title for this demo, and an icon used to represent this
-        // demo inside the SwingSet2 app.
-        super(swingset, "ColorChooserDemo", ICON_PATH);
+    public ColorChooserDemo(Frame frame) {
+        super(new BorderLayout());
+        super.setPreferredSize(PREFERRED_SIZE);
+        super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    	frame.setTitle(getString("name"));
 
         // Create the bezier animation panel to put in the center of the panel.
         bezAnim = new BezierAnimationPanel();
 
-        outerColorButton = new JButton(getString("ColorChooserDemo.outer_line"));
+        outerColorButton = new JButton(getString("outer_line"));
         outerColorButton.setIcon(new ColorSwatch("OuterLine", bezAnim));
 
-        backgroundColorButton = new JButton(getString("ColorChooserDemo.background"));
+        backgroundColorButton = new JButton(getString("background"));
         backgroundColorButton.setIcon(new ColorSwatch("Background", bezAnim));
 
-        gradientAButton = new JButton(getString("ColorChooserDemo.grad_a"));
+        gradientAButton = new JButton(getString("grad_a"));
         gradientAButton.setIcon(new ColorSwatch("GradientA", bezAnim));
 
-        gradientBButton = new JButton(getString("ColorChooserDemo.grad_b"));
+        gradientBButton = new JButton(getString("grad_b"));
         gradientBButton.setIcon(new ColorSwatch("GradientB", bezAnim));
 
         ActionListener l = new ActionListener() {
@@ -80,12 +108,10 @@ public class ColorChooserDemo extends DemoModule {
                     current = bezAnim.getGradientColorB();
                 }
 
-                final JColorChooser chooser = new JColorChooser(current != null ?
-                                                                current :
-                                                                Color.WHITE);
-                if (getSwingSet2() != null && getSwingSet2().isDragEnabled()) {
-                    chooser.setDragEnabled(true);
-                }
+                final JColorChooser chooser = new JColorChooser(current != null ? current : Color.WHITE);
+//                if (getSwingSet2() != null && getSwingSet2().isDragEnabled()) {
+//                    chooser.setDragEnabled(true);
+//                }
 
                 chosen = null;
                 ActionListener okListener = new ActionListener() {
@@ -94,8 +120,8 @@ public class ColorChooserDemo extends DemoModule {
                     }
                 };
 
-                JDialog dialog = JColorChooser.createDialog(getDemoPanel(),
-                                                            getString("ColorChooserDemo.chooser_title"),
+                JDialog dialog = JColorChooser.createDialog(ColorChooserDemo.this,
+                                                            getString("chooser_title"),
                                                             true,
                                                             chooser,
                                                             okListener,
@@ -122,29 +148,38 @@ public class ColorChooserDemo extends DemoModule {
         gradientBButton.addActionListener(l);
 
         // Add everything to the panel
-        JPanel p = getDemoPanel();
+        JXPanel p = new JXPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+        super.add(p, BorderLayout.CENTER);
+        p.add(bezAnim);
+    }
 
+    @Override
+	public JXPanel getControlPane() {
+    	JXPanel p = new JXPanel();
+        p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         // Add control buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.add(Box.createRigidArea(VGAP15));
 
         buttonPanel.add(backgroundColorButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(15, 1)));
+        buttonPanel.add(Box.createRigidArea(VGAP15));
 
         buttonPanel.add(gradientAButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(15, 1)));
+        buttonPanel.add(Box.createRigidArea(VGAP15));
 
         buttonPanel.add(gradientBButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(15, 1)));
+        buttonPanel.add(Box.createRigidArea(VGAP15));
 
         buttonPanel.add(outerColorButton);
+        buttonPanel.add(Box.createRigidArea(VGAP15));
 
         // Add the panel midway down the panel
-        p.add(Box.createRigidArea(new Dimension(1, 10)));
+        p.add(Box.createRigidArea(HGAP10));
         p.add(buttonPanel);
-        p.add(Box.createRigidArea(new Dimension(1, 5)));
-        p.add(bezAnim);
+        p.add(Box.createRigidArea(HGAP10));
+    	return p;
     }
 
     class ColorSwatch implements Icon {
