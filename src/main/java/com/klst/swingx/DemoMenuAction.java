@@ -35,6 +35,7 @@ import swingset.ColorChooserDemo;
 import swingset.ComboBoxDemo;
 import swingset.FileChooserDemo;
 import swingset.HtmlDemo;
+import swingset.InternalFrameDemo;
 import swingset.ListDemo;
 import swingset.OptionPaneDemo;
 import swingset.ProgressBarDemo;
@@ -173,13 +174,11 @@ public class DemoMenuAction extends AbstractAction {
     	root.add(ss2);
     	root.add(ss3);
 
+    	ss2Actions.add(new DemoMenuAction(InternalFrameDemo.class, "InternalFrame", GO2_ICON, StaticUtilities.createImageIcon(InternalFrameDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ButtonDemo.class, "Button", GO2_ICON, StaticUtilities.createImageIcon(ButtonDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ComboBoxDemo.class, "ComboBox", GO2_ICON, StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH)));
-    	// TODOs:
-    	// InternalFrameDemo
     	ss2Actions.add(new DemoMenuAction(ColorChooserDemo.class, "ColorChooser", GO2_ICON, StaticUtilities.createImageIcon(ColorChooserDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(FileChooserDemo.class, "FileChooser", GO2_ICON, StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
-    	// Done:
     	ss2Actions.add(new DemoMenuAction(HtmlDemo.class, "Html", GO2_ICON, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", GO2_ICON, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
     	ss2Actions.add(new DemoMenuAction(OptionPaneDemo.class, "OptionPane", GO2_ICON, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
