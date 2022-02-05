@@ -49,7 +49,7 @@ import org.jdesktop.swingx.util.PaintUtils;
 import swingset.AbstractDemo;
 
 /**
- * A demo for the {@code JXLoginPane} with custom banner
+ * A demo for the {@code JXLoginPane} with default banner
  *
  * @author hb https://github.com/homebeaver (locale lang selector + custom moon banner)
  */
@@ -99,8 +99,8 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
     private UserNameStore us = null; // not used ==> DefaultUserNameStore
     private DBLoginService service;
     private JXLoginPane loginPane;
-    // controler:
     private JXLabel statusLabel;
+    // controler:
     private JXComboBox<DisplayLocale> localeBox; // DisplayLocale is a wrapper for Locale
     private Locale selectedLocale;
     private JXButton loginLauncher;
@@ -110,7 +110,11 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
     	frame.setTitle(getString("name"));
-    	// TODO : nicht leer sondern status
+    	
+        statusLabel = new JXLabel(loginPane==null ? Status.NOT_STARTED.toString() : loginPane.getStatus().name());
+//        statusLabel.setFont(font);
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        super.add(statusLabel, BorderLayout.NORTH);
 	}
 
     @Override
@@ -138,10 +142,6 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
         });
         loginLauncher.addActionListener(this);
         
-        statusLabel = new JXLabel(loginPane==null ? Status.NOT_STARTED.toString() : loginPane.getStatus().name());
-        statusLabel.setFont(font);
-        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        controller.add(statusLabel, BorderLayout.NORTH);
         controller.add(loginLauncher, BorderLayout.SOUTH);
         
         JPanel p = new JPanel(new VerticalLayout());
