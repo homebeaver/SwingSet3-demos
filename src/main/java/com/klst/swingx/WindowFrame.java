@@ -15,11 +15,14 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
@@ -198,21 +201,25 @@ aus super:
     }
 
     /**
-     * Creates a menu filled with one SetPlafAction for each of the currently
-     * installed LFs.
+     * Creates a menu filled with one SetPlafAction for each of the currently installed LFs.
      * 
      * @param target the toplevel window to update, maybe null to indicate update
      *   of all application windows
      * @return the menu to use for plaf switching.
      */
-	// aus InteractiveTestCase.createPlafMenu
     protected JMenu createPlafMenu(Window target) {
-        LookAndFeelInfo[] plafs = UIManager.getInstalledLookAndFeels();
-        JMenu menu = new JMenu("Set L&F");
-        
-        for (LookAndFeelInfo info : plafs) {
-//            LOG.info(info.getName()+" "+info.getClassName()+" "+target);
-            menu.add(new SetPlafAction(info.getName(), info.getClassName(), target));
+    	UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
+        JMenu menu = new JMenu(StaticUtilities.getResourceAsString("LafMenu.laf.labelAndMnemonic", "Set L&F"));
+        ButtonGroup lafMenuGroup = new ButtonGroup(); // wg. mi.setSelected
+        for (LookAndFeelInfo info : lafInfo) {
+//            LOG.info(info.getName()+" "+info.getClassName()+" "+UIManager.getLookAndFeel().getClass().getName());
+            JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(info.getName()));
+            lafMenuGroup.add(mi);
+        	SetPlafAction action = new SetPlafAction(info.getName(), info.getClassName(), target);
+        	mi.setAction(action);
+            if(info.getClassName().equals(UIManager.getLookAndFeel().getClass().getName())) {
+            	mi.setSelected(true);
+            }
         }
         return menu;
     }
