@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -228,96 +230,32 @@ aus super:
     }
     
     protected JMenu createLanguageMenu(Window target) {
+    	List<DisplayLocale> locales = new ArrayList<DisplayLocale>();
+    	locales.add(new DisplayLocale(Locale.ENGLISH));
+    	locales.add(new DisplayLocale("cs"));
+    	locales.add(new DisplayLocale("es"));
+    	locales.add(new DisplayLocale(Locale.FRENCH));
+    	locales.add(new DisplayLocale(Locale.GERMAN));
+    	locales.add(new DisplayLocale(new Locale("de", "CH")));
+    	locales.add(new DisplayLocale(new Locale("fr", "CH")));
+    	locales.add(new DisplayLocale(new Locale("it", "CH")));
+    	locales.add(new DisplayLocale(new Locale("rm", "CH")));
+    	locales.add(new DisplayLocale(Locale.ITALIAN));
+    	locales.add(new DisplayLocale("nl"));
+    	locales.add(new DisplayLocale("pl"));
+    	locales.add(new DisplayLocale(new Locale("pt", "BR")));
+    	locales.add(new DisplayLocale("sv"));
+    	
         JMenu menu = new JMenu(StaticUtilities.getResourceAsString("LanguageMenu.lang.labelAndMnemonic", "Languages"));
         ButtonGroup langMenuGroup = new ButtonGroup(); // wg. mi.setSelected
-        DisplayLocale dl = new DisplayLocale(Locale.ENGLISH);
-        JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        SetLanguageAction action = new SetLanguageAction(dl, target);
-        mi.setAction(action); // überschreibt setText TODO
         
-        dl = new DisplayLocale("cs");
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale("es");
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale(Locale.FRENCH);
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale(Locale.GERMAN);
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale(new Locale("de", "CH"));
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-//        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale(new Locale("fr", "CH"));
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-//        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale(new Locale("rm", "CH"));
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-//        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale(Locale.ITALIAN);
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale("ja");
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale("nl");
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale("pl");
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale(new Locale("pt", "BR"));
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
-        
-        dl = new DisplayLocale("sv");
-        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
-        langMenuGroup.add(mi);
-        mi.setAction(new SetLanguageAction(dl, target));
+        locales.forEach( dl -> {
+        	SetLanguageAction action = new SetLanguageAction(dl, target);
+        	JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(action));
+        	mi.setText(dl.toString());
+        	langMenuGroup.add(mi);
+        });
 
-/*
-        model.addElement(new DisplayLocale(Locale.ENGLISH));
-        model.addElement(new DisplayLocale("cs"));
-        model.addElement(new DisplayLocale("es"));
-        model.addElement(new DisplayLocale(Locale.FRENCH));
-        model.addElement(new DisplayLocale(Locale.GERMAN));
-//        model.addElement(new DisplayLocale(new Locale("de", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("fr", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("it", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("rm", "CH")));
-        model.addElement(new DisplayLocale(Locale.ITALIAN));
-        model.addElement(new DisplayLocale("nl"));
-        model.addElement(new DisplayLocale("pl"));
-        model.addElement(new DisplayLocale(new Locale("pt", "BR")));
-        model.addElement(new DisplayLocale("sv"));
-
- */
         return menu;
     }
 
