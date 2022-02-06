@@ -227,32 +227,6 @@ aus super:
         return menu;
     }
     
-    /**
-     * wrapper for class Locale
-     * <p>
-     * class Locale is final, so cannot subclass it
-     *
-     */
-    public class DisplayLocale {
-        private final Locale locale;
-        
-        public DisplayLocale(String lang) {
-            this.locale = new Locale(lang);
-        }
-        public DisplayLocale(Locale item) {
-            this.locale = item;
-        }
-        
-        public Locale getLocale() {
-            return locale;
-        }
-
-        // used in JXComboBox/JRadioButtonMenuItem
-        public String toString() {
-			return locale.toString() + " " + locale.getDisplayLanguage(locale) + "/" +locale.getDisplayLanguage();  	
-        }
-    }
-
     protected JMenu createLanguageMenu(Window target) {
         JMenu menu = new JMenu(StaticUtilities.getResourceAsString("LanguageMenu.lang.labelAndMnemonic", "Languages"));
         ButtonGroup langMenuGroup = new ButtonGroup(); // wg. mi.setSelected
@@ -283,6 +257,16 @@ aus super:
         mi.setAction(new SetLanguageAction(dl, target));
         
         dl = new DisplayLocale(new Locale("de", "CH"));
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+//        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale(new Locale("fr", "CH"));
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+//        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale(new Locale("rm", "CH"));
         mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
         langMenuGroup.add(mi);
 //        mi.setAction(new SetLanguageAction(dl, target));
