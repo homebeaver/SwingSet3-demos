@@ -14,16 +14,11 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -31,7 +26,6 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
@@ -41,7 +35,6 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jdesktop.swingx.auth.PasswordStore;
 import org.jdesktop.swingx.auth.UserNameStore;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.util.PaintUtils;
@@ -101,8 +94,6 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
     private JXLoginPane loginPane;
     private JXLabel statusLabel;
     // controler:
-//    private JXComboBox<DisplayLocale> localeBox; // DisplayLocale is a wrapper for Locale
-//    private Locale selectedLocale;
     private JXButton loginLauncher;
     
     public LoginToDBPaneDemo(Frame frame) {
@@ -124,7 +115,7 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
         Font font = new Font("SansSerif", Font.PLAIN, 16);
 
         loginLauncher = new JXButton();
-        loginLauncher.setName("launcher"); // den text aus prop "launcher.text" holen
+        loginLauncher.setName("launcher"); // den text aus prop "launcher.text" holen:
         loginLauncher.setText(getString("launcher.text"));
         loginLauncher.setFont(font);
         final Painter<Component> orangeBgPainter = new MattePainter(PaintUtils.ORANGE_DELIGHT, true);
@@ -147,25 +138,6 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
         JPanel p = new JPanel(new VerticalLayout());
         controller.add(p);
         
-//        JLabel langLabel = new JXLabel();
-//        langLabel.setName("langLabel"); // dann text aus prop
-//        langLabel.setText(getString("langLabel.text"));
-//        
-//        localeBox = new JXComboBox<DisplayLocale>();
-//        localeBox.setModel(createDisplayLocaleList());
-//        
-//        langLabel.setFont(font);
-//        p.add(langLabel);
-//        
-//        localeBox.setFont(font);
-//        localeBox.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.LINE_PRINTER));
-//        localeBox.addActionListener(event -> {
-//        	Locale selected = ((DisplayLocale)localeBox.getSelectedItem()).getLocale();
-//        	LOG.config("Locale selected:"+selected + ", loginPane:"+loginPane);
-//        	selectedLocale = selected;
-//        });
-//        p.add(localeBox);
-
     	return controller;
     }
 
@@ -177,7 +149,6 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
 		if(loginPane==null) {
 			createLoginPaneDemo();
 		}
-//		if(selectedLocale!=null) loginPane.setLocale(this.selectedLocale);
 		loginPane.setLocale(super.getLocale());
 		
 		if(statusLabel.getText().equals(Status.SUCCEEDED.toString())) {
@@ -189,7 +160,6 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
 			LOG.info("status:SUCCEEDED!!!!");
 			loginPane = null;
 			statusLabel.setText(Status.NOT_STARTED.toString());
-//			localeBox.setSelectedItem(localeBox.getModel().getElementAt(0)); // Locale.0 is en
 			return;
 		}
 		
@@ -330,51 +300,6 @@ INFORMATION: key:view.text : View
         
         // nicht notwendig: wird anhand ps+us gesetzt:
 //        loginPane.setSaveMode(SaveMode.PASSWORD);
-    }
-
-    /**
-     * wrapper for class Locale
-     * <p>
-     * class Locale is final, so cannot subclass it
-     *
-     */
-    public class DisplayLocale {
-        private final Locale locale;
-        
-        public DisplayLocale(String lang) {
-            this.locale = new Locale(lang);
-        }
-        public DisplayLocale(Locale item) {
-            this.locale = item;
-        }
-        
-        public Locale getLocale() {
-            return locale;
-        }
-
-        // used in JXComboBox
-        public String toString() {
-			return locale.toString() + " " + locale.getDisplayLanguage(locale) + "/" +locale.getDisplayLanguage();  	
-        }
-    }
-    
-    private ComboBoxModel<DisplayLocale> createDisplayLocaleList() {
-        DefaultComboBoxModel<DisplayLocale> model = new DefaultComboBoxModel<DisplayLocale>();
-        model.addElement(new DisplayLocale(Locale.ENGLISH));
-        model.addElement(new DisplayLocale("cs"));
-        model.addElement(new DisplayLocale("es"));
-        model.addElement(new DisplayLocale(Locale.FRENCH));
-        model.addElement(new DisplayLocale(Locale.GERMAN));
-//        model.addElement(new DisplayLocale(new Locale("de", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("fr", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("it", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("rm", "CH")));
-        model.addElement(new DisplayLocale(Locale.ITALIAN));
-        model.addElement(new DisplayLocale("nl"));
-        model.addElement(new DisplayLocale("pl"));
-        model.addElement(new DisplayLocale(new Locale("pt", "BR")));
-        model.addElement(new DisplayLocale("sv"));
-		return model;
     }
 
 }
