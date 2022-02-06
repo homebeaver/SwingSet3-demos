@@ -378,7 +378,7 @@ public class DemoMenuAction extends AbstractAction {
     		frame.setStartPosition(StartPosition.CenterInScreen);
     		AbstractDemo demo = null;
 			try {
-				demo = getInstanceOf(democlass, frame); // ctor 
+				demo = getInstanceOf(democlass, frame, rf); // ctor 
 			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException e1) {
 				// TODO Auto-generated catch block
@@ -424,12 +424,13 @@ java.util.MissingResourceException: Can't find bundle for base name org.jdesktop
         return demoClass;
     }
 
-	private AbstractDemo getInstanceOf(Class<?> demoClass, Frame frame) throws NoSuchMethodException, SecurityException,
+	private AbstractDemo getInstanceOf(Class<?> demoClass, Frame frame, RootFrame rf) throws NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Constructor<?> demoConstructor = demoClass.getConstructor(new Class[] { Frame.class }); // throws
 																								// NoSuchMethodException,
 																								// SecurityException
 		AbstractDemo demo = (AbstractDemo) demoConstructor.newInstance(new Object[] { frame });
+		demo.setLocale(rf.getLocale());
 		return demo;
 	}
 
