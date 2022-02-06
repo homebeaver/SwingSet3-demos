@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -226,6 +227,116 @@ aus super:
         return menu;
     }
     
+    /**
+     * wrapper for class Locale
+     * <p>
+     * class Locale is final, so cannot subclass it
+     *
+     */
+    public class DisplayLocale {
+        private final Locale locale;
+        
+        public DisplayLocale(String lang) {
+            this.locale = new Locale(lang);
+        }
+        public DisplayLocale(Locale item) {
+            this.locale = item;
+        }
+        
+        public Locale getLocale() {
+            return locale;
+        }
+
+        // used in JXComboBox/JRadioButtonMenuItem
+        public String toString() {
+			return locale.toString() + " " + locale.getDisplayLanguage(locale) + "/" +locale.getDisplayLanguage();  	
+        }
+    }
+
+    protected JMenu createLanguageMenu(Window target) {
+        JMenu menu = new JMenu(StaticUtilities.getResourceAsString("LanguageMenu.lang.labelAndMnemonic", "Languages"));
+        ButtonGroup langMenuGroup = new ButtonGroup(); // wg. mi.setSelected
+        DisplayLocale dl = new DisplayLocale(Locale.ENGLISH);
+        JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        SetLanguageAction action = new SetLanguageAction(dl, target);
+        mi.setAction(action); // überschreibt setText TODO
+        
+        dl = new DisplayLocale("cs");
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale("es");
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale(Locale.FRENCH);
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale(Locale.GERMAN);
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale(new Locale("de", "CH"));
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+//        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale(Locale.ITALIAN);
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale("ja");
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale("nl");
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale("pl");
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale(new Locale("pt", "BR"));
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+        
+        dl = new DisplayLocale("sv");
+        mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(dl.toString()));
+        langMenuGroup.add(mi);
+        mi.setAction(new SetLanguageAction(dl, target));
+
+/*
+        model.addElement(new DisplayLocale(Locale.ENGLISH));
+        model.addElement(new DisplayLocale("cs"));
+        model.addElement(new DisplayLocale("es"));
+        model.addElement(new DisplayLocale(Locale.FRENCH));
+        model.addElement(new DisplayLocale(Locale.GERMAN));
+//        model.addElement(new DisplayLocale(new Locale("de", "CH")));
+//        model.addElement(new DisplayLocale(new Locale("fr", "CH")));
+//        model.addElement(new DisplayLocale(new Locale("it", "CH")));
+//        model.addElement(new DisplayLocale(new Locale("rm", "CH")));
+        model.addElement(new DisplayLocale(Locale.ITALIAN));
+        model.addElement(new DisplayLocale("nl"));
+        model.addElement(new DisplayLocale("pl"));
+        model.addElement(new DisplayLocale(new Locale("pt", "BR")));
+        model.addElement(new DisplayLocale("sv"));
+
+ */
+        return menu;
+    }
+
     protected JMenu createThemeMenu(Window target) {
     	String[] themeInfo = { "javax.swing.plaf.metal.OceanTheme" , "javax.swing.plaf.metal.DefaultMetalTheme"
     		, "swingset.plaf.AquaTheme"
@@ -485,6 +596,32 @@ class OceanTheme extends DefaultMetalTheme
             } catch (Exception e1) {
                 e1.printStackTrace();
                 LOG.log(Level.FINE, "problem in setting MetalTheme", e1);
+			}
+		}
+    	
+    }
+
+    private static class SetLanguageAction extends AbstractAction {
+    	
+    	private DisplayLocale dl;
+        private Window toplevel;
+
+        public SetLanguageAction(DisplayLocale dl, Window toplevel) {
+            super(dl.getLocale().toString());
+            this.dl = dl;
+            this.toplevel = toplevel;
+        }
+        
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (toplevel != null) {
+				LOG.info("Locale selected:"+dl + ", do setComponentTreeLocale for "+toplevel);
+				SwingXUtilities.setComponentTreeLocale(toplevel, dl.getLocale());
+                if(toplevel instanceof RootFrame) {
+                	RootFrame rf = (RootFrame)toplevel;
+                	Window w = rf.currentDemoFrame;
+                	if (w != null) SwingXUtilities.setComponentTreeLocale(w, dl.getLocale());
+                }
 			}
 		}
     	

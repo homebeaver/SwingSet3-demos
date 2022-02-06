@@ -101,8 +101,8 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
     private JXLoginPane loginPane;
     private JXLabel statusLabel;
     // controler:
-    private JXComboBox<DisplayLocale> localeBox; // DisplayLocale is a wrapper for Locale
-    private Locale selectedLocale;
+//    private JXComboBox<DisplayLocale> localeBox; // DisplayLocale is a wrapper for Locale
+//    private Locale selectedLocale;
     private JXButton loginLauncher;
     
     public LoginToDBPaneDemo(Frame frame) {
@@ -147,32 +147,28 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
         JPanel p = new JPanel(new VerticalLayout());
         controller.add(p);
         
-//        JLabel langLabel = new JXLabel("select language for Login Screen:", SwingConstants.CENTER);
-        JLabel langLabel = new JXLabel();
-        langLabel.setName("langLabel"); // dann text aus prop
-        langLabel.setText(getString("langLabel.text"));
-//        langLabel.setIcon(null) - ??? wie icon per prop iconPath setzen?
-        
-        localeBox = new JXComboBox<DisplayLocale>();
-        localeBox.setModel(createDisplayLocaleList());
-        
-        langLabel.setFont(font);
-        p.add(langLabel);
-        
-        localeBox.setFont(font);
-        localeBox.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.LINE_PRINTER));
-        localeBox.addActionListener(event -> {
-        	Locale selected = ((DisplayLocale)localeBox.getSelectedItem()).getLocale();
-        	LOG.config("Locale selected:"+selected + ", loginPane:"+loginPane);
-        	selectedLocale = selected;
-        });
-        p.add(localeBox);
+//        JLabel langLabel = new JXLabel();
+//        langLabel.setName("langLabel"); // dann text aus prop
+//        langLabel.setText(getString("langLabel.text"));
+//        
+//        localeBox = new JXComboBox<DisplayLocale>();
+//        localeBox.setModel(createDisplayLocaleList());
+//        
+//        langLabel.setFont(font);
+//        p.add(langLabel);
+//        
+//        localeBox.setFont(font);
+//        localeBox.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.LINE_PRINTER));
+//        localeBox.addActionListener(event -> {
+//        	Locale selected = ((DisplayLocale)localeBox.getSelectedItem()).getLocale();
+//        	LOG.config("Locale selected:"+selected + ", loginPane:"+loginPane);
+//        	selectedLocale = selected;
+//        });
+//        p.add(localeBox);
 
     	return controller;
     }
 
-	JFrame frame;
-	
     /**
      * implements event listener
      */
@@ -181,7 +177,8 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
 		if(loginPane==null) {
 			createLoginPaneDemo();
 		}
-		if(selectedLocale!=null) loginPane.setLocale(this.selectedLocale);
+//		if(selectedLocale!=null) loginPane.setLocale(this.selectedLocale);
+		loginPane.setLocale(super.getLocale());
 		
 		if(statusLabel.getText().equals(Status.SUCCEEDED.toString())) {
 			LOG.info("status:SUCCEEDED!!!!");
@@ -192,8 +189,7 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
 			LOG.info("status:SUCCEEDED!!!!");
 			loginPane = null;
 			statusLabel.setText(Status.NOT_STARTED.toString());
-			localeBox.setSelectedItem(localeBox.getModel().getElementAt(0)); // Locale.0 is en
-//			loginLauncher.setText("reset done, launch again.");
+//			localeBox.setSelectedItem(localeBox.getModel().getElementAt(0)); // Locale.0 is en
 			return;
 		}
 		

@@ -45,6 +45,8 @@ public class RootFrame extends WindowFrame {
 
 		JMenu themeMenu = gossip.createThemeMenu(gossip);
 		if(themeMenu != null) gossip.getJMenuBar().add(themeMenu);
+		JMenu langMenu = gossip.createLanguageMenu(gossip);
+		if(langMenu != null) gossip.getJMenuBar().add(langMenu);
 		JMenu demoMenu = gossip.createDemosMenu();
 		if(demoMenu != null) gossip.getJMenuBar().add(demoMenu);
 
