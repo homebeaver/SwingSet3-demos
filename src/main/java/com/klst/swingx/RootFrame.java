@@ -97,7 +97,7 @@ CENTER: JXPanel currentController
     	//DemoMenuAction root = DemoMenuAction.getRootAction();
 		TreeNode rootNode = DemoMenuAction.createTree(this);
     	TreeTableModel model = DemoMenuAction.createMenuModel(rootNode);
-    	// --------------
+
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
     	this.menu = new JMenu((Action)root.getUserObject());
 
@@ -106,19 +106,18 @@ CENTER: JXPanel currentController
     	for(int i=0;i<model.getChildCount(o2);i++) {
     		Object o = model.getChild(o2,i);
     		AbstractButton ab = addActionToToolBar(this, (DemoMenuAction)o); // add ToggleButton to ToolBar
-    		LOG.info("AbstractButton:"+ab +" menu add:"+o);
-    		ss2.add((DemoMenuAction)o);
+    		LOG.config("AbstractButton:"+ab +" menu add:"+o);
+    		ss2.add((DemoMenuAction)o); // add menuitem DemoMenuAction to ss2 submenu
     	}
     	
     	Object o3 = model.getChild(root,1);
     	JMenu ss3 = (JMenu) menu.add(new JMenu((Action)o3));
     	for(int i=0;i<model.getChildCount(o3);i++) {
     		Object o = model.getChild(o3,i);
-    		LOG.info("------------ add:"+o);
-    		ss3.add((DemoMenuAction)o);
+    		LOG.config("menuitem add:"+(DemoMenuAction)o);
+    		ss3.add((DemoMenuAction)o); // add menuitem DemoMenuAction to ss3 submenu
     	}
     	
-    	// --------------
     	demoTree = new JXTree(model);
 
     	demoTree.setName("demoTree");

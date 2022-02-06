@@ -237,7 +237,6 @@ aus super:
         JMenu menu = new JMenu(StaticUtilities.getResourceAsString("ThemesMenu.themes.labelAndMnemonic", "Themes"));
         ButtonGroup themeMenuGroup = new ButtonGroup(); // wg. mi.setSelected
         for (String info : themeInfo) {
-            LOG.info(info+" >>>>>>>"+target+">>>>>>>>> "+UIManager.getLookAndFeel().getClass().getName());
             JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(info));
             themeMenuGroup.add(mi);
             SetThemeAction action = new SetThemeAction(info, target);
