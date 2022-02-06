@@ -43,6 +43,8 @@ public class RootFrame extends WindowFrame {
 		@SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
 
+		JMenu themeMenu = gossip.createThemeMenu(gossip);
+		if(themeMenu != null) gossip.getJMenuBar().add(themeMenu);
 		JMenu demoMenu = gossip.createDemosMenu();
 		if(demoMenu != null) gossip.getJMenuBar().add(demoMenu);
 

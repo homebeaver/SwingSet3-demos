@@ -28,6 +28,8 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.metal.MetalTheme;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
@@ -223,6 +225,28 @@ aus super:
         }
         return menu;
     }
+    
+    protected JMenu createThemeMenu(Window target) {
+    	String[] themeInfo = { "javax.swing.plaf.metal.OceanTheme" , "javax.swing.plaf.metal.DefaultMetalTheme"
+    		, "swingset.plaf.AquaTheme"
+    		, "swingset.plaf.CharcoalTheme"
+    		, "swingset.plaf.ContrastTheme"
+    		, "swingset.plaf.EmeraldTheme"
+    		, "swingset.plaf.RubyTheme"
+    		};
+        JMenu menu = new JMenu(StaticUtilities.getResourceAsString("ThemesMenu.themes.labelAndMnemonic", "Themes"));
+        ButtonGroup themeMenuGroup = new ButtonGroup(); // wg. mi.setSelected
+        for (String info : themeInfo) {
+            LOG.info(info+" >>>>>>>"+target+">>>>>>>>> "+UIManager.getLookAndFeel().getClass().getName());
+            JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(info));
+            themeMenuGroup.add(mi);
+            SetThemeAction action = new SetThemeAction(info, target);
+        	mi.setAction(action);
+        }
+        // TODO disable when LAF changed
+        menu.setEnabled(UIManager.getLookAndFeel().getClass().getSimpleName().equals("MetalLookAndFeel"));
+        return menu;
+    }
 
     /**
      * Returns the <code>JXFrame</code>'s status bar. Lazily creates and 
@@ -361,8 +385,7 @@ aus super:
         }
         
         /**
-         * Instantiates an action which updates the toplevel window to
-         * the given LAF. 
+         * Instantiates an action which updates the toplevel window to the given LAF. 
          * 
          * @param name the name of the action
          * @param plaf the class name of the LAF to set
@@ -394,6 +417,78 @@ aus super:
             } 
         }
 
+    }
+
+    private static class SetThemeAction extends AbstractAction {
+
+    	/*
+abstract class MetalTheme
+class DefaultMetalTheme extends MetalTheme
+class OceanTheme extends DefaultMetalTheme
+       AquaTheme extends DefaultMetalTheme
+       ...
+    	 */
+        Class<?> themeClass = null;
+        private MetalTheme theme;
+        private Window toplevel;
+
+        public SetThemeAction(Class<?> themeClass, Window toplevel) {
+        	this(themeClass.getName(), toplevel);
+        	this.themeClass = themeClass;
+        }
+        /**
+         * 
+         * @param name == themeClass name
+         * @param theme
+         * @param toplevel
+         */
+        public SetThemeAction(String name, Window toplevel) {
+            super(name);
+            this.theme = null;
+            this.toplevel = toplevel;
+        }
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+            if(!UIManager.getLookAndFeel().getClass().getSimpleName().equals("MetalLookAndFeel")) return;
+            		
+			if (themeClass == null) {
+				String className = (String) super.getValue(Action.NAME);
+				try {
+					themeClass = Class.forName(className); // throws ClassNotFoundException
+				} catch (Exception e) {
+					LOG.warning("Error occurred loading class: " + className);
+					e.printStackTrace();
+				}
+			}
+			try {
+				theme = (MetalTheme)themeClass.getDeclaredConstructor().newInstance();
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			LOG.info("theme:"+theme.getName() +", toplevel "+toplevel);
+			try {
+				MetalLookAndFeel.setCurrentTheme(theme);
+				UIManager.setLookAndFeel(MetalLookAndFeel.class.getName());
+	            if (toplevel != null) {
+	                SwingUtilities.updateComponentTreeUI(toplevel);
+	                if(toplevel instanceof RootFrame) {
+	                	RootFrame rf = (RootFrame)toplevel;
+	                	Window w = rf.currentDemoFrame;
+	                	if (w != null) SwingUtilities.updateComponentTreeUI(w);
+	                }
+	                // WindowFrame currentDemoFrame = null;
+	            } else {
+	                SwingXUtilities.updateAllComponentTreeUIs();
+	            }
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                LOG.log(Level.FINE, "problem in setting MetalTheme", e1);
+			}
+		}
+    	
     }
 
 }
