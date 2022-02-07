@@ -30,6 +30,9 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
 
 /*
 TODO RootFrame <> JXRootPane
+
+es gibt viele WindowFrames, aber nur einen RootFrame ==> Singleton
+
  */
 @SuppressWarnings("serial")
 public class RootFrame extends WindowFrame {
@@ -39,7 +42,8 @@ public class RootFrame extends WindowFrame {
 	 */
 	public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
-		WindowFrame gossip = new RootFrame(); // RootFrame contains a simple frame manager
+		WindowFrame gossip = RootFrame.getInstance(); // RootFrame contains a simple frame manager
+		
 		@SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
 
@@ -58,11 +62,20 @@ public class RootFrame extends WindowFrame {
     private static final Logger LOG = Logger.getLogger(RootFrame.class.getName());
 
 	private static final String TITLE = "Gossip";
-	
+
+    private static final RootFrame INSTANCE = new RootFrame();
+    
+    /**
+     * @return the singleton
+     */
+    public static RootFrame getInstance() {
+        return INSTANCE;
+    }
+
 //	Map<Class<?>, WindowFrame> demos;
 	WindowFrame currentDemoFrame = null;
 	
-	public RootFrame() {
+	private RootFrame() {
 		super(TITLE);
 		super.rootFrame = this;
 		frames = new ArrayList<JXFrame>();
