@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -16,7 +15,6 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
@@ -24,10 +22,6 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.icon.StopIcon;
-import org.jdesktop.swingx.table.ColumnFactory;
-import org.jdesktop.swingx.table.TableColumnExt;
-import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
-import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import swingset.AbstractDemo;
 import swingset.ButtonDemo;
@@ -128,16 +122,6 @@ public class DemoMenuAction extends AbstractAction {
 //    	return (String)super.getValue(Action.NAME);
 //    }
 
-    private static String[] columnNameKeys = 
-    	{ Action.NAME       //                 expl. ButtonDemo
-    	, "className"       // full className, expl. swingset.ButtonDemo
-    	, Action.SHORT_DESCRIPTION // for tooltip
-    	, Action.LONG_DESCRIPTION
-    	, "swingSetVersion" // 2 or 3
-    	, "category"        // data, controller, ...
-//    	, "ad_menu_id"      // wg. gossip ... weitere
-    	};
-
 	// never used
 //    private ColumnFactory getColumnFactory() {
 //        // <snip>JXTreeTable column customization
@@ -228,92 +212,6 @@ public class DemoMenuAction extends AbstractAction {
     	}
     	return ss3;
     }
-    public static TreeTableModel createMenuModel(TreeNode root) {
-    	LOG.info("TreeNode root:"+root);
-    	return new AbstractTreeTableModel(root) {
-
-			@Override
-			public int getColumnCount() {
-				return columnNameKeys.length;
-			}
-
-			@Override
-			public Object getValueAt(Object node, int column) {
-				DemoMenuAction ma = (DemoMenuAction) node;
-                Object o = null;
-                
-                switch (column) {
-                case 0:
-                	o = ma.getValue(Action.NAME);
-                    break;
-                case 1:
-                    o = ma.className;
-                    break;
-                case 2: // SHORT_DESCRIPTION // for tooltip
-                    break;
-                case 3: // LONG_DESCRIPTION
-                    break;
-                case 4: // swingSetVersion TODO
-                	if (ma.className.startsWith("swingset.")) {
-                		o = Integer.valueOf(2);
-                	}
-                    break;
-                case 5: // category TODO
-                    break;
-                default:
-                    //does nothing
-                    break;
-                }              
-                return o;
-			}
-
-			@Override
-			public Object getChild(Object parent, int index) {
-            	if(parent==this.getRoot()) {            		
-//    		    	LOG.info("index="+index+", parent is root:"+parent);
-            		if(index==0) return getSS2Action();
-            		if(index==1) return getSS3Action();
-            	}
-//		    	LOG.info("nicht root ----------- parent:"+parent);
-            	if(parent==getSS2Action()) {
-//    		    	LOG.info("index="+index+", parent is SS2Action:"+parent);
-            		if(index>=0 && index<ss2Actions.size()) return ss2Actions.get(index);
-            	}
-            	if(parent==getSS3Action()) {
-//    		    	LOG.info("index="+index+", parent is SS3Action:"+parent);
-            		if(index>=0 && index<ss3Actions.size()) return ss3Actions.get(index);
-            	}
-				return null;
-			}
-
-			@Override
-			public int getChildCount(Object parent) {
-//		    	LOG.info("parent:"+parent);
-            	if(parent==this.getRoot()) return 2;
-//		    	LOG.info("nicht root ----------- parent:"+parent);
-            	if(parent==getSS2Action()) return ss2Actions.size();
-            	if(parent==getSS3Action()) return ss3Actions.size();
-//		    	LOG.info("return 0 ------ bei parent:"+parent);
-				return 0;
-			}
-
-			@Override
-			public int getIndexOfChild(Object parent, Object child) {
-		    	LOG.info("parent:"+parent);
-            	if(parent==getRootAction() && child==getSS2Action()) return 0;
-            	if(parent==getRootAction() && child==getSS3Action()) return 1;
-            	if(parent==getSS2Action()) {
-            		return ss2Actions.indexOf(child);
-            	}
-            	if(parent==getSS3Action()) {
-            		return ss3Actions.indexOf(child);
-            	}
-				return -1;
-			}
-    		
-    	};
-    }
-    
 
     /* implement method public void actionPerformed(ActionEvent e)
      * defined in interface ActionListener extends EventListener

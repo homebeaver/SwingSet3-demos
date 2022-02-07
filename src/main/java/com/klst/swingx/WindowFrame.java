@@ -193,7 +193,7 @@ aus super:
     protected JMenuBar createAndFillMenuBar(JComponent component) {
         JMenuBar bar = new JMenuBar();
 //        createAndAddMenus(bar, component); // == bar.add(createPlafMenu());
-        bar.add(createPlafMenu(null));
+//        bar.add(createPlafMenu(null));
         return bar;
     }
 

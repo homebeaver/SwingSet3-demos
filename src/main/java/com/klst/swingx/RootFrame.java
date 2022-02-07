@@ -13,6 +13,8 @@ import javax.swing.JMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
@@ -22,6 +24,7 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXTree;
+import org.jdesktop.swingx.plaf.nimbus.NimbusLookAndFeelAddons;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
@@ -41,19 +44,31 @@ public class RootFrame extends WindowFrame {
 	 * starts swingset demo application
 	 */
 	public static void main(String[] args) {
-        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
 		WindowFrame gossip = RootFrame.getInstance(); // RootFrame contains a simple frame manager
+		JMenu demoMenu = gossip.createDemosMenu();
 		
+        try {
+			UIManager.setLookAndFeel(new NimbusLookAndFeel());
+			NimbusLookAndFeelAddons addon = new NimbusLookAndFeelAddons();
+			addon.initialize();
+		} catch (UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+
 		@SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
 
+		JMenu plafMenu = gossip.createPlafMenu(gossip);
+		if(plafMenu != null) gossip.getJMenuBar().add(plafMenu);
 		JMenu themeMenu = gossip.createThemeMenu(gossip);
 		if(themeMenu != null) gossip.getJMenuBar().add(themeMenu);
 		JMenu langMenu = gossip.createLanguageMenu(gossip);
 		if(langMenu != null) gossip.getJMenuBar().add(langMenu);
-		JMenu demoMenu = gossip.createDemosMenu();
-		if(demoMenu != null) gossip.getJMenuBar().add(demoMenu);
 
+		if(demoMenu != null) gossip.getJMenuBar().add(demoMenu);
+        		
 		gossip.pack(); // auto or fix:
 		//gossip.setSize(680, 200);
 		gossip.setVisible(true);
@@ -108,9 +123,8 @@ CENTER: JXPanel currentController
 	JXTree demoTree = null;
 	JMenu menu;
     public JMenu createDemosMenu() {
-    	//DemoMenuAction root = DemoMenuAction.getRootAction();
 		TreeNode rootNode = DemoMenuAction.createTree();
-    	TreeTableModel model = DemoMenuAction.createMenuModel(rootNode);
+    	TreeTableModel model = MenuTreeTableModel.getInstance();
 
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
     	this.menu = new JMenu((Action)root.getUserObject());
