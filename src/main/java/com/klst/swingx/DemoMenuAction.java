@@ -1,6 +1,5 @@
 package com.klst.swingx;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -19,9 +18,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import org.jdesktop.swingx.JXFrame.StartPosition;
-import org.jdesktop.swingx.icon.PlayIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
-import org.jdesktop.swingx.icon.StopIcon;
+
+import com.klst.swingx.MenuTreeTableModel.Category;
 
 import swingset.AbstractDemo;
 import swingset.ButtonDemo;
@@ -74,6 +72,12 @@ public class DemoMenuAction extends AbstractAction {
 		this.className = className;
         if(icon!=null) super.putValue(Action.LARGE_ICON_KEY, icon);
 	}
+	public DemoMenuAction(String className, String name, int ssv, MenuTreeTableModel.Category cat, Icon icon) {
+		this(className, name, MenuTreeTableModel.getSmallIcon(ssv, cat), icon);
+	}
+	public DemoMenuAction(String className, String name, int ssv, MenuTreeTableModel.Category cat) {
+		this(className, name, MenuTreeTableModel.getSmallIcon(ssv, cat), null);
+	}
 	public DemoMenuAction(String className, String name) {
 		this(className, name, null, null);
 	}
@@ -102,6 +106,9 @@ public class DemoMenuAction extends AbstractAction {
             String short_description = StaticUtilities.getResourceAsString(key, null);
             super.putValue(Action.SHORT_DESCRIPTION, short_description);
         }
+	}
+	public DemoMenuAction(Class<?> democlass, String name, int ssv, MenuTreeTableModel.Category cat, Icon icon) {
+		this(democlass, name, MenuTreeTableModel.getSmallIcon(ssv, cat), icon);
 	}
 	public DemoMenuAction(Class<?> democlass, String name) {
 		this(democlass, name, null, null);
@@ -143,11 +150,6 @@ public class DemoMenuAction extends AbstractAction {
 //        // </snip>
 //    }
 
-	static Icon SS2_ICON = new StopIcon(SizingConstants.SMALL_ICON);
-	static Icon GO2_ICON = new StopIcon(SizingConstants.SMALL_ICON, Color.GREEN);
-	static Icon SS3_ICON = new PlayIcon(SizingConstants.SMALL_ICON);
-	static Icon GO3_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.GREEN);
-	static Icon SS3DATA_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.BLUE);
 	static ArrayList<DemoMenuAction> ss2Actions = new ArrayList<DemoMenuAction>();
 	static ArrayList<DemoMenuAction> ss3Actions = new ArrayList<DemoMenuAction>();
     public static TreeNode createTree() {
@@ -158,33 +160,34 @@ public class DemoMenuAction extends AbstractAction {
     	root.add(ss2);
     	root.add(ss3);
 
-    	ss2Actions.add(new DemoMenuAction(InternalFrameDemo.class, "InternalFrame", GO2_ICON, StaticUtilities.createImageIcon(InternalFrameDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ButtonDemo.class, "Button", GO2_ICON, StaticUtilities.createImageIcon(ButtonDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ComboBoxDemo.class, "ComboBox", GO2_ICON, StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ColorChooserDemo.class, "ColorChooser", GO2_ICON, StaticUtilities.createImageIcon(ColorChooserDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(FileChooserDemo.class, "FileChooser", GO2_ICON, StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(HtmlDemo.class, "Html", GO2_ICON, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", GO2_ICON, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(OptionPaneDemo.class, "OptionPane", GO2_ICON, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ProgressBarDemo.class, "ProgressBar", GO2_ICON, StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ScrollPaneDemo.class, "ScrollPane", GO2_ICON, StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(SliderDemo.class, "Slider", GO2_ICON, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(SplitPaneDemo.class, "SplitPane", GO2_ICON, StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(TabbedPaneDemo.class, "TabbedPane", GO2_ICON, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(TableDemo.class, "Table", GO2_ICON, StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(ToolTipDemo.class, "ToolTip", GO2_ICON, StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
-    	ss2Actions.add(new DemoMenuAction(TreeDemo.class, "Tree", GO2_ICON, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(InternalFrameDemo.class, "InternalFrame", 2, Category.CONTAINERS, StaticUtilities.createImageIcon(InternalFrameDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ButtonDemo.class, "Button", 2, Category.CONTROLS, StaticUtilities.createImageIcon(ButtonDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ComboBoxDemo.class, "ComboBox", 2, Category.CONTAINERS, StaticUtilities.createImageIcon(ComboBoxDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ColorChooserDemo.class, "ColorChooser", 2, Category.CHOOSERS, StaticUtilities.createImageIcon(ColorChooserDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(FileChooserDemo.class, "FileChooser", 2, Category.CHOOSERS, StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(HtmlDemo.class, "Html", 2, Category.TEXT, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ListDemo.class, "List", 2, Category.DATA, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(OptionPaneDemo.class, "OptionPane", 2, Category.CONTROLS, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ProgressBarDemo.class, "ProgressBar", 2, Category.DECORATORS, StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ScrollPaneDemo.class, "ScrollPane", 2, Category.DECORATORS, StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(SliderDemo.class, "Slider", 2, Category.DECORATORS, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(SplitPaneDemo.class, "SplitPane", 2, Category.CONTAINERS, StaticUtilities.createImageIcon(SplitPaneDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(TabbedPaneDemo.class, "TabbedPane", 2, Category.CONTAINERS, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(TableDemo.class, "Table", 2, Category.DATA, StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(ToolTipDemo.class, "ToolTip", 2, Category.DECORATORS, StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
+    	ss2Actions.add(new DemoMenuAction(TreeDemo.class, "Tree", 2, Category.DATA, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
     	ss2Actions.forEach( action -> {
         	ss2.add(new DefaultMutableTreeNode(action));
     	});
 
-    	// category = "Controls":
-    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.loginpane.LoginToDBPaneDemo", "LoginToDBPane", SS3DATA_ICON, null));
-    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.loginpane.LoginPaneDemo", "LoginPane", SS3DATA_ICON, null));
-    	// category = "Data"
-    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.table.XTableDemo", "XTable", SS3DATA_ICON, null));
-    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.tree.XTreeDemo", "XTree", SS3DATA_ICON, null));
-    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.treetable.TreeTableDemo", "XTreeTable", SS3DATA_ICON, null));
+    	// category CONTROLS:
+//		ss2 = new DemoMenuAction((String)null, "SwingSet2", 2, null, null);
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.loginpane.LoginToDBPaneDemo", "LoginToDBPane", 3, Category.CONTROLS));
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.loginpane.LoginPaneDemo", "LoginPane", 3, Category.CONTROLS));
+    	// category DATA:
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.table.XTableDemo", "XTable", 3, Category.DATA));
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.tree.XTreeDemo", "XTree", 3, Category.DATA));
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.treetable.TreeTableDemo", "XTreeTable",  3, Category.DATA));
     	ss3Actions.forEach( action -> {
         	ss3.add(new DefaultMutableTreeNode(action));
     	});
@@ -202,13 +205,13 @@ public class DemoMenuAction extends AbstractAction {
     }
     public static DemoMenuAction getSS2Action() {
     	if(ss2==null) {
-    		ss2 = new DemoMenuAction((String)null, "SwingSet2", SS2_ICON, null);
+    		ss2 = new DemoMenuAction((String)null, "SwingSet2", 2, null, null);
     	}
     	return ss2;
     }
     public static DemoMenuAction getSS3Action() {
     	if(ss3==null) {
-    		ss3 = new DemoMenuAction((String)null, "SwingSet3", SS3_ICON, null);
+    		ss3 = new DemoMenuAction((String)null, "SwingSet3", 3, null, null);
     	}
     	return ss3;
     }

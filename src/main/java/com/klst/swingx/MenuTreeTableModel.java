@@ -17,16 +17,20 @@ import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 public class MenuTreeTableModel extends AbstractTreeTableModel {
 
+	public enum Category {CHOOSERS, CONTAINERS, CONTROLS, DATA, DECORATORS, FUNCTIONALITY, GRAPHICS, TEXT, VISUALIZATION}
+	
 	// category => color
 	@SuppressWarnings("serial")
-	public static Map<String, Color> categoryToColor = new HashMap<String, Color>() {{
-	    put("Functionality", Color.YELLOW); // examples: ss3:AutoComplete, Decorator ????
-	    put("Graphics", Color.ORANGE); // examples: ss3:BlendComposite
-	    put("Decorators", Color.MAGENTA); // examples: ProgressBarDemo/ss2 ss3:JXBusyLabel
-	    put("Data", Color.BLUE); // examples: TableDemo/ss2, ss3:XTableDemo, XTreeDemo
-	    put("Containers", Color.PINK); // examples: ss3:JXCollapsiblePane
-	    put("Controls", Color.RED); // examples: ButtonDemo/ss2, ss3:JXDatePicker, LoginPaneDemo
-	    // TODO
+	public static Map<Category, Color> categoryToColor = new HashMap<Category, Color>() {{
+	    put(Category.CHOOSERS, Color.CYAN);
+	    put(Category.CONTAINERS, Color.PINK); // examples: ss3:JXCollapsiblePane
+	    put(Category.CONTROLS, Color.RED); // examples: ButtonDemo/ss2, ss3:JXDatePicker, LoginPaneDemo
+	    put(Category.DATA, Color.BLUE); // examples: TableDemo/ss2, ss3:XTableDemo, XTreeDemo
+	    put(Category.DECORATORS, Color.MAGENTA); // examples: ProgressBarDemo/ss2 ss3:JXBusyLabel
+	    put(Category.FUNCTIONALITY, Color.YELLOW); // examples: ss3:AutoComplete, Decorator ????
+	    put(Category.GRAPHICS, Color.ORANGE); // examples: ss3:BlendComposite
+	    put(Category.TEXT, Color.GREEN);
+	    put(Category.VISUALIZATION, Color.GRAY);
 	}};
 
 	// swingSetVersion,color => smallIcon
@@ -36,7 +40,7 @@ public class MenuTreeTableModel extends AbstractTreeTableModel {
 		return new PauseIcon(SizingConstants.SMALL_ICON, color);		
 	}
 	// swingSetVersion,category => smallIcon
-	public static Icon getSmallIcon(int ssv, String category) {
+	public static Icon getSmallIcon(int ssv, Category category) {
 		if(ssv==2) return new StopIcon(SizingConstants.SMALL_ICON, categoryToColor.get(category));
 		if(ssv==3) return new PlayIcon(SizingConstants.SMALL_ICON, categoryToColor.get(category));
 		return new PauseIcon(SizingConstants.SMALL_ICON);		
