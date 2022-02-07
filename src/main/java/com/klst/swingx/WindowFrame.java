@@ -256,6 +256,7 @@ aus super:
         return menu;
     }
 
+    JMenu themeMenu;
     protected JMenu createThemeMenu(Window target) {
     	String[] themeInfo = { "javax.swing.plaf.metal.OceanTheme" , "javax.swing.plaf.metal.DefaultMetalTheme"
     		, "swingset.plaf.AquaTheme"
@@ -264,17 +265,17 @@ aus super:
     		, "swingset.plaf.EmeraldTheme"
     		, "swingset.plaf.RubyTheme"
     		};
-        JMenu menu = new JMenu(StaticUtilities.getResourceAsString("ThemesMenu.themes.labelAndMnemonic", "Themes"));
+        themeMenu = new JMenu(StaticUtilities.getResourceAsString("ThemesMenu.themes.labelAndMnemonic", "Themes"));
         ButtonGroup themeMenuGroup = new ButtonGroup(); // wg. mi.setSelected
         for (String info : themeInfo) {
-            JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(info));
+            JMenuItem mi = (JRadioButtonMenuItem) themeMenu.add(new JRadioButtonMenuItem(info));
             themeMenuGroup.add(mi);
             SetThemeAction action = new SetThemeAction(info, target);
         	mi.setAction(action);
         }
-        // TODO disable when LAF changed
-        menu.setEnabled(UIManager.getLookAndFeel().getClass().getSimpleName().equals("MetalLookAndFeel"));
-        return menu;
+        // setEnabled when LAF is Metal
+        themeMenu.setEnabled(UIManager.getLookAndFeel().getClass().getSimpleName().equals("MetalLookAndFeel"));
+        return themeMenu;
     }
 
     /**
@@ -443,7 +444,12 @@ aus super:
             } catch (Exception e1) {
                 e1.printStackTrace();
                 LOG.log(Level.FINE, "problem in setting laf: " + plaf, e1);
-            } 
+            }
+            // themeMenu setEnabled when LAF is Metal
+            if(toplevel instanceof RootFrame) {
+            	RootFrame rf = (RootFrame)toplevel;
+            	rf.themeMenu.setEnabled(plaf.endsWith(".MetalLookAndFeel"));
+            }
         }
 
     }
