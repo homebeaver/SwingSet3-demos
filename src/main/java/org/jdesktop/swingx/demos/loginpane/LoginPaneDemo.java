@@ -21,13 +21,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
@@ -40,7 +36,6 @@ import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.HorizontalLayout;
 import org.jdesktop.swingx.JXButton;
-import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
@@ -52,7 +47,6 @@ import org.jdesktop.swingx.auth.DefaultUserNameStore;
 import org.jdesktop.swingx.auth.KeyChain;
 import org.jdesktop.swingx.auth.PasswordStore;
 import org.jdesktop.swingx.auth.UserNameStore;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.util.PaintUtils;
@@ -82,6 +76,7 @@ public class LoginPaneDemo extends AbstractDemo {
 	
 	private static final long serialVersionUID = 545678580592168192L;
 	private static final Logger LOG = Logger.getLogger(LoginPaneDemo.class.getName());
+    private static final Font SANSSERIF16 = new Font("SansSerif", Font.PLAIN, 16);
 
     /**
      * main method allows us to run as a standalone demo.
@@ -115,8 +110,6 @@ public class LoginPaneDemo extends AbstractDemo {
     private JXLabel statusLabel;
     // controler:
     private JToggleButton allowLogin;
-    private JXComboBox<DisplayLocale> localeBox; // DisplayLocale is a wrapper for Locale
-    private Locale selectedLocale;
     private JXButton loginLauncher;
     
     public LoginPaneDemo(Frame frame) {
@@ -127,11 +120,11 @@ public class LoginPaneDemo extends AbstractDemo {
 
         JXPanel n = new JXPanel(new HorizontalLayout());
         JXLabel status = new JXLabel("Status:");
-//        status.setFont(font);
+        status.setFont(SANSSERIF16);
         status.setHorizontalAlignment(SwingConstants.RIGHT);
         n.add(status);
         statusLabel = new JXLabel(loginPane==null ? Status.NOT_STARTED.toString() : loginPane.getStatus().name());
-//        statusLabel.setFont(font);
+        statusLabel.setFont(SANSSERIF16);
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         n.add(statusLabel);
         super.add(n, BorderLayout.NORTH);
@@ -141,13 +134,12 @@ public class LoginPaneDemo extends AbstractDemo {
 	public JXPanel getControlPane() {
 
         JXPanel controller = new JXPanel(new BorderLayout());
-        Font font = new Font("SansSerif", Font.PLAIN, 16);
 
         loginLauncher = new JXButton();
         loginLauncher.setName("launcher");
-        // den text aus prop "launcher.text" holen
+        // den text aus prop "launcher.text" holen;
         loginLauncher.setText(getString("launcher.text"));
-        loginLauncher.setFont(font);
+        loginLauncher.setFont(SANSSERIF16);
         final Painter<Component> orangeBgPainter = new MattePainter(PaintUtils.ORANGE_DELIGHT, true);
         loginLauncher.setBackgroundPainter(orangeBgPainter);
         loginLauncher.addMouseListener(new MouseAdapter() { // disable BG painter
@@ -169,12 +161,12 @@ public class LoginPaneDemo extends AbstractDemo {
         controller.add(p);
         
         allowLogin = new JRadioButton(); // JRadioButton extends JToggleButton
-        allowLogin.setFont(font);
+        allowLogin.setFont(SANSSERIF16);
         allowLogin.setName("allowLogin");
         allowLogin.setText(getString("allowLogin.text"));
         allowLogin.setSelected(true); // <= prop: allowLogin.selected=true
         JRadioButton disallowLogin = new JRadioButton("disallow"); // JRadioButton extends JToggleButton
-        disallowLogin.setFont(font);
+        disallowLogin.setFont(SANSSERIF16);
       //Group the radio buttons.
         ButtonGroup group = new ButtonGroup();
         group.add(allowLogin);
@@ -183,25 +175,6 @@ public class LoginPaneDemo extends AbstractDemo {
         radioPanel.add(allowLogin);
         radioPanel.add(disallowLogin);
         p.add(radioPanel);
-        
-        JLabel langLabel = new JXLabel("select language for Login Screen:", SwingConstants.LEFT);
-        
-        localeBox = new JXComboBox<DisplayLocale>();
-        localeBox.setModel(createDisplayLocaleList());
-        
-        langLabel.setFont(font);
-        p.add(langLabel);
-        
-        localeBox.setFont(font);
-        localeBox.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.LINE_PRINTER));
-        localeBox.addActionListener(event -> {
-        	Locale selected = ((DisplayLocale)localeBox.getSelectedItem()).getLocale();
-        	LOG.info("Locale selected:"+selected + ", loginPane:"+loginPane);
-            // an dieser Stelle ist loginPane immer null, daher macht der Observer so wenig Sinn
-        	//if(loginPane!=null) loginPane.setLocale(selected);
-        	selectedLocale = selected;
-        });
-        p.add(localeBox);
 
     	return controller;
     }
@@ -217,13 +190,13 @@ public class LoginPaneDemo extends AbstractDemo {
     	                service, BeanProperty.create("validLogin")
     	                ).bind();
     		}
-    		if(selectedLocale!=null) loginPane.setLocale(this.selectedLocale);
-    		
+//    		if(selectedLocale!=null) loginPane.setLocale(this.selectedLocale);
+    		loginPane.setLocale(super.getLocale());
+   		
     		if(statusLabel.getText().equals(Status.SUCCEEDED.toString())) {
     			LOG.info("status:SUCCEEDED!!!! - do reset ...");
     			loginPane = null;
     			statusLabel.setText(Status.NOT_STARTED.toString());
-    			localeBox.setSelectedItem(localeBox.getModel().getElementAt(0)); // Locale.0 is en
     			loginLauncher.setText("reset done, launch again.");
     			return;
     		}
@@ -306,52 +279,7 @@ public class LoginPaneDemo extends AbstractDemo {
         // nicht notwendig: wird anhand ps+us gesetzt:
 //        loginPane.setSaveMode(SaveMode.PASSWORD);
     }
-    
-    /**
-     * wrapper for class Locale
-     * <p>
-     * class Locale is final, so cannot subclass it
-     *
-     */
-    public class DisplayLocale {
-        private final Locale locale;
-        
-        public DisplayLocale(String lang) {
-            this.locale = new Locale(lang);
-        }
-        public DisplayLocale(Locale item) {
-            this.locale = item;
-        }
-        
-        public Locale getLocale() {
-            return locale;
-        }
-
-        // used in JXComboBox
-        public String toString() {
-			return locale.toString() + " " + locale.getDisplayLanguage(locale) + "/" +locale.getDisplayLanguage();  	
-        }
-    }
-    
-    private ComboBoxModel<DisplayLocale> createDisplayLocaleList() {
-        DefaultComboBoxModel<DisplayLocale> model = new DefaultComboBoxModel<DisplayLocale>();
-        model.addElement(new DisplayLocale(Locale.ENGLISH));
-        model.addElement(new DisplayLocale("cs"));
-        model.addElement(new DisplayLocale("es"));
-        model.addElement(new DisplayLocale(Locale.FRENCH));
-        model.addElement(new DisplayLocale(Locale.GERMAN));
-//        model.addElement(new DisplayLocale(new Locale("de", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("fr", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("it", "CH")));
-//        model.addElement(new DisplayLocale(new Locale("rm", "CH")));
-        model.addElement(new DisplayLocale(Locale.ITALIAN));
-        model.addElement(new DisplayLocale("nl"));
-        model.addElement(new DisplayLocale("pl"));
-        model.addElement(new DisplayLocale(new Locale("pt", "BR")));
-        model.addElement(new DisplayLocale("sv"));
-		return model;
-    }
-    
+   
     public class LoggingUserNameStore extends DefaultUserNameStore {
     	
     	LoggingUserNameStore() {
