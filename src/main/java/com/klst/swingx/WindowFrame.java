@@ -52,9 +52,8 @@ public class WindowFrame extends JXFrame {
 		return windowCounter;
 	}
 	private int windowNo;
-	RootFrame rootFrame; // mit FrameManager
 	public RootFrame getRootFrame() {
-		return rootFrame;
+		return RootFrame.getInstance();
 	}
 	
 	private int window_ID;
@@ -63,15 +62,13 @@ public class WindowFrame extends JXFrame {
 	/*
 	 * window_ID==-1 is used for RootFrame
 	 */
-	WindowFrame(String title, RootFrame rootFrame, int window_ID, Object object) {
+	WindowFrame(String title, int window_ID, Object object) {
 		super(title
 			, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
 			, window_ID==-1 ? true : false // exitOnClose
 			);
 		windowCounter++;
 		this.windowNo = windowCounter-1;
-		
-		this.rootFrame = rootFrame;
 		this.window_ID = window_ID;
 		
 		getRootPaneExt().setToolBar(new ToggleButtonToolBar()); // inner Class
@@ -91,7 +88,7 @@ public class WindowFrame extends JXFrame {
 	}
 	
 	WindowFrame(String title) { // für RootFrame
-		this(title, null, -1, null);
+		this(title, -1, null);
 	}
 
 	public void setTitle(String title) {

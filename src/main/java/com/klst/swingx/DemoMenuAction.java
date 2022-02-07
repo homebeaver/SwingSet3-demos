@@ -56,9 +56,8 @@ public class DemoMenuAction extends AbstractAction {
 	Class<?> democlass = null;
 	String className = null;
 	AbstractButton jToggleButton = null;
-	RootFrame rootframe = null; // nur in root!
 
-/* super ctors:
+/* super (AbstractAction) ctors:
 
     public AbstractAction() {
     public AbstractAction(String name) {    putValue(Action.NAME, name);
@@ -139,25 +138,26 @@ public class DemoMenuAction extends AbstractAction {
 //    	, "ad_menu_id"      // wg. gossip ... weitere
     	};
 
-    private ColumnFactory getColumnFactory() {
-        // <snip>JXTreeTable column customization
-        // configure and install a custom columnFactory, arguably data related ;-)
-        ColumnFactory factory = new ColumnFactory() {
-//            String[] columnNameKeys = { "componentType", "componentName", "componentLocation", "componentSize" };
-
-            @Override
-            public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
-                super.configureTableColumn(model, columnExt);
-                if (columnExt.getModelIndex() < columnNameKeys.length) {
-//                    columnExt.setTitle(DemoUtils.getResourceString(TreeTableDemo.class, columnNameKeys[columnExt.getModelIndex()]));
-                    columnExt.setTitle(columnNameKeys[columnExt.getModelIndex()]);
-                }
-            }
-            
-        };
-        return factory;
-        // </snip>
-    }
+	// never used
+//    private ColumnFactory getColumnFactory() {
+//        // <snip>JXTreeTable column customization
+//        // configure and install a custom columnFactory, arguably data related ;-)
+//        ColumnFactory factory = new ColumnFactory() {
+////            String[] columnNameKeys = { "componentType", "componentName", "componentLocation", "componentSize" };
+//
+//            @Override
+//            public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
+//                super.configureTableColumn(model, columnExt);
+//                if (columnExt.getModelIndex() < columnNameKeys.length) {
+////                    columnExt.setTitle(DemoUtils.getResourceString(TreeTableDemo.class, columnNameKeys[columnExt.getModelIndex()]));
+//                    columnExt.setTitle(columnNameKeys[columnExt.getModelIndex()]);
+//                }
+//            }
+//            
+//        };
+//        return factory;
+//        // </snip>
+//    }
 
 	static Icon SS2_ICON = new StopIcon(SizingConstants.SMALL_ICON);
 	static Icon GO2_ICON = new StopIcon(SizingConstants.SMALL_ICON, Color.GREEN);
@@ -167,7 +167,7 @@ public class DemoMenuAction extends AbstractAction {
 	static ArrayList<DemoMenuAction> ss2Actions = new ArrayList<DemoMenuAction>();
 	static ArrayList<DemoMenuAction> ss3Actions = new ArrayList<DemoMenuAction>();
     public static TreeNode createTree(RootFrame rootframe) {
-    	DefaultMutableTreeNode root = new DefaultMutableTreeNode(getRootAction(rootframe));
+    	DefaultMutableTreeNode root = new DefaultMutableTreeNode(getRootAction());
     	
     	DefaultMutableTreeNode ss2 = new DefaultMutableTreeNode(getSS2Action());
     	DefaultMutableTreeNode ss3 = new DefaultMutableTreeNode(getSS3Action());
@@ -211,12 +211,8 @@ public class DemoMenuAction extends AbstractAction {
     static DemoMenuAction ss2 = null;
     static DemoMenuAction ss3 = null;
     public static DemoMenuAction getRootAction() {
-    	return getRootAction(null);
-    }
-    public static DemoMenuAction getRootAction(RootFrame rootframe) {
     	if(root==null) {
     		root = new DemoMenuAction((String)null, "Demo");
-    		if(rootframe!=null) root.rootframe = rootframe;
     	}
     	return root;
     }
@@ -358,7 +354,7 @@ public class DemoMenuAction extends AbstractAction {
 			}
 			democlass = loadDemo(className);
 		}
-		RootFrame rf = root.rootframe;
+		RootFrame rf = RootFrame.getInstance();
 		
     	// ss2: deselect all toolbar buttons except this action button 
     	JToolBar tb = rf.getToolBar();

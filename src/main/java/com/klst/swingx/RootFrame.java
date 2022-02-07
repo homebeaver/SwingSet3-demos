@@ -77,11 +77,10 @@ public class RootFrame extends WindowFrame {
 	
 	private RootFrame() {
 		super(TITLE);
-		super.rootFrame = this;
 		frames = new ArrayList<JXFrame>();
 		frames.add(this);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		LOG.info(TITLE+" frame ctor. frames#="+frames.size() + " super.rootFrame:"+super.rootFrame);
+		LOG.info(TITLE+" frame ctor. frames#="+frames.size());
 
     	// TODO
 /* Alternative 1:
@@ -210,7 +209,7 @@ CENTER: JXPanel currentController
 	WindowFrame makeFrame(RootFrame rootFrame, int window_ID, Object object) {
 		if(enable) {
 			int frameNumber = getWindowCounter();
-    		WindowFrame frame = new WindowFrame("Frame number " + frameNumber, rootFrame, window_ID, object);
+    		WindowFrame frame = new WindowFrame("Frame number " + frameNumber, window_ID, object);
     		frames.add(frame);
     		// close/dispose current and make frame current:
     		WindowFrame current = currentDemoFrame;
