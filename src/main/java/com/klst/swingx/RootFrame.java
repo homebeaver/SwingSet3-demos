@@ -109,7 +109,7 @@ CENTER: JXPanel currentController
 	JMenu menu;
     public JMenu createDemosMenu() {
     	//DemoMenuAction root = DemoMenuAction.getRootAction();
-		TreeNode rootNode = DemoMenuAction.createTree(this);
+		TreeNode rootNode = DemoMenuAction.createTree();
     	TreeTableModel model = DemoMenuAction.createMenuModel(rootNode);
 
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root

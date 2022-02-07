@@ -166,7 +166,7 @@ public class DemoMenuAction extends AbstractAction {
 	static Icon SS3DATA_ICON = new PlayIcon(SizingConstants.SMALL_ICON, Color.BLUE);
 	static ArrayList<DemoMenuAction> ss2Actions = new ArrayList<DemoMenuAction>();
 	static ArrayList<DemoMenuAction> ss3Actions = new ArrayList<DemoMenuAction>();
-    public static TreeNode createTree(RootFrame rootframe) {
+    public static TreeNode createTree() {
     	DefaultMutableTreeNode root = new DefaultMutableTreeNode(getRootAction());
     	
     	DefaultMutableTreeNode ss2 = new DefaultMutableTreeNode(getSS2Action());
