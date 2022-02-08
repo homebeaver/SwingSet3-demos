@@ -92,6 +92,7 @@ public class XTreeDemo extends AbstractDemo {
      */
     public XTreeDemo(Frame frame) {
     	super(new BorderLayout());
+    	frame.setTitle(getString("name"));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 

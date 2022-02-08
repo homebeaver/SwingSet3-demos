@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.TableModel;
 import javax.swing.tree.TreePath;
@@ -50,6 +51,7 @@ import swingset.AbstractDemo;
  * A demo for the {@code JXTreeTable}.
  *
  * @author Karl George Schaefer
+ * @author EUG https://github.com/homebeaver (reorg)
  */
 //@DemoProperties(
 //    value = "JXTreeTable Demo",
@@ -74,6 +76,7 @@ public class TreeTableDemo extends AbstractDemo {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
     	SwingUtilities.invokeLater(new Runnable() {
     		static final boolean exitOnClose = true;
 			@Override
@@ -101,6 +104,7 @@ public class TreeTableDemo extends AbstractDemo {
      */
     public TreeTableDemo(Frame frame) {
     	super(new BorderLayout());
+    	frame.setTitle(getString("name"));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
