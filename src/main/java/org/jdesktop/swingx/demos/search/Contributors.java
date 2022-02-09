@@ -25,15 +25,13 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 
 import swingset.StaticUtilities;
 
-
-
 public class Contributors {
 
     private static final Logger LOG = Logger.getLogger(Contributors.class.getName());
 
     private String dataSource = "resources/contributors.txt";
     private List<Contributor> contributors;
-    private ListModel listModel;
+    private ListModel<Object> listModel;
     private TableModel tableModel;
     private DefaultMutableTreeNode rootNode;
     private NodeModel contributorNodeModel;
@@ -57,7 +55,7 @@ public class Contributors {
         return tableModel;
     }
     
-    public ListModel getListModel() {
+    public ListModel<Object> getListModel() {
         return listModel;
     }
     
@@ -69,9 +67,9 @@ public class Contributors {
         return new Contributors().contributors;
     }
     
-    public static ListModel getContributorListModel() {
+    public static ListModel<Contributor> getContributorListModel() {
         List<Contributor> list = getContributors();
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        DefaultComboBoxModel<Contributor> model = new DefaultComboBoxModel<Contributor>();
         for (Contributor contributor : list) {
             model.addElement(contributor);
         }
@@ -90,11 +88,11 @@ public class Contributors {
         readDataSource(contributors);
         LOG.info("contributors size="+contributors.size());
         // wrap a listModel around
-        listModel = new AbstractListModel() {
+        listModel = new AbstractListModel<Object>() {
             
             public Object getElementAt(int index) {
                 if (index == 0) {
-                    return "-- Contributors --";
+                    return null; // "-- Contributors --";
                 }
                 return contributors.get(index - 1);
             }
