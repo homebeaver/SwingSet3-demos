@@ -4,8 +4,6 @@
  */
 package org.jdesktop.swingx.demos.search;
 
-import static org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -20,7 +18,6 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -32,9 +29,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.jdesktop.beans.AbstractBean;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXFindBar;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
@@ -111,16 +105,16 @@ public class SearchDemo extends AbstractDemo {
     }
 
 
-    private Contributors contributors;
+    private Contributors contributors; // Data
+    private String[] keys = {"name", "date", "merits", "email"};
     private JXTreeTable treeTable;
     private JXTree tree;
     private JXList list;
     private JXTable table;
-    private JCheckBox extendedMarkerBox;
-    private JCheckBox painterBox;
+    
     private JXFindBar searchPanel;
-    private String[] keys = {"name", "date", "merits", "email"};
     private Map<String, StringValue> stringValues;
+    private SearchControl searchControl;
 
     /**
      * SearchDemo Constructor
@@ -131,27 +125,52 @@ public class SearchDemo extends AbstractDemo {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-    	// initComponents:
-
-//    public SearchDemo() {
-//        super(new BorderLayout());
         initComponents();
         initStringRepresentation();
         installCustomSearch();
-//        Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(this);
-        bind();
-//        installRenderers();
+        
+//        bind(); :
+        contributors = new Contributors();
+        table.setModel(contributors.getTableModel());
+        list.setModel(contributors.getListModel());
+        tree.setModel(new DefaultTreeModel(contributors.getRootNode()));
+        treeTable.setTreeTableModel(new TreeTableModelAdapter(tree.getModel(), contributors.getContributorNodeModel()));
+        searchControl = new SearchControl();        
+        
+        installRenderers();
     }
+
+    // Controller:
+    private JCheckBox extendedMarkerBox;
+    private JCheckBox painterBox;
 
     @Override
 	public JXPanel getControlPane() {
-		return emptyControlPane();
+        JXPanel controller = new JXPanel();
+        
+        extendedMarkerBox = new JCheckBox();
+        extendedMarkerBox.setName("extendedMarkerBox");
+        extendedMarkerBox.setText("Matching Text Marker"); // TODO prop: extendedMarkerBox.text = Matching Text Marker
+        extendedMarkerBox.addActionListener( ae -> {
+        	LOG.info("actionEvent:"+ae + " selected="+extendedMarkerBox.isSelected());
+        	searchControl.setExtendedMarker(extendedMarkerBox.isSelected());
+        });
+        painterBox = new JCheckBox();
+        painterBox.setName("painterBox");
+        painterBox.setText("Animated Marker"); // TODO prop
+        painterBox.addActionListener( ae -> {
+        	LOG.info("actionEvent:"+ae + " selected="+painterBox.isSelected());
+        	searchControl.setAnimatedPainter(painterBox.isSelected());
+        });
+        
+        controller.add(extendedMarkerBox);
+        controller.add(painterBox);
+    	return controller;
 	}
 
 //-------------------------- custom search logic    
     /**
-     * Replaces the default findAction with one using the per-demo panel 
-     * findBar.
+     * Replaces the default findAction with one using the per-demo panel findBar.
      */
     private void installCustomSearch() {
         // <snip> Customize Search 
@@ -202,8 +221,7 @@ public class SearchDemo extends AbstractDemo {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 searchPanel.setSearchable(s);
-                KeyboardFocusManager.getCurrentKeyboardFocusManager()
-                        .focusNextComponent(searchPanel);
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent(searchPanel);
             }
         });
     }
@@ -218,8 +236,7 @@ public class SearchDemo extends AbstractDemo {
     protected void updateSearchable(JTabbedPane tabbed) {
         Component comp = tabbed.getSelectedComponent();
         if (comp instanceof JScrollPane) {
-            comp = (JComponent) ((JScrollPane) comp).getViewport()
-                    .getView();
+            comp = (JComponent) ((JScrollPane) comp).getViewport().getView();
         }
         updateSearchPanel(comp);
     }
@@ -272,8 +289,7 @@ public class SearchDemo extends AbstractDemo {
             @Override
             public String getString(Object value) {
                 if (value instanceof Contributor) {
-                    return StringValues.DATE_TO_STRING.getString(
-                            ((Contributor) value).getJoinedDate());
+                    return StringValues.DATE_TO_STRING.getString(((Contributor) value).getJoinedDate());
                 }
                 return StringValues.TO_STRING.getString(value);
             }
@@ -327,7 +343,7 @@ public class SearchDemo extends AbstractDemo {
     private void installRenderers() {
         StringValue sv = stringValues.get("name");
         table.setDefaultRenderer(Contributor.class, new DefaultTableRenderer(sv));
-        list.setCellRenderer(new DefaultListRenderer(sv));
+        list.setCellRenderer(new DefaultListRenderer<Object>(sv));
         tree.setCellRenderer(new DefaultTreeRenderer(sv));
         treeTable.setTreeCellRenderer(new DefaultTreeRenderer(sv));
         
@@ -345,20 +361,6 @@ public class SearchDemo extends AbstractDemo {
         treeTable.getColumn(column).setCellRenderer(renderer);
     }
 
-    //----------------------- bind    
-    /**
-     * 
-     */
-    private void bind() {
-        contributors = new Contributors();
-        table.setModel(contributors.getTableModel());
-        list.setModel(contributors.getListModel());
-        tree.setModel(new DefaultTreeModel(contributors.getRootNode()));
-        treeTable.setTreeTableModel(new TreeTableModelAdapter(tree.getModel(), contributors.getContributorNodeModel()));
-        new SearchControl();        
-    }
-    
-
     public class SearchControl extends AbstractBean {
         private boolean extendedMarker;
         private boolean animatedPainter;
@@ -367,19 +369,10 @@ public class SearchDemo extends AbstractDemo {
         private HashMap<String, ColorHighlighter> colorCellMarkers;
         
         public SearchControl() {
-//            DemoUtils.setSnippet("MatchingTextHighlighter", extendedMarkerBox, painterBox);
-            initMatchMarkers();
-            BindingGroup group = new BindingGroup();
-            group.addBinding(Bindings.createAutoBinding(READ, 
-                    extendedMarkerBox, BeanProperty.create("selected"),
-                    this, BeanProperty.create("extendedMarker")));
-            group.addBinding(Bindings.createAutoBinding(READ, 
-                    painterBox, BeanProperty.create("selected"),
-                    this, BeanProperty.create("animatedPainter")));
-            group.addBinding(Bindings.createAutoBinding(READ, 
-                    this, BeanProperty.create("extendedMarker"),
-                    painterBox, BeanProperty.create("enabled")));
-            group.bind();
+//            initMatchMarkers(); :
+            createMatchingTextMarkers();
+            createColorCellMarkers();
+            installMatchMarkers(colorCellMarkers);
         }
 
         public boolean isExtendedMarker() {
@@ -388,6 +381,7 @@ public class SearchDemo extends AbstractDemo {
         
         public void setExtendedMarker(boolean extendedMarker) {
             boolean old = isExtendedMarker();
+            LOG.info("extendedMarker="+extendedMarker + " old="+old);
             // <snip> Customize Search 
             // toggle between cell- and text markers
             this.extendedMarker = extendedMarker;
@@ -396,6 +390,7 @@ public class SearchDemo extends AbstractDemo {
             } else{
                 installMatchMarkers(colorCellMarkers);
             }
+            SearchDemo.this.painterBox.setEnabled(extendedMarker);
             // </snip>
             firePropertyChange("extendedMarker", old, isExtendedMarker());
         }
@@ -413,17 +408,12 @@ public class SearchDemo extends AbstractDemo {
         
         // <snip> Customize Search 
         // install match marker as given in the map
-        private void installMatchMarkers(
-                Map<String, ? extends AbstractHighlighter> markers) {
-            ((AbstractSearchable) table.getSearchable())
-                    .setMatchHighlighter(markers.get("table"));
-            ((AbstractSearchable) list.getSearchable())
-                    .setMatchHighlighter(markers.get("list"));
-            ((AbstractSearchable) tree.getSearchable())
-                    .setMatchHighlighter(markers.get("tree"));
+        private void installMatchMarkers(Map<String, ? extends AbstractHighlighter> markers) {
+            ((AbstractSearchable) table.getSearchable()).setMatchHighlighter(markers.get("table"));
+            ((AbstractSearchable) list.getSearchable()).setMatchHighlighter(markers.get("list"));
+            ((AbstractSearchable) tree.getSearchable()).setMatchHighlighter(markers.get("tree"));
             // </snip>
-            ((AbstractSearchable) treeTable.getSearchable())
-                    .setMatchHighlighter(markers.get("treeTable"));
+            ((AbstractSearchable) treeTable.getSearchable()).setMatchHighlighter(markers.get("treeTable"));
         }
         
 
@@ -441,15 +431,6 @@ public class SearchDemo extends AbstractDemo {
             // </snip>
         }
 
-        /**
-         * 
-         */
-        private void initMatchMarkers() {
-            createMatchingTextMarkers();
-            createColorCellMarkers();
-            installMatchMarkers(colorCellMarkers);
-        }
-        
         private void createColorCellMarkers() {
             colorCellMarkers = new HashMap<String, ColorHighlighter>();
             Color matchColor = HighlighterFactory.LINE_PRINTER;
@@ -465,7 +446,6 @@ public class SearchDemo extends AbstractDemo {
             }
         }
         
-
     }
 
     // hack around collection comps not being searchable
@@ -509,29 +489,8 @@ public class SearchDemo extends AbstractDemo {
         addTab(tab, tree, "treeTabTitle", true);
         addTab(tab, treeTable, "treeTableTabTitle", true);
         add(tab);
-        
-        extendedMarkerBox = new JCheckBox();
-        extendedMarkerBox.setName("extendedMarkerBox");
-        painterBox = new JCheckBox();
-        painterBox.setName("painterBox");
-        
-        JPanel control = new JPanel();
-        control.add(extendedMarkerBox);
-        control.add(painterBox);
-        add(control, BorderLayout.SOUTH);
     }
 
-/*
-CustomColumnFactory:
-        columnExt.setTitle(DemoUtils.getResourceString(baseClass, columnExt.getIdentifier().toString()));
-        columnExt.setTitle(getString(OscarTableModel.columnIds[columnExt.getModelIndex()]));
-    private String getString(String resourceKey) {
-    	String key = this.getClass().getSimpleName() + '.' + resourceKey;
-    	return StaticUtilities.getResourceAsString(key, resourceKey);
-    }
-
-
- */
     private void addTab(JTabbedPane tab, JComponent comp, String string, boolean createScroll) {
 //        String name = DemoUtils.getResourceString(getClass(), string);
     	String name = getResourceString(string);
