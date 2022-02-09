@@ -493,12 +493,8 @@ public class SearchDemo extends AbstractDemo {
 
     private void addTab(JTabbedPane tab, JComponent comp, String string, boolean createScroll) {
 //        String name = DemoUtils.getResourceString(getClass(), string);
-    	String name = getResourceString(string);
+    	String name = getString(string);
         tab.addTab(name, createScroll ? new JScrollPane(comp) : comp);
-    }
-    private String getResourceString(String resourceKey) {
-    	String key = this.getClass().getSimpleName() + '.' + resourceKey;
-    	return StaticUtilities.getResourceAsString(key, resourceKey);
     }
     
 }
