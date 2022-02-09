@@ -180,11 +180,13 @@ public class DemoMenuAction extends AbstractAction {
         	ss2.add(new DefaultMutableTreeNode(action));
     	});
 
+    	// category FUNCTIONALITY:
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.search.SearchDemo", "Search", 3, Category.FUNCTIONALITY));
     	// category CONTROLS:
-//		ss2 = new DemoMenuAction((String)null, "SwingSet2", 2, null, null);
     	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.loginpane.LoginToDBPaneDemo", "LoginToDBPane", 3, Category.CONTROLS));
     	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.loginpane.LoginPaneDemo", "LoginPane", 3, Category.CONTROLS));
     	// category DATA:
+    	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.xlist.XListDemo", "XList", 3, Category.DATA));
     	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.table.XTableDemo", "XTable", 3, Category.DATA));
     	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.tree.XTreeDemo", "XTree", 3, Category.DATA));
     	ss3Actions.add(new DemoMenuAction("org.jdesktop.swingx.demos.treetable.TreeTableDemo", "XTreeTable",  3, Category.DATA));
