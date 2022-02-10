@@ -119,7 +119,6 @@ public class XListDemo extends AbstractDemo {
     	// initComponents:
         list = new JXList<Contributor>();
         list.setName("list");
-        // TODO prop listSeparator.title = JXList
 
         JPanel monthViewContainer = new JXPanel();
         FormLayout formLayout = new FormLayout(
@@ -135,7 +134,8 @@ public class XListDemo extends AbstractDemo {
         CellConstraints cc = new CellConstraints();
         
         JXTitledSeparator areaSeparator = new JXTitledSeparator();
-        areaSeparator.setName("listSeparator");
+        areaSeparator.setName("listSeparator"); // prop listSeparator.title = JXList :
+        areaSeparator.setTitle("JXList");
         
         builder.add(areaSeparator, cc.xywh(1, 1, 2, 1));
         builder.add(new JScrollPane(list), cc.xywh(2, 3, 1, 1));
