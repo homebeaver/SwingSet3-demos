@@ -36,7 +36,7 @@ public class JXFrameTest {
      * - closing other WindowFrame closes only this window
      */
     public void interactiveMultipleFrames() {
-        WindowFrame gossip = new RootFrame(); // RootFrame contains a simple frame manager
+        WindowFrame gossip = RootFrame.getInstance(); // RootFrame contains a simple frame manager
         @SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
 
