@@ -54,7 +54,6 @@ import org.jdesktop.swingx.treetable.TreeTableModelAdapter;
 import org.jdesktop.swingx.util.DecoratorFactory;
 
 import swingset.AbstractDemo;
-import swingset.StaticUtilities;
 
 //@DemoProperties(
 //        value = "Search Demo",
