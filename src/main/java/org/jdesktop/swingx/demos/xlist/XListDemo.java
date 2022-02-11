@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Comparator;
+import java.util.logging.Logger;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -27,11 +28,13 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXCollapsiblePane;
+import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledSeparator;
+import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
@@ -74,6 +77,7 @@ import swingset.AbstractDemo;
 public class XListDemo extends AbstractDemo {
     
 	private static final long serialVersionUID = -1398533665658062231L;
+    private static final Logger LOG = Logger.getLogger(XListDemo.class.getName());
 
 	/**
      * main method allows us to run as a standalone demo.
@@ -143,9 +147,6 @@ public class XListDemo extends AbstractDemo {
         
         add(monthViewContainer, BorderLayout.CENTER);
         
-//        JComponent extended = createExtendedConfigPanel(); // Controller
-//        add(extended, BorderLayout.EAST);
-        
         // configureComponents:
         // <snip> JXList rendering
         // custom String representation: concat various element fields
@@ -161,9 +162,7 @@ public class XListDemo extends AbstractDemo {
             }
             
         };
-        // PENDING JW: add icon (see demos in swingx)
-        // set a renderer configured with the custom string converter
-        list.setCellRenderer(new DefaultListRenderer(sv));
+        list.setCellRenderer(new DefaultListRenderer<Contributor>(sv));
         // </snip>
         
         // PENDING JW: add visual clue to current sortorder
@@ -179,45 +178,15 @@ public class XListDemo extends AbstractDemo {
 //        DemoUtils.setSnippet("JXList rollover support", rolloverEnabledBox, highlighterCombo);
 //        DemoUtils.setSnippet("JXList rendering", list);
 
-//
-//    public XListDemo() {
-//        super(new BorderLayout());
-//        initComponents();
-//        configureComponents();
-//        DemoUtils.injectResources(this);
 //        bind():
         list.setAutoCreateRowSorter(true);
+        //list.setComparator(myComparator); // depends on controller
+        //setComparator(null); // this is the initial default
+        
         list.setModel(Contributors.getContributorListModel());        
     }
 
-    @Override
-	public JXPanel getControlPane() {
-        JXPanel controller = new JXPanel();
-
-        JComponent extended = createExtendedConfigPanel(); // Controller
-        comparatorCombo.setModel(createComparators());
-        highlighterCombo.setModel(createRolloverHighlighters());
-
-        controller.add(extended);
-    	return controller;
-	}
-
-//---------------- public api for Binding/Action control
-    
-//    @Action
-//    // <snip> JXList sorting
-//    //  api to toggle sorts
-//    public void toggleSortOrder() {
-//        list.toggleSortOrder();
-//    }
-//    // </snip>
-//
-//    @Action
-//    public void resetSortOrder() {
-//        list.resetSortOrder();
-//    }
-    
-    public void setComparator(Comparator<?> comparator) {
+    private void setComparator(Comparator<?> comparator) {
         // <snip> JXList sorting
         //  configure the comparator to use in sorting
         list.setComparator(comparator);
@@ -228,82 +197,140 @@ public class XListDemo extends AbstractDemo {
         // </snip>
     }
     
-    
-    public void setRolloverHighlighter(Highlighter hl) {
-        list.setHighlighters(hl);
-    }
- 
-    public void setRolloverEnabled(boolean enabled) {
-        list.setRolloverEnabled(enabled);
-        list.setToolTipText(list.isRolloverEnabled() ? getString("stickyRolloverToolTip") : null);
-    }
-//------------------- ui configuration    
-//    private void configureComponents() {
-//        
-//        // <snip> JXList rendering
-//        // custom String representation: concat various element fields
-//        StringValue sv = new StringValue() {
-//
-//            @Override
-//            public String getString(Object value) {
-//                if (value instanceof Contributor) {
-//                    Contributor c = (Contributor) value;
-//                    return c.getFirstName() + " " + c.getLastName() + " (" + c.getMerits() + ")";
-//                }
-//                return StringValues.TO_STRING.getString(value);
-//            }
-//            
-//        };
-//        // PENDING JW: add icon (see demos in swingx)
-//        // set a renderer configured with the custom string converter
-//        list.setCellRenderer(new DefaultListRenderer(sv));
-//        // </snip>
-//        
-//        // PENDING JW: add visual clue to currentl sortorder
-//        toggleSortOrder.setAction(DemoUtils.getAction(this, "toggleSortOrder"));
-//        resetSortOrder.setAction(DemoUtils.getAction(this, "resetSortOrder"));
-//        
-//        comparatorCombo.setRenderer(
-//                new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
-//        highlighterCombo.setRenderer(
-//                new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
-//        
-//        // demo specific config
-//        DemoUtils.setSnippet("JXList sorting", toggleSortOrder, resetSortOrder, comparatorCombo);
-//        DemoUtils.setSnippet("JXList rollover support", rolloverEnabledBox, highlighterCombo);
-//        DemoUtils.setSnippet("JXList rendering", list);
-//    }
+    @Override
+	public JXPanel getControlPane() {
+        JXPanel controller = new JXPanel();
 
-    @SuppressWarnings("unchecked")
-    private void bind() {
-        // list properties
-        // <snip> JXlist sorting
-        // enable auto-create RowSorter
-        list.setAutoCreateRowSorter(true);
-        list.setModel(Contributors.getContributorListModel());
-        //</snip>
+        JComponent extended = createExtendedConfigPanel(); // Controller
+        controller.add(extended);
+    	return controller;
+	}
+
+    private JComponent createExtendedConfigPanel() {
+        JXCollapsiblePane painterControl = new JXCollapsiblePane();
+        FormLayout formLayout = new FormLayout(
+                "5dlu, r:d:n, l:4dlu:n, f:d:g", // , l:4dlu:n, f:d:g", // columns
+                "c:d:n " +
+                ", t:4dlu:n, c:d:n " +
+                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n"
+        ); // rows
+        PanelBuilder builder = new PanelBuilder(formLayout, painterControl);
+        builder.setBorder(Borders.DLU4_BORDER);
+        CellConstraints cl = new CellConstraints();
+        CellConstraints cc = new CellConstraints();
         
-        // control combos
+        JXTitledSeparator areaSeparator = new JXTitledSeparator();
+        areaSeparator.setName("extendedSeparator");
+        // prop extendedSeparator.title = Sort Control
+        areaSeparator.setTitle("Sort Control");
+        
+        builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
+        
+        int labelColumn = 2;
+        int widgetColumn = labelColumn + 2;
+        int currentRow = 3;
+
+        toggleSortOrder = new JButton();
+        toggleSortOrder.setName("toggleSortOrder");
+        toggleSortOrder.setText("Toggle Sort Order");// prop toggleSortOrder.Action.text = Toggle Sort Order
+        toggleSortOrder.addActionListener( ae -> {
+        	LOG.info("actionEvent:"+ae + " selected="+toggleSortOrder.isSelected());
+        	list.toggleSortOrder(); // Delegates to the SortController, defined by the SortController's toggleSortOrder implementation
+        	//LOG.info("actionEvent:"+list.getSortController() is protected);
+        });
+        builder.add(toggleSortOrder, cc.xywh(labelColumn, currentRow, 3, 1));
+        currentRow += 2;
+        
+        resetSortOrder = new JButton();
+        resetSortOrder.setName("resetSortOrder");
+        resetSortOrder.setText("Reset Sort Order");// prop resetSortOrder.Action.text = Reset Sort Order
+        resetSortOrder.addActionListener( ae -> {
+        	LOG.info("actionEvent:"+ae + " selected="+resetSortOrder.isSelected());
+        	list.resetSortOrder(); // Delegates to the SortController, defined by the SortController's toggleSortOrder implementation
+        	//LOG.info("actionEvent:"+list.getSortController() is protected);
+        });
+        builder.add(resetSortOrder, cc.xywh(labelColumn, currentRow, 3, 1));
+        currentRow += 2;
+        
+        comparatorCombo = new JXComboBox();
+        comparatorCombo.setName("comparatorCombo");
         comparatorCombo.setModel(createComparators());
-        highlighterCombo.setModel(createRolloverHighlighters());
+        for(int i=0; i<comparatorCombo.getItemCount(); i++) {
+        	LOG.info(""+comparatorCombo.getItemAt(i));
+        }
+        comparatorCombo.addActionListener(ae -> {
+        	LOG.info("actionEvent:"+ae 
+        			+ " ActionCommand="+comparatorCombo.getActionCommand() // comboBoxChanged
+        			+ " SelectedItem="+comparatorCombo.getSelectedItem()
+        			+ " getAction="+comparatorCombo.getAction());
+        	DisplayInfo<Comparator<?>> di = (DisplayInfo<Comparator<?>>)comparatorCombo.getSelectedItem();
+        	list.setComparator(di.getValue());
+        });
+
         
-//        BindingGroup group = new BindingGroup();
-//        group.addBinding(Bindings.createAutoBinding(READ, 
-//                rolloverEnabledBox, BeanProperty.create("selected"),
-//                this, BeanProperty.create("rolloverEnabled")));
-//        Binding comparatorBinding = Bindings.createAutoBinding(READ, 
-//                comparatorCombo, BeanProperty.create("selectedItem"),
-//                this, BeanProperty.create("comparator"));
-//        comparatorBinding.setConverter(new DisplayInfoConverter<Comparator<?>>());
-//        group.addBinding(comparatorBinding);
-//    
-//        Binding rolloverBinding = Bindings.createAutoBinding(READ, 
-//                highlighterCombo, BeanProperty.create("selectedItem"),
-//                this, BeanProperty.create("rolloverHighlighter"));
-//        rolloverBinding.setConverter(new DisplayInfoConverter<Highlighter>());
-//        group.addBinding(rolloverBinding);
-//        
-//        group.bind();
+        JLabel comparatorComboLabel = builder.addLabel(
+                "", cl.xywh(labelColumn, currentRow, 1, 1),
+                comparatorCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
+        comparatorComboLabel.setName("comparatorComboLabel");
+        comparatorComboLabel.setText("Comparator"); // comparatorComboLabel.text = Comparator
+//        LabelHandler.bindLabelFor(comparatorComboLabel, comparatorCombo); // JComboBox comparatorCombo
+        currentRow += 2;
+        
+        currentRow += 2;
+        JXTitledSeparator rolloverSeparator = new JXTitledSeparator();
+        rolloverSeparator.setName("rolloverSeparator");
+        builder.add(rolloverSeparator, cc.xywh(1, currentRow, 4, 1));
+        currentRow += 2;
+
+          rolloverEnabledBox = new JCheckBox();
+          rolloverEnabledBox.setName("rolloverBox");
+          builder.add(rolloverEnabledBox, cc.xywh(labelColumn, currentRow, 3, 1));
+          currentRow += 2;
+          
+          highlighterCombo = new JComboBox();
+          highlighterCombo.setName("highlighterCombo");
+          highlighterCombo.setModel(createRolloverHighlighters());
+          JLabel highlighterComboLabel = builder.addLabel(
+                  "", cl.xywh(labelColumn, currentRow, 1, 1),
+                  highlighterCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
+          highlighterComboLabel.setName("highlighterComboLabel");
+//          LabelHandler.bindLabelFor(highlighterComboLabel, highlighterCombo); // JComboBox highlighterCombo
+          currentRow += 2;
+
+        return painterControl;
+    }
+
+    /*
+     * die 3 Elemente von DefaultComboBoxModel sind:
+     *  - null
+     *  - Comparator DefaultSortController<M> extends DefaultRowSorter<M, Integer>
+     *  - Comparator<Contributor> meritComparator
+     * Also alles scheinbar verschiedene Objekte, nein alle implementieren Comparator interface
+     * DisplayInfo verwenden, damit description angezeigt wird. 
+     */
+    private ComboBoxModel createComparators() {
+        DefaultComboBoxModel<DisplayInfo<Comparator<?>>> model = new DefaultComboBoxModel<DisplayInfo<Comparator<?>>>();
+        // <snip> JXList sorting
+        // null comparator defaults to comparing by the display string
+        model.addElement(new DisplayInfo<Comparator<?>>("None (by display string)", null));
+        // compare by Comparable as implemented by the elements
+        model.addElement(new DisplayInfo<Comparator<?>>("Comparable (by lastname)", DefaultSortController.COMPARABLE_COMPARATOR));
+        // custom comparator
+        Comparator<Contributor> meritComparator = new Comparator<Contributor>() {
+
+            @Override
+            public int compare(Contributor o1, Contributor o2) {
+                return o1.getMerits() - o2.getMerits();
+            }
+        };
+        // </snip>
+        model.addElement(new DisplayInfo<Comparator<?>>("Custom (by merits)", meritComparator));
+        return model;
     }
 
     /*
@@ -337,34 +364,45 @@ also item: new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, 
         return model;
     }
 
-    /*
-     * die 3 Elemente von DefaultComboBoxModel sind:
-     *  - null
-     *  - Comparator DefaultSortController<M> extends DefaultRowSorter<M, Integer>
-     *  - Comparator<Contributor> meritComparator
-     * Also alles scheinbar verschiedene Objekte
-     */
-    private ComboBoxModel createComparators() {
-        DefaultComboBoxModel<Comparator> model = new DefaultComboBoxModel<Comparator>();
-        // <snip> JXList sorting
-        //  null comparator defaults to comparing by the display string
-//        model.addElement(new DisplayInfo<Comparator<?>>("None (by display string)", null));
-        model.addElement((Comparator)null);
-        // compare by Comparable as implemented by the elements
-//        model.addElement(new DisplayInfo<Comparator<?>>("Comparable (by lastname)", DefaultSortController.COMPARABLE_COMPARATOR));
-        model.addElement(DefaultSortController.COMPARABLE_COMPARATOR);
-        // custom comparator
-        Comparator<Contributor> meritComparator = new Comparator<Contributor>() {
 
-            @Override
-            public int compare(Contributor o1, Contributor o2) {
-                return o1.getMerits() - o2.getMerits();
-            }
-        };
-        // </snip>
-//        model.addElement(new DisplayInfo<Comparator<?>>("Custom (by merits)", meritComparator));
-        model.addElement(meritComparator);
-        return model;
+    public void setRolloverHighlighter(Highlighter hl) {
+        list.setHighlighters(hl);
+    }
+ 
+    public void setRolloverEnabled(boolean enabled) {
+        list.setRolloverEnabled(enabled);
+        list.setToolTipText(list.isRolloverEnabled() ? getString("stickyRolloverToolTip") : null);
+    }
+    @SuppressWarnings("unchecked")
+    private void bind() {
+        // list properties
+        // <snip> JXlist sorting
+        // enable auto-create RowSorter
+        list.setAutoCreateRowSorter(true);
+        list.setModel(Contributors.getContributorListModel());
+        //</snip>
+        
+        // control combos
+        comparatorCombo.setModel(createComparators());
+        highlighterCombo.setModel(createRolloverHighlighters());
+        
+//        BindingGroup group = new BindingGroup();
+//        group.addBinding(Bindings.createAutoBinding(READ, 
+//                rolloverEnabledBox, BeanProperty.create("selected"),
+//                this, BeanProperty.create("rolloverEnabled")));
+//        Binding comparatorBinding = Bindings.createAutoBinding(READ, 
+//                comparatorCombo, BeanProperty.create("selectedItem"),
+//                this, BeanProperty.create("comparator"));
+//        comparatorBinding.setConverter(new DisplayInfoConverter<Comparator<?>>());
+//        group.addBinding(comparatorBinding);
+//    
+//        Binding rolloverBinding = Bindings.createAutoBinding(READ, 
+//                highlighterCombo, BeanProperty.create("selectedItem"),
+//                this, BeanProperty.create("rolloverHighlighter"));
+//        rolloverBinding.setConverter(new DisplayInfoConverter<Highlighter>());
+//        group.addBinding(rolloverBinding);
+//        
+//        group.bind();
     }
 
     private Highlighter createExtendedRolloverDecoration() {
@@ -415,117 +453,17 @@ also item: new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, 
         
     }
     
-//-------------------- init ui
-    
-//    private void initComponents() {
-//        list = new JXList();
-//        list.setName("list");
-//
-//        JPanel monthViewContainer = new JXPanel();
-//        FormLayout formLayout = new FormLayout(
-//                "5dlu, f:d:g ", // l:4dlu:n, f:d:g", // columns
-//                "c:d:n " +
-//                ", t:4dlu:n, f:d:g " +
-//                ", t:4dlu:n, c:d:n" +
-//                ", t:4dlu:n, c:d:n" +
-//                ", t:4dlu:n, c:d:n"
-//        ); // rows
-//        PanelBuilder builder = new PanelBuilder(formLayout, monthViewContainer);
-//        builder.setBorder(Borders.DLU4_BORDER);
-////        CellConstraints cl = new CellConstraints();
-//        CellConstraints cc = new CellConstraints();
-//        
-//        JXTitledSeparator areaSeparator = new JXTitledSeparator();
-//        areaSeparator.setName("listSeparator");
-//        builder.add(areaSeparator, cc.xywh(1, 1, 2, 1));
-//        builder.add(new JScrollPane(list), cc.xywh(2, 3, 1, 1));
-//        
-//        
-//        add(monthViewContainer, BorderLayout.CENTER);
-//        
-//        JComponent extended = createExtendedConfigPanel();
-//        add(extended, BorderLayout.EAST);
-//    }
-
-    private JComponent createExtendedConfigPanel() {
-        JXCollapsiblePane painterControl = new JXCollapsiblePane();
-        FormLayout formLayout = new FormLayout(
-                "5dlu, r:d:n, l:4dlu:n, f:d:g", // , l:4dlu:n, f:d:g", // columns
-                "c:d:n " +
-                ", t:4dlu:n, c:d:n " +
-                ", t:4dlu:n, c:d:n" +
-                ", t:4dlu:n, c:d:n" +
-                ", t:4dlu:n, c:d:n" +
-                ", t:4dlu:n, c:d:n" +
-                ", t:4dlu:n, c:d:n" +
-                ", t:4dlu:n, c:d:n"
-        ); // rows
-        PanelBuilder builder = new PanelBuilder(formLayout, painterControl);
-        builder.setBorder(Borders.DLU4_BORDER);
-        CellConstraints cl = new CellConstraints();
-        CellConstraints cc = new CellConstraints();
-        
-        JXTitledSeparator areaSeparator = new JXTitledSeparator();
-        areaSeparator.setName("extendedSeparator");
-        builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
-        
-        int labelColumn = 2;
-        int widgetColumn = labelColumn + 2;
-        int currentRow = 3;
-
-        toggleSortOrder = new JButton();
-        toggleSortOrder.setName("toggleSortOrder");
-        builder.add(toggleSortOrder, cc.xywh(labelColumn, currentRow, 3, 1));
-        currentRow += 2;
-        
-        resetSortOrder = new JButton();
-        resetSortOrder.setName("resetSortOrder");
-        builder.add(resetSortOrder, cc.xywh(labelColumn, currentRow, 3, 1));
-        currentRow += 2;
-        
-        comparatorCombo = new JComboBox();
-        comparatorCombo.setName("comparatorCombo");
-        JLabel comparatorComboLabel = builder.addLabel(
-                "", cl.xywh(labelColumn, currentRow, 1, 1),
-                comparatorCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
-        comparatorComboLabel.setName("comparatorComboLabel");
-//        LabelHandler.bindLabelFor(comparatorComboLabel, comparatorCombo); // JComboBox comparatorCombo
-        currentRow += 2;
-        
-        currentRow += 2;
-        JXTitledSeparator rolloverSeparator = new JXTitledSeparator();
-        rolloverSeparator.setName("rolloverSeparator");
-        builder.add(rolloverSeparator, cc.xywh(1, currentRow, 4, 1));
-        currentRow += 2;
-
-          rolloverEnabledBox = new JCheckBox();
-          rolloverEnabledBox.setName("rolloverBox");
-          builder.add(rolloverEnabledBox, cc.xywh(labelColumn, currentRow, 3, 1));
-          currentRow += 2;
-          
-          highlighterCombo = new JComboBox();
-          highlighterCombo.setName("highlighterCombo");
-          JLabel highlighterComboLabel = builder.addLabel(
-                  "", cl.xywh(labelColumn, currentRow, 1, 1),
-                  highlighterCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
-          highlighterComboLabel.setName("highlighterComboLabel");
-//          LabelHandler.bindLabelFor(highlighterComboLabel, highlighterCombo); // JComboBox highlighterCombo
-          currentRow += 2;
-
-        return painterControl;
-    }
-
 //--------------------- dummy api (to keep bbb happy)
-    
-    public Comparator<?> getComparator() {
-        return null;
-    }
-    
-    public Highlighter getRolloverHighlighter() {
-        return null;
-    }
-    
-    public boolean isRolloverEnabeld() {
-        return list.isRolloverEnabled();
-    }
+//    
+//    public Comparator<?> getComparator() {
+//        return null;
+//    }
+//    
+//    public Highlighter getRolloverHighlighter() {
+//        return null;
+//    }
+//    
+//    public boolean isRolloverEnabeld() {
+//        return list.isRolloverEnabled();
+//    }
 }
