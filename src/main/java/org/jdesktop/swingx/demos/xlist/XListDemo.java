@@ -271,36 +271,54 @@ public class XListDemo extends AbstractDemo {
         	DisplayInfo<Comparator<?>> di = (DisplayInfo<Comparator<?>>)comparatorCombo.getSelectedItem();
         	list.setComparator(di.getValue());
         });
-
-        
+     
         JLabel comparatorComboLabel = builder.addLabel(
                 "", cl.xywh(labelColumn, currentRow, 1, 1),
                 comparatorCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
         comparatorComboLabel.setName("comparatorComboLabel");
         comparatorComboLabel.setText("Comparator"); // comparatorComboLabel.text = Comparator
-//        LabelHandler.bindLabelFor(comparatorComboLabel, comparatorCombo); // JComboBox comparatorCombo
         currentRow += 2;
         
         currentRow += 2;
         JXTitledSeparator rolloverSeparator = new JXTitledSeparator();
         rolloverSeparator.setName("rolloverSeparator");
+        rolloverSeparator.setTitle("Rollover Control"); // rolloverSeparator.title = Rollover Control
         builder.add(rolloverSeparator, cc.xywh(1, currentRow, 4, 1));
         currentRow += 2;
 
-          rolloverEnabledBox = new JCheckBox();
-          rolloverEnabledBox.setName("rolloverBox");
-          builder.add(rolloverEnabledBox, cc.xywh(labelColumn, currentRow, 3, 1));
-          currentRow += 2;
-          
-          highlighterCombo = new JComboBox();
-          highlighterCombo.setName("highlighterCombo");
-          highlighterCombo.setModel(createRolloverHighlighters());
-          JLabel highlighterComboLabel = builder.addLabel(
-                  "", cl.xywh(labelColumn, currentRow, 1, 1),
-                  highlighterCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
-          highlighterComboLabel.setName("highlighterComboLabel");
-//          LabelHandler.bindLabelFor(highlighterComboLabel, highlighterCombo); // JComboBox highlighterCombo
-          currentRow += 2;
+		rolloverEnabledBox = new JCheckBox();
+		rolloverEnabledBox.setName("rolloverBox");
+		rolloverEnabledBox.setText("Rollover Enabled"); // rolloverBox.text = Rollover Enabled
+		rolloverEnabledBox.addActionListener( ae -> {
+        	LOG.info("actionEvent:"+ae + " selected="+rolloverEnabledBox.isSelected());
+        	setRolloverEnabled(rolloverEnabledBox.isSelected());
+        });
+		builder.add(rolloverEnabledBox, cc.xywh(labelColumn, currentRow, 3, 1));
+		currentRow += 2;
+
+		highlighterCombo = new JXComboBox(createRolloverHighlighters());
+		highlighterCombo.setName("highlighterCombo");
+		highlighterCombo.setModel(createRolloverHighlighters());
+		highlighterCombo.addActionListener(ae -> {
+        	LOG.info("actionEvent:"+ae 
+        			+ " ActionCommand="+highlighterCombo.getActionCommand() // comboBoxChanged
+        			+ " SelectedItem="+highlighterCombo.getSelectedItem()
+        			+ " getAction="+highlighterCombo.getAction());
+        	// remove all Highlighter's:
+        	for(int i=0; i<highlighterCombo.getItemCount(); i++) {
+        		DisplayInfo<Highlighter> di = (DisplayInfo<Highlighter>)highlighterCombo.getItemAt(i);
+            	list.removeHighlighter(di.getValue());
+        	}
+        	// add selected Highlighter's
+        	DisplayInfo<Highlighter> di = (DisplayInfo<Highlighter>)highlighterCombo.getSelectedItem();
+        	list.addHighlighter(di.getValue());
+        });
+        
+		JLabel highlighterComboLabel = builder.addLabel(
+				"", cl.xywh(labelColumn, currentRow, 1, 1), 
+				highlighterCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
+		highlighterComboLabel.setName("highlighterComboLabel");
+		currentRow += 2;
 
         return painterControl;
     }
@@ -338,73 +356,43 @@ public class XListDemo extends AbstractDemo {
      *                                                             interface MutableComboBoxModel<E> extends ComboBoxModel<E>
      * class DefaultComboBoxModel<E> extends AbstractListModel<E> implements MutableComboBoxModel<E>
      * 
-     * die Elemente von DefaultComboBoxModel sind von Typ Highlighter
-     * damit kann das Ergebnis ComboBoxModel<Highlighter> sein
+     * die Elemente von DefaultComboBoxModel sind von Typ Highlighter,
+     * bzw DisplayInfo<Highlighter>, damit description angezeigt wird
+     * 
+     * aus /swingx-demos/swingx-demos-swingxset/ org.jdesktop.swingx.binding.DisplayInfo<T> :
+     * kapselt ein Objekt/item T mit zugehöriger String description
+     * Also z.B. 
+     *  item: new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, null)
+     *  desc: "Background Color"
      */
-    private ComboBoxModel<Highlighter> createRolloverHighlighters() {
-        DefaultComboBoxModel<Highlighter> model = new DefaultComboBoxModel<Highlighter>();
+    private ComboBoxModel<DisplayInfo<Highlighter>> createRolloverHighlighters() {	
+        DefaultComboBoxModel<DisplayInfo<Highlighter>> model = new DefaultComboBoxModel<DisplayInfo<Highlighter>>();
+        
         // <snip> JXList rollover support
         // simple decorations of rollover row 
-/* aus /swingx-demos/swingx-demos-swingxset/
-org.jdesktop.swingx.binding.DisplayInfo<T> kapselt ein Objekt/item T mit zugehöriger String description
-
-also item: new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, null)
-     desc: "Background Color"
- */
-//        model.addElement(new DisplayInfo<Highlighter>("Background Color",
-//                new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, null)));
-//        model.addElement(new DisplayInfo<Highlighter>("Foreground Color",
-//                new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, null, Color.MAGENTA)));
-//        // </snip>
-//        model.addElement(new DisplayInfo<Highlighter>("Related Merit", 
-//                createExtendedRolloverDecoration()));
-        model.addElement(new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, null)); // Background
-        model.addElement(new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, null, Color.MAGENTA)); // Foreground
-        model.addElement(createExtendedRolloverDecoration()); // Related Merit
+        DisplayInfo<Highlighter> background = new DisplayInfo<Highlighter>("Background Color"
+        		, new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, null)
+        		);
+        model.addElement(background);
+        
+        DisplayInfo<Highlighter> foreground = new DisplayInfo<Highlighter>("Foreground Color"
+        		, new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, null, Color.MAGENTA)
+        		);
+        model.addElement(foreground);
+        // </snip>
+        
+        DisplayInfo<Highlighter> merit = new DisplayInfo<Highlighter>("Related Merit"
+        		, createExtendedRolloverDecoration()
+        		);
+        model.addElement(merit);
         return model;
     }
 
-
-    public void setRolloverHighlighter(Highlighter hl) {
-        list.setHighlighters(hl);
-    }
- 
     public void setRolloverEnabled(boolean enabled) {
         list.setRolloverEnabled(enabled);
         list.setToolTipText(list.isRolloverEnabled() ? getString("stickyRolloverToolTip") : null);
     }
-    @SuppressWarnings("unchecked")
-    private void bind() {
-        // list properties
-        // <snip> JXlist sorting
-        // enable auto-create RowSorter
-        list.setAutoCreateRowSorter(true);
-        list.setModel(Contributors.getContributorListModel());
-        //</snip>
-        
-        // control combos
-        comparatorCombo.setModel(createComparators());
-        highlighterCombo.setModel(createRolloverHighlighters());
-        
-//        BindingGroup group = new BindingGroup();
-//        group.addBinding(Bindings.createAutoBinding(READ, 
-//                rolloverEnabledBox, BeanProperty.create("selected"),
-//                this, BeanProperty.create("rolloverEnabled")));
-//        Binding comparatorBinding = Bindings.createAutoBinding(READ, 
-//                comparatorCombo, BeanProperty.create("selectedItem"),
-//                this, BeanProperty.create("comparator"));
-//        comparatorBinding.setConverter(new DisplayInfoConverter<Comparator<?>>());
-//        group.addBinding(comparatorBinding);
-//    
-//        Binding rolloverBinding = Bindings.createAutoBinding(READ, 
-//                highlighterCombo, BeanProperty.create("selectedItem"),
-//                this, BeanProperty.create("rolloverHighlighter"));
-//        rolloverBinding.setConverter(new DisplayInfoConverter<Highlighter>());
-//        group.addBinding(rolloverBinding);
-//        
-//        group.bind();
-    }
-
+    
     private Highlighter createExtendedRolloverDecoration() {
         Color color = PaintUtils.setAlpha(Color.YELLOW, 100);
         final PainterHighlighter hl = new PainterHighlighter(HighlightPredicate.NEVER, new MattePainter(color));
@@ -440,7 +428,7 @@ also item: new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, 
         @Override
         // <snip> JXList rollover support
         // custom HighlightPredicate which compare the current value
-        // against a fixed value and returns true if "near"
+        // against a fixed value and returns true if "near" (+-5)
         public boolean isHighlighted(Component renderer,
                 ComponentAdapter adapter) {
             if (compare == null) return false;
@@ -453,17 +441,4 @@ also item: new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Color.MAGENTA, 
         
     }
     
-//--------------------- dummy api (to keep bbb happy)
-//    
-//    public Comparator<?> getComparator() {
-//        return null;
-//    }
-//    
-//    public Highlighter getRolloverHighlighter() {
-//        return null;
-//    }
-//    
-//    public boolean isRolloverEnabeld() {
-//        return list.isRolloverEnabled();
-//    }
 }
