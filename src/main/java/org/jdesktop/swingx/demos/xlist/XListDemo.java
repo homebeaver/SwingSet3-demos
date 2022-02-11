@@ -63,7 +63,6 @@ import swingset.AbstractDemo;
  * @author Karl George Schaefer
  * @author EUG https://github.com/homebeaver (reorg)
  */
-////TODO implement
 //@DemoProperties(
 //    value = "JXList Demo",
 //    category = "Data",
@@ -73,7 +72,6 @@ import swingset.AbstractDemo;
 //        "org/jdesktop/swingx/demos/xlist/resources/XListDemo.properties"
 //    }
 //)
-//@SuppressWarnings("serial")
 public class XListDemo extends AbstractDemo {
     
 	private static final long serialVersionUID = -1398533665658062231L;
@@ -180,22 +178,19 @@ public class XListDemo extends AbstractDemo {
 
 //        bind():
         list.setAutoCreateRowSorter(true);
-        //list.setComparator(myComparator); // depends on controller
-        //setComparator(null); // this is the initial default
-        
         list.setModel(Contributors.getContributorListModel());        
     }
 
-    private void setComparator(Comparator<?> comparator) {
-        // <snip> JXList sorting
-        //  configure the comparator to use in sorting
-        list.setComparator(comparator);
-        if (list.getSortOrder() != SortOrder.UNSORTED) {
-            // PENDING missing refresh api?
-            ((DefaultSortController<?>) list.getRowSorter()).sort();
-        }
-        // </snip>
-    }
+//    private void setComparator(Comparator<?> comparator) {
+//        // <snip> JXList sorting
+//        //  configure the comparator to use in sorting
+//        list.setComparator(comparator);
+//        if (list.getSortOrder() != SortOrder.UNSORTED) {
+//            // PENDING missing refresh api?
+//            ((DefaultSortController<?>) list.getRowSorter()).sort();
+//        }
+//        // </snip>
+//    }
     
     @Override
 	public JXPanel getControlPane() {
@@ -299,6 +294,11 @@ public class XListDemo extends AbstractDemo {
 		highlighterCombo = new JXComboBox(createRolloverHighlighters());
 		highlighterCombo.setName("highlighterCombo");
 		highlighterCombo.setModel(createRolloverHighlighters());
+		
+		// set default Highlighter:
+		DisplayInfo<Highlighter> defaultHl = (DisplayInfo<Highlighter>)highlighterCombo.getItemAt(0);
+		list.addHighlighter(defaultHl.getValue());
+		
 		highlighterCombo.addActionListener(ae -> {
         	LOG.info("actionEvent:"+ae 
         			+ " ActionCommand="+highlighterCombo.getActionCommand() // comboBoxChanged
@@ -309,7 +309,7 @@ public class XListDemo extends AbstractDemo {
         		DisplayInfo<Highlighter> di = (DisplayInfo<Highlighter>)highlighterCombo.getItemAt(i);
             	list.removeHighlighter(di.getValue());
         	}
-        	// add selected Highlighter's
+        	// add selected Highlighter
         	DisplayInfo<Highlighter> di = (DisplayInfo<Highlighter>)highlighterCombo.getSelectedItem();
         	list.addHighlighter(di.getValue());
         });
