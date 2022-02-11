@@ -17,12 +17,10 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
@@ -102,12 +100,23 @@ public class XListDemo extends AbstractDemo {
    }
 
     private JXList<Contributor> list;
+    
     // Controller:
-    private JComboBox comparatorCombo;
     private JButton toggleSortOrder;
     private JButton resetSortOrder;
+    private JXComboBox<DisplayInfo<Comparator<?>>> comparatorCombo;
+    
+    /**
+     * to enable rollover support
+     */
     private JCheckBox rolloverEnabledBox;
-    private JComboBox highlighterCombo;
+    /**
+     * 3 Highlighter are implemented / createRolloverHighlighters :
+     * <br> Background Color / MAGENTA (default, when rollover support enabled)
+     * <br> Foreground Color / MAGENTA
+     * <br> Related Merit / YELLOW - highlight items "near" (+-5) to current rollover item
+     */
+    private JXComboBox<DisplayInfo<Highlighter>> highlighterCombo;
 
     /**
      * XListDemo Constructor
@@ -221,9 +230,8 @@ public class XListDemo extends AbstractDemo {
         
         JXTitledSeparator areaSeparator = new JXTitledSeparator();
         areaSeparator.setName("extendedSeparator");
-        // prop extendedSeparator.title = Sort Control
-        areaSeparator.setTitle("Sort Control");
-        
+        areaSeparator.setTitle("Sort Control"); // prop extendedSeparator.title = Sort Control
+
         builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
         
         int labelColumn = 2;
@@ -232,11 +240,10 @@ public class XListDemo extends AbstractDemo {
 
         toggleSortOrder = new JButton();
         toggleSortOrder.setName("toggleSortOrder");
-        toggleSortOrder.setText("Toggle Sort Order");// prop toggleSortOrder.Action.text = Toggle Sort Order
+        toggleSortOrder.setText("Toggle Sort Order"); // prop toggleSortOrder.Action.text = Toggle Sort Order
         toggleSortOrder.addActionListener( ae -> {
         	LOG.info("actionEvent:"+ae + " selected="+toggleSortOrder.isSelected());
         	list.toggleSortOrder(); // Delegates to the SortController, defined by the SortController's toggleSortOrder implementation
-        	//LOG.info("actionEvent:"+list.getSortController() is protected);
         });
         builder.add(toggleSortOrder, cc.xywh(labelColumn, currentRow, 3, 1));
         currentRow += 2;
@@ -252,12 +259,14 @@ public class XListDemo extends AbstractDemo {
         builder.add(resetSortOrder, cc.xywh(labelColumn, currentRow, 3, 1));
         currentRow += 2;
         
-        comparatorCombo = new JXComboBox();
+        comparatorCombo = new JXComboBox<DisplayInfo<Comparator<?>>>();
         comparatorCombo.setName("comparatorCombo");
         comparatorCombo.setModel(createComparators());
-        for(int i=0; i<comparatorCombo.getItemCount(); i++) {
-        	LOG.info(""+comparatorCombo.getItemAt(i));
-        }
+
+		// set default Comparator, by display string:
+        DisplayInfo<Comparator<?>> defaultComp = (DisplayInfo<Comparator<?>> )comparatorCombo.getItemAt(0);
+    	list.setComparator(defaultComp.getValue());
+
         comparatorCombo.addActionListener(ae -> {
         	LOG.info("actionEvent:"+ae 
         			+ " ActionCommand="+comparatorCombo.getActionCommand() // comboBoxChanged
@@ -291,7 +300,7 @@ public class XListDemo extends AbstractDemo {
 		builder.add(rolloverEnabledBox, cc.xywh(labelColumn, currentRow, 3, 1));
 		currentRow += 2;
 
-		highlighterCombo = new JXComboBox(createRolloverHighlighters());
+		highlighterCombo = new JXComboBox<DisplayInfo<Highlighter>>(createRolloverHighlighters());
 		highlighterCombo.setName("highlighterCombo");
 		highlighterCombo.setModel(createRolloverHighlighters());
 		
@@ -331,7 +340,7 @@ public class XListDemo extends AbstractDemo {
      * Also alles scheinbar verschiedene Objekte, nein alle implementieren Comparator interface
      * DisplayInfo verwenden, damit description angezeigt wird. 
      */
-    private ComboBoxModel createComparators() {
+    private ComboBoxModel<DisplayInfo<Comparator<?>>> createComparators() {
         DefaultComboBoxModel<DisplayInfo<Comparator<?>>> model = new DefaultComboBoxModel<DisplayInfo<Comparator<?>>>();
         // <snip> JXList sorting
         // null comparator defaults to comparing by the display string
