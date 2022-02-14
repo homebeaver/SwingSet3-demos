@@ -48,7 +48,7 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 			                <mainClass>
-			                    swingset.SwingSet2
+			                    com.klst.swingx.RootFrame
 			                </mainClass>
                         </manifest>
                         <manifestEntries>
@@ -79,6 +79,30 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+		    <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>3.3.0</version>
+                <configuration>
+                    <descriptorRefs>
+                    	<descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>com.klst.swingx.RootFrame</mainClass>
+						</manifest>
+					</archive>
+                </configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+		    </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -118,19 +142,32 @@
 		    <artifactId>javax.inject</artifactId>
 		    <version>1</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder -->
+<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder
 		<dependency>
 		    <groupId>org.apache.xmlgraphics</groupId>
 		    <artifactId>batik-transcoder</artifactId>
 		    <version>1.14</version>
 		</dependency>
-		
+ -->		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.13</version>
 			<scope>test</scope>
 		</dependency>
+		
+<!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+		<dependency>
+		    <groupId>jakarta.xml.bind</groupId>
+		    <artifactId>jakarta.xml.bind-api</artifactId>
+		    <version>2.3.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.sun.xml.bind</groupId>
+		    <artifactId>jaxb-impl</artifactId>
+		    <version>2.3.3</version>
+		</dependency>
+ -->		
 		<!--  compile group: 'org.easytesting', name: 'fest-swing', version: '1.2.1'
 		<dependency>
 			<groupId>org.easytesting</groupId>
@@ -147,5 +184,88 @@
 			<scope>test</scope>
 		</dependency>
  -->
+		<dependency>
+			<groupId>com.jhlabs</groupId>
+			<artifactId>filters</artifactId>
+			<version>2.0.235-1</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.jdesktop/beansbinding -->
+		<dependency>
+		    <groupId>org.jdesktop</groupId>
+		    <artifactId>beansbinding</artifactId>
+		    <version>1.2.1</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/net.java.dev.timingframework/timingframework -->
+		<dependency>
+		    <groupId>net.java.dev.timingframework</groupId>
+		    <artifactId>timingframework</artifactId>
+		    <version>1.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.java.timingframework/timingframework-swing
+		<dependency>
+		    <groupId>net.java.timingframework</groupId>
+		    <artifactId>timingframework-swing</artifactId>
+		    <version>7.3.1</version>   // depends on package com.surelogic
+		</dependency>
+ -->		
+		<dependency>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-core</artifactId>
+			<version>1.6.8-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-core\1.6.8-SNAPSHOT\swingx-core-1.6.8-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-action</artifactId>
+			<version>1.6.8-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-action\1.6.8-SNAPSHOT\swingx-action-1.6.8-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-autocomplete</artifactId>
+			<version>1.6.8-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-autocomplete\1.6.8-SNAPSHOT\swingx-autocomplete-1.6.8-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-plaf</artifactId>
+			<version>1.6.8-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-plaf\1.6.8-SNAPSHOT\swingx-plaf-1.6.8-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-painters</artifactId>
+			<version>1.6.8-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-painters\1.6.8-SNAPSHOT\swingx-painters-1.6.8-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-common</artifactId>
+			<version>1.6.8-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-common\1.6.8-SNAPSHOT\swingx-common-1.6.8-SNAPSHOT.jar</systemPath>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.jgoodies/forms -->
+		<dependency>
+		    <groupId>com.jgoodies</groupId>
+		    <artifactId>forms</artifactId>
+		    <version>1.2.1</version>
+		</dependency>
+	
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <version>42.3.2</version>
+		</dependency>
+		
 	</dependencies>
 </project>
