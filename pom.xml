@@ -1,26 +1,26 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-<!--
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
--->
-	<!-- Implementation-Vendor-Id in jar META-INF/MANIFEST.MF: -->
-    <groupId>de.klst.swingset.demos</groupId>
-    <artifactId>swingset3</artifactId>
-
-    <packaging>jar</packaging>
-    <version>1.6.8-SNAPSHOT</version>
-    <name>swingset3</name>
-    <description>Demonstrating the abilities of the Swing UI Toolkit</description>
-
-	<!-- Implementation-URL in jar META-INF/MANIFEST.MF: -->
-    <url>https://github.com/homebeaver/SwingSet3-demos</url>
-    <inceptionYear>2005</inceptionYear>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>io.github.homebeaver</groupId>
+  <artifactId>swingset3-demos</artifactId>
+  <packaging>jar</packaging>
+  <url>https://github.com/homebeaver/SwingSet3-demos</url>
+  
+  <name>swingset3 demos</name>
+  <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 + swingset3</description>
+  <version>1.6.8-SNAPSHOT</version>
+  
+  <inceptionYear>2005</inceptionYear>
 	
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+  
 	<build>
 	    <resources>
 			<resource>
@@ -38,10 +38,11 @@
 			</resource>
 		</resources>
 		<plugins>
+		
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -58,6 +59,7 @@
                     </archive>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -71,6 +73,7 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -79,6 +82,7 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+            
 		    <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-assembly-plugin</artifactId>
@@ -103,10 +107,11 @@
 					</execution>
 				</executions>
 		    </plugin>
+		    
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.20</version>
+                <version>2.22.2</version>
                 <configuration>
                     <forkMode>always</forkMode>
                     <argLine>-enableassertions</argLine>
@@ -118,23 +123,71 @@
                     </systemProperties>
                 </configuration>
             </plugin>
-<!--   -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+<!-- [ERROR] Failed to execute goal org.apache.maven.plugins:maven-javadoc-plugin:3.1.1:jar 
+(attach-javadocs) on project swingset3-demos: MavenReportException: Error while generating Javadoc: 
+Unable to find javadoc command: The environment variable JAVA_HOME is not correctly set.
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+ -->
+
+			<plugin>
+				<groupId>org.simplify4u.plugins</groupId>
+				<artifactId>sign-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+						<configuration>
+							<!-- the same id as in settings.xml -->
+							<serverId>sign-key-id</serverId>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</build>
+	
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
 		<dependency>
@@ -142,13 +195,7 @@
 		    <artifactId>javax.inject</artifactId>
 		    <version>1</version>
 		</dependency>
-<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder
-		<dependency>
-		    <groupId>org.apache.xmlgraphics</groupId>
-		    <artifactId>batik-transcoder</artifactId>
-		    <version>1.14</version>
-		</dependency>
- -->		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -156,34 +203,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-<!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-		<dependency>
-		    <groupId>jakarta.xml.bind</groupId>
-		    <artifactId>jakarta.xml.bind-api</artifactId>
-		    <version>2.3.3</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.sun.xml.bind</groupId>
-		    <artifactId>jaxb-impl</artifactId>
-		    <version>2.3.3</version>
-		</dependency>
- -->		
-		<!--  compile group: 'org.easytesting', name: 'fest-swing', version: '1.2.1'
-		<dependency>
-			<groupId>org.easytesting</groupId>
-			<artifactId>fest-swing</artifactId>
-			<version>1.2.1</version>
-			<scope>test</scope>
-		</dependency>
- -->		
-		<!-- compile group: 'net.jodah', name: 'failsafe', version: '1.1.0'
-		<dependency>
-			<groupId>net.jodah</groupId>
-			<artifactId>failsafe</artifactId>
-			<version>1.1.0</version>
-			<scope>test</scope>
-		</dependency>
- -->
 		<dependency>
 			<groupId>com.jhlabs</groupId>
 			<artifactId>filters</artifactId>
@@ -203,54 +222,42 @@
 		    <artifactId>timingframework</artifactId>
 		    <version>1.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/net.java.timingframework/timingframework-swing
+
 		<dependency>
-		    <groupId>net.java.timingframework</groupId>
-		    <artifactId>timingframework-swing</artifactId>
-		    <version>7.3.1</version>   // depends on package com.surelogic
-		</dependency>
- -->		
-		<dependency>
-			<groupId>org.swinglabs.swingx</groupId>
+			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-core</artifactId>
 			<version>1.6.8-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-core\1.6.8-SNAPSHOT\swingx-core-1.6.8-SNAPSHOT.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.swinglabs.swingx</groupId>
+			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-action</artifactId>
 			<version>1.6.8-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-action\1.6.8-SNAPSHOT\swingx-action-1.6.8-SNAPSHOT.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.swinglabs.swingx</groupId>
+			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-autocomplete</artifactId>
 			<version>1.6.8-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-autocomplete\1.6.8-SNAPSHOT\swingx-autocomplete-1.6.8-SNAPSHOT.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.swinglabs.swingx</groupId>
+			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-plaf</artifactId>
 			<version>1.6.8-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-plaf\1.6.8-SNAPSHOT\swingx-plaf-1.6.8-SNAPSHOT.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.swinglabs.swingx</groupId>
+			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-painters</artifactId>
 			<version>1.6.8-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-painters\1.6.8-SNAPSHOT\swingx-painters-1.6.8-SNAPSHOT.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.swinglabs.swingx</groupId>
+			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-common</artifactId>
 			<version>1.6.8-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>c:\Users\homeb\.m2\repository\org\swinglabs\swingx\swingx-common\1.6.8-SNAPSHOT\swingx-common-1.6.8-SNAPSHOT.jar</systemPath>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.jgoodies/forms -->
