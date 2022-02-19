@@ -146,26 +146,20 @@ ActionManager manager = ActionManager.getInstance();	 // ActionManager extends A
 	 
 	 */
     public JMenu createDemosMenu() {
-//		TreeNode rootNode = DemoMenuAction.createTree();
     	TreeTableModel model = DemoTreeTableModel.getInstance();
-//LOG.info("DemoTreeTableModel:"+model);
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
-//LOG.info("root:"+root);
     	this.menu = new JMenu((Action)root.getUserObject());
 
     	Object o2 = model.getChild(root,0);
-//LOG.info("o2:"+o2 + ", model.ChildCount="+model.getChildCount(root));
     	JMenu ss2 = (JMenu) menu.add(new JMenu((Action)o2));
     	for(int i=0;i<model.getChildCount(o2);i++) {
     		Object o = model.getChild(o2,i);
-//    		LOG.info("o:"+o + ", o2.ChildCount="+model.getChildCount(o2));
     		AbstractButton ab = addActionToToolBar(this, (DemoAction)o); // add ToggleButton to ToolBar
     		LOG.config("AbstractButton:"+ab +" menu add:"+o);
     		ss2.add((DemoAction)o); // add menuitem DemoMenuAction to ss2 submenu
     	}
     	
     	Object o3 = model.getChild(root,1);
-//LOG.info("\no3:"+o3 + ", model.ChildCount="+model.getChildCount(o3));
     	JMenu ss3 = (JMenu) menu.add(new JMenu((Action)o3));
     	for(int i=0;i<model.getChildCount(o3);i++) {
     		Object o = model.getChild(o3,i);
