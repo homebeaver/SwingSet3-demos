@@ -1,13 +1,10 @@
-package com.klst.swingx;
+package io.github.homebeaver.swingset.demo;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,6 @@ import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -39,21 +35,20 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.SwingXUtilities;
 
-import swingset.AbstractDemo;
 import swingset.StaticUtilities;
 
 @SuppressWarnings("serial")
-public class WindowFrame extends JXFrame {
+public class DemoJXFrame extends JXFrame {
 
-    private static final Logger LOG = Logger.getLogger(WindowFrame.class.getName());
+    private static final Logger LOG = Logger.getLogger(DemoJXFrame.class.getName());
 
 	private static int windowCounter = 0; // für windowNo, wird pro ctor hochgezählt
 	int getWindowCounter() {
 		return windowCounter;
 	}
 	private int windowNo;
-	public RootFrame getRootFrame() {
-		return RootFrame.getInstance();
+	public MainJXframe getRootFrame() {
+		return MainJXframe.getInstance();
 	}
 	
 	private int window_ID;
@@ -62,7 +57,7 @@ public class WindowFrame extends JXFrame {
 	/*
 	 * window_ID==-1 is used for RootFrame
 	 */
-	WindowFrame(String title, int window_ID, Object object) {
+	DemoJXFrame(String title, int window_ID, Object object) {
 		super(title
 			, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
 			, window_ID==-1 ? true : false // exitOnClose
@@ -74,7 +69,7 @@ public class WindowFrame extends JXFrame {
 		getRootPaneExt().setToolBar(new ToggleButtonToolBar()); // inner Class
 		
 		// bei RootFrame: setJMenuBar:
-		if(this instanceof RootFrame) {
+		if(this instanceof MainJXframe) {
 			LOG.info("\nthis:"+this);
 //			JMenu jMenu = createPlafMenu(); // aus InteractiveTestCase
 //			JMenuBar jMenuBar = createAndFillMenuBar(null);
@@ -87,7 +82,7 @@ public class WindowFrame extends JXFrame {
 		}
 	}
 	
-	WindowFrame(String title) { // für RootFrame
+	DemoJXFrame(String title) { // für RootFrame
 		this(title, -1, null);
 	}
 
@@ -168,8 +163,8 @@ aus super:
             AbstractButton button = tbtb.addToggleButton(action);
             button.setToolTipText((String)action.getValue(Action.SHORT_DESCRIPTION));
             button.setFocusable(false);
-            if(action instanceof DemoMenuAction) {
-            	((DemoMenuAction)action).setToggleButton(button);
+            if(action instanceof DemoAction) {
+            	((DemoAction)action).setToggleButton(button);
             }
             return button;
         }
@@ -297,108 +292,108 @@ aus super:
     	return getStatusBar(this);
     }
 
-    public class DemoAction extends AbstractAction {
-
-    	Class<?> democlass = null;
-    	AbstractButton jToggleButton = null;
-    	void setToggleButton(AbstractButton toggleButton) {
-    		jToggleButton = toggleButton;
-    	}
-    	AbstractButton getToggleButton() {
-    		return jToggleButton;
-    	}
-
-/* super ctors:
-
-    public AbstractAction() {
-    public AbstractAction(String name) {    putValue(Action.NAME, name);
->>  public AbstractAction(String name, Icon icon) {        this(name);        putValue(Action.SMALL_ICON, icon);
-
- */
-    	public DemoAction(Class<?> democlass, String name) {
-    		this(democlass, name, null, null);
-    	}
-    	public DemoAction(Class<?> democlass, String name, Icon icon) {
-    		this(democlass, name, null, icon);
-    	}
-        /**
-         * Creates an {@code DemoAction} with the specified name/Value({@code Action.NAME}) and small icon.
-         *
-         * @param democlass the demo class
-         * @param name the name ({@code Action.NAME}) for the action; a
-         *        value of {@code null} is ignored
-         * @param smallIcon the icon ({@code Action.SMALL_ICON}) for the action; a
-         *        value of {@code null} is ignored
-         * @param icon the large icon ({@code Action.LARGE_ICON_KEY}) for the action; a
-         *        value of {@code null} is ignored
-         */
-    	public DemoAction(Class<?> democlass, String name, Icon smallIcon, Icon icon) {
-    		super(name, smallIcon);
-    		this.democlass = democlass;
-            if(icon!=null) super.putValue(Action.LARGE_ICON_KEY, icon);
-            
-            // SHORT_DESCRIPTION will setToolTipText in addActionToToolBar
-            if(this.democlass!=null) {
-                String key = this.democlass.getSimpleName() + '.' + "tooltip";
-                String short_description = StaticUtilities.getResourceAsString(key, null);
-                super.putValue(Action.SHORT_DESCRIPTION, short_description);
-            }
-    	}
-    	
-        @Override
-        public String toString() {
-        	return (String)super.getValue(Action.NAME);
-        }
-    	
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        	// frame erstellen - demo starten: TODO: controler in root registrieren
-        	
-        	// deselect all toolbar buttons except this action button 
-        	JToolBar tb = getRootFrame().getToolBar();
-        	Component[] cs = tb.getComponents();
-        	for(int i=0;i<cs.length;i++) {
-    			JToggleButton b = (JToggleButton)cs[i];
-    			if(b==this.getToggleButton()) {
-        			LOG.info("i="+i + " ----->button.isSelected="+b.isSelected() + " isthisButton="+(b==this.getToggleButton()));        		
-    			} else {
-    				b.setSelected(false);
-    			}
-        	}
-        	
-        	// make new frame in center of screen - close the current demo frame, 
-        	// create instance of demo and add it to frame
-        	// add controller for demo to rootFrame
-        	WindowFrame frame = getRootFrame().makeFrame(getRootFrame(), 1, null);
-        	if(frame!=null) {
-        		frame.setStartPosition(StartPosition.CenterInScreen);
-        		AbstractDemo demo = null;
-				try {
-					demo = getInstanceOf(democlass, frame); // ctor 
-				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
-						| IllegalArgumentException | InvocationTargetException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-//				getRootFrame().getContentPane().removeAll(); // damit ist auch die toolbar weg
-				getRootFrame().addController(demo.getControlPane()); // remove and add a controller
-            	
-            	frame.getContentPane().add(demo);
-            	frame.pack();
-            	frame.setVisible(true);
-        	}
-        }
-    
-		private AbstractDemo getInstanceOf(Class<?> demoClass, Frame frame) throws NoSuchMethodException, SecurityException,
-				InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-			Constructor<?> demoConstructor = demoClass.getConstructor(new Class[] { Frame.class }); // throws
-																									// NoSuchMethodException,
-																									// SecurityException
-			AbstractDemo demo = (AbstractDemo) demoConstructor.newInstance(new Object[] { frame });
-			return demo;
-		}
-
-    }
+//    public class DemoAction extends AbstractAction {
+//
+//    	Class<?> democlass = null;
+//    	AbstractButton jToggleButton = null;
+//    	void setToggleButton(AbstractButton toggleButton) {
+//    		jToggleButton = toggleButton;
+//    	}
+//    	AbstractButton getToggleButton() {
+//    		return jToggleButton;
+//    	}
+//
+///* super ctors:
+//
+//    public AbstractAction() {
+//    public AbstractAction(String name) {    putValue(Action.NAME, name);
+//>>  public AbstractAction(String name, Icon icon) {        this(name);        putValue(Action.SMALL_ICON, icon);
+//
+// */
+//    	public DemoAction(Class<?> democlass, String name) {
+//    		this(democlass, name, null, null);
+//    	}
+//    	public DemoAction(Class<?> democlass, String name, Icon icon) {
+//    		this(democlass, name, null, icon);
+//    	}
+//        /**
+//         * Creates an {@code DemoAction} with the specified name/Value({@code Action.NAME}) and small icon.
+//         *
+//         * @param democlass the demo class
+//         * @param name the name ({@code Action.NAME}) for the action; a
+//         *        value of {@code null} is ignored
+//         * @param smallIcon the icon ({@code Action.SMALL_ICON}) for the action; a
+//         *        value of {@code null} is ignored
+//         * @param icon the large icon ({@code Action.LARGE_ICON_KEY}) for the action; a
+//         *        value of {@code null} is ignored
+//         */
+//    	public DemoAction(Class<?> democlass, String name, Icon smallIcon, Icon icon) {
+//    		super(name, smallIcon);
+//    		this.democlass = democlass;
+//            if(icon!=null) super.putValue(Action.LARGE_ICON_KEY, icon);
+//            
+//            // SHORT_DESCRIPTION will setToolTipText in addActionToToolBar
+//            if(this.democlass!=null) {
+//                String key = this.democlass.getSimpleName() + '.' + "tooltip";
+//                String short_description = StaticUtilities.getResourceAsString(key, null);
+//                super.putValue(Action.SHORT_DESCRIPTION, short_description);
+//            }
+//    	}
+//    	
+//        @Override
+//        public String toString() {
+//        	return (String)super.getValue(Action.NAME);
+//        }
+//    	
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//        	// frame erstellen - demo starten: TODO: controler in root registrieren
+//        	
+//        	// deselect all toolbar buttons except this action button 
+//        	JToolBar tb = getRootFrame().getToolBar();
+//        	Component[] cs = tb.getComponents();
+//        	for(int i=0;i<cs.length;i++) {
+//    			JToggleButton b = (JToggleButton)cs[i];
+//    			if(b==this.getToggleButton()) {
+//        			LOG.info("i="+i + " ----->button.isSelected="+b.isSelected() + " isthisButton="+(b==this.getToggleButton()));        		
+//    			} else {
+//    				b.setSelected(false);
+//    			}
+//        	}
+//        	
+//        	// make new frame in center of screen - close the current demo frame, 
+//        	// create instance of demo and add it to frame
+//        	// add controller for demo to rootFrame
+//        	DemoJXFrame frame = getRootFrame().makeFrame(getRootFrame(), 1, null);
+//        	if(frame!=null) {
+//        		frame.setStartPosition(StartPosition.CenterInScreen);
+//        		AbstractDemo demo = null;
+//				try {
+//					demo = getInstanceOf(democlass, frame); // ctor 
+//				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+//						| IllegalArgumentException | InvocationTargetException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+////				getRootFrame().getContentPane().removeAll(); // damit ist auch die toolbar weg
+//				getRootFrame().addController(demo.getControlPane()); // remove and add a controller
+//            	
+//            	frame.getContentPane().add(demo);
+//            	frame.pack();
+//            	frame.setVisible(true);
+//        	}
+//        }
+//    
+//		private AbstractDemo getInstanceOf(Class<?> demoClass, Frame frame) throws NoSuchMethodException, SecurityException,
+//				InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+//			Constructor<?> demoConstructor = demoClass.getConstructor(new Class[] { Frame.class }); // throws
+//																									// NoSuchMethodException,
+//																									// SecurityException
+//			AbstractDemo demo = (AbstractDemo) demoConstructor.newInstance(new Object[] { frame });
+//			return demo;
+//		}
+//
+//    }
     
     /**
      * Action to toggle plaf and update all toplevel windows of the
@@ -446,8 +441,8 @@ aus super:
                 LOG.log(Level.FINE, "problem in setting laf: " + plaf, e1);
             }
             // themeMenu setEnabled when LAF is Metal
-            if(toplevel instanceof RootFrame) {
-            	RootFrame rf = (RootFrame)toplevel;
+            if(toplevel instanceof MainJXframe) {
+            	MainJXframe rf = (MainJXframe)toplevel;
             	rf.themeMenu.setEnabled(plaf.endsWith(".MetalLookAndFeel"));
             }
         }
@@ -509,8 +504,8 @@ class OceanTheme extends DefaultMetalTheme
 				UIManager.setLookAndFeel(MetalLookAndFeel.class.getName());
 	            if (toplevel != null) {
 	                SwingUtilities.updateComponentTreeUI(toplevel);
-	                if(toplevel instanceof RootFrame) {
-	                	RootFrame rf = (RootFrame)toplevel;
+	                if(toplevel instanceof MainJXframe) {
+	                	MainJXframe rf = (MainJXframe)toplevel;
 	                	Window w = rf.currentDemoFrame;
 	                	if (w != null) SwingUtilities.updateComponentTreeUI(w);
 	                }
@@ -542,8 +537,8 @@ class OceanTheme extends DefaultMetalTheme
 			if (toplevel != null) {
 				LOG.info("Locale selected:"+dl + ", do setComponentTreeLocale for "+toplevel);
 				SwingXUtilities.setComponentTreeLocale(toplevel, dl.getLocale());
-                if(toplevel instanceof RootFrame) {
-                	RootFrame rf = (RootFrame)toplevel;
+                if(toplevel instanceof MainJXframe) {
+                	MainJXframe rf = (MainJXframe)toplevel;
                 	Window w = rf.currentDemoFrame;
                 	if (w != null) SwingXUtilities.setComponentTreeLocale(w, dl.getLocale());
                 }

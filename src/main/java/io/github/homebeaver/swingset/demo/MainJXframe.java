@@ -1,4 +1,4 @@
-package com.klst.swingx;
+package io.github.homebeaver.swingset.demo;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -16,7 +16,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.jdesktop.swingx.JXFrame;
@@ -32,19 +31,32 @@ import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 /*
-TODO RootFrame <> JXRootPane
-
+TODO RootFrame <> JXRootPane extends JRootPane (A lightweight container used behind the scenes by JFrame, JDialog, JWindow, JApplet, and JInternalFrame.)
+de-Beschreibung in https://runebook.dev/de/docs/openjdk/java.desktop/javax/swing/jrootpane
+	, https://www.java-tutorial.org/jframe.html
+	
+Die vier schwergewichtigen JFC/Swing-Container: ( JFrame , JDialog , JWindow und JApplet )
+in SwingSet3:
+	class JXFrame  extends JFrame
+	class JXDialog extends JDialog
+	      JXWindow gibt es nicht
+	class JXApplet extends JApplet(deprecated)
+	
+	class JXRootPane extends JRootPane
+	
 es gibt viele WindowFrames, aber nur einen RootFrame ==> Singleton
+TODO andere Namen: WindowFrame ==> DemoJXFrame  
+                   RootFrame   ==> MainJXframe
 
  */
 @SuppressWarnings("serial")
-public class RootFrame extends WindowFrame {
+public class MainJXframe extends DemoJXFrame {
 
 	/**
 	 * starts swingset demo application
 	 */
 	public static void main(String[] args) {
-		WindowFrame gossip = RootFrame.getInstance(); // RootFrame contains a simple frame manager
+		DemoJXFrame gossip = MainJXframe.getInstance(); // RootFrame contains a simple frame manager
 		JMenu demoMenu = gossip.createDemosMenu();
 		
         try {
@@ -74,23 +86,22 @@ public class RootFrame extends WindowFrame {
 		gossip.setVisible(true);
 	}
 
-    private static final Logger LOG = Logger.getLogger(RootFrame.class.getName());
+    private static final Logger LOG = Logger.getLogger(MainJXframe.class.getName());
 
-	private static final String TITLE = "Gossip";
+	private static final String TITLE = "SwingSet Demos";
 
-    private static final RootFrame INSTANCE = new RootFrame();
+    private static final MainJXframe INSTANCE = new MainJXframe();
     
     /**
      * @return the singleton
      */
-    public static RootFrame getInstance() {
+    public static MainJXframe getInstance() {
         return INSTANCE;
     }
 
-//	Map<Class<?>, WindowFrame> demos;
-	WindowFrame currentDemoFrame = null;
+	DemoJXFrame currentDemoFrame = null;
 	
-	private RootFrame() {
+	private MainJXframe() {
 		super(TITLE);
 		frames = new ArrayList<JXFrame>();
 		frames.add(this);
@@ -122,28 +133,43 @@ CENTER: JXPanel currentController
 	}
 	JXTree demoTree = null;
 	JMenu menu;
-    public JMenu createDemosMenu() {
-		TreeNode rootNode = DemoMenuAction.createTree();
-    	TreeTableModel model = MenuTreeTableModel.getInstance();
+	// TODO use ActionContainerFactory.createMenu( ... )
+	/*
+	 
+ActionManager manager = ActionManager.getInstance();	 // ActionManager extends ActionMap
+    ActionManager am = new ActionManager();
+    ActionContainerFactory acf = new ActionContainerFactory(am);
+    JToolBar bar = null;
+        initActionManager(); // am befüllen
 
+        bar = acf.createToolBar(Arrays.asList(new String[] { "ba", "bb" }));
+	 
+	 */
+    public JMenu createDemosMenu() {
+//		TreeNode rootNode = DemoMenuAction.createTree();
+    	TreeTableModel model = DemoTreeTableModel.getInstance();
+LOG.info("DemoTreeTableModel:"+model);
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
+LOG.info("root:"+root);
     	this.menu = new JMenu((Action)root.getUserObject());
 
     	Object o2 = model.getChild(root,0);
+LOG.info("o2:"+o2 + ", model.ChildCount="+model.getChildCount(root));
     	JMenu ss2 = (JMenu) menu.add(new JMenu((Action)o2));
     	for(int i=0;i<model.getChildCount(o2);i++) {
     		Object o = model.getChild(o2,i);
-    		AbstractButton ab = addActionToToolBar(this, (DemoMenuAction)o); // add ToggleButton to ToolBar
+    		LOG.info("o:"+o + ", o2.ChildCount="+model.getChildCount(o2));
+    		AbstractButton ab = addActionToToolBar(this, (DemoAction)o); // add ToggleButton to ToolBar
     		LOG.config("AbstractButton:"+ab +" menu add:"+o);
-    		ss2.add((DemoMenuAction)o); // add menuitem DemoMenuAction to ss2 submenu
+    		ss2.add((DemoAction)o); // add menuitem DemoMenuAction to ss2 submenu
     	}
     	
     	Object o3 = model.getChild(root,1);
     	JMenu ss3 = (JMenu) menu.add(new JMenu((Action)o3));
     	for(int i=0;i<model.getChildCount(o3);i++) {
     		Object o = model.getChild(o3,i);
-    		LOG.config("menuitem add:"+(DemoMenuAction)o);
-    		ss3.add((DemoMenuAction)o); // add menuitem DemoMenuAction to ss3 submenu
+    		LOG.config("menuitem add:"+(DemoAction)o);
+    		ss3.add((DemoAction)o); // add menuitem DemoMenuAction to ss3 submenu
     	}
     	
     	demoTree = new JXTree(model);
@@ -152,7 +178,29 @@ CENTER: JXPanel currentController
     	demoTree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
     	// white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
     	demoTree.setBackground(null); // so sind nur die texte weiss
-    	demoTree.expandAll();
+    	
+//    	demoTree.expandAll(); 
+    	/* Exception:
+Exception in thread "main" java.lang.NullPointerException: Null child not allowed
+	at java.desktop/javax.swing.tree.TreePath.pathByAddingChild(TreePath.java:330)
+	at java.desktop/javax.swing.tree.VariableHeightLayoutCache$TreeStateNode.setParent(VariableHeightLayoutCache.java:1049)
+	at java.desktop/javax.swing.tree.DefaultMutableTreeNode.insert(DefaultMutableTreeNode.java:200)
+	at java.desktop/javax.swing.tree.DefaultMutableTreeNode.add(DefaultMutableTreeNode.java:424)
+	at java.desktop/javax.swing.tree.VariableHeightLayoutCache$TreeStateNode.expand(VariableHeightLayoutCache.java:1464)
+	at java.desktop/javax.swing.tree.VariableHeightLayoutCache$TreeStateNode.expand(VariableHeightLayoutCache.java:1272)
+	at java.desktop/javax.swing.tree.VariableHeightLayoutCache.ensurePathIsExpanded(VariableHeightLayoutCache.java:967)
+	at java.desktop/javax.swing.tree.VariableHeightLayoutCache.setExpandedState(VariableHeightLayoutCache.java:181)
+	at java.desktop/javax.swing.plaf.basic.BasicTreeUI.updateExpandedDescendants(BasicTreeUI.java:2003)
+	at java.desktop/javax.swing.plaf.basic.BasicTreeUI$Handler.treeExpanded(BasicTreeUI.java:4295)
+	at java.desktop/javax.swing.JTree.fireTreeExpanded(JTree.java:2853)
+	at java.desktop/javax.swing.JTree.setExpandedState(JTree.java:3766)
+	at java.desktop/javax.swing.JTree.expandPath(JTree.java:2296)
+	at java.desktop/javax.swing.JTree.expandRow(JTree.java:2311)
+	at org.jdesktop.swingx.JXTree.expandAll(JXTree.java:564)
+	at io.github.homebeaver.swingset.demo.MainJXframe.createDemosMenu(MainJXframe.java:181)
+	at io.github.homebeaver.swingset.demo.MainJXframe.main(MainJXframe.java:60)
+    	
+    	*/
     	demoTree.setEditable(false);
     	
 //    	demoTree.setComponentPopupMenu(JPopupMenu popup); ????
@@ -174,7 +222,7 @@ CENTER: JXPanel currentController
     			LOG.info("DISCONTIGUOUS_TREE_SELECTION SelectionPath:"+tsm.getSelectionPath());
     			Object o = tsm.getSelectionPath().getLastPathComponent();
     			LOG.info("LastPathComponent:"+o);
-    			DemoMenuAction action = (DemoMenuAction)o; // root ist DefaultMutableTreeNode! ClassCastException TODO
+    			DemoAction action = (DemoAction)o; // root ist DefaultMutableTreeNode! ClassCastException TODO
     			LOG.info("LastPathComponent.NAME:"+action.getValue(Action.NAME));
 //    			Object[] path = tsm.getSelectionPath().getPath(); // The first element is the root
 //    			for(int i=0;i<path.length;i++) {
@@ -189,8 +237,8 @@ CENTER: JXPanel currentController
     	IconValue iv = new IconValue() {
        		@Override
 			public Icon getIcon(Object value) {
-                if (value instanceof DemoMenuAction) {
-                	DemoMenuAction dma = (DemoMenuAction)value;
+                if (value instanceof DemoAction) {
+                	DemoAction dma = (DemoAction)value;
                 	return (Icon)dma.getValue(Action.SMALL_ICON);
                 }
     			return null;
@@ -199,8 +247,8 @@ CENTER: JXPanel currentController
         StringValue sv = new StringValue() {
        		@Override
             public String getString(Object value) {
-                if (value instanceof DemoMenuAction) {
-                	DemoMenuAction dma = (DemoMenuAction)value;
+                if (value instanceof DemoAction) {
+                	DemoAction dma = (DemoAction)value;
                 	return (String)dma.getValue(Action.NAME);
                 }
                 return StringValues.TO_STRING.getString(value);
@@ -220,13 +268,13 @@ CENTER: JXPanel currentController
 	boolean remove(JXFrame frame) {
 		return frames.remove(frame);
 	}
-	WindowFrame makeFrame(RootFrame rootFrame, int window_ID, Object object) {
+	DemoJXFrame makeFrame(MainJXframe rootFrame, int window_ID, Object object) {
 		if(enable) {
 			int frameNumber = getWindowCounter();
-    		WindowFrame frame = new WindowFrame("Frame number " + frameNumber, window_ID, object);
+    		DemoJXFrame frame = new DemoJXFrame("Frame number " + frameNumber, window_ID, object);
     		frames.add(frame);
     		// close/dispose current and make frame current:
-    		WindowFrame current = currentDemoFrame;
+    		DemoJXFrame current = currentDemoFrame;
     		LOG.info("------------ close/dispose "+current);
     		if(current!=null) {
     			current.dispose();

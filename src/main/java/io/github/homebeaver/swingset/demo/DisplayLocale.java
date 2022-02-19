@@ -1,4 +1,4 @@
-package com.klst.swingx;
+package io.github.homebeaver.swingset.demo;
 
 import java.util.Locale;
 
