@@ -153,9 +153,9 @@ public class DemoAction extends AbstractActionExt {
 		this(democlass, name, getSmallIcon(ssv, cat), icon);
 	}
 
-    static DemoAction root = null;
-    static DemoAction ss2 = null;
-    static DemoAction ss3 = null;
+    private static DemoAction root = null;
+    private static DemoAction ss2 = null;
+    private static DemoAction ss3 = null;
     public static DemoAction getRootAction() {
     	if(root==null) {
     		root = new DemoAction((String)null, "Demo");
@@ -174,8 +174,8 @@ public class DemoAction extends AbstractActionExt {
     	}
     	return ss3;
     }
-	static ArrayList<DemoAction> ss2Actions = null;
-	static ArrayList<DemoAction> ss3Actions = null;
+	private static ArrayList<DemoAction> ss2Actions = null;
+	private static ArrayList<DemoAction> ss3Actions = null;
     public static ArrayList<DemoAction> getSS2Actions() {
     	if(ss2Actions==null) {
     		ss2Actions = new ArrayList<DemoAction>();

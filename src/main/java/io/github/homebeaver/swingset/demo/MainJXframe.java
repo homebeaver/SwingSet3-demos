@@ -148,23 +148,24 @@ ActionManager manager = ActionManager.getInstance();	 // ActionManager extends A
     public JMenu createDemosMenu() {
 //		TreeNode rootNode = DemoMenuAction.createTree();
     	TreeTableModel model = DemoTreeTableModel.getInstance();
-LOG.info("DemoTreeTableModel:"+model);
+//LOG.info("DemoTreeTableModel:"+model);
     	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
-LOG.info("root:"+root);
+//LOG.info("root:"+root);
     	this.menu = new JMenu((Action)root.getUserObject());
 
     	Object o2 = model.getChild(root,0);
-LOG.info("o2:"+o2 + ", model.ChildCount="+model.getChildCount(root));
+//LOG.info("o2:"+o2 + ", model.ChildCount="+model.getChildCount(root));
     	JMenu ss2 = (JMenu) menu.add(new JMenu((Action)o2));
     	for(int i=0;i<model.getChildCount(o2);i++) {
     		Object o = model.getChild(o2,i);
-    		LOG.info("o:"+o + ", o2.ChildCount="+model.getChildCount(o2));
+//    		LOG.info("o:"+o + ", o2.ChildCount="+model.getChildCount(o2));
     		AbstractButton ab = addActionToToolBar(this, (DemoAction)o); // add ToggleButton to ToolBar
     		LOG.config("AbstractButton:"+ab +" menu add:"+o);
     		ss2.add((DemoAction)o); // add menuitem DemoMenuAction to ss2 submenu
     	}
     	
     	Object o3 = model.getChild(root,1);
+//LOG.info("\no3:"+o3 + ", model.ChildCount="+model.getChildCount(o3));
     	JMenu ss3 = (JMenu) menu.add(new JMenu((Action)o3));
     	for(int i=0;i<model.getChildCount(o3);i++) {
     		Object o = model.getChild(o3,i);
@@ -179,28 +180,7 @@ LOG.info("o2:"+o2 + ", model.ChildCount="+model.getChildCount(root));
     	// white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
     	demoTree.setBackground(null); // so sind nur die texte weiss
     	
-//    	demoTree.expandAll(); 
-    	/* Exception:
-Exception in thread "main" java.lang.NullPointerException: Null child not allowed
-	at java.desktop/javax.swing.tree.TreePath.pathByAddingChild(TreePath.java:330)
-	at java.desktop/javax.swing.tree.VariableHeightLayoutCache$TreeStateNode.setParent(VariableHeightLayoutCache.java:1049)
-	at java.desktop/javax.swing.tree.DefaultMutableTreeNode.insert(DefaultMutableTreeNode.java:200)
-	at java.desktop/javax.swing.tree.DefaultMutableTreeNode.add(DefaultMutableTreeNode.java:424)
-	at java.desktop/javax.swing.tree.VariableHeightLayoutCache$TreeStateNode.expand(VariableHeightLayoutCache.java:1464)
-	at java.desktop/javax.swing.tree.VariableHeightLayoutCache$TreeStateNode.expand(VariableHeightLayoutCache.java:1272)
-	at java.desktop/javax.swing.tree.VariableHeightLayoutCache.ensurePathIsExpanded(VariableHeightLayoutCache.java:967)
-	at java.desktop/javax.swing.tree.VariableHeightLayoutCache.setExpandedState(VariableHeightLayoutCache.java:181)
-	at java.desktop/javax.swing.plaf.basic.BasicTreeUI.updateExpandedDescendants(BasicTreeUI.java:2003)
-	at java.desktop/javax.swing.plaf.basic.BasicTreeUI$Handler.treeExpanded(BasicTreeUI.java:4295)
-	at java.desktop/javax.swing.JTree.fireTreeExpanded(JTree.java:2853)
-	at java.desktop/javax.swing.JTree.setExpandedState(JTree.java:3766)
-	at java.desktop/javax.swing.JTree.expandPath(JTree.java:2296)
-	at java.desktop/javax.swing.JTree.expandRow(JTree.java:2311)
-	at org.jdesktop.swingx.JXTree.expandAll(JXTree.java:564)
-	at io.github.homebeaver.swingset.demo.MainJXframe.createDemosMenu(MainJXframe.java:181)
-	at io.github.homebeaver.swingset.demo.MainJXframe.main(MainJXframe.java:60)
-    	
-    	*/
+    	demoTree.expandAll(); 
     	demoTree.setEditable(false);
     	
 //    	demoTree.setComponentPopupMenu(JPopupMenu popup); ????

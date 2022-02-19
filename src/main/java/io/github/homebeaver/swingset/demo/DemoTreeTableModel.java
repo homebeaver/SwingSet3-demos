@@ -1,27 +1,14 @@
 package io.github.homebeaver.swingset.demo;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.Action;
-import javax.swing.Icon;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import org.jdesktop.swingx.icon.PauseIcon;
-import org.jdesktop.swingx.icon.PlayIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
-import org.jdesktop.swingx.icon.StopIcon;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
-//import com.klst.swingx.DemoMenuAction;
-
-//import com.klst.swingx.DemoMenuAction;
-//import com.klst.swingx.MenuTreeTableModel;
-//import com.klst.swingx.MenuTreeTableModel.Category;
-
 public class DemoTreeTableModel extends AbstractTreeTableModel {
+
+//	private static final Logger LOG = Logger.getLogger(DemoTreeTableModel.class.getName());
 
     private static final String[] columnNameKeys = 
     	{ Action.NAME       //                 expl. ButtonDemo
@@ -53,8 +40,6 @@ public class DemoTreeTableModel extends AbstractTreeTableModel {
      */
     public DemoTreeTableModel(TreeNode menuRoot) {
     	super(menuRoot);
-    	((DefaultMutableTreeNode)getRoot()).add(new DefaultMutableTreeNode(DemoAction.getSS2Action()));
-    	((DefaultMutableTreeNode)getRoot()).add(new DefaultMutableTreeNode(DemoAction.getSS3Action()));
     	// die arrays ss2Actions und ss3Actions initialisieren
     	DemoAction.getSS2Actions();
     	DemoAction.getSS3Actions();
@@ -114,16 +99,11 @@ public class DemoTreeTableModel extends AbstractTreeTableModel {
     		if(index==0) return DemoAction.getSS2Action();
     		if(index==1) return DemoAction.getSS3Action();
     	}
-//    	LOG.info("nicht root ----------- parent:"+parent);
     	if(parent==DemoAction.getSS2Action()) {
-//	    	LOG.info("index="+index+", parent is SS2Action:"+parent);
-//    		if(index>=0 && index<DemoAction.ss2Actions.size()) 
-    		return DemoAction.ss2Actions.get(index);
+    		return DemoAction.getSS2Actions().get(index);
     	}
     	if(parent==DemoAction.getSS3Action()) {
-//	    	LOG.info("index="+index+", parent is SS3Action:"+parent);
-//    		if(index>=0 && index<DemoAction.ss3Actions.size()) return 
-    		DemoAction.ss3Actions.get(index);
+    		return DemoAction.getSS3Actions().get(index);
     	}
 		return null;
 	}
@@ -134,8 +114,8 @@ public class DemoTreeTableModel extends AbstractTreeTableModel {
 	@Override
 	public int getChildCount(Object parent) {
     	if(parent==this.getRoot()) return 2;
-    	if(parent==DemoAction.getSS2Action()) return DemoAction.ss2Actions.size();
-    	if(parent==DemoAction.getSS3Action()) return DemoAction.ss3Actions.size();
+    	if(parent==DemoAction.getSS2Action()) return DemoAction.getSS2Actions().size();
+    	if(parent==DemoAction.getSS3Action()) return DemoAction.getSS3Actions().size();
 		return 0;
 	}
 
@@ -149,10 +129,10 @@ public class DemoTreeTableModel extends AbstractTreeTableModel {
     	if(parent==this.getRoot() && child==DemoAction.getSS2Action()) return 0;
     	if(parent==this.getRoot() && child==DemoAction.getSS3Action()) return 1;
     	if(parent==DemoAction.getSS2Action()) {
-    		return DemoAction.ss2Actions.indexOf(child);
+    		return DemoAction.getSS2Actions().indexOf(child);
     	}
     	if(parent==DemoAction.getSS3Action()) {
-    		return DemoAction.ss3Actions.indexOf(child);
+    		return DemoAction.getSS3Actions().indexOf(child);
     	}
 		return -1; // either parent or child don't belong to this tree model
 	}
