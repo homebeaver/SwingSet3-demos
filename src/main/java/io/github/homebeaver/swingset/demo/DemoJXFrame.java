@@ -62,6 +62,7 @@ public class DemoJXFrame extends JXFrame {
 			, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
 			, window_ID==-1 ? true : false // exitOnClose
 			);
+        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
 		windowCounter++;
 		this.windowNo = windowCounter-1;
 		this.window_ID = window_ID;

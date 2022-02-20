@@ -57,17 +57,20 @@ public class MainJXframe extends DemoJXFrame {
 	 * starts swingset demo application
 	 */
 	public static void main(String[] args) {
+		// hier ist es zu spät, da der DemoJXFrame ctor vorher dran kommt:
+//		LOG.info("swing.boldMetal="+UIManager.get("swing.boldMetal"));
+//        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+        
 		DemoJXFrame gossip = MainJXframe.getInstance(); // RootFrame contains a simple frame manager
-		
-        try {
-			UIManager.setLookAndFeel(new NimbusLookAndFeel());
-			NimbusLookAndFeelAddons addon = new NimbusLookAndFeelAddons();
-			addon.initialize();
-		} catch (UnsupportedLookAndFeelException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+		// to start with Nimbus (tut nicht so richtig)
+//        try {
+//			NimbusLookAndFeelAddons addon = new NimbusLookAndFeelAddons();
+//			addon.initialize();
+//			UIManager.setLookAndFeel(new NimbusLookAndFeel()); // throws UnsupportedLookAndFeelException
+//		} catch (UnsupportedLookAndFeelException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		JMenu demoMenu = gossip.createDemosMenu();
 
 		@SuppressWarnings("unused")
@@ -127,7 +130,7 @@ CENTER: JXPanel currentController
     	content.add(new JScrollPane(demoTree), BorderLayout.WEST);
     	tabbedpane = new JTabbedPane();
     	tabbedpane.add("source", new JXLabel("TODO enpty"));
-    	currentController = new JXPanel(); //empty
+    	currentController = new JXPanel(); //empty                      TODO intro
     	tabbedpane.add("controller", currentController);
     	content.add(tabbedpane, BorderLayout.CENTER);
     	getContentPane().add(content);
@@ -194,7 +197,7 @@ ActionManager manager = ActionManager.getInstance();	 // ActionManager extends A
     	demoTree.setName("demoTree");
     	demoTree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
     	// white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
-    	demoTree.setBackground(null); // so sind nur die texte weiss
+//    	demoTree.setBackground(null); // so sind nur die texte weiss
     	
     	demoTree.expandAll(); 
     	demoTree.setEditable(false);
