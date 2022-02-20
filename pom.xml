@@ -286,7 +286,8 @@ Unable to find javadoc command: The environment variable JAVA_HOME is not correc
 		    <version>1.2.1</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.pushingpixels/trident -- konflikt mit org.xml.sax.*
+		<!-- https://mvnrepository.com/artifact/org.pushingpixels/trident : konflikt mit org.xml.sax.*
+	daher auskommentiert und durch Teile der src org.pushingpixels.trident ersetzt
 		<dependency>
 		    <groupId>org.pushingpixels</groupId>
 		    <artifactId>trident</artifactId>
