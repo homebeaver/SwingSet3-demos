@@ -8,7 +8,6 @@ import static org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
@@ -17,9 +16,9 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,7 +29,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
-import org.jdesktop.application.Application;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.Bindings;
@@ -39,11 +37,12 @@ import org.jdesktop.beansbinding.Property;
 import org.jdesktop.beansbinding.PropertyStateEvent;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.binding.ArrayAggregator;
 import org.jdesktop.swingx.binding.BindingAdapter;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
@@ -59,7 +58,6 @@ import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.IconHighlighter;
 import org.jdesktop.swingx.decorator.PainterHighlighter;
 import org.jdesktop.swingx.decorator.ToolTipHighlighter;
-import org.jdesktop.swingx.demos.highlighterext.HighlighterExtDemo;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.ShapePainter;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
@@ -68,12 +66,10 @@ import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.util.PaintUtils;
 import org.jdesktop.swingx.util.ShapeUtils;
-import org.jdesktop.swingxset.DefaultDemoPanel;
 import org.jdesktop.swingxset.util.ComponentModels;
 
-import com.sun.swingset3.DemoProperties;
-
 import swingset.AbstractDemo;
+import swingset.StaticUtilities;
 
 /**
  * A demo for {@code Highlighter}.
@@ -127,6 +123,7 @@ public class HighlighterDemo extends AbstractDemo {
     private JXTreeTable treeTable;
     private JXComboBox comboBox;
     
+    // Controller:
     private JComboBox stripingOptions;
     private JComboBox highlighters;
     private JComboBox predicates;
@@ -140,11 +137,6 @@ public class HighlighterDemo extends AbstractDemo {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-//        initComponents();
-//    @Override
-//    protected void createDemo() {
-//        setLayout(new BorderLayout());
-        
         JTabbedPane tabbedPane = new JTabbedPane();
         
         list = new JXList();
@@ -159,11 +151,9 @@ public class HighlighterDemo extends AbstractDemo {
             }
         }));
         tabbedPane.addTab("JXList", new JScrollPane(list));
-//        contents.add(list, list.getName());
         
         table = new JXTable();
         tabbedPane.addTab("JXTable", new JScrollPane(table));
-//        contents.add(table, "table");
         
         tree = new JXTree();
         tree.setName("tree");
@@ -177,7 +167,6 @@ public class HighlighterDemo extends AbstractDemo {
             }
         }));
         tabbedPane.addTab("JXTree", new JScrollPane(tree));
-//        contents.add(tree, tree.getName());
         
         treeTable = new JXTreeTable();
         treeTable.setName("treeTable");
@@ -192,7 +181,6 @@ public class HighlighterDemo extends AbstractDemo {
             }
         }));
         tabbedPane.addTab("JXTreeTable", new JScrollPane(treeTable));
-//        contents.add(treeTable, treeTable.getName());
         
         comboBox = new JXComboBox();
         comboBox.setName("comboBox");
@@ -210,8 +198,17 @@ public class HighlighterDemo extends AbstractDemo {
         tabbedPane.addTab("JXComboBox", panel);
         
         add(tabbedPane);
-//        add(new JScrollPane(contents));
         
+        list.setModel(ComponentModels.getListModel(this));
+        table.setModel(ComponentModels.getTableModel(this));
+        tree.setModel(ComponentModels.getTreeModel(this));
+        treeTable.setTreeTableModel(ComponentModels.getTreeTableModel(this));
+        comboBox.setModel(ComponentModels.getComboBoxModel(this));
+    }
+    
+    @Override
+	public JXPanel getControlPane() {
+        JXPanel controller = new JXPanel(new BorderLayout());
         JPanel control = new JPanel(new GridLayout(2, 2));
         control.add(new JLabel("Highlighter Options:"));
         
@@ -250,27 +247,25 @@ public class HighlighterDemo extends AbstractDemo {
             }
         }));
         control.add(predicates);
-        add(control, BorderLayout.SOUTH);
-    }
-    
+        controller.add(control, BorderLayout.NORTH);
+
+        bind();
+
+        return controller;
+	}
+
     private ComboBoxModel getStripingOptionsModel() {
         List<HighlighterInfo> info = new ArrayList<HighlighterInfo>();
         info.add(new HighlighterInfo("No Striping", null));
-        info.add(new HighlighterInfo("Alternating UI-Dependent",
-                HighlighterFactory.createAlternateStriping()));
-        info.add(new HighlighterInfo("Alternating Groups (2) UI-Dependent",
-                HighlighterFactory.createAlternateStriping(2)));
-        info.add(new HighlighterInfo("Alternating Groups (3) UI-Dependent",
-                HighlighterFactory.createAlternateStriping(3)));
+        info.add(new HighlighterInfo("Alternating UI-Dependent",  HighlighterFactory.createAlternateStriping()));
+        info.add(new HighlighterInfo("Alternating Groups (2) UI-Dependent", HighlighterFactory.createAlternateStriping(2)));
+        info.add(new HighlighterInfo("Alternating Groups (3) UI-Dependent", HighlighterFactory.createAlternateStriping(3)));
         
         Color lightBlue = new Color(0xC0D9D9);
         Color gold = new Color(0xDBDB70);
-        info.add(new HighlighterInfo("Alternating Blue-Gold",
-                HighlighterFactory.createAlternateStriping(lightBlue, gold)));
-        info.add(new HighlighterInfo("Alternating Groups (2) Blue-Gold",
-                HighlighterFactory.createAlternateStriping(lightBlue, gold, 2)));
-        info.add(new HighlighterInfo("Alternating Groups (3) Blue-Gold",
-                HighlighterFactory.createAlternateStriping(lightBlue, gold, 3)));
+        info.add(new HighlighterInfo("Alternating Blue-Gold", HighlighterFactory.createAlternateStriping(lightBlue, gold)));
+        info.add(new HighlighterInfo("Alternating Groups (2) Blue-Gold", HighlighterFactory.createAlternateStriping(lightBlue, gold, 2)));
+        info.add(new HighlighterInfo("Alternating Groups (3) Blue-Gold", HighlighterFactory.createAlternateStriping(lightBlue, gold, 3)));
         
         return new ListComboBoxModel<HighlighterInfo>(info);
     }
@@ -278,34 +273,24 @@ public class HighlighterDemo extends AbstractDemo {
     private ComboBoxModel getHighlighterOptionsModel() {
         List<HighlighterInfo> info = new ArrayList<HighlighterInfo>();
         info.add(new HighlighterInfo("No Additional Highlighter", null));
-        info.add(new HighlighterInfo("Green Border",
-                new BorderHighlighter(BorderFactory.createLineBorder(Color.GREEN, 1))));
-        info.add(new HighlighterInfo("Blue Border",
-                new BorderHighlighter(BorderFactory.createLineBorder(Color.BLUE, 1))));
-        info.add(new HighlighterInfo("Red Text",
-                new ColorHighlighter(null, Color.RED)));
-        info.add(new HighlighterInfo("Purple Text",
-                new ColorHighlighter(null, new Color(0x80, 0x00, 0x80))));
-        info.add(new HighlighterInfo("Blended Red Background",
-                new ColorHighlighter(new Color(255, 0, 0, 127), null)));
-        info.add(new HighlighterInfo("Blended Green Background",
-                new ColorHighlighter(new Color(0, 180, 0, 80), null)));
-        info.add(new HighlighterInfo("Green Orb Icon",
-                new IconHighlighter(Application.getInstance().getContext()
-                        .getResourceMap(HighlighterDemo.class).getIcon("greenOrb"))));
-        info.add(new HighlighterInfo("Aerith Gradient Painter",
-                new PainterHighlighter(new MattePainter(PaintUtils.AERITH, true))));
+        info.add(new HighlighterInfo("Green Border", new BorderHighlighter(BorderFactory.createLineBorder(Color.GREEN, 1))));
+        info.add(new HighlighterInfo("Blue Border", new BorderHighlighter(BorderFactory.createLineBorder(Color.BLUE, 1))));
+        info.add(new HighlighterInfo("Red Text",  new ColorHighlighter(null, Color.RED)));
+        info.add(new HighlighterInfo("Purple Text", new ColorHighlighter(null, new Color(0x80, 0x00, 0x80))));
+        info.add(new HighlighterInfo("Blended Red Background", new ColorHighlighter(new Color(255, 0, 0, 127), null)));
+        info.add(new HighlighterInfo("Blended Green Background", new ColorHighlighter(new Color(0, 180, 0, 80), null)));
+//        info.add(new HighlighterInfo("Green Orb Icon",
+//                new IconHighlighter(Application.getInstance().getContext()
+//                        .getResourceMap(HighlighterDemo.class).getIcon("greenOrb"))));
+        Icon greenOrb = StaticUtilities.createImageIcon(this.getClass(), "resources/images/green-orb.png");
+        info.add(new HighlighterInfo("Green Orb Icon", new IconHighlighter(greenOrb)));
+        info.add(new HighlighterInfo("Aerith Gradient Painter", new PainterHighlighter(new MattePainter(PaintUtils.AERITH, true))));
         info.add(new HighlighterInfo("Star Shape Painter",
-                new PainterHighlighter(new ShapePainter(
-                        ShapeUtils.generatePolygon(5, 10, 5, true), PaintUtils.NIGHT_GRAY_LIGHT))));
-        info.add(new HighlighterInfo("10pt. Bold Dialog Font",
-                new FontHighlighter(new Font("Dialog", Font.BOLD, 10))));
-        info.add(new HighlighterInfo("Italic Font",
-                new DerivedFontHighlighter(Font.ITALIC)));
-        info.add(new HighlighterInfo("Trailing Alignment",
-                new AlignmentHighlighter(SwingConstants.TRAILING)));
-        info.add(new HighlighterInfo("Show As Disabled",
-                new EnabledHighlighter(false)));
+                new PainterHighlighter(new ShapePainter(ShapeUtils.generatePolygon(5, 10, 5, true), PaintUtils.NIGHT_GRAY_LIGHT))));
+        info.add(new HighlighterInfo("10pt. Bold Dialog Font", new FontHighlighter(new Font("Dialog", Font.BOLD, 10))));
+        info.add(new HighlighterInfo("Italic Font", new DerivedFontHighlighter(Font.ITALIC)));
+        info.add(new HighlighterInfo("Trailing Alignment", new AlignmentHighlighter(SwingConstants.TRAILING)));
+        info.add(new HighlighterInfo("Show As Disabled", new EnabledHighlighter(false)));
         
         return new ListComboBoxModel<HighlighterInfo>(info);
     }
@@ -318,30 +303,14 @@ public class HighlighterDemo extends AbstractDemo {
         info.add(new HighlightPredicateInfo("Non-Leaf Node", HighlightPredicate.IS_FOLDER));
         info.add(new HighlightPredicateInfo("Leaf Node", HighlightPredicate.IS_LEAF));
         info.add(new HighlightPredicateInfo("Rollover Row", HighlightPredicate.ROLLOVER_ROW));
-        info.add(new HighlightPredicateInfo("Columns 0 and 3",
-                new HighlightPredicate.ColumnHighlightPredicate(0, 3)));
-        info.add(new HighlightPredicateInfo("Node Depth Columns 0 and 3",
-                new HighlightPredicate.DepthHighlightPredicate(0, 3)));
-        info.add(new HighlightPredicateInfo("JButton Type",
-                new HighlightPredicate.TypeHighlightPredicate(JButton.class)));
+        info.add(new HighlightPredicateInfo("Columns 0 and 3", new HighlightPredicate.ColumnHighlightPredicate(0, 3)));
+        info.add(new HighlightPredicateInfo("Node Depth Columns 0 and 3", new HighlightPredicate.DepthHighlightPredicate(0, 3)));
+        info.add(new HighlightPredicateInfo("JButton Type", new HighlightPredicate.TypeHighlightPredicate(JButton.class)));
         
         return new ListComboBoxModel<HighlightPredicateInfo>(info);
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void bind() {
-        list.setModel(ComponentModels.getListModel(this));
-        table.setModel(ComponentModels.getTableModel(this));
-        tree.setModel(ComponentModels.getTreeModel(this));
-        treeTable.setTreeTableModel(ComponentModels.getTreeTableModel(this));
-        comboBox.setModel(ComponentModels.getComboBoxModel(this));
-        
-//        previousBtn.setAction(map.get("displayPrevious"));
-//        nextBtn.setAction(map.get("displayNext"));
+    private void bind() {
         
         Binding b = Bindings.createAutoBinding(READ,
                 predicates, ELProperty.create("${selectedItem.predicate}"),
@@ -390,14 +359,5 @@ public class HighlighterDemo extends AbstractDemo {
                 activeHighlighters, BeanProperty.create("value"),
                 comboBox, BeanProperty.create("highlighters")).bind();
     }
-//    
-//    @Action
-//    public void displayNext() {
-//        layout.next(contents);
-//    }
-//    
-//    @Action
-//    public void displayPrevious() {
-//        layout.previous(contents);
-//    }
+
 }
