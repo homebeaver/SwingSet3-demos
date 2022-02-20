@@ -15,7 +15,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.jdesktop.swingx.JXFrame;
@@ -23,6 +22,8 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXTree;
+import org.jdesktop.swingx.action.ActionContainerFactory;
+import org.jdesktop.swingx.action.ActionManager;
 import org.jdesktop.swingx.plaf.nimbus.NimbusLookAndFeelAddons;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
@@ -57,7 +58,6 @@ public class MainJXframe extends DemoJXFrame {
 	 */
 	public static void main(String[] args) {
 		DemoJXFrame gossip = MainJXframe.getInstance(); // RootFrame contains a simple frame manager
-		JMenu demoMenu = gossip.createDemosMenu();
 		
         try {
 			UIManager.setLookAndFeel(new NimbusLookAndFeel());
@@ -68,6 +68,7 @@ public class MainJXframe extends DemoJXFrame {
 			e1.printStackTrace();
 		}
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+		JMenu demoMenu = gossip.createDemosMenu();
 
 		@SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
@@ -131,41 +132,62 @@ CENTER: JXPanel currentController
     	content.add(tabbedpane, BorderLayout.CENTER);
     	getContentPane().add(content);
 	}
-	JXTree demoTree = null;
-	JMenu menu;
-	// TODO use ActionContainerFactory.createMenu( ... )
+	private JXTree demoTree = null;
+	private JMenu menu;
+
 	/*
 	 
 ActionManager manager = ActionManager.getInstance();	 // ActionManager extends ActionMap
     ActionManager am = new ActionManager();
+//    use ActionContainerFactory.createMenu( ... )
     ActionContainerFactory acf = new ActionContainerFactory(am);
     JToolBar bar = null;
         initActionManager(); // am befüllen
 
         bar = acf.createToolBar(Arrays.asList(new String[] { "ba", "bb" }));
+        JMenu menu = acf.createMenu( ...
+        
+        acf.createToggleButton(AbstractActionExt a)
 	 
 	 */
+	// So ist es gut:
+	private JMenu createMenu() {
+		ActionManager manager = ActionManager.getInstance(); // ActionManager extends ActionMap
+		ActionContainerFactory factory = new ActionContainerFactory(manager);
+		manager.addAction(DemoAction.getRootAction().getName(), DemoAction.getRootAction());
+		manager.addAction(DemoAction.getSS2Action().getName(), DemoAction.getSS2Action());
+		manager.addAction(DemoAction.getSS3Action().getName(), DemoAction.getSS3Action());
+		
+		List<String> submenu2Ids = new ArrayList<String>(); // submenu SwingSet2
+		submenu2Ids.add(DemoAction.getSS2Action().getName());
+		DemoAction.getSS2Actions().forEach( a -> {
+			manager.addAction(a.getName(), a);
+			// ein hack, denn eigentlich sollte factory.createToolBar( ... verwendet werden
+			AbstractButton ab = addActionToToolBar(this, a); // add ToggleButton to ToolBar
+			
+			submenu2Ids.add(a.getName());
+		});
+		
+		List<String> submenu3Ids = new ArrayList<String>(); // submenu SwingSet3
+		submenu3Ids.add(DemoAction.getSS3Action().getName());
+		DemoAction.getSS3Actions().forEach( a -> {
+			manager.addAction(a.getName(), a);
+			submenu3Ids.add(a.getName());
+		});
+		
+		
+		List<Object> menuIds = new ArrayList<Object>();
+		menuIds.add(DemoAction.getRootAction().getName());
+		menuIds.add(submenu2Ids);
+		menuIds.add(submenu3Ids);
+		
+		return factory.createMenu(menuIds);
+	}
+	
     public JMenu createDemosMenu() {
     	TreeTableModel model = DemoTreeTableModel.getInstance();
-    	DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot(); // DefaultMutableTreeNode root
-    	this.menu = new JMenu((Action)root.getUserObject());
-
-    	Object o2 = model.getChild(root,0);
-    	JMenu ss2 = (JMenu) menu.add(new JMenu((Action)o2));
-    	for(int i=0;i<model.getChildCount(o2);i++) {
-    		Object o = model.getChild(o2,i);
-    		AbstractButton ab = addActionToToolBar(this, (DemoAction)o); // add ToggleButton to ToolBar
-    		LOG.config("AbstractButton:"+ab +" menu add:"+o);
-    		ss2.add((DemoAction)o); // add menuitem DemoMenuAction to ss2 submenu
-    	}
     	
-    	Object o3 = model.getChild(root,1);
-    	JMenu ss3 = (JMenu) menu.add(new JMenu((Action)o3));
-    	for(int i=0;i<model.getChildCount(o3);i++) {
-    		Object o = model.getChild(o3,i);
-    		LOG.config("menuitem add:"+(DemoAction)o);
-    		ss3.add((DemoAction)o); // add menuitem DemoMenuAction to ss3 submenu
-    	}
+    	this.menu = createMenu(); // mit add ToggleButton to ToolBar
     	
     	demoTree = new JXTree(model);
 
