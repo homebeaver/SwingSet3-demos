@@ -67,6 +67,7 @@ import swingset.AbstractDemo;
 //                "org/jdesktop/swingx/demos/search/resources/SearchDemo.properties"
 //                }
 //)
+// TODO open find dialog wie in swingx-core test FindVisualCheck.interactiveFindDialogSelectionTree()
 /**
  * SearchDemo
  * 
@@ -102,7 +103,6 @@ public class SearchDemo extends AbstractDemo {
 			}		
     	});
     }
-
 
     private Contributors contributors; // Data
     private String[] keys = {"name", "date", "merits", "email"};
@@ -490,10 +490,4 @@ public class SearchDemo extends AbstractDemo {
         add(tab);
     }
 
-    private void addTab(JTabbedPane tab, JComponent comp, String string, boolean createScroll) {
-//        String name = DemoUtils.getResourceString(getClass(), string);
-    	String name = getString(string);
-        tab.addTab(name, createScroll ? new JScrollPane(comp) : comp);
-    }
-    
 }

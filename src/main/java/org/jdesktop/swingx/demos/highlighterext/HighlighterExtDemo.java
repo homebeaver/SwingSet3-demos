@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -191,13 +189,6 @@ public class HighlighterExtDemo extends AbstractDemo {
 //        addTab(tab, tree, "treeTabTitle", true);
 //        addTab(tab, treeTable, "treeTableTabTitle", true);
         add(tab);
-    }
-
-    // TODO method nach super verschieben
-    private void addTab(JTabbedPane tab, JComponent comp, String string, boolean createScroll) {
-//        String name = DemoUtils.getResourceString(getClass(), string);
-    	String name = getString(string);
-        tab.addTab(name, createScroll ? new JScrollPane(comp) : comp);
     }
 
     // <snip> Relativizer

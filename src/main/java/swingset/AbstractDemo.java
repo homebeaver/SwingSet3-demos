@@ -5,6 +5,9 @@ import java.awt.LayoutManager;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
@@ -68,6 +71,10 @@ public abstract class AbstractDemo extends JXPanel {
     	String key = this.getClass().getSimpleName() + '.' + resourceKey;
     	return StaticUtilities.getResourceAsString(key, resourceKey);
     }
+
+    public void addTab(JTabbedPane tab, JComponent comp, String name, boolean createScroll) {
+		tab.addTab(getString(name), createScroll ? new JScrollPane(comp) : comp);
+	}
 
     char getMnemonic(String key) {
         return (getString(key)).charAt(0);
