@@ -46,7 +46,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 			// nicht notwendig !!!!!!! ??????????? doch, denn die Daten sind in oscars.xml
-// TODO Konflikt mit batik !!!!!
+// TODO Konflikt mit batik und mit trident !!!!! : The package org.xml.sax.helpers is accessible from more than one module: <unnamed>, java.xml
 public abstract class OscarDataParser extends DefaultHandler {
 	
     private static final String[] CATEGORIES_IN = {

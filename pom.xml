@@ -199,7 +199,7 @@ Unable to find javadoc command: The environment variable JAVA_HOME is not correc
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13</version>
+			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -223,40 +223,59 @@ Unable to find javadoc command: The environment variable JAVA_HOME is not correc
 		    <version>1.0</version>
 		</dependency>
 
+<!-- public 1.6.8 jars:
+    	<module>swingx-mavensupport</module>
+    swingx-testsupport
+    swingx-common
+    swingx-autocomplete
+    swingx-action
+    swingx-painters
+    TODO swingx-graphics</module>
+    swingx-plaf
+    swingx-core
+    	<module>swingx-all</module>
+    	<module>swingx-beaninfo</module>
+ -->
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-core</artifactId>
-			<version>1.6.8-SNAPSHOT</version>
+			<version>1.6.8</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-action</artifactId>
-			<version>1.6.8-SNAPSHOT</version>
+			<version>1.6.8</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-autocomplete</artifactId>
-			<version>1.6.8-SNAPSHOT</version>
+			<version>1.6.8</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-plaf</artifactId>
-			<version>1.6.8-SNAPSHOT</version>
+			<version>1.6.8</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-painters</artifactId>
-			<version>1.6.8-SNAPSHOT</version>
+			<version>1.6.8</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-common</artifactId>
-			<version>1.6.8-SNAPSHOT</version>
+			<version>1.6.8</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.github.homebeaver</groupId>
+			<artifactId>swingx-testsupport</artifactId>
+			<version>1.6.8</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -266,7 +285,14 @@ Unable to find javadoc command: The environment variable JAVA_HOME is not correc
 		    <artifactId>forms</artifactId>
 		    <version>1.2.1</version>
 		</dependency>
-	
+
+		<!-- https://mvnrepository.com/artifact/org.pushingpixels/trident -- konflikt mit org.xml.sax.*
+		<dependency>
+		    <groupId>org.pushingpixels</groupId>
+		    <artifactId>trident</artifactId>
+		    <version>1.3</version>
+		</dependency>
+	-->
 		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
 		    <groupId>org.postgresql</groupId>

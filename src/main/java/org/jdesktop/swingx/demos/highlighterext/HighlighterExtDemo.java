@@ -47,7 +47,7 @@ import org.jdesktop.swingx.treetable.TreeTableModelAdapter;
 import org.jdesktop.swingx.util.PaintUtils;
 import org.jdesktop.swingxset.util.RelativePainterHighlighter;
 import org.jdesktop.swingxset.util.RelativePainterHighlighter.NumberRelativizer;
-import org.pushingpixels.trident.Timeline;
+import org.pushingpixels.trident.Timeline; // Konflikt mit org.xml.sax.*
 import org.pushingpixels.trident.ease.Spline;
 
 import swingset.AbstractDemo;
