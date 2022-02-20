@@ -4,11 +4,8 @@
  */
 package org.jdesktop.swingx.demos.highlighterext;
 
-//import static org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.net.URI;
@@ -19,8 +16,6 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -29,25 +24,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
-//import org.jdesktop.application.Action;
-//import org.jdesktop.application.Application;
 import org.jdesktop.beans.AbstractBean;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.demos.search.Contributor;
 import org.jdesktop.swingx.demos.search.Contributors;
-import org.jdesktop.swingx.demos.search.SearchDemo;
-import org.jdesktop.swingx.demos.search.SearchDemo.SearchControl;
 import org.jdesktop.swingx.hyperlink.AbstractHyperlinkAction;
 import org.jdesktop.swingx.hyperlink.HyperlinkAction;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -60,13 +48,6 @@ import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.treetable.TreeTableModelAdapter;
 import org.jdesktop.swingx.util.PaintUtils;
 import org.jdesktop.swingxset.util.RelativePainterHighlighter;
-//import org.jdesktop.swingxset.util.DemoUtils;
-//import org.jdesktop.swingxset.util.RelativePainterHighlighter;
-//import org.jdesktop.swingxset.util.RelativePainterHighlighter.NumberRelativizer;
-//import org.pushingpixels.trident.Timeline;
-//import org.pushingpixels.trident.ease.Spline;
-//
-//import com.sun.swingset3.DemoProperties;
 import org.jdesktop.swingxset.util.RelativePainterHighlighter.NumberRelativizer;
 import org.pushingpixels.trident.Timeline;
 import org.pushingpixels.trident.ease.Spline;
@@ -144,26 +125,15 @@ public class HighlighterExtDemo extends AbstractDemo {
 
         initComponents();
         
-//      bind(); :
+//      bind() :
       contributors = new Contributors();
       table.setModel(contributors.getTableModel());
       list.setModel(contributors.getListModel());
       tree.setModel(new DefaultTreeModel(contributors.getRootNode()));
       treeTable.setTreeTableModel(new TreeTableModelAdapter(tree.getModel(), contributors.getContributorNodeModel()));
 
-   // init highlighter control
-      highlighterControl = new HighlighterControl(); 
-//      raceButton.setAction(getAction("race")); TODO
-//      fadeInButton.setAction(getAction("fadeIn"));
-
-//    
-//    public HighlighterExtDemo() {
-//        super(new BorderLayout());
-//        initComponents();
-//        Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(this);
-//        bind();
-//        // simple setup of per-column renderers, so can do only after binding
-//        installRenderers();
+      // simple setup of per-column renderers, so can do only after binding
+      installRenderers();
     }
 
     @Override
@@ -172,6 +142,7 @@ public class HighlighterExtDemo extends AbstractDemo {
         
         extendedMarkerBox = new JCheckBox();
         extendedMarkerBox.setName("extendedMarkerBox");
+        extendedMarkerBox.setText("Span All Columns"); // TODO prop: extendedMarkerBox.text = Span All Columns
         extendedMarkerBox.addActionListener( ae -> {
         	LOG.info("actionEvent:"+ae + " selected="+extendedMarkerBox.isSelected());
         	highlighterControl.setSpreadColumns(extendedMarkerBox.isSelected());
@@ -179,14 +150,27 @@ public class HighlighterExtDemo extends AbstractDemo {
 
         raceButton = new JButton();
         raceButton.setName("playButton");
+        raceButton.setText("Race Color Bar"); // TODO prop: race.Action.text = Race Color Bar
         fadeInButton = new JButton();
         fadeInButton.setName("fadeInButton");
-        
-//        JPanel control = new JPanel();
+        fadeInButton.setText("Fade In Color"); // TODO prop: fadeIn.Action.text = Fade In Color
+
+        // init highlighter control
+        highlighterControl = new HighlighterControl(); 
+//        raceButton.setAction(getAction("race")); so geht es auch:
+        raceButton.addActionListener( ae -> {
+        	LOG.info("actionEvent:"+ae + " selected="+raceButton.isSelected());
+        	highlighterControl.race(); // Delegates to the highlighterControl
+        });
+//        fadeInButton.setAction(getAction("fadeIn"));
+        fadeInButton.addActionListener( ae -> {
+        	LOG.info("actionEvent:"+ae + " selected="+fadeInButton.isSelected());
+        	highlighterControl.fadeIn(); // Delegates to the highlighterControl
+        });
+    
         controller.add(extendedMarkerBox);
         controller.add(raceButton);
         controller.add(fadeInButton);
-//        add(control, BorderLayout.SOUTH);
     	return controller;
 	}
 
@@ -201,24 +185,12 @@ public class HighlighterExtDemo extends AbstractDemo {
         treeTable.setColumnControlVisible(true);
 
         JTabbedPane tab = new JTabbedPane();
+        tab.setName("highlightTabs");
         addTab(tab, table, "tableTabTitle", true);
         addTab(tab, list, "listTabTitle", true);
-//        addTab(tab, tree, "HighlighterExtDemo.tree", true);
-//        addTab(tab, treeTable, "HighlighterExtDemo.treeTable", true);
+//        addTab(tab, tree, "treeTabTitle", true);
+//        addTab(tab, treeTable, "treeTableTabTitle", true);
         add(tab);
-        
-//        extendedMarkerBox = new JCheckBox();
-//        extendedMarkerBox.setName("extendedMarkerBox");
-//        raceButton = new JButton();
-//        raceButton.setName("playButton");
-//        fadeInButton = new JButton();
-//        fadeInButton.setName("fadeInButton");
-//        
-//        JPanel control = new JPanel();
-//        control.add(extendedMarkerBox);
-//        control.add(raceButton);
-//        control.add(fadeInButton);
-//        add(control, BorderLayout.SOUTH);
     }
 
     // TODO method nach super verschieben
@@ -227,38 +199,6 @@ public class HighlighterExtDemo extends AbstractDemo {
     	String name = getString(string);
         tab.addTab(name, createScroll ? new JScrollPane(comp) : comp);
     }
-
-    //----------------------- bind    
-    /**
-     * 
-     */
-//    private void bind() {
-        // set the models
-//        contributors = new Contributors();
-//        table.setModel(contributors.getTableModel());
-//        list.setModel(contributors.getListModel());
-//        tree.setModel(new DefaultTreeModel(contributors.getRootNode()));
-//        treeTable.setTreeTableModel(new TreeTableModelAdapter(
-//                tree.getModel(), contributors.getContributorNodeModel()));
-//        // init highlighter control
-//        highlighterControl = new HighlighterControl(); 
-//        raceButton.setAction(getAction("race"));
-//        fadeInButton.setAction(getAction("fadeIn"));
-//    }
-    
-//    @Action 
-//    public void race() {
-//        highlighterControl.race();
-//    }
-//    
-//    @Action 
-//    public void fadeIn() {
-//        highlighterControl.fadeIn();
-//    }
-//    
-//    private javax.swing.Action getAction(String string) {
-//        return Application.getInstance().getContext().getActionMap(this).get(string);
-//    }
 
     // <snip> Relativizer
     // implement custom Relativizer class
@@ -304,11 +244,11 @@ public class HighlighterExtDemo extends AbstractDemo {
             setSpreadColumns(false);
 
 /*
-//            BindingGroup group = new BindingGroup();
-//            group.addBinding(Bindings.createAutoBinding(READ, 
-//                    extendedMarkerBox, BeanProperty.create("selected"),
-//                    this, BeanProperty.create("spreadColumns")));
-//            group.bind();
+            BindingGroup group = new BindingGroup();
+            group.addBinding(Bindings.createAutoBinding(READ, 
+                    extendedMarkerBox, BeanProperty.create("selected"),
+                    this, BeanProperty.create("spreadColumns")));
+            group.bind();
             // equivalent to
         extendedMarkerBox.addActionListener( ae -> {
         	LOG.info("actionEvent:"+ae + " selected="+extendedMarkerBox.isSelected());
@@ -427,6 +367,7 @@ public class HighlighterExtDemo extends AbstractDemo {
     /**
      * Prepare different String representations.
      */
+    // wie in SearchDemo!
     private void initStringRepresentation() {
         stringValues = new HashMap<String, StringValue>();
         StringValue nameValue = new StringValue() {
