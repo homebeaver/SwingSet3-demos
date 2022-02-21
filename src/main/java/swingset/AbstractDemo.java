@@ -4,6 +4,9 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -75,13 +78,34 @@ public abstract class AbstractDemo extends JXPanel {
         return (getString(key)).charAt(0);
     }
 
+    private ResourceBundle bundle; 
+    protected String getBundleString(String key) {
+    	return getBundleString(key, key);
+    }
+    protected String getBundleString(String key, String fallback) {
+        String value = fallback;
+        if (bundle == null) {
+        	// in SwingSet3: bundleName :== <package name>.resources.<class SimpleName>
+            String bundleName = getClass().getPackage().getName()+".resources."+getClass().getSimpleName();
+            bundle = ResourceBundle.getBundle(bundleName);
+//            getBundle(String baseName, Locale locale)
+        }
+        try {
+            value = bundle != null ? bundle.getString(key) : fallback;
+        
+        } catch (MissingResourceException e) {
+            Logger.getAnonymousLogger().warning("missing String resource " + key + "; using fallback \"" +fallback + "\"");
+        }
+        return value;
+    } 
+
     protected String getString(String resourceKey) {
     	String key = this.getClass().getSimpleName() + '.' + resourceKey;
     	return StaticUtilities.getResourceAsString(key, resourceKey);
     }
 
     protected void addTab(JTabbedPane tab, JComponent comp, String name, boolean createScroll) {
-		tab.addTab(getString(name), createScroll ? new JScrollPane(comp) : comp);
+		tab.addTab(getBundleString(name), createScroll ? new JScrollPane(comp) : comp);
 	}
 
     /**

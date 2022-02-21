@@ -64,6 +64,7 @@ public class HyperlinkDemo extends AbstractDemo {
 	
 	private static final long serialVersionUID = 2847724784701465650L;
 	private static final Logger LOG = Logger.getLogger(HyperlinkDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXHyperlink, a button providing a hyperlink feel.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -75,7 +76,7 @@ public class HyperlinkDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new HyperlinkDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
@@ -93,7 +94,7 @@ public class HyperlinkDemo extends AbstractDemo {
     private JXHyperlink customBrowse;
     private JXHyperlink plainMail;
     private JXHyperlink customLink;
-    private JXList linkList;
+    private JXList<URI> linkList;
     private JXTable linkTable;
     private JXTree linkTree;
     
@@ -102,14 +103,7 @@ public class HyperlinkDemo extends AbstractDemo {
      */
     public HyperlinkDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
-/*
-
-Feb. 21, 2022 6:34:46 PM swingset.StaticUtilities getResourceAsString
-WARNUNG: java.util.MissingResourceException: 
-	Can't find resource for bundle java.util.PropertyResourceBundle, key HyperlinkDemo.name
-    	
- */
+    	frame.setTitle(DESCRIPTION);
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -129,7 +123,7 @@ WARNUNG: java.util.MissingResourceException:
     private void createHyperlinkDemo() {
         JXTitledSeparator simple = new JXTitledSeparator();
         simple.setName("simpleSeparator");
-        simple.setTitle("Default Desktop Action"); // TODO prop: simpleSeparator.title = Default Desktop Action
+        simple.setTitle(getBundleString("simpleSeparator.title", "Default Desktop Action"));
         
         plainBrowse = new JXHyperlink();
         plainBrowse.setName("plainBrowse");
@@ -153,7 +147,7 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
         
         JXTitledSeparator custom = new JXTitledSeparator();
         custom.setName("customSeparator");
-        custom.setTitle("Custom Action"); // TODO prop: customSeparator.title = Custom Action
+        custom.setTitle(getBundleString("customSeparator.title"));
         customLink = new JXHyperlink();
         customLink.setName("customLink");
         
@@ -167,7 +161,7 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
         standaloneLinks.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
         JComponent renderedLinks = new JXPanel(new BorderLayout());
-        linkList = new JXList();
+        linkList = new JXList<URI>();
         
         linkTable = new JXTable();
         linkTable.setVisibleRowCount(10);
@@ -203,7 +197,7 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
         
         // <snip> List with hyperlink renderer
         // model containing URIs
-        linkList.setModel(new DefaultComboBoxModel(new Object[] {
+        linkList.setModel(new DefaultComboBoxModel<URI>(new URI[] {
                 new URI("https://swingx.dev.java.net"),
                 new URI("http://wiki.java.net/bin/view/Javadesktop/SwingLabsSwingX"),
                 new URI("http://forums.java.net/jive/forum.jspa?forumID=73")
@@ -243,8 +237,8 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
             @Override
             public void actionPerformed(ActionEvent e) {
                 int option = JOptionPane.showConfirmDialog(null, 
-                        getString("customAction.message"),
-                        getString("customAction.title"), 
+                		getBundleString("customAction.message"),
+                		getBundleString("customAction.title"), 
                         JOptionPane.YES_NO_OPTION);
                 setVisited(option == JOptionPane.YES_OPTION);
             }
@@ -259,7 +253,7 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
                 Icon unverifiedIcon = getResourceAsIcon(getClass(), "resources/images/earth_day.gif");
                 Icon verifiedIcon = getResourceAsIcon(getClass(), "resources/images/earth_night.gif");
                 setSmallIcon(isVisited() ? verifiedIcon : unverifiedIcon);
-                setName(isVisited() ? getString("customAction.verifiedText") : getString("customAction.unverifiedText"));
+                setName(isVisited() ? getBundleString("customAction.verifiedText") : getBundleString("customAction.unverifiedText"));
             }
             // </snip>
         };
