@@ -10,7 +10,7 @@
   
   <name>swingset3 demos</name>
   <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 + swingset3</description>
-  <version>1.6.8-SNAPSHOT</version>
+  <version>1.6.8</version>
   
   <inceptionYear>2005</inceptionYear>
 	
@@ -49,7 +49,7 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 			                <mainClass>
-			                    com.klst.swingx.RootFrame
+			                    io.github.homebeaver.swingset.demo.MainJXframe
 			                </mainClass>
                         </manifest>
                         <manifestEntries>
@@ -93,7 +93,7 @@
                     </descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.klst.swingx.RootFrame</mainClass>
+							<mainClass>io.github.homebeaver.swingset.demo.MainJXframe</mainClass>
 						</manifest>
 					</archive>
                 </configuration>
