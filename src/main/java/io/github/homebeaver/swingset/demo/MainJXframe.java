@@ -12,9 +12,6 @@ import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.jdesktop.swingx.JXFrame;
@@ -24,12 +21,12 @@ import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.action.ActionContainerFactory;
 import org.jdesktop.swingx.action.ActionManager;
-import org.jdesktop.swingx.plaf.nimbus.NimbusLookAndFeelAddons;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.jdesktop.swingxset.IntroPanelDemo;
 
 /*
 TODO RootFrame <> JXRootPane extends JRootPane (A lightweight container used behind the scenes by JFrame, JDialog, JWindow, JApplet, and JInternalFrame.)
@@ -129,9 +126,10 @@ CENTER: JXPanel currentController
     	content = new JXPanel(new BorderLayout());
     	content.add(new JScrollPane(demoTree), BorderLayout.WEST);
     	tabbedpane = new JTabbedPane();
-    	tabbedpane.add("source", new JXLabel("TODO enpty"));
-    	currentController = new JXPanel(); //empty                      TODO intro
+    	tabbedpane.add("source", new JXLabel("TODO enpty")); // TODO
+    	currentController = new IntroPanelDemo();
     	tabbedpane.add("controller", currentController);
+    	tabbedpane.setSelectedComponent(currentController);
     	content.add(tabbedpane, BorderLayout.CENTER);
     	getContentPane().add(content);
 	}
