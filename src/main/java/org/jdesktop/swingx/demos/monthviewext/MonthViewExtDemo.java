@@ -178,7 +178,7 @@ public class MonthViewExtDemo extends AbstractDemo {
         builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
         builder.add(monthView, cc.xywh(2, 3, 1, 1));
                 
-        add(monthViewContainer, BorderLayout.CENTER);
+        add(monthViewContainer, BorderLayout.EAST);
         
         // Controller:
         extended = createExtendedConfigPanel(); // JXCollapsiblePane
