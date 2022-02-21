@@ -33,7 +33,6 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.VerticalLayout;
-import org.jdesktop.swingx.demos.monthviewext.MonthViewExtDemo;
 import org.jdesktop.swingx.hyperlink.AbstractHyperlinkAction;
 import org.jdesktop.swingx.hyperlink.HyperlinkAction;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
@@ -64,7 +63,7 @@ import swingset.StaticUtilities;
 public class HyperlinkDemo extends AbstractDemo {
 	
 	private static final long serialVersionUID = 2847724784701465650L;
-	private static final Logger LOG = Logger.getLogger(MonthViewExtDemo.class.getName());
+	private static final Logger LOG = Logger.getLogger(HyperlinkDemo.class.getName());
 
     /**
      * main method allows us to run as a standalone demo.
@@ -133,11 +132,33 @@ public class HyperlinkDemo extends AbstractDemo {
         
         customBrowse = new JXHyperlink();
         customBrowse.setName("customBrowse");
-        /* TODO
+        /* props:
 customBrowse.text = SwingX - Swing Extension, Experiment, Excitement
 customBrowse.icon = images/workerduke.png
 customBrowse.toolTipText = Default browser action, custom icon and text injected
+
+BUG:
+- Text wird nicht gezeigt, sondern URL
+- Icon wird nicht gezeigt
+- auch Tooltip nicht
          */
+        customBrowse.setText("SwingX - Swing Extension, Experiment, Excitement");
+        Icon workerduke = StaticUtilities.createImageIcon(this.getClass(), "resources/images/workerduke.png");
+        customBrowse.setIcon(workerduke);
+        customBrowse.setToolTipText("Default browser action, custom icon and text injected");
+        LOG.info("customBrowse:"+customBrowse);
+        LOG.info("customBrowse.Action:"+customBrowse.getAction()); // Action is null!!
+        // default browser action, custom inject properties from resources
+        try {
+          customBrowse.setURI(new URI("http://wiki.java.net/bin/view/Javadesktop/SwingLabsSwingX"));
+        } catch (URISyntaxException e) {
+			LOG.warning("Error new URI: " + e);
+			e.printStackTrace();
+        } catch (Exception e) {
+			LOG.warning("Error setURI: " + e);
+			e.printStackTrace();
+        }
+        LOG.info("---------------->customBrowse.Action:"+customBrowse.getAction());
         
         JXTitledSeparator custom = new JXTitledSeparator();
         custom.setName("customSeparator");
@@ -182,7 +203,7 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
         // default mailer action, text defaults to uri
         plainMail.setURI(new URI("mailto:nobody@dev.java.net"));
         // default browser action, custom inject properties from resources
-        customBrowse.setURI(new URI("http://wiki.java.net/bin/view/Javadesktop/SwingLabsSwingX"));
+//        customBrowse.setURI(new URI("http://wiki.java.net/bin/view/Javadesktop/SwingLabsSwingX"));
         // </snip>       
 //        DemoUtils.setSnippet("Hyperlink with desktop action", plainBrowse, plainMail, customBrowse);
         
