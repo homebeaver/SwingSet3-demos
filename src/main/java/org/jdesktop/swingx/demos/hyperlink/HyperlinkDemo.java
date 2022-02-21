@@ -42,7 +42,6 @@ import org.jdesktop.swingx.renderer.HyperlinkProvider;
 import org.jdesktop.swingx.renderer.WrappingProvider;
 
 import swingset.AbstractDemo;
-import swingset.StaticUtilities;
 
 /**
  * A demo for the {@code JXHyperlink}.
@@ -104,6 +103,13 @@ public class HyperlinkDemo extends AbstractDemo {
     public HyperlinkDemo(Frame frame) {
     	super(new BorderLayout());
     	frame.setTitle(getString("name"));
+/*
+
+Feb. 21, 2022 6:34:46 PM swingset.StaticUtilities getResourceAsString
+WARNUNG: java.util.MissingResourceException: 
+	Can't find resource for bundle java.util.PropertyResourceBundle, key HyperlinkDemo.name
+    	
+ */
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -131,7 +137,7 @@ public class HyperlinkDemo extends AbstractDemo {
         plainMail = new JXHyperlink();
         plainMail.setName("plainMail");
         
-        OpenBrowserAction oba = new OpenBrowserAction("http://wiki.java.net/bin/view/Javadesktop/SwingLabsSwingX");
+        OpenBrowserAction oba = new OpenBrowserAction("https://github.com/homebeaver/SwingSet/wiki");
         customBrowse = new JXHyperlink(oba);
         customBrowse.setName("customBrowse");
         /* props:
@@ -139,9 +145,8 @@ customBrowse.text = SwingX - Swing Extension, Experiment, Excitement
 customBrowse.icon = images/workerduke.png
 customBrowse.toolTipText = Default browser action, custom icon and text injected
          */
-        customBrowse.setText("SwingX - Swing Extension, Experiment, Excitement");
-        Icon workerduke = StaticUtilities.createImageIcon(this.getClass(), "resources/images/workerduke.png");
-        customBrowse.setIcon(workerduke);
+        customBrowse.setText("SwingX+SwingSet - Swing Extension, Experiment, Excitement");
+        customBrowse.setIcon(getResourceAsIcon(getClass(), "resources/images/workerduke.png"));
         customBrowse.setToolTipText("Default browser action, custom icon and text injected");
         LOG.info("customBrowse:"+customBrowse);
         LOG.info("customBrowse.Action:"+customBrowse.getAction());
@@ -251,8 +256,8 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
                  * customAction.unverifiedIcon = images/earth_day.gif
                  * customAction.verifiedIcon = images/earth_night.gif
                  */
-                Icon unverifiedIcon = StaticUtilities.createImageIcon(this.getClass(), "resources/images/earth_day.gif");
-                Icon verifiedIcon = StaticUtilities.createImageIcon(this.getClass(), "resources/images/earth_night.gif");
+                Icon unverifiedIcon = getResourceAsIcon(getClass(), "resources/images/earth_day.gif");
+                Icon verifiedIcon = getResourceAsIcon(getClass(), "resources/images/earth_night.gif");
                 setSmallIcon(isVisited() ? verifiedIcon : unverifiedIcon);
                 setName(isVisited() ? getString("customAction.verifiedText") : getString("customAction.unverifiedText"));
             }

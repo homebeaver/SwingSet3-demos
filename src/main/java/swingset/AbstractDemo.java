@@ -2,15 +2,19 @@ package swingset;
 
 import java.awt.Dimension;
 import java.awt.LayoutManager;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.util.Utilities;
 
 /**
  * a super class for all (swingset 2 and swingset 3) demos.
@@ -67,17 +71,33 @@ public abstract class AbstractDemo extends JXPanel {
     	return pane;
     }
 
-    public String getString(String resourceKey) {
+    protected char getMnemonic(String key) {
+        return (getString(key)).charAt(0);
+    }
+
+    protected String getString(String resourceKey) {
     	String key = this.getClass().getSimpleName() + '.' + resourceKey;
     	return StaticUtilities.getResourceAsString(key, resourceKey);
     }
 
-    public void addTab(JTabbedPane tab, JComponent comp, String name, boolean createScroll) {
+    protected void addTab(JTabbedPane tab, JComponent comp, String name, boolean createScroll) {
 		tab.addTab(getString(name), createScroll ? new JScrollPane(comp) : comp);
 	}
 
-    char getMnemonic(String key) {
-        return (getString(key)).charAt(0);
+    /**
+     * get an icon from resource
+     * @param clazz the class to find the resource for
+     * @param imageName, the resource i.e. "resources/images/workerduke.png"
+     * @return ImageIcon or null
+     */
+    protected ImageIcon getResourceAsIcon(Class<?> clazz, String imageName) {
+		try {
+	        InputStream is = Utilities.getResourceAsStream(clazz, imageName);
+			return new ImageIcon(is.readAllBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
     }
-
 }
