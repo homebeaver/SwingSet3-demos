@@ -304,7 +304,8 @@ public class DemoAction extends AbstractActionExt {
 																								// NoSuchMethodException,
 																								// SecurityException
 		AbstractDemo demo = (AbstractDemo) demoConstructor.newInstance(new Object[] { frame });
-		demo.setLocale(rf.getLocale());
+//		demo.setLocale(rf.getLocale()); // das ist zu spät
+//		LOG.info("------------- demo.Locale="+demo.getLocale());
 		return demo;
 	}
 

@@ -74,18 +74,14 @@ public class HyperlinkDemo extends AbstractDemo {
     		static final boolean exitOnClose = true;
 			@Override
 			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new HyperlinkDemo(controller);
+				// no controller
 				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new HyperlinkDemo(frame);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
 			}		
     	});
     }
@@ -103,7 +99,7 @@ public class HyperlinkDemo extends AbstractDemo {
      */
     public HyperlinkDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(DESCRIPTION);
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -123,13 +119,22 @@ public class HyperlinkDemo extends AbstractDemo {
     private void createHyperlinkDemo() {
         JXTitledSeparator simple = new JXTitledSeparator();
         simple.setName("simpleSeparator");
-        simple.setTitle(getBundleString("simpleSeparator.title", "Default Desktop Action"));
+        simple.setTitle(getBundleString("simpleSeparator.title"));
         
-        plainBrowse = new JXHyperlink();
+        // wg. BUG in JXHyperlink ctor mit OpenBrowserAction:
+        plainBrowse = new JXHyperlink(new OpenBrowserAction("https://swingx.dev.java.net"));
+        /*
+BUG in 
+	plainBrowse.setURI(new URI("https://swingx.dev.java.net"));
+	// default browser action, text defaults to url
+	setText(uri) wird nicht gemacht !!!
+         */
         plainBrowse.setName("plainBrowse");
+        plainBrowse.setText("swingx.dev.java.net");
+        plainBrowse.setToolTipText(getBundleString("plainBrowse.toolTipText"));
         
         plainMail = new JXHyperlink();
-        plainMail.setName("plainMail");
+        plainMail.setName("plainMail"); // TODO Desktop.Action.MAIL OpenMailAction, braucht man es?
         
         OpenBrowserAction oba = new OpenBrowserAction("https://github.com/homebeaver/SwingSet/wiki");
         customBrowse = new JXHyperlink(oba);
@@ -139,11 +144,11 @@ customBrowse.text = SwingX - Swing Extension, Experiment, Excitement
 customBrowse.icon = images/workerduke.png
 customBrowse.toolTipText = Default browser action, custom icon and text injected
          */
-        customBrowse.setText("SwingX+SwingSet - Swing Extension, Experiment, Excitement");
+        customBrowse.setText(getBundleString("customBrowse.text"));
         customBrowse.setIcon(getResourceAsIcon(getClass(), "resources/images/workerduke.png"));
-        customBrowse.setToolTipText("Default browser action, custom icon and text injected");
-        LOG.info("customBrowse:"+customBrowse);
-        LOG.info("customBrowse.Action:"+customBrowse.getAction());
+        customBrowse.setToolTipText(getBundleString("customBrowse.toolTipText"));
+        LOG.config("customBrowse:"+customBrowse);
+        LOG.config("customBrowse.Action:"+customBrowse.getAction());
         
         JXTitledSeparator custom = new JXTitledSeparator();
         custom.setName("customSeparator");
@@ -175,18 +180,21 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
         renderedLinks.setBorder(standaloneLinks.getBorder());
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setName("hyperlinkTabs");
+        // super.addTab(JTabbedPane tab, JComponent comp, String propName, boolean createScroll) :
+        // durch super.addTab ist tabbedPane.setTitleAt(0, "tab title"); nicht notwendig
         addTab(tabbedPane, standaloneLinks, "standaloneTab", false);
-        addTab(tabbedPane, renderedLinks, "renderedTab", false);
-        
+        addTab(tabbedPane, renderedLinks, "renderedTab", false);       
+
         add(tabbedPane);
     }
     
     private void bind() throws URISyntaxException {
         // <snip> Hyperlink with desktop action
-        // default browser action, text defaults to url
-        plainBrowse.setURI(new URI("https://swingx.dev.java.net"));
         // default mailer action, text defaults to uri
-        plainMail.setURI(new URI("mailto:nobody@dev.java.net"));
+    	URI mailto = new URI("mailto:nobody@dev.java.net");
+        plainMail.setURI(mailto);
+        plainMail.setText(mailto.toString());
+        plainMail.setToolTipText(getBundleString("plainMail.toolTipText"));
         // </snip>       
 //        DemoUtils.setSnippet("Hyperlink with desktop action", plainBrowse, plainMail, customBrowse);
         

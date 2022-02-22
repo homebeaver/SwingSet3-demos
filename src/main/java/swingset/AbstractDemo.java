@@ -2,6 +2,7 @@ package swingset;
 
 import java.awt.Dimension;
 import java.awt.LayoutManager;
+import java.awt.Window;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.MissingResourceException;
@@ -18,6 +19,8 @@ import javax.swing.JTabbedPane;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.util.Utilities;
+
+import io.github.homebeaver.swingset.demo.MainJXframe;
 
 /**
  * a super class for all (swingset 2 and swingset 3) demos.
@@ -61,6 +64,8 @@ public abstract class AbstractDemo extends JXPanel {
     }
     public AbstractDemo(LayoutManager layout) {
         super(layout);
+    	Window w = (Window)MainJXframe.getInstance();
+    	super.setDefaultLocale(w.getLocale());
     }
 
     public abstract JXPanel getControlPane();
@@ -87,8 +92,23 @@ public abstract class AbstractDemo extends JXPanel {
         if (bundle == null) {
         	// in SwingSet3: bundleName :== <package name>.resources.<class SimpleName>
             String bundleName = getClass().getPackage().getName()+".resources."+getClass().getSimpleName();
-            bundle = ResourceBundle.getBundle(bundleName);
-//            getBundle(String baseName, Locale locale)
+            bundle = ResourceBundle.getBundle(bundleName, JComponent.getDefaultLocale());
+            
+            Logger.getAnonymousLogger().config("this.getLocale()=" + this.getLocale() 
+	            + "; getDefaultLocale()" +JComponent.getDefaultLocale() 
+	            + " bundle.Locale:"+bundle.getLocale()
+	            );
+            if(bundle.getLocale()!=JComponent.getDefaultLocale()) {
+            	if(bundle.getLocale().toString().length()>=2 && bundle.getLocale().getDisplayLanguage().substring(0, 2).
+            			equals(JComponent.getDefaultLocale().getDisplayLanguage().substring(0, 2))) {
+            		// de_CH soll auch mit de_XX zufrieden sein!
+            	} else {
+                	// fallback:
+                	//bundle = ResourceBundle.getBundle(bundleName, (Locale)null);
+                	// liefert NPE at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1612)
+                	bundle = ResourceBundle.getBundle(bundleName);
+            	}
+            }
         }
         try {
             value = bundle != null ? bundle.getString(key) : fallback;
