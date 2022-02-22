@@ -1,126 +1,182 @@
-/*
- * $Id$
- *
- * Copyright 2009 Sun Microsystems, Inc., 4150 Network Circle,
- * Santa Clara, California 95054, U.S.A. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
+/* Copyright 2007-2009 Sun Microsystems, Inc.  All Rights Reserved.
+Copyright notice, list of conditions and disclaimer see LICENSE file
+*/ 
 package org.jdesktop.swingx.demos.taskpane;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.util.logging.Logger;
 
+import javax.swing.Icon;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
 import javax.swing.text.html.HTMLDocument;
 
-import org.jdesktop.application.Action;
-import org.jdesktop.application.Application;
-import org.jdesktop.application.ApplicationActionMap;
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
+import org.jdesktop.swingx.action.AbstractActionExt;
 
-import com.sun.swingset3.DemoProperties;
+import swingset.AbstractDemo;
 
 /**
  * A demo for the {@code JXTaskPane}.
  *
  * @author Karl George Schaefer
  * @author l2fprod (original JXTaskPaneDemoPanel)
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-@DemoProperties(
-    value = "JXTaskPane Demo",
-    category = "Containers",
-    description = "Demonstrates JXTaskPane, a container for tasks and other arbitrary components.",
-    sourceFiles = {
-        "org/jdesktop/swingx/demos/taskpane/TaskPaneDemo.java",
-        "org/jdesktop/swingx/demos/taskpane/resources/TaskPaneDemo.properties",
-        "org/jdesktop/swingx/demos/taskpane/resources/images/TaskPaneDemo.png",
-        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-email.png",
-        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-internet.png",
-        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-question.png",
-        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-recycle.png",
-        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-writedoc.png"
+//@DemoProperties(
+//    value = "JXTaskPane Demo",
+//    category = "Containers",
+//    description = "Demonstrates JXTaskPane, a container for tasks and other arbitrary components.",
+//    sourceFiles = {
+//        "org/jdesktop/swingx/demos/taskpane/TaskPaneDemo.java",
+//        "org/jdesktop/swingx/demos/taskpane/resources/TaskPaneDemo.properties",
+//        "org/jdesktop/swingx/demos/taskpane/resources/images/TaskPaneDemo.png",
+//        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-email.png",
+//        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-internet.png",
+//        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-question.png",
+//        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-recycle.png",
+//        "org/jdesktop/swingx/demos/taskpane/resources/images/tasks-writedoc.png"
+//    }
+//)
+public class TaskPaneDemo extends AbstractDemo {
+	
+	private static final long serialVersionUID = 7532679655717309639L;
+	private static final Logger LOG = Logger.getLogger(TaskPaneDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXTaskPane, a container for tasks and other arbitrary components.";
+
+    /**
+     * main method allows us to run as a standalone demo.
+     */
+    public static void main(String[] args) {
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				// no controller
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new TaskPaneDemo(frame);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+			}		
+    	});
     }
-)
-@SuppressWarnings("serial")
-public class TaskPaneDemo extends JPanel {
-    private JXTaskPane systemGroup;
+
+	private JXTaskPane systemGroup;
     private JXTaskPane officeGroup;
     private JXTaskPane seeAlsoGroup;
     private JXTaskPane detailsGroup;
     
     /**
-     * main method allows us to run as a standalone demo.
+     * HyperlinkDemo Constructor
      */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JFrame frame = new JFrame(TaskPaneDemo.class.getAnnotation(DemoProperties.class).value());
-                
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.getContentPane().add(new TaskPaneDemo());
-                frame.setPreferredSize(new Dimension(800, 600));
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-            }
-        });
-    }
-    
-    public TaskPaneDemo() {
-        super(new BorderLayout());
-        
+    public TaskPaneDemo(Frame frame) {
+    	super(new BorderLayout());
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+
         createTaskPaneDemo();
         
-        Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(this);
-        
-        bind();
+/* bind with props
+email.Action.text=Send by email
+email.Action.icon=images/tasks-email.png
+delete.Action.text=Delete
+delete.Action.icon=images/tasks-recycle.png
+write.Action.text=Write Document
+write.Action.icon=images/tasks-writedoc.png
+exploreInternet.Action.text=The Internet
+exploreInternet.Action.icon=images/tasks-internet.png
+exploreInternet.Action.shortDescription=A cool web resource
+help.Action.text=Help Center
+help.Action.icon=images/tasks-question.png
+help.Action.shortDescription=The place where you can't find anything
+ */
+        TaskAction email = new TaskAction(getBundleString("email.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-email.png"));
+        email.setActionCommand("email");
+        systemGroup.add(email);
+        LOG.info("email:"+email);
+//INFORMATION: key 3:email (class java.lang.String) 
+//             value:org.jdesktop.application.ApplicationAction email "Send by email"
+//INFORMATION: email:[class org.jdesktop.swingx.demos.taskpane.TaskPaneDemo$TaskAction:Name=Send by email,SmallIcon=javax.swing.ImageIcon@16d0f804,ActionCommandKey=email]
+
+        TaskAction delete = new TaskAction(getBundleString("delete.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-recycle.png"));
+        delete.setActionCommand("delete");
+        systemGroup.add(delete);
+
+        TaskAction write = new TaskAction(getBundleString("write.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-writedoc.png"));
+        write.setActionCommand("write");
+        officeGroup.add(write);
+
+        TaskAction exploreInternet = new TaskAction(getBundleString("exploreInternet.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-internet.png"));
+        exploreInternet.setActionCommand("exploreInternet");
+        exploreInternet.setShortDescription(getBundleString("exploreInternet.Action.shortDescription"));
+        seeAlsoGroup.add(exploreInternet);
+
+        TaskAction help = new TaskAction(getBundleString("help.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-question.png"));
+        help.setActionCommand("help");
+        exploreInternet.setShortDescription(getBundleString("help.Action.shortDescription"));
+        seeAlsoGroup.add(help);
     }
+
+    @Override
+	public JXPanel getControlPane() {
+		return emptyControlPane();
+	}
 
     private void createTaskPaneDemo() {
         JXTaskPaneContainer tpc = new JXTaskPaneContainer();
+
+        // set with props values
         
         // "System" GROUP
-        systemGroup = new JXTaskPane();
+        systemGroup = new JXTaskPane(); // Alternativ: JXTaskPane(String title, Icon icon)
         systemGroup.setName("systemGroup");
+        systemGroup.setTitle(getBundleString("systemGroup.title"));
+        systemGroup.setMnemonic(Integer.parseInt(getBundleString("systemGroup.mnemonic")));
+        systemGroup.setIcon(getResourceAsIcon(getClass(), "resources/images/tasks-email.png"));
+        systemGroup.setToolTipText(getBundleString("systemGroup.toolTipText"));
+        systemGroup.setSpecial(Boolean.valueOf(getBundleString("systemGroup.special")));
         tpc.add(systemGroup);
-        
+
         // "Office" GROUP
-        officeGroup = new JXTaskPane();
+        officeGroup = new JXTaskPane(getBundleString("officeGroup.title"));
         officeGroup.setName("officeGroup");
+        officeGroup.setMnemonic(Integer.parseInt(getBundleString("officeGroup.mnemonic")));
+        officeGroup.setCollapsed(Boolean.valueOf(getBundleString("officeGroup.collapsed")));
+        officeGroup.setScrollOnExpand(Boolean.valueOf(getBundleString("officeGroup.scrollOnExpand")));
         tpc.add(officeGroup);
         
         // "SEE ALSO" GROUP and ACTIONS
-        seeAlsoGroup = new JXTaskPane();
+        seeAlsoGroup = new JXTaskPane(getBundleString("seeAlsoGroup.title"));
         seeAlsoGroup.setName("seeAlsoGroup");
+        seeAlsoGroup.setMnemonic(Integer.parseInt(getBundleString("seeAlsoGroup.mnemonic")));
         tpc.add(seeAlsoGroup);
         
         // "Details" GROUP
-        detailsGroup = new JXTaskPane();
+        detailsGroup = new JXTaskPane(getBundleString("detailsGroup.title"));
         detailsGroup.setName("detailsGroup");
+        detailsGroup.setMnemonic(Integer.parseInt(getBundleString("detailsGroup.mnemonic")));
+        detailsGroup.setScrollOnExpand(Boolean.valueOf(getBundleString("detailsGroup.scrollOnExpand")));
         
         //TODO better injection for editor area
         JEditorPane area = new JEditorPane("text/html", "<html>");
         area.setName("detailsArea");
+        area.setText(getBundleString("detailsArea.text"));
+        area.setEditable(Boolean.valueOf(getBundleString("detailsArea.editable")));
+        area.setOpaque(Boolean.valueOf(getBundleString("detailsArea.opaque")));
         
         area.setFont(UIManager.getFont("Label.font"));
         
@@ -139,8 +195,7 @@ public class TaskPaneDemo extends JPanel {
         if (area.getDocument() instanceof HTMLDocument) {
             HTMLDocument doc = (HTMLDocument)area.getDocument();
             try {
-                doc.getStyleSheet().loadRules(new java.io.StringReader(stylesheet),
-                        null);
+                doc.getStyleSheet().loadRules(new java.io.StringReader(stylesheet), null);
             } catch (Exception e) {
                 // TODO: handle exception
             }
@@ -153,30 +208,17 @@ public class TaskPaneDemo extends JPanel {
         add(new JScrollPane(tpc));
     }
     
-    private void bind() {
-        ApplicationActionMap map = Application.getInstance().getContext().getActionMap(this);
-        
-        systemGroup.add(map.get("email"));
-        systemGroup.add(map.get("delete"));
-        
-        officeGroup.add(map.get("write"));
-        
-        seeAlsoGroup.add(map.get("exploreInternet"));
-        seeAlsoGroup.add(map.get("help"));
+    public class TaskAction extends AbstractActionExt {
+
+    	public TaskAction(String name, Icon icon) {
+    		super(name,icon);
+    	}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			LOG.info("ActionEvent "+e + "\n NOT IMPLEMENTED");
+		}
+    	
     }
-    
-    @Action
-    public void email() { }
-    
-    @Action
-    public void delete() { }
-    
-    @Action
-    public void write() { }
-    
-    @Action
-    public void exploreInternet() { }
-    
-    @Action
-    public void help() { }
+
 }
