@@ -104,7 +104,7 @@ help.Action.text=Help Center
 help.Action.icon=images/tasks-question.png
 help.Action.shortDescription=The place where you can't find anything
  */
-        TaskAction email = new TaskAction(getBundleString("email.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-email.png"));
+        AbstractActionExt email = new TaskAction(getBundleString("email.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-email.png"));
         email.setActionCommand("email");
         systemGroup.add(email);
         LOG.info("email:"+email);
@@ -112,11 +112,11 @@ help.Action.shortDescription=The place where you can't find anything
 //             value:org.jdesktop.application.ApplicationAction email "Send by email"
 //INFORMATION: email:[class org.jdesktop.swingx.demos.taskpane.TaskPaneDemo$TaskAction:Name=Send by email,SmallIcon=javax.swing.ImageIcon@16d0f804,ActionCommandKey=email]
 
-        TaskAction delete = new TaskAction(getBundleString("delete.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-recycle.png"));
+        AbstractActionExt delete = new TaskAction(getBundleString("delete.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-recycle.png"));
         delete.setActionCommand("delete");
         systemGroup.add(delete);
 
-        TaskAction write = new TaskAction(getBundleString("write.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-writedoc.png"));
+        AbstractActionExt write = new TaskAction(getBundleString("write.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-writedoc.png"));
         write.setActionCommand("write");
         officeGroup.add(write);
 
@@ -125,7 +125,7 @@ help.Action.shortDescription=The place where you can't find anything
         exploreInternet.setShortDescription(getBundleString("exploreInternet.Action.shortDescription"));
         seeAlsoGroup.add(exploreInternet);
 
-        TaskAction help = new TaskAction(getBundleString("help.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-question.png"));
+        AbstractActionExt help = new TaskAction(getBundleString("help.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-question.png"));
         help.setActionCommand("help");
         exploreInternet.setShortDescription(getBundleString("help.Action.shortDescription"));
         seeAlsoGroup.add(help);
