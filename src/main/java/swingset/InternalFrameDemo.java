@@ -109,10 +109,13 @@ public class InternalFrameDemo extends AbstractDemo {
         super(new BorderLayout());
         super.setPreferredSize(PREFERRED_SIZE);
         super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         // preload all the icons we need for this demo
-        icon1 = StaticUtilities.createImageIcon("ImageClub/misc/fish.gif");
+//  TODO nicht StaticUtilities nutzen, sondern etwa so:
+    	icon1 = getResourceAsIcon(getClass(), "images/ImageClub/misc/fish.gif");
+    	
+//        icon1 = StaticUtilities.createImageIcon("ImageClub/misc/fish.gif");
         icon2 = StaticUtilities.createImageIcon("ImageClub/misc/moon.gif");
         icon3 = StaticUtilities.createImageIcon("ImageClub/misc/sun.gif");
         icon4 = StaticUtilities.createImageIcon("ImageClub/misc/cab.gif");
@@ -122,13 +125,13 @@ public class InternalFrameDemo extends AbstractDemo {
         smIcon3 = StaticUtilities.createImageIcon("ImageClub/misc/sun_small.gif");
         smIcon4 = StaticUtilities.createImageIcon("ImageClub/misc/cab_small.gif");
 
-        windowTitleField = new JTextField(getString("frame_label"));
-        windowTitleLabel = new JLabel(getString("title_text_field_label"));
+        windowTitleField = new JTextField(getBundleString("frame.labelAndMnemonic"));
+        windowTitleLabel = new JLabel(getBundleString("title_text_field.labelAndMnemonic"));
 
-        windowResizable   = new JCheckBox(getString("resizable_label"), true);
-        windowIconifiable = new JCheckBox(getString("iconifiable_label"), true);
-        windowClosable    = new JCheckBox(getString("closable_label"), true);
-        windowMaximizable = new JCheckBox(getString("maximizable_label"), true);
+        windowResizable   = new JCheckBox(getBundleString("resizable.labelAndMnemonic"), true);
+        windowIconifiable = new JCheckBox(getBundleString("iconifiable.labelAndMnemonic"), true);
+        windowClosable    = new JCheckBox(getBundleString("closable.labelAndMnemonic"), true);
+        windowMaximizable = new JCheckBox(getBundleString("maximizable.labelAndMnemonic"), true);
 
         // Create the desktop pane
         desktop = new JDesktopPane();
@@ -151,10 +154,11 @@ public class InternalFrameDemo extends AbstractDemo {
     private JInternalFrame createInternalFrame(Icon icon, Integer layer, int width, int height) {
         JInternalFrame jif = new JInternalFrame();
 
-        if(!windowTitleField.getText().equals(getString("frame_label"))) {
+//        
+        if(!windowTitleField.getText().equals(getBundleString("frame.labelAndMnemonic"))) {
             jif.setTitle(windowTitleField.getText() + "  ");
         } else {
-            jif = new JInternalFrame(getString("frame_label") + " " + windowCount + "  ");
+            jif = new JInternalFrame(getBundleString("frame.labelAndMnemonic") + " " + windowCount + "  ");
         }
 
         // set properties
@@ -207,7 +211,7 @@ public class InternalFrameDemo extends AbstractDemo {
      * @return
      */
     public JInternalFrame createInternalFramePalette(JXPanel controller) {
-        JInternalFrame palette = new JInternalFrame(getString("palette_label"));
+        JInternalFrame palette = new JInternalFrame(getBundleString("palette.labelAndMnemonic"));
         palette.putClientProperty("JInternalFrame.isPalette", Boolean.TRUE);
         palette.getContentPane().setLayout(new BorderLayout());
         palette.setBounds(PALETTE_X, PALETTE_Y, PALETTE_WIDTH, PALETTE_HEIGHT);

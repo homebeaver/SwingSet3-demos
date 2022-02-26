@@ -69,7 +69,7 @@ public class OptionPaneDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         if(CONTROLLER_IN_PRESENTATION_FRAME) {
             super.add(getBoxPane());
@@ -114,12 +114,12 @@ public class OptionPaneDemo extends AbstractDemo {
     }
 
     public JButton createWarningDialogButton() {
-        Action a = new AbstractAction(getString("warningbutton")) {
+        Action a = new AbstractAction(getBundleString("warningbutton")) {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(
                 	OptionPaneDemo.this,
-                    getString("warningtext"),
-                    getString("warningtitle"),
+                    getBundleString("warningtext"),
+                    getBundleString("warningtitle"),
                     JOptionPane.WARNING_MESSAGE
                 );
             }
@@ -128,10 +128,10 @@ public class OptionPaneDemo extends AbstractDemo {
     }
 
     public JButton createMessageDialogButton() {
-        Action a = new AbstractAction(getString("messagebutton")) {
+        Action a = new AbstractAction(getBundleString("messagebutton")) {
             URL img = getClass().getResource("images/optionpane/bottle.gif");
             String imagesrc = "<img src=\"" + img + "\" width=\"284\" height=\"100\">";
-            String message = getString("messagetext");
+            String message = getBundleString("messagetext");
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog( OptionPaneDemo.this,
                     "<html>" + imagesrc + "<br><center>" + message + "</center><br></html>"
@@ -142,13 +142,13 @@ public class OptionPaneDemo extends AbstractDemo {
     }
 
     public JButton createConfirmDialogButton() {
-        Action a = new AbstractAction(getString("confirmbutton")) {
+        Action a = new AbstractAction(getBundleString("confirmbutton")) {
             public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(OptionPaneDemo.this, getString("confirmquestion"));
+                int result = JOptionPane.showConfirmDialog(OptionPaneDemo.this, getBundleString("confirmquestion"));
                 if(result == JOptionPane.YES_OPTION) {
-                    JOptionPane.showMessageDialog(OptionPaneDemo.this, getString("confirmyes"));
+                    JOptionPane.showMessageDialog(OptionPaneDemo.this, getBundleString("confirmyes"));
                 } else if(result == JOptionPane.NO_OPTION) {
-                    JOptionPane.showMessageDialog(OptionPaneDemo.this, getString("confirmno"));
+                    JOptionPane.showMessageDialog(OptionPaneDemo.this, getBundleString("confirmno"));
                 }
             }
         };
@@ -156,12 +156,12 @@ public class OptionPaneDemo extends AbstractDemo {
     }
 
     public JButton createInputDialogButton() {
-        Action a = new AbstractAction(getString("inputbutton")) {
+        Action a = new AbstractAction(getBundleString("inputbutton")) {
             public void actionPerformed(ActionEvent e) {
-                String result = JOptionPane.showInputDialog(OptionPaneDemo.this, getString("inputquestion"));
+                String result = JOptionPane.showInputDialog(OptionPaneDemo.this, getBundleString("inputquestion"));
                 if ((result != null) && (result.length() > 0)) {
                     JOptionPane.showMessageDialog(OptionPaneDemo.this,
-                                    result + ": " + getString("inputresponse"));
+                                    result + ": " + getBundleString("inputresponse"));
                 }
             }
         };
@@ -169,36 +169,36 @@ public class OptionPaneDemo extends AbstractDemo {
     }
 
     public JButton createComponentDialogButton() {
-        Action a = new AbstractAction(getString("componentbutton")) {
+        Action a = new AbstractAction(getBundleString("componentbutton")) {
             public void actionPerformed(ActionEvent e) {
                 // In a ComponentDialog, you can show as many message components and
                 // as many options as you want:
 
                 // Messages
                 Object[]      message = new Object[4];
-                message[0] = getString("componentmessage");
-                message[1] = new JTextField(getString("componenttextfield"));
+                message[0] = getBundleString("componentmessage");
+                message[1] = new JTextField(getBundleString("componenttextfield"));
 
                 JComboBox cb = new JComboBox();
-                cb.addItem(getString("component_cb1"));
-                cb.addItem(getString("component_cb2"));
-                cb.addItem(getString("component_cb3"));
+                cb.addItem(getBundleString("component_cb1"));
+                cb.addItem(getBundleString("component_cb2"));
+                cb.addItem(getBundleString("component_cb3"));
                 message[2] = cb;
 
-                message[3] = getString("componentmessage2");
+                message[3] = getBundleString("componentmessage2");
 
                 // Options
                 String[] options = {
-                    getString("component_op1"),
-                    getString("component_op2"),
-                    getString("component_op3"),
-                    getString("component_op4"),
-                    getString("component_op5")
+                    getBundleString("component_op1"),
+                    getBundleString("component_op2"),
+                    getBundleString("component_op3"),
+                    getBundleString("component_op4"),
+                    getBundleString("component_op5")
                 };
                 int result = JOptionPane.showOptionDialog(
                 	OptionPaneDemo.this,                        // the parent that the dialog blocks
                     message,                                    // the dialog message array
-                    getString("componenttitle"),                // the title of the dialog window
+                    getBundleString("componenttitle"),          // the title of the dialog window
                     JOptionPane.DEFAULT_OPTION,                 // option type
                     JOptionPane.INFORMATION_MESSAGE,            // message type
                     null,                                       // optional icon, use null to use the default icon
@@ -207,16 +207,16 @@ public class OptionPaneDemo extends AbstractDemo {
                 );
                 switch(result) {
                    case 0: // yes
-                     JOptionPane.showMessageDialog(OptionPaneDemo.this, getString("component_r1"));
+                     JOptionPane.showMessageDialog(OptionPaneDemo.this, getBundleString("component_r1"));
                      break;
                    case 1: // no
-                     JOptionPane.showMessageDialog(OptionPaneDemo.this, getString("component_r2"));
+                     JOptionPane.showMessageDialog(OptionPaneDemo.this, getBundleString("component_r2"));
                      break;
                    case 2: // maybe
-                     JOptionPane.showMessageDialog(OptionPaneDemo.this, getString("component_r3"));
+                     JOptionPane.showMessageDialog(OptionPaneDemo.this, getBundleString("component_r3"));
                      break;
                    case 3: // probably
-                     JOptionPane.showMessageDialog(OptionPaneDemo.this, getString("component_r4"));
+                     JOptionPane.showMessageDialog(OptionPaneDemo.this, getBundleString("component_r4"));
                      break;
                    default:
                      break;

@@ -86,7 +86,7 @@ public class FileChooserDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         theImage = new JLabel("");
 
@@ -169,7 +169,7 @@ public class FileChooserDemo extends AbstractDemo {
 
     // controller
     private JButton createPlainFileChooserButton() {
-        Action a = new AbstractAction(getString("plainbutton")) {
+        Action a = new AbstractAction(getBundleString("plainbutton")) {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = createFileChooser();
 
@@ -187,13 +187,13 @@ public class FileChooserDemo extends AbstractDemo {
 
     // controller
     private JButton createPreviewFileChooserButton() {
-        Action a = new AbstractAction(getString("previewbutton")) {
+        Action a = new AbstractAction(getBundleString("previewbutton")) {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = createFileChooser();
 
                 // Add filefilter & fileview
                 javax.swing.filechooser.FileFilter filter = createFileFilter(
-                    getString("filterdescription"), "jpg", "gif", "png");
+                    getBundleString("filterdescription"), "jpg", "gif", "png");
                 ExampleFileView fileView = new ExampleFileView();
                 fileView.putIcon("jpg", jpgIcon);
                 fileView.putIcon("gif", gifIcon);
@@ -238,13 +238,13 @@ public class FileChooserDemo extends AbstractDemo {
 
     // controller
     private JButton createCustomFileChooserButton() {
-        Action a = new AbstractAction(getString("custombutton")) {
+        Action a = new AbstractAction(getBundleString("custombutton")) {
             public void actionPerformed(ActionEvent e) {
                 fc = createFileChooser();
 
                 // Add filefilter & fileview
                 javax.swing.filechooser.FileFilter filter = createFileFilter(
-                    getString("filterdescription"), "jpg", "gif", "png");
+                    getBundleString("filterdescription"), "jpg", "gif", "png");
                 ExampleFileView fileView = new ExampleFileView();
                 fileView.putIcon("jpg", jpgIcon);
                 fileView.putIcon("gif", gifIcon);
@@ -263,7 +263,7 @@ public class FileChooserDemo extends AbstractDemo {
                 JPanel custom = new JPanel();
                 custom.setLayout(new BoxLayout(custom, BoxLayout.Y_AXIS));
                 custom.add(Box.createRigidArea(VGAP10));
-                JLabel description = new JLabel(getString("description"));
+                JLabel description = new JLabel(getBundleString("description"));
                 description.setAlignmentX(JLabel.CENTER_ALIGNMENT);
                 custom.add(description);
                 custom.add(Box.createRigidArea(VGAP10));
@@ -291,7 +291,7 @@ public class FileChooserDemo extends AbstractDemo {
 
                 // show the filechooser
                 Frame parent = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, FileChooserDemo.this);
-                dialog = new JDialog(parent, getString("dialogtitle"), true);
+                dialog = new JDialog(parent, getBundleString("dialogtitle"), true);
                 dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 dialog.getContentPane().add(custom, BorderLayout.CENTER);
                 dialog.pack();
@@ -304,16 +304,16 @@ public class FileChooserDemo extends AbstractDemo {
     }
 
     public Action createAboutAction() {
-        return new AbstractAction(getString("about")) {
+        return new AbstractAction(getBundleString("about")) {
             public void actionPerformed(ActionEvent e) {
                 File file = fc.getSelectedFile();
                 String text;
                 if(file == null) {
-                    text = getString("nofileselected");
+                    text = getBundleString("nofileselected");
                 } else {
-                    text = "<html>" + getString("thefile");
+                    text = "<html>" + getBundleString("thefile");
                     text += "<br><font color=green>" + file.getName() + "</font><br>";
-                    text += getString("isprobably") + "</html>";
+                    text += getBundleString("isprobably") + "</html>";
                 }
                 JOptionPane.showMessageDialog(FileChooserDemo.this, text);
             }
@@ -321,7 +321,7 @@ public class FileChooserDemo extends AbstractDemo {
     }
 
     public Action createOKAction() {
-        return new AbstractAction(getString("ok")) {
+        return new AbstractAction(getBundleString("ok")) {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
                 if (!e.getActionCommand().equals(JFileChooser.CANCEL_SELECTION)
@@ -334,7 +334,7 @@ public class FileChooserDemo extends AbstractDemo {
     }
 
     public Action createCancelAction() {
-        return new AbstractAction(getString("cancel")) {
+        return new AbstractAction(getBundleString("cancel")) {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
             }
@@ -345,9 +345,9 @@ public class FileChooserDemo extends AbstractDemo {
         Icon icon = StaticUtilities.createImageIcon("filechooser/find.gif");
         return new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
-                String result = JOptionPane.showInputDialog(FileChooserDemo.this, getString("findquestion"));
+                String result = JOptionPane.showInputDialog(FileChooserDemo.this, getBundleString("findquestion"));
                 if (result != null) {
-                    JOptionPane.showMessageDialog(FileChooserDemo.this, getString("findresponse"));
+                    JOptionPane.showMessageDialog(FileChooserDemo.this, getBundleString("findresponse"));
                 }
             }
         };
@@ -357,7 +357,7 @@ public class FileChooserDemo extends AbstractDemo {
         Icon icon = StaticUtilities.createImageIcon("filechooser/help.gif");
         return new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(FileChooserDemo.this, getString("helptext"));
+                JOptionPane.showMessageDialog(FileChooserDemo.this, getBundleString("helptext"));
             }
         };
     }

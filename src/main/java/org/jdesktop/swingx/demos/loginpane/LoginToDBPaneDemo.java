@@ -62,6 +62,7 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
 	
 	private static final long serialVersionUID = 8161313014598470463L;
 	private static final Logger LOG = Logger.getLogger(LoginToDBPaneDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXLoginPane, a Database login control.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -74,7 +75,7 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new LoginToDBPaneDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
@@ -100,7 +101,7 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	
         statusLabel = new JXLabel(loginPane==null ? Status.NOT_STARTED.toString() : loginPane.getStatus().name());
 //        statusLabel.setFont(font);
@@ -115,8 +116,8 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
         Font font = new Font("SansSerif", Font.PLAIN, 16);
 
         loginLauncher = new JXButton();
-        loginLauncher.setName("launcher"); // den text aus prop "launcher.text" holen:
-        loginLauncher.setText(getString("launcher.text"));
+        loginLauncher.setName("launcher");
+        loginLauncher.setText(getBundleString("launcher.text"));
         loginLauncher.setFont(font);
         final Painter<Component> orangeBgPainter = new MattePainter(PaintUtils.ORANGE_DELIGHT, true);
         loginLauncher.setBackgroundPainter(orangeBgPainter);

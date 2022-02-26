@@ -36,9 +36,12 @@ package swingset;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import javax.swing.JComponent;
 
 /**
  * <code>TextAndMnemonicUtils</code> allows to extract text and mnemonic values
@@ -76,9 +79,13 @@ public class TextAndMnemonicUtils {
     private static Properties properties = null;
 
     static {
-    	LOG.info("ResourceBundle.getBundle(\""+RESOURCEBUNDLE_BASENAME+"\") ...");
+    	Locale locale = JComponent.getDefaultLocale();
+    	LOG.info("ResourceBundle.getBundle(\""+RESOURCEBUNDLE_BASENAME+"\") ... Locale:"+locale);
     	// Parameter: baseName the base name of the resource bundle, a fully qualified class name
-        bundle = ResourceBundle.getBundle(RESOURCEBUNDLE_BASENAME);
+    	// es gibt noch die Methode mit Locale:
+        //public static final ResourceBundle getBundle(String baseName, Locale locale)
+        bundle = ResourceBundle.getBundle(RESOURCEBUNDLE_BASENAME, locale);
+        LOG.info("bundle:"+bundle);
 /*
 Throws:java.lang.NullPointerException - if baseName is null
 MissingResourceException - if no resource bundle for the specified base name can be found
@@ -106,6 +113,7 @@ MissingResourceException - if no resource bundle for the specified base name can
         	}
         	LOG.info("#properties="+k);
         }
+        // +"_"+locale.getLanguage()
 //        try {
 //        	LOG.info("properties.load ...");
 //            properties.load(TextAndMnemonicUtils.class.getResourceAsStream("swingset.properties"));
@@ -155,13 +163,14 @@ MissingResourceException - if no resource bundle for the specified base name can
 
         String compositeKey = composeKey(key, 0, LABEL_SUFFIX);
         Object value = properties.getProperty(compositeKey);
-
+//LOG.info("key="+key+"____________value:"+value);
         if (value != null) {
             String textAndMnemonic = bundle.getString(compositeKey);
             return getTextFromTextAndMnemonic(textAndMnemonic);
         }
 
-        String textAndMnemonic = bundle.getString(key);
+        String textAndMnemonic = bundle.getString(key); // throws    MissingResourceException
+//        LOG.info("key="+key+"____________textAndMnemonic:"+textAndMnemonic);
         return getTextFromTextAndMnemonic(textAndMnemonic);
     }
 

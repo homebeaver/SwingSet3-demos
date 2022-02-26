@@ -71,6 +71,7 @@ public class TreeTableDemo extends AbstractDemo {
 
 	private static final long serialVersionUID = 5372511125598257122L;
     private static final Logger LOG = Logger.getLogger(TreeTableDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXTreeTable, a tree-based, grid component.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -83,7 +84,7 @@ public class TreeTableDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new TreeTableDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
             	frame.getContentPane().add(demo);
             	frame.pack();
@@ -104,7 +105,7 @@ public class TreeTableDemo extends AbstractDemo {
      */
     public TreeTableDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -130,7 +131,7 @@ public class TreeTableDemo extends AbstractDemo {
 	public JXPanel getControlPane() {
 		JXPanel buttons = new JXPanel();
 
-//		loadButton = new JXButton(getString("reloadTreeData"));
+//		loadButton = new JXButton(getBundleString("reloadTreeData"));
 //		loadButton.setName("loadButton");
 //		loadButton.addActionListener(ae -> {
 //			treeTable.setTreeTableModel(createTreeModel());
@@ -138,14 +139,14 @@ public class TreeTableDemo extends AbstractDemo {
 //		buttons.add(loadButton);
 		
 		// <snip> JXTree convenience api
-		expandButton = new JXButton(getString("expandAll"));
+		expandButton = new JXButton(getBundleString("expandAll.Action.text"));
 		expandButton.setName("expandButton");
 		expandButton.addActionListener(ae -> {
 			treeTable.expandAll();
 		});
 		buttons.add(expandButton);
 
-		collapseButton = new JXButton(getString("collapseAll"));
+		collapseButton = new JXButton(getBundleString("collapseAll.Action.text"));
 		collapseButton.setName("collapseButton");
 		collapseButton.addActionListener(ae -> {
 			treeTable.collapseAll();
@@ -167,10 +168,10 @@ public class TreeTableDemo extends AbstractDemo {
         // configure and install a custom columnFactory, arguably data related ;-)
         ColumnFactory factory = new ColumnFactory() {
             String[] columnNameKeys = 
-            	{ getString("componentType")
-            	, getString("componentName")
-            	, getString("componentLocation")
-            	, getString("componentSize")
+            	{ getBundleString("componentType")
+            	, getBundleString("componentName")
+            	, getBundleString("componentLocation")
+            	, getBundleString("componentSize")
             	};
 
             @Override

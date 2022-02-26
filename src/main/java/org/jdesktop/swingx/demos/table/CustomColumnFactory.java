@@ -19,9 +19,6 @@ import org.jdesktop.swingx.renderer.ComponentProvider;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.table.ColumnFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
-//import org.jdesktop.swingxset.util.DemoUtils;
-
-import swingset.StaticUtilities;
 
 //<snip> JXTable column properties
 /**
@@ -88,13 +85,10 @@ public class CustomColumnFactory extends ColumnFactory {
         }
     }
 //    </snip>
-    private void configureTitle(TableColumnExt columnExt) {
-        columnExt.setTitle(getString(OscarTableModel.columnIds[columnExt.getModelIndex()]));
+    protected void configureTitle(TableColumnExt columnExt) {
+    	columnExt.setTitle(OscarTableModel.columnIds[columnExt.getModelIndex()]);
     }
-    private String getString(String resourceKey) {
-    	String key = this.getClass().getSimpleName() + '.' + resourceKey;
-    	return StaticUtilities.getResourceAsString(key, resourceKey);
-    }
+
     /**
      * {@inheritDoc} <p>
      * Overridden to check if the wants to limit the count of rows when

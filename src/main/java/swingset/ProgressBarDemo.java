@@ -35,6 +35,7 @@ public class ProgressBarDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/JProgressBar.gif";
 
 	private static final long serialVersionUID = -5132422584566294096L;
+	private static final String DESCRIPTION = "Shows an example of using the JProgressBar component.";
 	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = true;
 
     /**
@@ -45,18 +46,14 @@ public class ProgressBarDemo extends AbstractDemo {
     		static final boolean exitOnClose = true;
 			@Override
 			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new ProgressBarDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				// no controller
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new ProgressBarDemo(frame);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
 			}		
     	});
     }
@@ -74,15 +71,15 @@ public class ProgressBarDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         JPanel textWrapper = new JPanel(new BorderLayout());
         textWrapper.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
         textWrapper.setAlignmentX(LEFT_ALIGNMENT);
         progressTextArea = new MyTextArea();
 
-        progressTextArea.getAccessibleContext().setAccessibleName(getString("ProgressBarDemo.accessible_text_area_name"));
-        progressTextArea.getAccessibleContext().setAccessibleName(getString("ProgressBarDemo.accessible_text_area_description"));
+        progressTextArea.getAccessibleContext().setAccessibleName(getBundleString("ProgressBarDemo.accessible_text_area_name"));
+        progressTextArea.getAccessibleContext().setAccessibleName(getBundleString("ProgressBarDemo.accessible_text_area_description"));
         textWrapper.add(new JScrollPane(progressTextArea), BorderLayout.CENTER);
 
         super.add(textWrapper, BorderLayout.CENTER);
@@ -95,7 +92,7 @@ public class ProgressBarDemo extends AbstractDemo {
                 return new Dimension(300, super.getPreferredSize().height);
             }
         };
-        progressBar.getAccessibleContext().setAccessibleName(getString("ProgressBarDemo.accessible_text_loading_progress"));
+        progressBar.getAccessibleContext().setAccessibleName(getBundleString("ProgressBarDemo.accessible_text_loading_progress"));
 
         progressPanel.add(progressBar);
         if(CONTROLLER_IN_PRESENTATION_FRAME) {
@@ -119,7 +116,7 @@ public class ProgressBarDemo extends AbstractDemo {
     }
 
     private JButton createLoadButton() {
-        loadAction = new AbstractAction(getString("start_button")) {
+        loadAction = new AbstractAction(getBundleString("start_button")) {
             public void actionPerformed(ActionEvent e) {
                 loadAction.setEnabled(false);
                 stopAction.setEnabled(true);
@@ -135,7 +132,7 @@ public class ProgressBarDemo extends AbstractDemo {
     }
 
     private JButton createStopButton() {
-        stopAction = new AbstractAction(getString("stop_button")) {
+        stopAction = new AbstractAction(getBundleString("stop_button")) {
             public void actionPerformed(ActionEvent e) {
                 timer.stop();
                 loadAction.setEnabled(true);
@@ -158,7 +155,7 @@ public class ProgressBarDemo extends AbstractDemo {
 
     int textLocation = 0;
 
-    String text = getString("text");
+    String text = getBundleString("text");
 
     public Action createTextLoadAction() {
         return new AbstractAction("text load action") {

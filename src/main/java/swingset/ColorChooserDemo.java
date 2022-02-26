@@ -79,21 +79,21 @@ public class ColorChooserDemo extends AbstractDemo {
         super(new BorderLayout());
         super.setPreferredSize(PREFERRED_SIZE);
         super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         // Create the bezier animation panel to put in the center of the panel.
         bezAnim = new BezierAnimationPanel();
 
-        outerColorButton = new JButton(getString("outer_line"));
+        outerColorButton = new JButton(getBundleString("outer_line"));
         outerColorButton.setIcon(new ColorSwatch("OuterLine", bezAnim));
 
-        backgroundColorButton = new JButton(getString("background"));
+        backgroundColorButton = new JButton(getBundleString("background"));
         backgroundColorButton.setIcon(new ColorSwatch("Background", bezAnim));
 
-        gradientAButton = new JButton(getString("grad_a"));
+        gradientAButton = new JButton(getBundleString("grad_a"));
         gradientAButton.setIcon(new ColorSwatch("GradientA", bezAnim));
 
-        gradientBButton = new JButton(getString("grad_b"));
+        gradientBButton = new JButton(getBundleString("grad_b"));
         gradientBButton.setIcon(new ColorSwatch("GradientB", bezAnim));
 
         ActionListener l = new ActionListener() {
@@ -121,7 +121,7 @@ public class ColorChooserDemo extends AbstractDemo {
                 };
 
                 JDialog dialog = JColorChooser.createDialog(ColorChooserDemo.this,
-                                                            getString("chooser_title"),
+                                                            getBundleString("chooser_title"),
                                                             true,
                                                             chooser,
                                                             okListener,

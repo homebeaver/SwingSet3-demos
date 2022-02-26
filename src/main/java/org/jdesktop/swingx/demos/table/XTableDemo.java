@@ -39,6 +39,7 @@ import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTableHeader;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.table.TableColumnExt;
 
 import swingset.AbstractDemo;
 
@@ -70,6 +71,7 @@ public class XTableDemo extends AbstractDemo {
 
 	private static final long serialVersionUID = -2616149327587528185L;
 	static final Logger LOG = Logger.getLogger(XTableDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXTable, an enhanced data grid display.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -79,18 +81,14 @@ public class XTableDemo extends AbstractDemo {
     		static final boolean exitOnClose = true;
 			@Override
 			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new XTableDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				// no controller
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new XTableDemo(frame);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
 			}		
     	});
     }
@@ -119,6 +117,7 @@ public class XTableDemo extends AbstractDemo {
      */
     public XTableDemo(Frame frame) {
     	super(new BorderLayout());
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -179,7 +178,7 @@ public class XTableDemo extends AbstractDemo {
         c.anchor = GridBagConstraints.SOUTHWEST;
         JLabel searchLabel = new JLabel();
         searchLabel.setName("searchLabel");
-        searchLabel.setText(getString("searchLabel.text"));
+        searchLabel.setText(getBundleString("searchLabel.text"));
         controlPanel.add(searchLabel, c);
 
         c.gridx = 0;
@@ -207,7 +206,7 @@ public class XTableDemo extends AbstractDemo {
         c.fill = GridBagConstraints.NONE;
         winnersCheckbox = new JCheckBox();
         winnersCheckbox.setName("winnersLabel");
-        winnersCheckbox.setText(getString("winnersLabel.text"));        
+        winnersCheckbox.setText(getBundleString("winnersLabel.text"));        
         winnersCheckbox.addActionListener( event -> {
             boolean showOnlyWinners = ((JCheckBox)event.getSource()).isSelected();
             filterController.setShowOnlyWinners(showOnlyWinners);
@@ -235,7 +234,12 @@ public class XTableDemo extends AbstractDemo {
         
         //<snip> JXTable column properties
         // create and configure a custom column factory
-        CustomColumnFactory factory = new CustomColumnFactory();
+        CustomColumnFactory factory = new CustomColumnFactory() {
+        	// titles from props
+        	protected void configureTitle(TableColumnExt columnExt) {
+        		columnExt.setTitle(getBundleString(OscarTableModel.columnIds[columnExt.getModelIndex()]));
+        	}
+        };
         OscarRendering.configureColumnFactory(factory, getClass());
         // set the factory before setting the table model
         oscarTable.setColumnFactory(factory);
@@ -255,10 +259,10 @@ public class XTableDemo extends AbstractDemo {
     protected void updateStatusBar() {
     	if(filterController.isFilteringByString()) {
     		tableStatus.setName("searchCountLabel");
-    		tableStatus.setText(getString("searchCountLabel.text"));
+    		tableStatus.setText(getBundleString("searchCountLabel.text"));
     	} else {
     		tableStatus.setName("rowCountLabel");
-    		tableStatus.setText(getString("rowCountLabel.text"));
+    		tableStatus.setText(getBundleString("rowCountLabel.text"));
     	}
         tableRows.setText("" + oscarTable.getRowCount());
     }
@@ -395,7 +399,7 @@ public class XTableDemo extends AbstractDemo {
         private void showCredits() {
             credits = new JLabel(); 
             credits.setName("credits");
-            credits.setText(getString("credits.text"));
+            credits.setText(getBundleString("credits.text"));
             credits.setFont(UIManager.getFont("Table.font").deriveFont(24f));
             credits.setHorizontalAlignment(JLabel.CENTER);
             credits.setBorder(new CompoundBorder(new TitledBorder(""), new EmptyBorder(20,20,20,20)));
@@ -453,7 +457,7 @@ public class XTableDemo extends AbstractDemo {
         statusBar.add(statusBarLeft, JXStatusBar.Constraint.ResizeBehavior.FILL);
         actionStatus = new JLabel();
         actionStatus.setName("loadingStatusLabel");
-        actionStatus.setText(getString("loadingStatusLabel.text"));
+        actionStatus.setText(getBundleString("loadingStatusLabel.text"));
         actionStatus.setHorizontalAlignment(JLabel.LEADING);
         statusBarLeft.add(actionStatus);
         // display progress bar while data loads
@@ -469,7 +473,7 @@ public class XTableDemo extends AbstractDemo {
         // Right status area
         tableStatus = new JLabel(); 
         tableStatus.setName("rowCountLabel");
-        tableStatus.setText(getString("rowCountLabel.text"));
+        tableStatus.setText(getBundleString("rowCountLabel.text"));
         JComponent bar = Box.createHorizontalBox();
         bar.add(tableStatus);
         tableRows = new JLabel("0");

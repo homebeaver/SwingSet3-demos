@@ -43,6 +43,7 @@ public class SplitPaneDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/JSplitPane.gif";
 
 	private static final long serialVersionUID = 5987956209025810711L;
+	private static final String DESCRIPTION = "JSplitPane Demo";
     private static final String IMG_PATH = "splitpane/"; // prefix dir
 
     /**
@@ -55,7 +56,7 @@ public class SplitPaneDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new SplitPaneDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
@@ -85,7 +86,7 @@ public class SplitPaneDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
     	earth = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"earth.jpg"));
         earth.setMinimumSize(new Dimension(20, 20));
@@ -117,8 +118,8 @@ public class SplitPaneDemo extends AbstractDemo {
         wrapper.setLayout(new GridLayout(0, 1));
 
         /* Create a radio button to vertically split the split pane. */
-        button = new JRadioButton(getString("vert_split"));
-        button.setMnemonic(getMnemonic("vert_split_mnemonic"));
+        button = new JRadioButton();
+        button.setText(getBundleString("vert_split.labelAndMnemonic", button));
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -128,8 +129,8 @@ public class SplitPaneDemo extends AbstractDemo {
         buttonWrapper.add(button);
 
         // Create a radio button the horizontally split the split pane.
-        button = new JRadioButton(getString("horz_split"));
-        button.setMnemonic(getMnemonic("horz_split_mnemonic"));
+        button = new JRadioButton();
+        button.setText(getBundleString("horz_split.labelAndMnemonic", button));
         button.setSelected(true);
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -140,8 +141,8 @@ public class SplitPaneDemo extends AbstractDemo {
         buttonWrapper.add(button);
 
         // Create a check box as to whether or not the split pane continually lays out the component when dragging.
-        JCheckBox checkBox = new JCheckBox(getString("cont_layout"));
-        checkBox.setMnemonic(getMnemonic("cont_layout_mnemonic"));
+        JCheckBox checkBox = new JCheckBox();
+        checkBox.setText(getBundleString("cont_layout.labelAndMnemonic", checkBox));
         checkBox.setSelected(true);
 
         checkBox.addChangeListener(new ChangeListener() {
@@ -152,8 +153,8 @@ public class SplitPaneDemo extends AbstractDemo {
         buttonWrapper.add(checkBox);
 
         // Create a check box as to whether or not the split pane divider contains the oneTouchExpandable buttons.
-        checkBox = new JCheckBox(getString("one_touch_expandable"));
-        checkBox.setMnemonic(getMnemonic("one_touch_expandable_mnemonic"));
+        checkBox = new JCheckBox();
+        checkBox.setText(getBundleString("one_touch_expandable.labelAndMnemonic", checkBox));
         checkBox.setSelected(true);
 
         checkBox.addChangeListener(new ChangeListener() {
@@ -171,7 +172,7 @@ public class SplitPaneDemo extends AbstractDemo {
         divSize = new JTextField();
         divSize.setText(Integer.valueOf(splitPane.getDividerSize()).toString());
         divSize.setColumns(5);
-        divSize.getAccessibleContext().setAccessibleName(getString("divider_size"));
+        divSize.getAccessibleContext().setAccessibleName("divider_size");
         divSize.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String  value = ((JTextField)e.getSource()).getText();
@@ -186,24 +187,24 @@ public class SplitPaneDemo extends AbstractDemo {
                     splitPane.setDividerSize(newSize);
                 } else {
                     JOptionPane.showMessageDialog(splitPane,
-                                                  getString("invalid_divider_size"),
-                                                  getString("error"),
+                                                  getBundleString("invalid_divider_size"),
+                                                  getBundleString("error"),
                                                   JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-        label = new JLabel(getString("divider_size"));
+        label = new JLabel();
+        label.setText(getBundleString("divider_size.labelAndMnemonic", label));
         tfWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
         tfWrapper.add(label);
         tfWrapper.add(divSize);
         label.setLabelFor(divSize);
-        label.setDisplayedMnemonic(getMnemonic("divider_size_mnemonic"));
         wrapper.add(tfWrapper);
 
         // Create a text field that will change the preferred/minimum size of the earth component.
         earthSize = new JTextField(String.valueOf(earth.getMinimumSize().width));
         earthSize.setColumns(5);
-        earthSize.getAccessibleContext().setAccessibleName(getString("first_component_min_size"));
+        earthSize.getAccessibleContext().setAccessibleName("first_component_min_size");
         earthSize.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String           value = ((JTextField)e.getSource()).getText();
@@ -218,25 +219,25 @@ public class SplitPaneDemo extends AbstractDemo {
                     earth.setMinimumSize(new Dimension(newSize, newSize));
                 } else {
                     JOptionPane.showMessageDialog(splitPane,
-                                                  getString("invalid_min_size") +
-                                                  getString("must_be_greater_than") + 10,
-                                                  getString("error"),
+                                                  getBundleString("invalid_min_size") +
+                                                  getBundleString("must_be_greater_than") + 10,
+                                                  getBundleString("error"),
                                                   JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-        label = new JLabel(getString("first_component_min_size"));
+        label = new JLabel();
+        label.setText(getBundleString("first_component_min_size.labelAndMnemonic", label));
         tfWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
         tfWrapper.add(label);
         tfWrapper.add(earthSize);
         label.setLabelFor(earthSize);
-        label.setDisplayedMnemonic(getMnemonic("first_component_min_size_mnemonic"));
         wrapper.add(tfWrapper);
 
         // Create a text field that will change the preferred/minimum size of the moon component.
         moonSize = new JTextField(String.valueOf(moon.getMinimumSize().width));
         moonSize.setColumns(5);
-        moonSize.getAccessibleContext().setAccessibleName(getString("second_component_min_size"));
+        moonSize.getAccessibleContext().setAccessibleName("second_component_min_size");
         moonSize.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String           value = ((JTextField)e.getSource()).getText();
@@ -251,19 +252,19 @@ public class SplitPaneDemo extends AbstractDemo {
                     moon.setMinimumSize(new Dimension(newSize, newSize));
                 } else {
                     JOptionPane.showMessageDialog(splitPane,
-                                                  getString("invalid_min_size") +
-                                                  getString("must_be_greater_than") + 10,
-                                                  getString("error"),
+                                                  getBundleString("invalid_min_size") +
+                                                  getBundleString("must_be_greater_than") + 10,
+                                                  getBundleString("error"),
                                                   JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-        label = new JLabel(getString("second_component_min_size"));
+        label = new JLabel();
+        label.setText(getBundleString("second_component_min_size.labelAndMnemonic", label));
         tfWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
         tfWrapper.add(label);
         tfWrapper.add(moonSize);
         label.setLabelFor(moonSize);
-        label.setDisplayedMnemonic(getMnemonic("second_component_min_size_mnemonic"));
         wrapper.add(tfWrapper);
 
         return wrapper;

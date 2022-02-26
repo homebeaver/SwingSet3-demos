@@ -36,6 +36,7 @@ public class SliderDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/JSlider.gif";
 
 	private static final long serialVersionUID = 2798412694764911672L;
+	private static final String DESCRIPTION = "Shows an example of using the JSlider component.";
 	
     /**
      * main method allows us to run as a standalone demo.
@@ -45,18 +46,14 @@ public class SliderDemo extends AbstractDemo {
     		static final boolean exitOnClose = true;
 			@Override
 			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new SliderDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				// no controller
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new SliderDemo(frame);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
 			}		
     	});
     }
@@ -68,7 +65,7 @@ public class SliderDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         JSlider s;
         JPanel hp;
@@ -78,7 +75,7 @@ public class SliderDemo extends AbstractDemo {
         JLabel tf;
         ChangeListener listener;
 
-        tf = new JLabel(getString("slidervalue"));
+        tf = new JLabel(getBundleString("slidervalue"));
         super.add(tf, BorderLayout.SOUTH);
 
         tp = new JPanel();
@@ -96,7 +93,7 @@ public class SliderDemo extends AbstractDemo {
         hp.setLayout(new BoxLayout(hp, BoxLayout.Y_AXIS));
         hp.setBorder(new TitledBorder(
                         border,
-                        getString("horizontal"),
+                        getBundleString("horizontal"),
                         TitledBorder.LEFT,
                         TitledBorder.ABOVE_TOP));
         tp.add(hp);
@@ -105,7 +102,7 @@ public class SliderDemo extends AbstractDemo {
         vp.setLayout(new BoxLayout(vp, BoxLayout.X_AXIS));
         vp.setBorder(new TitledBorder(
                         border,
-                        getString("vertical"),
+                        getBundleString("vertical"),
                         TitledBorder.LEFT,
                         TitledBorder.ABOVE_TOP));
         tp.add(vp);
@@ -113,10 +110,10 @@ public class SliderDemo extends AbstractDemo {
         // Horizontal Slider 1
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.setBorder(new TitledBorder(getString("plain")));
+        p.setBorder(new TitledBorder(getBundleString("plain")));
         s = new JSlider(-10, 100, 20);
-        s.getAccessibleContext().setAccessibleName(getString("plain"));
-        s.getAccessibleContext().setAccessibleDescription(getString("a_plain_slider"));
+        s.getAccessibleContext().setAccessibleName(getBundleString("plain"));
+        s.getAccessibleContext().setAccessibleDescription(getBundleString("a_plain_slider"));
         s.addChangeListener(listener);
 
         p.add(Box.createRigidArea(VGAP5));
@@ -128,12 +125,12 @@ public class SliderDemo extends AbstractDemo {
         // Horizontal Slider 2
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.setBorder(new TitledBorder(getString("majorticks")));
+        p.setBorder(new TitledBorder(getBundleString("majorticks")));
         s = new JSlider(100, 1000, 400);
         s.setPaintTicks(true);
         s.setMajorTickSpacing(100);
-        s.getAccessibleContext().setAccessibleName(getString("majorticks"));
-        s.getAccessibleContext().setAccessibleDescription(getString("majorticksdescription"));
+        s.getAccessibleContext().setAccessibleName(getBundleString("majorticks"));
+        s.getAccessibleContext().setAccessibleDescription(getBundleString("majorticksdescription"));
         s.addChangeListener(listener);
 
         p.add(Box.createRigidArea(VGAP5));
@@ -145,7 +142,7 @@ public class SliderDemo extends AbstractDemo {
         // Horizontal Slider 3
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.setBorder(new TitledBorder(getString("ticks")));
+        p.setBorder(new TitledBorder(getBundleString("ticks")));
         s = new JSlider(0, 11, 6);
 
         s.putClientProperty("JSlider.isFilled", Boolean.TRUE );
@@ -163,8 +160,8 @@ public class SliderDemo extends AbstractDemo {
         s.getLabelTable().put(i11, new JLabel(i11.toString(), JLabel.CENTER));
         s.setLabelTable( s.getLabelTable() );
 
-        s.getAccessibleContext().setAccessibleName(getString("minorticks"));
-        s.getAccessibleContext().setAccessibleDescription(getString("minorticksdescription"));
+        s.getAccessibleContext().setAccessibleName(getBundleString("minorticks"));
+        s.getAccessibleContext().setAccessibleDescription(getBundleString("minorticksdescription"));
 
         s.addChangeListener(listener);
 
@@ -177,15 +174,15 @@ public class SliderDemo extends AbstractDemo {
         // Horizontal Slider 4
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.setBorder(new TitledBorder(getString("disabled")));
+        p.setBorder(new TitledBorder(getBundleString("disabled")));
         BoundedRangeModel brm = new DefaultBoundedRangeModel(80, 0, 0, 100);
         s = new JSlider(brm);
         s.setPaintTicks(true);
         s.setMajorTickSpacing(20);
         s.setMinorTickSpacing(5);
         s.setEnabled(false);
-        s.getAccessibleContext().setAccessibleName(getString("disabled"));
-        s.getAccessibleContext().setAccessibleDescription(getString("disableddescription"));
+        s.getAccessibleContext().setAccessibleName(getBundleString("disabled"));
+        s.getAccessibleContext().setAccessibleDescription(getBundleString("disableddescription"));
         s.addChangeListener(listener);
 
         p.add(Box.createRigidArea(VGAP5));
@@ -198,10 +195,10 @@ public class SliderDemo extends AbstractDemo {
         // Vertical Slider 1
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-        p.setBorder(new TitledBorder(getString("plain")));
+        p.setBorder(new TitledBorder(getBundleString("plain")));
         s = new JSlider(JSlider.VERTICAL, -10, 100, 20);
-        s.getAccessibleContext().setAccessibleName(getString("plain"));
-        s.getAccessibleContext().setAccessibleDescription(getString("a_plain_slider"));
+        s.getAccessibleContext().setAccessibleName(getBundleString("plain"));
+        s.getAccessibleContext().setAccessibleDescription(getBundleString("a_plain_slider"));
         s.addChangeListener(listener);
         p.add(Box.createRigidArea(HGAP10));
         p.add(s);
@@ -212,15 +209,15 @@ public class SliderDemo extends AbstractDemo {
         // Vertical Slider 2
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-        p.setBorder(new TitledBorder(getString("majorticks")));
+        p.setBorder(new TitledBorder(getBundleString("majorticks")));
         s = new JSlider(JSlider.VERTICAL, 100, 1000, 400);
 
         s.putClientProperty( "JSlider.isFilled", Boolean.TRUE );
 
         s.setPaintTicks(true);
         s.setMajorTickSpacing(100);
-        s.getAccessibleContext().setAccessibleName(getString("majorticks"));
-        s.getAccessibleContext().setAccessibleDescription(getString("majorticksdescription"));
+        s.getAccessibleContext().setAccessibleName(getBundleString("majorticks"));
+        s.getAccessibleContext().setAccessibleDescription(getBundleString("majorticksdescription"));
         s.addChangeListener(listener);
         p.add(Box.createRigidArea(HGAP25));
         p.add(s);
@@ -231,7 +228,7 @@ public class SliderDemo extends AbstractDemo {
         // Vertical Slider 3
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-        p.setBorder(new TitledBorder(getString("minorticks")));
+        p.setBorder(new TitledBorder(getBundleString("minorticks")));
         s = new JSlider(JSlider.VERTICAL, 0, 100, 60);
         s.setPaintTicks(true);
         s.setMajorTickSpacing(20);
@@ -239,8 +236,8 @@ public class SliderDemo extends AbstractDemo {
 
         s.setPaintLabels( true );
 
-        s.getAccessibleContext().setAccessibleName(getString("minorticks"));
-        s.getAccessibleContext().setAccessibleDescription(getString("minorticksdescription"));
+        s.getAccessibleContext().setAccessibleName(getBundleString("minorticks"));
+        s.getAccessibleContext().setAccessibleDescription(getBundleString("minorticksdescription"));
 
         s.addChangeListener(listener);
         p.add(Box.createRigidArea(HGAP10));
@@ -252,14 +249,14 @@ public class SliderDemo extends AbstractDemo {
         // Vertical Slider 4
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-        p.setBorder(new TitledBorder(getString("disabled")));
+        p.setBorder(new TitledBorder(getBundleString("disabled")));
         s = new JSlider(JSlider.VERTICAL, 0, 100, 80);
         s.setPaintTicks(true);
         s.setMajorTickSpacing(20);
         s.setMinorTickSpacing(5);
         s.setEnabled(false);
-        s.getAccessibleContext().setAccessibleName(getString("disabled"));
-        s.getAccessibleContext().setAccessibleDescription(getString("disableddescription"));
+        s.getAccessibleContext().setAccessibleName(getBundleString("disabled"));
+        s.getAccessibleContext().setAccessibleDescription(getBundleString("disableddescription"));
         s.addChangeListener(listener);
         p.add(Box.createRigidArea(HGAP20));
         p.add(s);
@@ -279,7 +276,7 @@ public class SliderDemo extends AbstractDemo {
         }
         public void stateChanged(ChangeEvent e) {
             JSlider s1 = (JSlider)e.getSource();
-            tf.setText(getString("slidervalue") + s1.getValue());
+            tf.setText(getBundleString("slidervalue") + s1.getValue());
         }
     }
 }

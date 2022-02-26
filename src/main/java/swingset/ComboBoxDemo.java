@@ -77,7 +77,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         super(new BorderLayout());
         super.setPreferredSize(PREFERRED_SIZE);
         super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         face = new Face();
         xfaceLabel = new JXLabel(face);
@@ -112,7 +112,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
         comboBoxPanel.add(Box.createRigidArea(VGAP15));
 
-        JXLabel l = new JXLabel(getString("presets"));
+        JXLabel l = new JXLabel(getBundleString("presets"));
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
         comboBoxPanel.add(l);
         presetCB = createPresetComboBox();
@@ -121,7 +121,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         l.setLabelFor(presetCB);
         comboBoxPanel.add(Box.createRigidArea(VGAP30));
 
-        l = new JXLabel(getString("hair_description"));
+        l = new JXLabel(getBundleString("hair_description"));
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
         comboBoxPanel.add(l);
         hairCB = createHairComboBox();
@@ -130,7 +130,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         l.setLabelFor(hairCB);
         comboBoxPanel.add(Box.createRigidArea(VGAP15));
 
-        l = new JXLabel(getString("eyes_description"));
+        l = new JXLabel(getBundleString("eyes_description"));
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
         comboBoxPanel.add(l);
         eyesCB = createEyesComboBox();
@@ -139,7 +139,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         l.setLabelFor(eyesCB);
         comboBoxPanel.add(Box.createRigidArea(VGAP15));
 
-        l = new JXLabel(getString("mouth_description"));
+        l = new JXLabel(getBundleString("mouth_description"));
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
         comboBoxPanel.add(l);
         mouthCB = createMouthComboBox();
@@ -168,19 +168,19 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         mouthCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
 
         // load up the face parts
-        addFace("brent",     getString("brent"));
-        addFace("georges",   getString("georges"));
-        addFace("hans",      getString("hans"));
-        addFace("howard",    getString("howard"));
-        addFace("james",     getString("james"));
-        addFace("jeff",      getString("jeff"));
-        addFace("jon",       getString("jon"));
-        addFace("lara",      getString("lara"));
-        addFace("larry",     getString("larry"));
-        addFace("lisa",      getString("lisa"));
-        addFace("michael",   getString("michael"));
-        addFace("philip",    getString("philip"));
-        addFace("scott",     getString("scott"));
+        addFace("brent",     getBundleString("brent"));
+        addFace("georges",   getBundleString("georges"));
+        addFace("hans",      getBundleString("hans"));
+        addFace("howard",    getBundleString("howard"));
+        addFace("james",     getBundleString("james"));
+        addFace("jeff",      getBundleString("jeff"));
+        addFace("jon",       getBundleString("jon"));
+        addFace("lara",      getBundleString("lara"));
+        addFace("larry",     getBundleString("larry"));
+        addFace("lisa",      getBundleString("lisa"));
+        addFace("michael",   getBundleString("michael"));
+        addFace("philip",    getBundleString("philip"));
+        addFace("scott",     getBundleString("scott"));
 
         // set the default face
         presetCB.setSelectedIndex(0);
@@ -189,9 +189,9 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
     void addFace(String name, String i18n_name) {
         ImageIcon i;
-        String i18n_hair = getString("hair");
-        String i18n_eyes = getString("eyes");
-        String i18n_mouth = getString("mouth");
+        String i18n_hair = getBundleString("hair");
+        String i18n_eyes = getBundleString("eyes");
+        String i18n_mouth = getBundleString("mouth");
 
         parts.put(i18n_name, name); // i18n name lookup
         parts.put(name, i18n_name); // reverse name lookup
@@ -236,34 +236,34 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
     JXComboBox<String> createPresetComboBox() {
     	JXComboBox<String> cb = new JXComboBox<String>();
-        cb.addItem(getString("preset1"));
-        cb.addItem(getString("preset2"));
-        cb.addItem(getString("preset3"));
-        cb.addItem(getString("preset4"));
-        cb.addItem(getString("preset5"));
-        cb.addItem(getString("preset6"));
-        cb.addItem(getString("preset7"));
-        cb.addItem(getString("preset8"));
-        cb.addItem(getString("preset9"));
-        cb.addItem(getString("preset10"));
+        cb.addItem(getBundleString("preset1"));
+        cb.addItem(getBundleString("preset2"));
+        cb.addItem(getBundleString("preset3"));
+        cb.addItem(getBundleString("preset4"));
+        cb.addItem(getBundleString("preset5"));
+        cb.addItem(getBundleString("preset6"));
+        cb.addItem(getBundleString("preset7"));
+        cb.addItem(getBundleString("preset8"));
+        cb.addItem(getBundleString("preset9"));
+        cb.addItem(getBundleString("preset10"));
         cb.addActionListener(this);
         return cb;
     }
 
     void fillComboBox(JXComboBox<String> cb) {
-        cb.addItem(getString("brent"));
-        cb.addItem(getString("georges"));
-        cb.addItem(getString("hans"));
-        cb.addItem(getString("howard"));
-        cb.addItem(getString("james"));
-        cb.addItem(getString("jeff"));
-        cb.addItem(getString("jon"));
-        cb.addItem(getString("lara"));
-        cb.addItem(getString("larry"));
-        cb.addItem(getString("lisa"));
-        cb.addItem(getString("michael"));
-        cb.addItem(getString("philip"));
-        cb.addItem(getString("scott"));
+        cb.addItem(getBundleString("brent"));
+        cb.addItem(getBundleString("georges"));
+        cb.addItem(getBundleString("hans"));
+        cb.addItem(getBundleString("howard"));
+        cb.addItem(getBundleString("james"));
+        cb.addItem(getBundleString("jeff"));
+        cb.addItem(getBundleString("jon"));
+        cb.addItem(getBundleString("lara"));
+        cb.addItem(getBundleString("larry"));
+        cb.addItem(getBundleString("lisa"));
+        cb.addItem(getBundleString("michael"));
+        cb.addItem(getBundleString("philip"));
+        cb.addItem(getBundleString("scott"));
     }
 
     @Override // implements ActionListener

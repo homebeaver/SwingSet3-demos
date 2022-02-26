@@ -74,6 +74,7 @@ public class XListDemo extends AbstractDemo {
     
 	private static final long serialVersionUID = -1398533665658062231L;
     private static final Logger LOG = Logger.getLogger(XListDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXList, an enhanced list component.";
 
 	/**
      * main method allows us to run as a standalone demo.
@@ -86,7 +87,7 @@ public class XListDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new XListDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
             	frame.getContentPane().add(demo);
             	frame.pack();
@@ -123,7 +124,7 @@ public class XListDemo extends AbstractDemo {
      */
     public XListDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -145,8 +146,8 @@ public class XListDemo extends AbstractDemo {
         CellConstraints cc = new CellConstraints();
         
         JXTitledSeparator areaSeparator = new JXTitledSeparator();
-        areaSeparator.setName("listSeparator"); // prop listSeparator.title = JXList :
-        areaSeparator.setTitle("JXList");
+        areaSeparator.setName("listSeparator");
+        areaSeparator.setTitle(getBundleString("listSeparator.title"));
         
         builder.add(areaSeparator, cc.xywh(1, 1, 2, 1));
         builder.add(new JScrollPane(list), cc.xywh(2, 3, 1, 1));
@@ -230,7 +231,7 @@ public class XListDemo extends AbstractDemo {
         
         JXTitledSeparator areaSeparator = new JXTitledSeparator();
         areaSeparator.setName("extendedSeparator");
-        areaSeparator.setTitle("Sort Control"); // prop extendedSeparator.title = Sort Control
+        areaSeparator.setTitle(getBundleString("extendedSeparator.title"));
 
         builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
         
@@ -240,9 +241,9 @@ public class XListDemo extends AbstractDemo {
 
         toggleSortOrder = new JButton();
         toggleSortOrder.setName("toggleSortOrder");
-        toggleSortOrder.setText("Toggle Sort Order"); // prop toggleSortOrder.Action.text = Toggle Sort Order
+        toggleSortOrder.setText(getBundleString("toggleSortOrder.Action.text")); 
         toggleSortOrder.addActionListener( ae -> {
-        	LOG.info("actionEvent:"+ae + " selected="+toggleSortOrder.isSelected());
+        	LOG.fine("actionEvent:"+ae + " selected="+toggleSortOrder.isSelected());
         	list.toggleSortOrder(); // Delegates to the SortController, defined by the SortController's toggleSortOrder implementation
         });
         builder.add(toggleSortOrder, cc.xywh(labelColumn, currentRow, 3, 1));
@@ -250,9 +251,9 @@ public class XListDemo extends AbstractDemo {
         
         resetSortOrder = new JButton();
         resetSortOrder.setName("resetSortOrder");
-        resetSortOrder.setText("Reset Sort Order");// prop resetSortOrder.Action.text = Reset Sort Order
+        resetSortOrder.setText(getBundleString("resetSortOrder.Action.text")); 
         resetSortOrder.addActionListener( ae -> {
-        	LOG.info("actionEvent:"+ae + " selected="+resetSortOrder.isSelected());
+        	LOG.fine("actionEvent:"+ae + " selected="+resetSortOrder.isSelected());
         	list.resetSortOrder(); // Delegates to the SortController, defined by the SortController's toggleSortOrder implementation
         	//LOG.info("actionEvent:"+list.getSortController() is protected);
         });
@@ -280,21 +281,21 @@ public class XListDemo extends AbstractDemo {
                 "", cl.xywh(labelColumn, currentRow, 1, 1),
                 comparatorCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
         comparatorComboLabel.setName("comparatorComboLabel");
-        comparatorComboLabel.setText("Comparator"); // comparatorComboLabel.text = Comparator
+        comparatorComboLabel.setText(getBundleString("comparatorComboLabel.text"));
         currentRow += 2;
         
         currentRow += 2;
         JXTitledSeparator rolloverSeparator = new JXTitledSeparator();
         rolloverSeparator.setName("rolloverSeparator");
-        rolloverSeparator.setTitle("Rollover Control"); // rolloverSeparator.title = Rollover Control
+        rolloverSeparator.setTitle(getBundleString("rolloverSeparator.title"));
         builder.add(rolloverSeparator, cc.xywh(1, currentRow, 4, 1));
         currentRow += 2;
 
 		rolloverEnabledBox = new JCheckBox();
 		rolloverEnabledBox.setName("rolloverBox");
-		rolloverEnabledBox.setText("Rollover Enabled"); // rolloverBox.text = Rollover Enabled
+		rolloverEnabledBox.setText(getBundleString("rolloverBox.text"));
 		rolloverEnabledBox.addActionListener( ae -> {
-        	LOG.info("actionEvent:"+ae + " selected="+rolloverEnabledBox.isSelected());
+        	LOG.fine("actionEvent:"+ae + " selected="+rolloverEnabledBox.isSelected());
         	setRolloverEnabled(rolloverEnabledBox.isSelected());
         });
 		builder.add(rolloverEnabledBox, cc.xywh(labelColumn, currentRow, 3, 1));
@@ -323,10 +324,10 @@ public class XListDemo extends AbstractDemo {
         	list.addHighlighter(di.getValue());
         });
         
-		JLabel highlighterComboLabel = builder.addLabel(
-				"", cl.xywh(labelColumn, currentRow, 1, 1), 
-				highlighterCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
+		JLabel highlighterComboLabel = builder.addLabel("&Highlighter" // label textWithMnemonic
+			, cl.xywh(labelColumn, currentRow, 1, 1), highlighterCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
 		highlighterComboLabel.setName("highlighterComboLabel");
+//		highlighterComboLabel.setText(getBundleString("highlighterComboLabel.text")); // no Mnemonics in props
 		currentRow += 2;
 
         return painterControl;
@@ -399,7 +400,7 @@ public class XListDemo extends AbstractDemo {
 
     public void setRolloverEnabled(boolean enabled) {
         list.setRolloverEnabled(enabled);
-        list.setToolTipText(list.isRolloverEnabled() ? getString("stickyRolloverToolTip") : null);
+        list.setToolTipText(list.isRolloverEnabled() ? getBundleString("stickyRolloverToolTip") : null);
     }
     
     private Highlighter createExtendedRolloverDecoration() {

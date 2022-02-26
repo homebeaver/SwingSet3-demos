@@ -111,7 +111,7 @@ public class ButtonDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         JXPanel demo = new JXPanel();
         super.add(demo, BorderLayout.CENTER);
@@ -182,7 +182,7 @@ public class ButtonDemo extends AbstractDemo {
     }
 
     public void addButtons() {
-        tab.addTab(getString("buttons"), buttonPanel);
+        tab.addTab(getBundleString("buttons"), buttonPanel);
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setBorder(border5);
 
@@ -193,10 +193,10 @@ public class ButtonDemo extends AbstractDemo {
         // Text Buttons
         JXPanel p2 = createHorizontalPanel(false);
         verticalPane.add(p2);
-        p2.setBorder(new CompoundBorder(new TitledBorder(null, getString("textbuttons"),
+        p2.setBorder(new CompoundBorder(new TitledBorder(null, getBundleString("textbuttons"),
                                                           TitledBorder.LEFT, TitledBorder.TOP), border5));
 
-        String buttonText1 = getString("button1");
+        String buttonText1 = getBundleString("button1");
         button = new JButton(buttonText1);
         // wg. https://github.com/homebeaver/SwingSet/issues/18 :
 //        button.setBorder(patchedBorder(button));
@@ -204,13 +204,13 @@ public class ButtonDemo extends AbstractDemo {
         buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
 
-        button = new JButton(getString("button2"));
+        button = new JButton(getBundleString("button2"));
 //        button.setBorder(patchedBorder(button));
         p2.add(button);
         buttons.add(button);
         p2.add(Box.createRigidArea(HGAP10));
         
-        String buttonText3 = getString("button3");
+        String buttonText3 = getBundleString("button3");
         button = new JButton(buttonText3);
 //        button.setBorder(patchedBorder(button));
         p2.add(button);
@@ -318,11 +318,11 @@ public class ButtonDemo extends AbstractDemo {
     //		-	aus super: HGAP10 / sollten final sein, sind sie aber nicht
     private void createImageButtons(JComponent pane) {
         pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
-        pane.setBorder(new TitledBorder(null, getString("imagebuttons"),
+        pane.setBorder(new TitledBorder(null, getBundleString("imagebuttons"),
                                          TitledBorder.LEFT, TitledBorder.TOP));
 
         // phone image button mit vier icons
-        String description = getString("phone");
+        String description = getBundleString("phone");
         button = new JButton(StaticUtilities.createImageIcon("buttons/b1.gif"));
         button.setPressedIcon(StaticUtilities.createImageIcon("buttons/b1p.gif"));
         button.setRolloverIcon(StaticUtilities.createImageIcon("buttons/b1r.gif"));
@@ -333,7 +333,7 @@ public class ButtonDemo extends AbstractDemo {
         pane.add(Box.createRigidArea(HGAP10));
         
         // write image button
-        description = getString("write");
+        description = getBundleString("write");
         button = new JButton(StaticUtilities.createImageIcon("buttons/b2.gif"));
         button.setPressedIcon(StaticUtilities.createImageIcon("buttons/b2p.gif"));
         button.setRolloverIcon(StaticUtilities.createImageIcon("buttons/b2r.gif"));
@@ -344,7 +344,7 @@ public class ButtonDemo extends AbstractDemo {
         pane.add(Box.createRigidArea(HGAP10));
 
         // peace image button
-        description = getString("peace");
+        description = getBundleString("peace");
         button = new JButton(StaticUtilities.createImageIcon("buttons/b3.gif"));
         button.setPressedIcon(StaticUtilities.createImageIcon("buttons/b3p.gif"));
         button.setRolloverIcon(StaticUtilities.createImageIcon("buttons/b3r.gif"));
@@ -357,7 +357,7 @@ public class ButtonDemo extends AbstractDemo {
     public void addRadioButtons() {
         ButtonGroup group = new ButtonGroup();
 
-        tab.addTab(getString("radiobuttons"), radioButtonPanel);
+        tab.addTab(getBundleString("radiobuttons"), radioButtonPanel);
         radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel, BoxLayout.X_AXIS));
         radioButtonPanel.setBorder(border5);
 
@@ -370,21 +370,21 @@ public class ButtonDemo extends AbstractDemo {
         p1.add(p2);
         p2.setBorder(new CompoundBorder(
                       new TitledBorder(
-                        null, getString("textradiobuttons"),
+                        null, getBundleString("textradiobuttons"),
                         TitledBorder.LEFT, TitledBorder.TOP), border5)
         );
 
-        radio = (JRadioButton)p2.add(new JRadioButton(getString("radio1")));
+        radio = (JRadioButton)p2.add(new JRadioButton(getBundleString("radio1")));
         group.add(radio);
         radiobuttons.add(radio);
         p2.add(Box.createRigidArea(HGAP10));
 
-        radio = (JRadioButton)p2.add(new JRadioButton(getString("radio2")));
+        radio = (JRadioButton)p2.add(new JRadioButton(getBundleString("radio2")));
         group.add(radio);
         radiobuttons.add(radio);
         p2.add(Box.createRigidArea(HGAP10));
 
-        radio = (JRadioButton)p2.add(new JRadioButton(getString("radio3")));
+        radio = (JRadioButton)p2.add(new JRadioButton(getBundleString("radio3")));
         group.add(radio);
         radiobuttons.add(radio);
 
@@ -394,12 +394,12 @@ public class ButtonDemo extends AbstractDemo {
         JPanel p3 = createHorizontalPanel(false);
         p1.add(p3);
         p3.setLayout(new BoxLayout(p3, BoxLayout.X_AXIS));
-        p3.setBorder(new TitledBorder(null, getString("imageradiobuttons"),
+        p3.setBorder(new TitledBorder(null, getBundleString("imageradiobuttons"),
                                          TitledBorder.LEFT, TitledBorder.TOP));
 
         // image radio button 1
-        String description = getString("customradio");
-        String text = getString("radio1");
+        String description = getBundleString("customradio");
+        String text = getBundleString("radio1");
         radio = new JRadioButton(text, StaticUtilities.createImageIcon("buttons/rb.gif"));
         radio.setPressedIcon(StaticUtilities.createImageIcon("buttons/rbp.gif"));
         radio.setRolloverIcon(StaticUtilities.createImageIcon("buttons/rbr.gif"));
@@ -412,7 +412,7 @@ public class ButtonDemo extends AbstractDemo {
         p3.add(Box.createRigidArea(HGAP20));
 
         // image radio button 2
-        text = getString("radio2");
+        text = getBundleString("radio2");
         radio = new JRadioButton(text, StaticUtilities.createImageIcon("buttons/rb.gif"));
         radio.setPressedIcon(StaticUtilities.createImageIcon("buttons/rbp.gif"));
         radio.setRolloverIcon(StaticUtilities.createImageIcon("buttons/rbr.gif"));
@@ -425,7 +425,7 @@ public class ButtonDemo extends AbstractDemo {
         p3.add(Box.createRigidArea(HGAP20));
 
         // image radio button 3
-        text = getString("radio3");
+        text = getBundleString("radio3");
         radio = new JRadioButton(text, StaticUtilities.createImageIcon("buttons/rb.gif"));
         radio.setPressedIcon(StaticUtilities.createImageIcon("buttons/rbp.gif"));
         radio.setRolloverIcon(StaticUtilities.createImageIcon("buttons/rbr.gif"));
@@ -445,7 +445,7 @@ public class ButtonDemo extends AbstractDemo {
 
 
     public void addCheckBoxes() {
-        tab.addTab(getString("checkboxes"), checkboxPanel);
+        tab.addTab(getBundleString("checkboxes"), checkboxPanel);
         checkboxPanel.setLayout(new BoxLayout(checkboxPanel, BoxLayout.X_AXIS));
         checkboxPanel.setBorder(border5);
 
@@ -458,21 +458,21 @@ public class ButtonDemo extends AbstractDemo {
         p1.add(p2);
         p2.setBorder(new CompoundBorder(
                       new TitledBorder(
-                        null, getString("textcheckboxes"),
+                        null, getBundleString("textcheckboxes"),
                         TitledBorder.LEFT, TitledBorder.TOP), border5)
         );
 
-        check = new JCheckBox(getString("check1"));
+        check = new JCheckBox(getBundleString("check1"));
         checkboxes.add(check);
         p2.add(check);
         p2.add(Box.createRigidArea(HGAP10));
 
-        check = new JCheckBox(getString("check2"));
+        check = new JCheckBox(getBundleString("check2"));
         checkboxes.add(check);
         p2.add(check);
         p2.add(Box.createRigidArea(HGAP10));
 
-        check = new JCheckBox(getString("check3"));
+        check = new JCheckBox(getBundleString("check3"));
         checkboxes.add(check);
         p2.add(check);
 
@@ -481,11 +481,11 @@ public class ButtonDemo extends AbstractDemo {
         JPanel p3 = createHorizontalPanel(false);
         p1.add(p3);
         p3.setLayout(new BoxLayout(p3, BoxLayout.X_AXIS));
-        p3.setBorder(new TitledBorder(null, getString("imagecheckboxes"), TitledBorder.LEFT, TitledBorder.TOP));
+        p3.setBorder(new TitledBorder(null, getBundleString("imagecheckboxes"), TitledBorder.LEFT, TitledBorder.TOP));
 
         // image checkbox 1
-        String description = getString("customcheck");
-        String text = getString("check1");
+        String description = getBundleString("customcheck");
+        String text = getBundleString("check1");
         check = new JCheckBox(text, StaticUtilities.createImageIcon("buttons/cb.gif"));
         check.setRolloverIcon(StaticUtilities.createImageIcon("buttons/cbr.gif"));
         check.setRolloverSelectedIcon(StaticUtilities.createImageIcon("buttons/cbrs.gif"));
@@ -496,7 +496,7 @@ public class ButtonDemo extends AbstractDemo {
         p3.add(Box.createRigidArea(HGAP20));
 
         // image checkbox 2
-        text = getString("check2");
+        text = getBundleString("check2");
         check = new JCheckBox(text, StaticUtilities.createImageIcon("buttons/cb.gif"));
         check.setRolloverIcon(StaticUtilities.createImageIcon("buttons/cbr.gif"));
         check.setRolloverSelectedIcon(StaticUtilities.createImageIcon("buttons/cbrs.gif"));
@@ -507,7 +507,7 @@ public class ButtonDemo extends AbstractDemo {
         p3.add(Box.createRigidArea(HGAP20));
 
         // image checkbox 3
-        text = getString("check3");
+        text = getBundleString("check3");
         check = new JCheckBox(text, StaticUtilities.createImageIcon("buttons/cb.gif"));
         check.setRolloverIcon(StaticUtilities.createImageIcon("buttons/cbr.gif"));
         check.setRolloverSelectedIcon(StaticUtilities.createImageIcon("buttons/cbrs.gif"));
@@ -568,13 +568,13 @@ public class ButtonDemo extends AbstractDemo {
         controls.add(buttonControls);
 
         // Display Options
-        JLabel l = new JLabel(getString("controlpanel_label"));
+        JLabel l = new JLabel(getBundleString("controlpanel.labelAndMnemonic"));
         leftColumn.add(l);
 
-        JCheckBox bordered = new JCheckBox(getString("paintborder"));
+        JCheckBox bordered = new JCheckBox();
         bordered.setActionCommand("PaintBorder");
-        bordered.setMnemonic(getMnemonic("paintborder_mnemonic"));
-        bordered.setToolTipText(getString("paintborder_tooltip"));
+        bordered.setText(getBundleString("paintborder.labelAndMnemonic", bordered));
+        bordered.setToolTipText(getBundleString("paintborder_tooltip"));
         if (currentControls == buttons) {
                 bordered.setSelected(true); // initial
         }
@@ -593,10 +593,10 @@ public class ButtonDemo extends AbstractDemo {
         });
         leftColumn.add(bordered);
 
-        JCheckBox focused = new JCheckBox(getString("paintfocus"));
+        JCheckBox focused = new JCheckBox();
         focused.setActionCommand("PaintFocus");
-        focused.setToolTipText(getString("paintfocus_tooltip"));
-        focused.setMnemonic(getMnemonic("paintfocus_mnemonic"));
+        focused.setText(getBundleString("paintfocus.labelAndMnemonic", focused));
+        focused.setToolTipText(getBundleString("paintfocus_tooltip"));
         focused.setSelected(true);
 
         focused.addItemListener(e -> {
@@ -612,10 +612,10 @@ public class ButtonDemo extends AbstractDemo {
         });
         leftColumn.add(focused);
 
-        JCheckBox enabled = new JCheckBox(getString("enabled"));
+        JCheckBox enabled = new JCheckBox();
         enabled.setActionCommand("Enabled");
-        enabled.setMnemonic(getMnemonic("enabled_mnemonic"));
-        enabled.setToolTipText(getString("enabled_tooltip"));
+        enabled.setText(getBundleString("enabled.labelAndMnemonic", enabled));
+        enabled.setToolTipText(getBundleString("enabled_tooltip"));
         enabled.setSelected(true);
 
         enabled.addItemListener(e -> {
@@ -641,10 +641,10 @@ public class ButtonDemo extends AbstractDemo {
         });
         leftColumn.add(enabled);
 
-        JCheckBox filled = new JCheckBox(getString("contentfilled"));
+        JCheckBox filled = new JCheckBox();
         filled.setActionCommand("ContentFilled");
-        filled.setMnemonic(getMnemonic("contentfilled_mnemonic"));
-        filled.setToolTipText(getString("contentfilled_tooltip"));
+        filled.setText(getBundleString("contentfilled.labelAndMnemonic", filled));
+        filled.setToolTipText(getBundleString("contentfilled_tooltip"));
         filled.setSelected(true);
 
         filled.addItemListener(e -> {
@@ -661,13 +661,13 @@ public class ButtonDemo extends AbstractDemo {
 
         leftColumn.add(Box.createRigidArea(VGAP20));
 
-        l = new JLabel(getString("padamount_label"));
+        l = new JLabel(getBundleString("padamount.labelAndMnemonic")); // no mnemonics
         leftColumn.add(l);
         ButtonGroup group = new ButtonGroup();
         
-        JRadioButton defaultPad = new JRadioButton(getString("default"));
-        defaultPad.setMnemonic(getMnemonic("default_mnemonic"));
-        defaultPad.setToolTipText(getString("default_tooltip"));
+        JRadioButton defaultPad = new JRadioButton();
+        defaultPad.setText(getBundleString("default.labelAndMnemonic", defaultPad));
+        defaultPad.setToolTipText(getBundleString("default_tooltip"));
         defaultPad.addItemListener(e -> {
         	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == defaultPad
         	if(rb.isSelected()) {
@@ -685,10 +685,10 @@ public class ButtonDemo extends AbstractDemo {
         defaultPad.setSelected(true);
         leftColumn.add(defaultPad);
 
-        JRadioButton zeroPad = new JRadioButton(getString("zero"));
+        JRadioButton zeroPad = new JRadioButton();
         zeroPad.setActionCommand("ZeroPad");
-        zeroPad.setMnemonic(getMnemonic("zero_mnemonic"));
-        zeroPad.setToolTipText(getString("zero_tooltip"));
+        zeroPad.setText(getBundleString("zero.labelAndMnemonic", zeroPad));
+        zeroPad.setToolTipText(getBundleString("zero_tooltip"));
         zeroPad.addItemListener(e -> {
         	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == zeroPad
         	if(rb.isSelected()) {
@@ -704,10 +704,10 @@ public class ButtonDemo extends AbstractDemo {
         group.add(zeroPad);
         leftColumn.add(zeroPad);
 
-        JRadioButton tenPad = new JRadioButton(getString("ten"));
+        JRadioButton tenPad = new JRadioButton();
         tenPad.setActionCommand("TenPad");
-        tenPad.setMnemonic(getMnemonic("ten_mnemonic"));
-        tenPad.setToolTipText(getString("ten_tooltip"));
+        tenPad.setText(getBundleString("ten.labelAndMnemonic", tenPad));
+        tenPad.setToolTipText(getBundleString("ten_tooltip"));
 
         tenPad.addItemListener(e -> {
         	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == tenPad

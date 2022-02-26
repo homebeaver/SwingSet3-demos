@@ -35,28 +35,24 @@ public class HtmlDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/JEditorPane.gif";
 
 	private static final long serialVersionUID = 1867077915822954698L;
+	private static final String DESCRIPTION = "Shows how to display html text using the JEditorPane component.";
 
     /**
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
     	SwingUtilities.invokeLater(new Runnable() {
     		static final boolean exitOnClose = true;
 			@Override
 			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new HtmlDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				// no controller
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new HtmlDemo(frame);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
 			}		
     	});
     }
@@ -70,7 +66,7 @@ public class HtmlDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         try {
             URL url = null;

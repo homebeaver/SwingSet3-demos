@@ -77,6 +77,7 @@ public class LoginPaneDemo extends AbstractDemo {
 	private static final long serialVersionUID = 545678580592168192L;
 	private static final Logger LOG = Logger.getLogger(LoginPaneDemo.class.getName());
     private static final Font SANSSERIF16 = new Font("SansSerif", Font.PLAIN, 16);
+	private static final String DESCRIPTION = "Demonstrates JXLoginPane, a security login control.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -89,7 +90,7 @@ public class LoginPaneDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new LoginPaneDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
@@ -116,7 +117,7 @@ public class LoginPaneDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
 
         JXPanel n = new JXPanel(new HorizontalLayout());
         JXLabel status = new JXLabel("Status:");
@@ -137,8 +138,7 @@ public class LoginPaneDemo extends AbstractDemo {
 
         loginLauncher = new JXButton();
         loginLauncher.setName("launcher");
-        // den text aus prop "launcher.text" holen;
-        loginLauncher.setText(getString("launcher.text"));
+        loginLauncher.setText(getBundleString("launcher.text"));
         loginLauncher.setFont(SANSSERIF16);
         final Painter<Component> orangeBgPainter = new MattePainter(PaintUtils.ORANGE_DELIGHT, true);
         loginLauncher.setBackgroundPainter(orangeBgPainter);
@@ -155,7 +155,7 @@ public class LoginPaneDemo extends AbstractDemo {
         });
         bind(); // registriert den event Observer aka Listener
         
-        controller.add(loginLauncher, BorderLayout.SOUTH);
+        controller.add(loginLauncher, BorderLayout.SOUTH); // bei CENTER wird es nicht angezeigt?
         
         JXPanel p = new JXPanel(new VerticalLayout());
         controller.add(p);
@@ -163,8 +163,9 @@ public class LoginPaneDemo extends AbstractDemo {
         allowLogin = new JRadioButton(); // JRadioButton extends JToggleButton
         allowLogin.setFont(SANSSERIF16);
         allowLogin.setName("allowLogin");
-        allowLogin.setText(getString("allowLogin.text"));
-        allowLogin.setSelected(true); // <= prop: allowLogin.selected=true
+        allowLogin.setText(getBundleString("allowLogin.text"));
+        // TODO getBundleString indiziert Mnemonic: allowLogin.text=&Allow Login - wird aber nicht gesetzt
+        allowLogin.setSelected(Boolean.valueOf(getBundleString("allowLogin.selected")));
         JRadioButton disallowLogin = new JRadioButton("disallow"); // JRadioButton extends JToggleButton
         disallowLogin.setFont(SANSSERIF16);
       //Group the radio buttons.

@@ -60,6 +60,7 @@ public class XTreeDemo extends AbstractDemo {
 
 	private static final long serialVersionUID = 7070451442278673301L;
     private static final Logger LOG = Logger.getLogger(XTreeDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXTree, an enhanced tree component";
    
     /**
      * main method allows us to run as a standalone demo.
@@ -71,7 +72,7 @@ public class XTreeDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new XTreeDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
@@ -92,7 +93,7 @@ public class XTreeDemo extends AbstractDemo {
      */
     public XTreeDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -103,7 +104,7 @@ public class XTreeDemo extends AbstractDemo {
         tree = new JXTree(); 
         tree.setName("componentTree");
         tree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        tree.setBackground(null); // is white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
+//        tree.setBackground(null); // is white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
         add(new JScrollPane(tree), BorderLayout.CENTER);        
         LOG.info("done initComponents Background:"+tree.getBackground() + " tree:"+tree);
 
@@ -121,7 +122,7 @@ public class XTreeDemo extends AbstractDemo {
 	public JXPanel getControlPane() {
 		JXPanel buttons = new JXPanel();
 
-		loadButton = new JXButton(getString("reloadTreeData"));
+		loadButton = new JXButton(getBundleString("reloadTreeData"));
 		loadButton.setName("loadButton");
 		loadButton.addActionListener(ae -> {
 			//addNotify(); // create and install the component tree model
@@ -130,14 +131,14 @@ public class XTreeDemo extends AbstractDemo {
 		buttons.add(loadButton);
 		
 		// <snip> JXTree convenience api
-		expandButton = new JXButton(getString("expandAll"));
+		expandButton = new JXButton(getBundleString("expandAll.Action.text"));
 		expandButton.setName("expandButton");
 		expandButton.addActionListener(ae -> {
 			tree.expandAll();
 		});
 		buttons.add(expandButton);
 
-		collapseButton = new JXButton(getString("collapseAll"));
+		collapseButton = new JXButton(getBundleString("collapseAll.Action.text"));
 		collapseButton.setName("collapseButton");
 		collapseButton.addActionListener(ae -> {
 			tree.collapseAll();

@@ -79,6 +79,7 @@ public class SearchDemo extends AbstractDemo {
 	
 	private static final long serialVersionUID = 3818043478721123293L;
     private static final Logger LOG = Logger.getLogger(SearchDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates base searching functionality plus custom configuration.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -91,7 +92,7 @@ public class SearchDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new SearchDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
             	frame.getContentPane().add(demo);
             	frame.pack();
@@ -120,7 +121,7 @@ public class SearchDemo extends AbstractDemo {
      */
     public SearchDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -149,16 +150,16 @@ public class SearchDemo extends AbstractDemo {
         
         extendedMarkerBox = new JCheckBox();
         extendedMarkerBox.setName("extendedMarkerBox");
-        extendedMarkerBox.setText("Matching Text Marker"); // TODO prop: extendedMarkerBox.text = Matching Text Marker
+        extendedMarkerBox.setText(getBundleString("extendedMarkerBox.text"));
         extendedMarkerBox.addActionListener( ae -> {
-        	LOG.info("actionEvent:"+ae + " selected="+extendedMarkerBox.isSelected());
+        	LOG.fine("actionEvent:"+ae + " selected="+extendedMarkerBox.isSelected());
         	searchControl.setExtendedMarker(extendedMarkerBox.isSelected());
         });
         painterBox = new JCheckBox();
         painterBox.setName("painterBox");
-        painterBox.setText("Animated Marker"); // TODO prop
+        painterBox.setText(getBundleString("painterBox.text"));
         painterBox.addActionListener( ae -> {
-        	LOG.info("actionEvent:"+ae + " selected="+painterBox.isSelected());
+        	LOG.fine("actionEvent:"+ae + " selected="+painterBox.isSelected());
         	searchControl.setAnimatedPainter(painterBox.isSelected());
         });
         
@@ -303,8 +304,7 @@ public class SearchDemo extends AbstractDemo {
             @Override
             public String getString(Object value) {
                 if (value instanceof Contributor) {
-                    return StringValues.NUMBER_TO_STRING.getString(
-                            ((Contributor) value).getMerits());
+                    return StringValues.NUMBER_TO_STRING.getString(((Contributor) value).getMerits());
                 }
                 return StringValues.TO_STRING.getString(value);
             }

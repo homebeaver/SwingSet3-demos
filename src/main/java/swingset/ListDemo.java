@@ -52,29 +52,25 @@ public class ListDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/JList.gif";
 	
 	private static final long serialVersionUID = -6590141127414585946L;
+	private static final String DESCRIPTION = "JList Demo";
 	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = true;
 
     /**
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
     	SwingUtilities.invokeLater(new Runnable() {
     		static final boolean exitOnClose = true;
 			@Override
 			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new ListDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				// no controller
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new ListDemo(frame);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
 			}		
     	});
     }
@@ -98,10 +94,10 @@ public class ListDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
 
         if(CONTROLLER_IN_PRESENTATION_FRAME) {
-            JLabel description = new JLabel(getString("description"));
+            JLabel description = new JLabel(getBundleString("description"));
             super.add(description, BorderLayout.NORTH);
         }
 
@@ -195,7 +191,7 @@ public class ListDemo extends AbstractDemo {
 	public JXPanel getControlPane() {
         if(CONTROLLER_IN_PRESENTATION_FRAME) return emptyControlPane();
 
-        JLabel description = new JLabel(getString("description"));
+        JLabel description = new JLabel(getBundleString("description"));
         
         JXPanel controller = new JXPanel();
         controller.add(description, BorderLayout.NORTH);
@@ -218,11 +214,11 @@ public class ListDemo extends AbstractDemo {
 
         JPanel prefixPanel = new JPanel();
         prefixPanel.setLayout(new BoxLayout(prefixPanel, BoxLayout.Y_AXIS));
-        prefixPanel.add(new JLabel(getString("prefixes")));
+        prefixPanel.add(new JLabel(getBundleString("prefixes")));
 
         JPanel suffixPanel = new JPanel();
         suffixPanel.setLayout(new BoxLayout(suffixPanel, BoxLayout.Y_AXIS));
-        suffixPanel.add(new JLabel(getString("suffixes")));
+        suffixPanel.add(new JLabel(getBundleString("suffixes")));
 
         prefixList = new JPanel() {
             Insets insets = new Insets(0, 4, 0, 0);

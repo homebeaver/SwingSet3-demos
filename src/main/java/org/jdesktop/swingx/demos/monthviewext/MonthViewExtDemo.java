@@ -89,6 +89,7 @@ public class MonthViewExtDemo extends AbstractDemo {
     
 	private static final long serialVersionUID = -7354019100269447099L;
 	private static final Logger LOG = Logger.getLogger(MonthViewExtDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates extended JXMonthView features";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -100,7 +101,7 @@ public class MonthViewExtDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new MonthViewExtDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
@@ -130,7 +131,7 @@ public class MonthViewExtDemo extends AbstractDemo {
      */
     public MonthViewExtDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -174,7 +175,7 @@ public class MonthViewExtDemo extends AbstractDemo {
         
         JXTitledSeparator areaSeparator = new JXTitledSeparator();
         areaSeparator.setName("monthViewSeparator");
-        areaSeparator.setTitle("JXMonthView"); // TODO prop: monthViewSeparator.title = JXMonthView
+        areaSeparator.setTitle(getBundleString("monthViewSeparator.title"));
         builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
         builder.add(monthView, cc.xywh(2, 3, 1, 1));
                 
@@ -208,7 +209,7 @@ public class MonthViewExtDemo extends AbstractDemo {
         
         JXTitledSeparator areaSeparator = new JXTitledSeparator();
         areaSeparator.setName("extendedSeparator");
-        areaSeparator.setTitle("Extended Configuration"); // TODO prop: extendedSeparator.title = Extended Configuration
+        areaSeparator.setTitle(getBundleString("extendedSeparator.title"));
         builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
         
         int labelColumn = 2;
@@ -219,13 +220,13 @@ public class MonthViewExtDemo extends AbstractDemo {
         calendarBox = new JCheckBox();
         calendarBox.setName("calendarBox");
         // öffnet Kalender für Jahr 2022 im separatem Frame
-        calendarBox.setText("Calendar 2022"); // TODO prop: calendarBox.text = Calendar 2022
+        calendarBox.setText(getBundleString("calendarBox.text"));
         builder.add(calendarBox, cc.xywh(labelColumn, currentRow, 3, 1));
         currentRow += 2;
         
         zoomableBox = new JCheckBox();
         zoomableBox.setName("zoomableBox");
-        zoomableBox.setText("Custom Navigation"); // TODO prop: zoomableBox.text = Custom Navigation
+        zoomableBox.setText(getBundleString("zoomableBox.text"));
         builder.add(zoomableBox, cc.xywh(labelColumn, currentRow, 3, 1));
         currentRow += 2;
 
@@ -235,7 +236,7 @@ public class MonthViewExtDemo extends AbstractDemo {
                 "", cl.xywh(labelColumn, currentRow, 1, 1),
                 customHeaderBox, cc.xywh(widgetColumn, currentRow, 1, 1));
         headerBoxLabel.setName("customHeaderBoxLabel");
-        headerBoxLabel.setText("Header"); // TODO prop: customHeaderBoxLabel.text = Header
+        headerBoxLabel.setText(getBundleString("customHeaderBoxLabel.text"));
         LabelHandler.bindLabelFor(headerBoxLabel, customHeaderBox);
         currentRow += 2;
         
@@ -246,7 +247,7 @@ public class MonthViewExtDemo extends AbstractDemo {
     private void hideCalendarFrame() {
         if (calendarFrame != null) {
 // TODO           DemoUtils.fadeOutAndDispose(calendarFrame, 1000);
-            LOG.warning("TODO           DemoUtils.fadeOutAndDispose(calendarFrame, 1000);");
+            LOG.warning("TODO           DemoUtils.fadeOutAndDispose(calendarFrame, 1000); use dispose()");
             calendarFrame.dispose();
         }
         calendarFrame = null;

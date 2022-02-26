@@ -9,13 +9,14 @@ import java.awt.Point;
 import java.awt.Polygon;
 
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXFrame.StartPosition;
 
 /**
  * ToolTip Demo
@@ -28,6 +29,7 @@ public class ToolTipDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/ToolTip.gif";
 
 	private static final long serialVersionUID = 8981063652293220475L;
+	private static final String DESCRIPTION = "Bessie The Cow ToolTips";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -37,18 +39,14 @@ public class ToolTipDemo extends AbstractDemo {
     		static final boolean exitOnClose = true;
 			@Override
 			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new ToolTipDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				// no controller
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new ToolTipDemo(frame);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
 			}		
     	});
     }
@@ -58,7 +56,7 @@ public class ToolTipDemo extends AbstractDemo {
      */
     public ToolTipDemo(Frame frame) {
     	super();
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name", DESCRIPTION));
 //    	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -66,12 +64,12 @@ public class ToolTipDemo extends AbstractDemo {
     	super.setBackground(Color.white);
 
         // Create a Cow to put in the center of the panel.
-        Cow cow = new Cow();
-        cow.getAccessibleContext().setAccessibleName(getString("accessible_cow"));
+        Cow cow = new Cow(getResourceAsIcon(getClass(), "images/tooltip/cow.gif"));
+        cow.getAccessibleContext().setAccessibleName(getBundleString("accessible_cow"));
 
         // Set the tooltip text. Note, for fun, we also set more tooltip text
         // descriptions for the cow down below in the Cow.contains() method.
-        cow.setToolTipText(getString("cow"));
+        cow.setToolTipText(getBundleString("cow"));
 
         // Add the cow midway down the panel
 //        super.add(Box.createRigidArea(new Dimension(1, 150)));
@@ -81,14 +79,14 @@ public class ToolTipDemo extends AbstractDemo {
     @Override
 	public JXPanel getControlPane() {
 		// no controller
-		return new JXPanel(); // TODO default EmptyControler
+    	return emptyControlPane();
 	}
 
     class Cow extends JXLabel {
         Polygon cowgon = new Polygon();
 
-        public Cow() {
-            super(StaticUtilities.createImageIcon("tooltip/cow.gif"));
+        public Cow(Icon icon) {
+            super(icon);
             setAlignmentX(CENTER_ALIGNMENT);
 
             // Set polygon points that define the outline of the cow.
@@ -121,7 +119,7 @@ public class ToolTipDemo extends AbstractDemo {
             if((x > 30) && (x < 60) && (y > 60) && (y < 85)) {
                 if(!moo) {
                     setToolTipText("<html><center><font color=blue size=+2>" +
-                                   getString("moo") + "</font></center></html>");
+                                   getBundleString("moo") + "</font></center></html>");
                     moo = true;
                     milk = false;
                     tail = false;
@@ -129,20 +127,20 @@ public class ToolTipDemo extends AbstractDemo {
             } else if((x > 150) && (x < 260) && (y > 90) && (y < 145)) {
                 if(!milk) {
                     setToolTipText("<html><center><font face=AvantGarde size=+1 color=white>" +
-                                   getString("got_milk") + "</font></center></html>");
+                                   getBundleString("got_milk") + "</font></center></html>");
                     milk = true;
                     moo = false;
                     tail = false;
                 }
             } else if((x > 280) && (x < 300) && (y > 20) && (y < 175)) {
                 if(!tail) {
-                    setToolTipText("<html><em><b>" + getString("tail") + "</b></em></html>");
+                    setToolTipText("<html><em><b>" + getBundleString("tail") + "</b></em></html>");
                     tail = true;
                     moo = false;
                     milk = false;
                 }
             } else if(moo || milk || tail) {
-                setToolTipText(getString("tooltip_features"));
+                setToolTipText(getBundleString("tooltip_features"));
                 moo = false;
                 tail = false;
                 milk = false;

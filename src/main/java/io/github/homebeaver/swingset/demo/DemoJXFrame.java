@@ -223,6 +223,7 @@ aus super:
     }
     
     protected JMenu createLanguageMenu(Window target) {
+    	Locale defaultLocale = JComponent.getDefaultLocale();
     	List<DisplayLocale> locales = new ArrayList<DisplayLocale>();
     	locales.add(new DisplayLocale(Locale.ENGLISH));
     	locales.add(new DisplayLocale("cs"));
@@ -239,13 +240,14 @@ aus super:
     	locales.add(new DisplayLocale(new Locale("pt", "BR")));
     	locales.add(new DisplayLocale("sv"));
     	
-        JMenu menu = new JMenu(StaticUtilities.getResourceAsString("LanguageMenu.lang.labelAndMnemonic", "Languages"));
+        JMenu menu = new JMenu("Languages");
         ButtonGroup langMenuGroup = new ButtonGroup(); // wg. mi.setSelected
         
         locales.forEach( dl -> {
         	SetLanguageAction action = new SetLanguageAction(dl, target);
         	JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(action));
         	mi.setText(dl.toString());
+        	if(defaultLocale!=null && defaultLocale.toString().startsWith(dl.getLocale().toString())) mi.setSelected(true);
         	langMenuGroup.add(mi);
         });
 

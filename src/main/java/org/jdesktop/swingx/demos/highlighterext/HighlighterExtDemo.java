@@ -72,6 +72,7 @@ public class HighlighterExtDemo extends AbstractDemo {
 	
 	private static final long serialVersionUID = 2114065461965096403L;
 	private static final Logger LOG = Logger.getLogger(HighlighterExtDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates value based highlighting.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -84,7 +85,7 @@ public class HighlighterExtDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new HighlighterExtDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
             	frame.getContentPane().add(demo);
             	frame.pack();
@@ -117,7 +118,7 @@ public class HighlighterExtDemo extends AbstractDemo {
      */
     public HighlighterExtDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -140,22 +141,22 @@ public class HighlighterExtDemo extends AbstractDemo {
         
         extendedMarkerBox = new JCheckBox();
         extendedMarkerBox.setName("extendedMarkerBox");
-        extendedMarkerBox.setText("Span All Columns"); // TODO prop: extendedMarkerBox.text = Span All Columns
+        extendedMarkerBox.setText(getBundleString("extendedMarkerBox.text"));
         extendedMarkerBox.addActionListener( ae -> {
-        	LOG.info("actionEvent:"+ae + " selected="+extendedMarkerBox.isSelected());
+        	LOG.fine("actionEvent:"+ae + " selected="+extendedMarkerBox.isSelected());
         	highlighterControl.setSpreadColumns(extendedMarkerBox.isSelected());
         });
 
         raceButton = new JButton();
         raceButton.setName("playButton");
-        raceButton.setText("Race Color Bar"); // TODO prop: race.Action.text = Race Color Bar
+        raceButton.setText(getBundleString("race.Action.text"));
         fadeInButton = new JButton();
         fadeInButton.setName("fadeInButton");
-        fadeInButton.setText("Fade In Color"); // TODO prop: fadeIn.Action.text = Fade In Color
+        fadeInButton.setText(getBundleString("fadeIn.Action.text"));
 
         // init highlighter control
         highlighterControl = new HighlighterControl(); 
-//        raceButton.setAction(getAction("race")); so geht es auch:
+//        raceButton.setAction(getAction("race")); so geht es direkter:
         raceButton.addActionListener( ae -> {
         	LOG.info("actionEvent:"+ae + " selected="+raceButton.isSelected());
         	highlighterControl.race(); // Delegates to the highlighterControl
@@ -290,18 +291,13 @@ public class HighlighterExtDemo extends AbstractDemo {
             return new MeritRelativizer(meritColumn, isSpreadColumns(), 100, intermediate);
         }
         
-        /**
-         * 
-         */
         private void updateTableHighlighter() {
             tableValueBasedHighlighter.setRelativizer(createMeritRelativizer(100));
-            valueBasedHighlighter.setRelativizer(
-                    tableValueBasedHighlighter.getRelativizer());
+            valueBasedHighlighter.setRelativizer(tableValueBasedHighlighter.getRelativizer());
             if (isSpreadColumns()) {
                 tableValueBasedHighlighter.setHighlightPredicate(HighlightPredicate.ALWAYS);
             } else {
-                tableValueBasedHighlighter.setHighlightPredicate(
-                        new HighlightPredicate.ColumnHighlightPredicate(meritColumn));
+                tableValueBasedHighlighter.setHighlightPredicate(new HighlightPredicate.ColumnHighlightPredicate(meritColumn));
             }    
         }
 

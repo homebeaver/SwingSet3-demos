@@ -22,6 +22,7 @@ public class StaticUtilities {
      * This method returns a string from the demo's resource bundle.
      */
 	// kopiert von SwingSet2.getString(String)
+    @Deprecated
     public static String getResourceAsString(String key, String def) {
         try {
             return TextAndMnemonicUtils.getTextAndMnemonicString(key);
@@ -43,6 +44,7 @@ public class StaticUtilities {
     	if(is==null) return null;
         return new ImageIcon(StaticUtilities.class.getResource(path));
     }
+    @Deprecated
     public static ImageIcon createImageIcon(Class<?> clazz, String filename) {
     	String path = clazz.getPackageName().replace('.', '/')+'/' + filename; 
     	InputStream is = StaticUtilities.getResourceAsStream(clazz, path);

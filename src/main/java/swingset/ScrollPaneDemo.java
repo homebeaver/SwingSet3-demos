@@ -30,6 +30,7 @@ public class ScrollPaneDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/JScrollPane.gif";
 
 	private static final long serialVersionUID = 9199557527894145835L;
+	private static final String DESCRIPTION = "JScrollPane Demo";
     private static final String IMG_PATH = "scrollpane/"; // prefix dir
 
     /**
@@ -40,18 +41,14 @@ public class ScrollPaneDemo extends AbstractDemo {
     		static final boolean exitOnClose = true;
 			@Override
 			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new ScrollPaneDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				// no controller
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				AbstractDemo demo = new ScrollPaneDemo(frame);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
 			}		
     	});
     }
@@ -63,7 +60,7 @@ public class ScrollPaneDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
     	
     	ImageIcon crayons = StaticUtilities.createImageIcon(IMG_PATH+"crayons.jpg");
     	super.add(new ImageScroller(this, crayons), BorderLayout.CENTER);

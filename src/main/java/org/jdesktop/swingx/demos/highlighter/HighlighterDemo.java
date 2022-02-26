@@ -8,11 +8,13 @@ import static org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
@@ -24,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -61,6 +65,7 @@ import org.jdesktop.swingx.decorator.ToolTipHighlighter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.ShapePainter;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
+import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
@@ -69,7 +74,6 @@ import org.jdesktop.swingx.util.ShapeUtils;
 import org.jdesktop.swingxset.util.ComponentModels;
 
 import swingset.AbstractDemo;
-import swingset.StaticUtilities;
 
 /**
  * A demo for {@code Highlighter}.
@@ -92,6 +96,8 @@ import swingset.StaticUtilities;
 public class HighlighterDemo extends AbstractDemo {
 
 	private static final long serialVersionUID = -7205284335967801438L;
+    private static final Logger LOG = Logger.getLogger(HighlighterDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates Highlighters, a lightweight, reusable, visual decorator.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -104,7 +110,7 @@ public class HighlighterDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new HighlighterDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
             	frame.getContentPane().add(demo);
             	frame.pack();
@@ -117,48 +123,53 @@ public class HighlighterDemo extends AbstractDemo {
     	});
     }
 
-	private JXList list;
+	private JXList<Component> list;
     private JXTable table;
     private JXTree tree;
     private JXTreeTable treeTable;
-    private JXComboBox comboBox;
+    private JXComboBox<Component> comboBox;
     
     // Controller:
-    private JComboBox stripingOptions;
-    private JComboBox highlighters;
-    private JComboBox predicates;
+    private JComboBox<HighlighterInfo> stripingOptions;
+    private JComboBox<HighlighterInfo> highlighters;
+    private JComboBox<HighlightPredicateInfo> predicates;
     
     /**
      * HighlighterDemo Constructor
      */
-    public HighlighterDemo(Frame frame) {
+	public HighlighterDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         JTabbedPane tabbedPane = new JTabbedPane();
         
-        list = new JXList();
+        list = new JXList<Component>();
         list.setName("list");
-        list.setCellRenderer(new DefaultListRenderer(new StringValue() {
-            public String getString(Object value) {
+        
+        list.setCellRenderer(new DefaultListRenderer<Component>(new StringValue() {
+			private static final long serialVersionUID = 5276652668267961397L;
+			public String getString(Object value) {
                 if (value instanceof Component) {
                     return value.getClass().getSimpleName() + " (" + ((Component) value).getName() + ")";
-                }
-                    
+                }               
                 return StringValues.TO_STRING.getString(value);
             }
         }));
         tabbedPane.addTab("JXList", new JScrollPane(list));
         
         table = new JXTable();
+        table.setName("table");
+        table.setShowGrid(true, true);
+        table.setColumnControlVisible(true);
         tabbedPane.addTab("JXTable", new JScrollPane(table));
         
         tree = new JXTree();
         tree.setName("tree");
         tree.setCellRenderer(new DefaultTreeRenderer(new StringValue() {
-            public String getString(Object value) {
+			private static final long serialVersionUID = 1L;
+			public String getString(Object value) {
                 if (value instanceof Component) {
                     return value.getClass().getSimpleName() + " (" + ((Component) value).getName() + ")";
                 }
@@ -170,21 +181,101 @@ public class HighlighterDemo extends AbstractDemo {
         
         treeTable = new JXTreeTable();
         treeTable.setName("treeTable");
-        treeTable.setShowGrid(true, true);
-        treeTable.setTreeCellRenderer(new DefaultTreeRenderer(new StringValue() {
+        treeTable.setColumnControlVisible(true);
+        treeTable.setShowGrid(true, false);
+        tabbedPane.addTab("JXTreeTable", new JScrollPane(treeTable));
+        
+        comboBox = new JXComboBox<Component>();
+        comboBox.setName("comboBox");
+        JPanel panel = new JPanel();
+        panel.add(comboBox);
+        tabbedPane.addTab("JXComboBox", panel);
+        
+        add(tabbedPane);
+        LOG.config("tabbedPane with "+tabbedPane.getTabCount()+" tabs.");
+        
+        ListModel<Component> listModel = ComponentModels.getListModel(this);
+        list.setModel(listModel);
+        
+        table.setModel(ComponentModels.getTableModel(this));
+//		table.setDefaultRenderer(Component.class, new DefaultTableRenderer(new StringValue() {
+//			private static final long serialVersionUID = 1L;
+//			@Override
+//			public String getString(Object value) {
+//				Component c = (Component) value;
+//				return c.getClass().getSimpleName()+"|"+c.getName()+"|"+c.getSize();
+//			}
+//		}));
+        // now define the TableRenderer per column:
+        table.getColumn(0).setCellRenderer(new DefaultTableRenderer(new StringValue() {
+			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
                 if (value instanceof Component) {
-                    return value.getClass().getSimpleName() + " (" + ((Component) value).getName() + ")";
+                    return value.getClass().getSimpleName();
                 }
-                
+                    
                 return StringValues.TO_STRING.getString(value);
             }
         }));
-        tabbedPane.addTab("JXTreeTable", new JScrollPane(treeTable));
+        table.getColumn(2).setCellRenderer(new DefaultTableRenderer(new StringValue() {
+			private static final long serialVersionUID = 1L;
+            public String getString(Object value) {
+                if(value instanceof Component) {
+                	Component c = (Component) value;
+                	if (c.isShowing()) {
+                		return c.getLocationOnScreen().toString();
+                	} else {
+                		return "not showing";
+                	}
+                }
+                return StringValues.TO_STRING.getString(value);
+            }
+        }));
+        table.getColumn(3).setCellRenderer(new DefaultTableRenderer(new StringValue() {
+			private static final long serialVersionUID = 1L;
+            public String getString(Object value) {
+                if(value instanceof Component) {
+                	Component c = (Component) value;
+                	Dimension dim = c.getSize();
+                	return "[width=" + dim.width + ",height=" + dim.height + "]";
+                }
+                return StringValues.TO_STRING.getString(value);
+            }
+        }));
         
-        comboBox = new JXComboBox();
-        comboBox.setName("comboBox");
-        comboBox.setRenderer(new DefaultListRenderer(new StringValue() {
+        tree.setModel(ComponentModels.getTreeModel(this));
+        tree.expandAll();
+        
+        treeTable.setTreeTableModel(ComponentModels.getTreeTableModel(this));
+        treeTable.expandAll();
+        treeTable.getColumn(3).setCellRenderer(new DefaultTableRenderer(new StringValue() {
+			private static final long serialVersionUID = 1L;
+            public String getString(Object value) {
+                if(value instanceof Component) {
+                	Component c = (Component) value;
+                	Dimension dim = c.getSize();
+                	return "[width=" + dim.width + ",height=" + dim.height + "]"; // TODO funktioniert nicht
+                }
+                return StringValues.TO_STRING.getString(value);
+            }
+        }));
+		treeTable.setTreeCellRenderer(new DefaultTreeRenderer(new StringValue() {
+			private static final long serialVersionUID = 1L;
+			public String getString(Object value) {
+				if (value instanceof Component && value.getClass() != Component.class) {
+					return value.getClass().getSimpleName();
+				}
+				return StringValues.TO_STRING.getString(value);
+			}
+		}));
+        
+        // ComponentModels.getComboBoxModel(Component root) liefert ComboBoxModel<Component>:
+        ComboBoxModel<Component> comboBoxModel = ComponentModels.getComboBoxModel(this);
+        comboBox.setModel(comboBoxModel);
+        
+        // DefaultListRenderer<E> extends AbstractRenderer implements ListCellRenderer<E>
+        ListCellRenderer<? super Component> comboBoxRenderer = new DefaultListRenderer<Component>(new StringValue() {
+			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
                 if (value instanceof Component) {
                     return value.getClass().getSimpleName() + " (" + ((Component) value).getName() + ")";
@@ -192,18 +283,8 @@ public class HighlighterDemo extends AbstractDemo {
                     
                 return StringValues.TO_STRING.getString(value);
             }
-        }));
-        JPanel panel = new JPanel();
-        panel.add(comboBox);
-        tabbedPane.addTab("JXComboBox", panel);
-        
-        add(tabbedPane);
-        
-        list.setModel(ComponentModels.getListModel(this));
-        table.setModel(ComponentModels.getTableModel(this));
-        tree.setModel(ComponentModels.getTreeModel(this));
-        treeTable.setTreeTableModel(ComponentModels.getTreeTableModel(this));
-        comboBox.setModel(ComponentModels.getComboBoxModel(this));
+        });
+        comboBox.setRenderer(comboBoxRenderer);
     }
     
     @Override
@@ -212,8 +293,9 @@ public class HighlighterDemo extends AbstractDemo {
         JPanel control = new JPanel(new GridLayout(2, 2));
         control.add(new JLabel("Highlighter Options:"));
         
-        stripingOptions = new JComboBox(getStripingOptionsModel());
-        stripingOptions.setRenderer(new DefaultListRenderer(new StringValue() {
+        stripingOptions = new JComboBox<HighlighterInfo>(getStripingOptionsModel());
+        stripingOptions.setRenderer(new DefaultListRenderer<HighlighterInfo>(new StringValue() {
+			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
                 if (value instanceof HighlighterInfo) {
                     return ((HighlighterInfo) value).getDescription();
@@ -224,8 +306,9 @@ public class HighlighterDemo extends AbstractDemo {
         }));
         control.add(stripingOptions);
         
-        highlighters = new JComboBox(getHighlighterOptionsModel());
-        highlighters.setRenderer(new DefaultListRenderer(new StringValue() {
+        highlighters = new JComboBox<HighlighterInfo>(getHighlighterOptionsModel());
+        highlighters.setRenderer(new DefaultListRenderer<HighlighterInfo>(new StringValue() {
+			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
                 if (value instanceof HighlighterInfo) {
                     return ((HighlighterInfo) value).getDescription();
@@ -236,8 +319,9 @@ public class HighlighterDemo extends AbstractDemo {
         }));
         control.add(highlighters);
         
-        predicates = new JComboBox(getPredicateOptionsModel());
-        predicates.setRenderer(new DefaultListRenderer(new StringValue() {
+        predicates = new JComboBox<HighlightPredicateInfo>(getPredicateOptionsModel());
+        predicates.setRenderer(new DefaultListRenderer<HighlightPredicateInfo>(new StringValue() {
+			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
                 if (value instanceof HighlightPredicateInfo) {
                     return ((HighlightPredicateInfo) value).getDescription();
@@ -254,7 +338,8 @@ public class HighlighterDemo extends AbstractDemo {
         return controller;
 	}
 
-    private ComboBoxModel getStripingOptionsModel() {
+
+    private ComboBoxModel<HighlighterInfo> getStripingOptionsModel() {
         List<HighlighterInfo> info = new ArrayList<HighlighterInfo>();
         info.add(new HighlighterInfo("No Striping", null));
         info.add(new HighlighterInfo("Alternating UI-Dependent",  HighlighterFactory.createAlternateStriping()));
@@ -270,7 +355,7 @@ public class HighlighterDemo extends AbstractDemo {
         return new ListComboBoxModel<HighlighterInfo>(info);
     }
     
-    private ComboBoxModel getHighlighterOptionsModel() {
+    private ComboBoxModel<HighlighterInfo> getHighlighterOptionsModel() {
         List<HighlighterInfo> info = new ArrayList<HighlighterInfo>();
         info.add(new HighlighterInfo("No Additional Highlighter", null));
         info.add(new HighlighterInfo("Green Border", new BorderHighlighter(BorderFactory.createLineBorder(Color.GREEN, 1))));
@@ -282,7 +367,8 @@ public class HighlighterDemo extends AbstractDemo {
 //        info.add(new HighlighterInfo("Green Orb Icon",
 //                new IconHighlighter(Application.getInstance().getContext()
 //                        .getResourceMap(HighlighterDemo.class).getIcon("greenOrb"))));
-        Icon greenOrb = StaticUtilities.createImageIcon(this.getClass(), "resources/images/green-orb.png");
+        Icon greenOrb = getResourceAsIcon(this.getClass(), "resources/images/green-orb.png");
+
         info.add(new HighlighterInfo("Green Orb Icon", new IconHighlighter(greenOrb)));
         info.add(new HighlighterInfo("Aerith Gradient Painter", new PainterHighlighter(new MattePainter(PaintUtils.AERITH, true))));
         info.add(new HighlighterInfo("Star Shape Painter",
@@ -295,7 +381,7 @@ public class HighlighterDemo extends AbstractDemo {
         return new ListComboBoxModel<HighlighterInfo>(info);
     }
     
-    private ComboBoxModel getPredicateOptionsModel() {
+    private ComboBoxModel<HighlightPredicateInfo> getPredicateOptionsModel() {
         List<HighlightPredicateInfo> info = new ArrayList<HighlightPredicateInfo>();
         info.add(new HighlightPredicateInfo("Always Off", HighlightPredicate.NEVER));
         info.add(new HighlightPredicateInfo("Always On", HighlightPredicate.ALWAYS));
@@ -322,14 +408,12 @@ public class HighlighterDemo extends AbstractDemo {
         });
         b.bind();
         
-        ArrayAggregator<Highlighter> activeHighlighters
-                = new ArrayAggregator<Highlighter>(Highlighter.class);
+        ArrayAggregator<Highlighter> activeHighlighters = new ArrayAggregator<Highlighter>(Highlighter.class);
         activeHighlighters.addSource(new HighlighterInfo("Tooltip for truncated text",
                 new ToolTipHighlighter(new HighlightPredicate.AndHighlightPredicate(
                         new HighlightPredicate() {
                             @Override
-                            public boolean isHighlighted(Component renderer,
-                                    ComponentAdapter adapter) {
+                            public boolean isHighlighted(Component renderer, ComponentAdapter adapter) {
                                 return adapter.getComponent() instanceof JTable;
                             }
                         }, HighlightPredicate.IS_TEXT_TRUNCATED))),

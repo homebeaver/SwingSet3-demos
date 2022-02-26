@@ -35,6 +35,7 @@ public class TreeDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/JTree.gif";
 
 	private static final long serialVersionUID = -932066695707626601L;
+	private static final String DESCRIPTION = "Sample usage of a JTree component";
 
     JXTree tree;
 
@@ -48,7 +49,7 @@ public class TreeDemo extends AbstractDemo {
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
 				AbstractDemo demo = new TreeDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
 				//frame.setLocationRelativeTo(controller);
             	frame.getContentPane().add(demo);
@@ -67,7 +68,7 @@ public class TreeDemo extends AbstractDemo {
      */
     public TreeDemo(Frame frame) {
     	super(new BorderLayout());
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name", DESCRIPTION));
     	super.setPreferredSize(new Dimension(PREFERRED_WIDTH/2, PREFERRED_HEIGHT));
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
         super.add(new JScrollPane(createTree()), BorderLayout.CENTER);
@@ -81,7 +82,7 @@ public class TreeDemo extends AbstractDemo {
 		JXPanel buttons = new JXPanel();
 
 		// <snip> JXTree convenience api
-		expandButton = new JXButton(getString("expandAll"));
+		expandButton = new JXButton(getBundleString("expandAll"));
 		expandButton.setName("expandButton");
 		expandButton.addActionListener(ae -> {
 			tree.expandAll();
@@ -89,7 +90,7 @@ public class TreeDemo extends AbstractDemo {
 		buttons.add(expandButton);
 		// </snip>
 
-		collapseButton = new JXButton(getString("collapseAll"));
+		collapseButton = new JXButton(getBundleString("collapseAll"));
 		collapseButton.setName("collapseButton");
 		collapseButton.addActionListener(ae -> {
 			tree.collapseAll();
@@ -101,7 +102,7 @@ public class TreeDemo extends AbstractDemo {
 
     private JXTree createTree() {
     	
-        DefaultMutableTreeNode top = new DefaultMutableTreeNode(getString("music"));
+        DefaultMutableTreeNode top = new DefaultMutableTreeNode(getBundleString("music"));
         DefaultMutableTreeNode catagory = null ;
         DefaultMutableTreeNode artist = null;
         DefaultMutableTreeNode record = null;

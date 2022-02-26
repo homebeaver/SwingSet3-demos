@@ -74,23 +74,23 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getString("name"));
+    	frame.setTitle(getBundleString("name"));
     	
         // create tab
         tabbedpane = new JTabbedPane();
         super.add(tabbedpane, BorderLayout.CENTER);
 
         JLabel pix = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"laine.jpg"));
-        tabbedpane.add(getString("laine"), pix);
+        tabbedpane.add(getBundleString("laine"), pix);
 
         pix = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"ewan.jpg"));
-        tabbedpane.add(getString("ewan"), pix);
+        tabbedpane.add(getBundleString("ewan"), pix);
 
         pix = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"hania.jpg"));
-        tabbedpane.add(getString("hania"), pix);
+        tabbedpane.add(getBundleString("hania"), pix);
 
         spin = new HeadSpin();
-        tabbedpane.add(getString("bounce"), spin);
+        tabbedpane.add(getBundleString("bounce"), spin);
 
         tabbedpane.getModel().addChangeListener(
            new ChangeListener() {
@@ -118,11 +118,11 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
 
         // create tab position controls
         JXPanel tabControls = new JXPanel();
-        tabControls.add(new JLabel(getString("label")));
-        top    = (JRadioButton) tabControls.add(new JRadioButton(getString("top")));
-        left   = (JRadioButton) tabControls.add(new JRadioButton(getString("left")));
-        bottom = (JRadioButton) tabControls.add(new JRadioButton(getString("bottom")));
-        right  = (JRadioButton) tabControls.add(new JRadioButton(getString("right")));
+        tabControls.add(new JLabel(getBundleString("label")));
+        top    = (JRadioButton) tabControls.add(new JRadioButton(getBundleString("top")));
+        left   = (JRadioButton) tabControls.add(new JRadioButton(getBundleString("left")));
+        bottom = (JRadioButton) tabControls.add(new JRadioButton(getBundleString("bottom")));
+        right  = (JRadioButton) tabControls.add(new JRadioButton(getBundleString("right")));
 
         group = new ButtonGroup();
         group.add(top);
