@@ -109,13 +109,13 @@ public class SplitPaneDemo extends AbstractDemo {
      */
     @Override
 	public JXPanel getControlPane() {
-        JXPanel wrapper = new JXPanel();
+        JXPanel controller = new JXPanel();
         ButtonGroup group = new ButtonGroup();
         JRadioButton button;
 
         Box buttonWrapper = new Box(BoxLayout.X_AXIS);
 
-        wrapper.setLayout(new GridLayout(0, 1));
+        controller.setLayout(new GridLayout(0, 1));
 
         /* Create a radio button to vertically split the split pane. */
         button = new JRadioButton();
@@ -163,11 +163,11 @@ public class SplitPaneDemo extends AbstractDemo {
             }
         });
         buttonWrapper.add(checkBox);
-        wrapper.add(buttonWrapper);
+        controller.add(buttonWrapper);
 
         /* Create a text field to change the divider size. */
-        JPanel                   tfWrapper;
-        JLabel                   label;
+        JPanel tfWrapper; // with label and JTextField
+        JLabel label;
 
         divSize = new JTextField();
         divSize.setText(Integer.valueOf(splitPane.getDividerSize()).toString());
@@ -199,7 +199,7 @@ public class SplitPaneDemo extends AbstractDemo {
         tfWrapper.add(label);
         tfWrapper.add(divSize);
         label.setLabelFor(divSize);
-        wrapper.add(tfWrapper);
+        controller.add(tfWrapper);
 
         // Create a text field that will change the preferred/minimum size of the earth component.
         earthSize = new JTextField(String.valueOf(earth.getMinimumSize().width));
@@ -232,7 +232,7 @@ public class SplitPaneDemo extends AbstractDemo {
         tfWrapper.add(label);
         tfWrapper.add(earthSize);
         label.setLabelFor(earthSize);
-        wrapper.add(tfWrapper);
+        controller.add(tfWrapper);
 
         // Create a text field that will change the preferred/minimum size of the moon component.
         moonSize = new JTextField(String.valueOf(moon.getMinimumSize().width));
@@ -265,9 +265,9 @@ public class SplitPaneDemo extends AbstractDemo {
         tfWrapper.add(label);
         tfWrapper.add(moonSize);
         label.setLabelFor(moonSize);
-        wrapper.add(tfWrapper);
+        controller.add(tfWrapper);
 
-        return wrapper;
+        return controller;
     }
 
     void updateDragEnabled(boolean dragEnabled) {
