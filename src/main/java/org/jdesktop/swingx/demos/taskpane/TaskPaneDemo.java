@@ -144,31 +144,30 @@ help.Action.shortDescription=The place where you can't find anything
         // "System" GROUP
         systemGroup = new JXTaskPane(); // Alternativ: JXTaskPane(String title, Icon icon)
         systemGroup.setName("systemGroup");
-        systemGroup.setTitle(getBundleString("systemGroup.title"));
-        systemGroup.setMnemonic(Integer.parseInt(getBundleString("systemGroup.mnemonic")));
+        systemGroup.setTitle(getBundleString("systemGroup.title", systemGroup));
         systemGroup.setIcon(getResourceAsIcon(getClass(), "resources/images/tasks-email.png"));
         systemGroup.setToolTipText(getBundleString("systemGroup.toolTipText"));
         systemGroup.setSpecial(Boolean.valueOf(getBundleString("systemGroup.special")));
         tpc.add(systemGroup);
 
         // "Office" GROUP
-        officeGroup = new JXTaskPane(getBundleString("officeGroup.title"));
+        officeGroup = new JXTaskPane();
         officeGroup.setName("officeGroup");
-        officeGroup.setMnemonic(Integer.parseInt(getBundleString("officeGroup.mnemonic")));
+        officeGroup.setTitle(getBundleString("officeGroup.title", officeGroup));
         officeGroup.setCollapsed(Boolean.valueOf(getBundleString("officeGroup.collapsed")));
         officeGroup.setScrollOnExpand(Boolean.valueOf(getBundleString("officeGroup.scrollOnExpand")));
         tpc.add(officeGroup);
         
         // "SEE ALSO" GROUP and ACTIONS
-        seeAlsoGroup = new JXTaskPane(getBundleString("seeAlsoGroup.title"));
+        seeAlsoGroup = new JXTaskPane();
         seeAlsoGroup.setName("seeAlsoGroup");
-        seeAlsoGroup.setMnemonic(Integer.parseInt(getBundleString("seeAlsoGroup.mnemonic")));
+        seeAlsoGroup.setTitle(getBundleString("seeAlsoGroup.title", seeAlsoGroup));
         tpc.add(seeAlsoGroup);
         
         // "Details" GROUP
-        detailsGroup = new JXTaskPane(getBundleString("detailsGroup.title"));
+        detailsGroup = new JXTaskPane();
         detailsGroup.setName("detailsGroup");
-        detailsGroup.setMnemonic(Integer.parseInt(getBundleString("detailsGroup.mnemonic")));
+        detailsGroup.setTitle(getBundleString("detailsGroup.title", detailsGroup));
         detailsGroup.setScrollOnExpand(Boolean.valueOf(getBundleString("detailsGroup.scrollOnExpand")));
         
         //TODO better injection for editor area

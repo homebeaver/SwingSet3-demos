@@ -20,6 +20,7 @@ import javax.swing.JTabbedPane;
 
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.util.Utilities;
 
 import io.github.homebeaver.swingset.demo.MainJXframe;
@@ -89,39 +90,33 @@ public abstract class AbstractDemo extends JXPanel {
     private ResourceBundle bundle; 
     private static final String SWINGSET2_PACKAGE_NAME = "swingset";
     private static final String SWINGSET2_RESOURCEBUNDLE_BASENAME = SWINGSET2_PACKAGE_NAME+".swingset";
-    protected String getBundleString(String key, JLabel comp) {
-    	if(SWINGSET2_PACKAGE_NAME.equals(getClass().getPackage().getName())) {
-    		// die Props haben prefix "class SimpleName."
-    		String string = getBundleString(getClass().getSimpleName()+"."+key, key);
-    		String mnemonicString = TextAndMnemonicUtils.getMnemonicFromTextAndMnemonic(string);
-    		if(mnemonicString!=null && mnemonicString.length()==1) {
-    			comp.setDisplayedMnemonic(Integer.valueOf(mnemonicString.charAt(0)));
+    
+    /*
+     * für AbstractButton, JLabel, JXTaskPane implements Mnemonicable
+     * alle 3 sind JComponent
+     * TODO JXLabel implements Mnemonicable
+     *      AbstractActionExt implements Mnemonicable, da es auch xetMnemonic hat
+     *  AbstractButton ist in package javax.swing - in jdesktop gibt es JXAbstractButton nicht
+     */
+    protected String getBundleString(String key, JComponent comp) {
+    	String s = 
+    		SWINGSET2_PACKAGE_NAME.equals(getClass().getPackage().getName()) 
+    			? getBundleString(getClass().getSimpleName()+"."+key, key)
+    			: getBundleString(key, key);
+    	String mnemonic = TextAndMnemonicUtils.getMnemonicFromTextAndMnemonic(s);
+    	if(mnemonic!=null && mnemonic.length()==1) {
+    		if(comp instanceof AbstractButton) {
+    			AbstractButton c = (AbstractButton)comp;
+    			c.setMnemonic(Integer.valueOf(mnemonic.charAt(0)));
+    		} else if(comp instanceof JLabel) {
+    			JLabel c = (JLabel)comp;
+    			c.setDisplayedMnemonic(Integer.valueOf(mnemonic.charAt(0)));
+    		} else if(comp instanceof JXTaskPane) {
+    			JXTaskPane c = (JXTaskPane)comp;
+    			c.setMnemonic(Integer.valueOf(mnemonic.charAt(0)));
     		}
-    		return TextAndMnemonicUtils.getTextFromTextAndMnemonic(string);
     	}
-    	String string = getBundleString(key, key);
-		String mnemonicString = TextAndMnemonicUtils.getMnemonicFromTextAndMnemonic(string);
-		if(mnemonicString!=null && mnemonicString.length()==1) {
-			comp.setDisplayedMnemonic(Integer.valueOf(mnemonicString.charAt(0)));
-		}
-    	return TextAndMnemonicUtils.getTextFromTextAndMnemonic(string);
-    }
-    protected String getBundleString(String key, AbstractButton comp) {
-    	if(SWINGSET2_PACKAGE_NAME.equals(getClass().getPackage().getName())) {
-    		// die Props haben prefix "class SimpleName."
-    		String string = getBundleString(getClass().getSimpleName()+"."+key, key);
-    		String mnemonicString = TextAndMnemonicUtils.getMnemonicFromTextAndMnemonic(string);
-    		if(mnemonicString!=null && mnemonicString.length()==1) {
-    			comp.setMnemonic(Integer.valueOf(mnemonicString.charAt(0)));
-    		}
-    		return TextAndMnemonicUtils.getTextFromTextAndMnemonic(string);
-    	}
-    	String string = getBundleString(key, key);
-		String mnemonicString = TextAndMnemonicUtils.getMnemonicFromTextAndMnemonic(string);
-		if(mnemonicString!=null && mnemonicString.length()==1) {
-			comp.setMnemonic(Integer.valueOf(mnemonicString.charAt(0)));
-		}
-    	return TextAndMnemonicUtils.getTextFromTextAndMnemonic(string);
+    	return TextAndMnemonicUtils.getTextFromTextAndMnemonic(s);    	
     }
     protected String getBundleString(String key) {
     	if(SWINGSET2_PACKAGE_NAME.equals(getClass().getPackage().getName())) {
