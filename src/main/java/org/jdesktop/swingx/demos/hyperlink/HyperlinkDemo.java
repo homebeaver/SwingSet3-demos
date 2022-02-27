@@ -121,16 +121,14 @@ public class HyperlinkDemo extends AbstractDemo {
         simple.setName("simpleSeparator");
         simple.setTitle(getBundleString("simpleSeparator.title"));
         
-        // wg. BUG in JXHyperlink ctor mit OpenBrowserAction:
-        plainBrowse = new JXHyperlink(new OpenBrowserAction("https://swingx.dev.java.net"));
-        /*
-BUG in 
-	plainBrowse.setURI(new URI("https://swingx.dev.java.net"));
-	// default browser action, text defaults to url
-	setText(uri) wird nicht gemacht !!!
-         */
+        plainBrowse = new JXHyperlink();
         plainBrowse.setName("plainBrowse");
-        plainBrowse.setText("swingx.dev.java.net");
+        try {
+			plainBrowse.setURI(new URI("https://swingx.dev.java.net"));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         plainBrowse.setToolTipText(getBundleString("plainBrowse.toolTipText"));
         
         plainMail = new JXHyperlink();
