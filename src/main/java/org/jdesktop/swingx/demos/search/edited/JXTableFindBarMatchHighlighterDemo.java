@@ -37,7 +37,7 @@ import org.jdesktop.swingx.search.SearchFactory;
 import org.jdesktop.swingx.util.DecoratorFactory;
 
 /**
- * A FindBar searching on a JXTable to test some special highlighter cases:
+ * A FindBar searching on a JXTable to visual test some special highlighter cases:
  * <ul>
  * <li>Cell alignments left, right, center</li>
  * <li>JLabel with icon</li>
@@ -90,18 +90,12 @@ public class JXTableFindBarMatchHighlighterDemo {
 	}
 
 	private static void setColumnAlignments() {
-		table.getColumnExt(0).setCellRenderer(
-				new DefaultTableRenderer(null, SwingConstants.LEADING));
-		table.getColumnExt(1).setCellRenderer(
-				new DefaultTableRenderer(null, SwingConstants.TRAILING));
-		table.getColumnExt(2).setCellRenderer(
-				new DefaultTableRenderer(null, SwingConstants.CENTER));
-		table.getColumnExt(3).setCellRenderer(
-				new DefaultTableRenderer(null, SwingConstants.LEADING));
-		table.getColumnExt(4).setCellRenderer(
-				new DefaultTableRenderer(null, SwingConstants.TRAILING));
-		table.getColumnExt(5).setCellRenderer(
-				new DefaultTableRenderer(null, SwingConstants.CENTER));
+		table.getColumnExt(0).setCellRenderer(new DefaultTableRenderer(null, SwingConstants.LEADING));
+		table.getColumnExt(1).setCellRenderer(new DefaultTableRenderer(null, SwingConstants.TRAILING));
+		table.getColumnExt(2).setCellRenderer(new DefaultTableRenderer(null, SwingConstants.CENTER));
+		table.getColumnExt(3).setCellRenderer(new DefaultTableRenderer(null, SwingConstants.LEADING));
+		table.getColumnExt(4).setCellRenderer(new DefaultTableRenderer(null, SwingConstants.TRAILING));
+		table.getColumnExt(5).setCellRenderer(new DefaultTableRenderer(null, SwingConstants.CENTER));
 	}
 
 	private static void addIconsToSomeColumns() {
@@ -131,8 +125,7 @@ public class JXTableFindBarMatchHighlighterDemo {
 	private static JXCollapsiblePane connectCollapsibleFindBarWithTable() {
 		final JXCollapsiblePane collapsible = new JXCollapsiblePane();
 		findBar = SearchFactory.getInstance().createFindBar();
-		table.putClientProperty(AbstractSearchable.MATCH_HIGHLIGHTER,
-				Boolean.TRUE);
+		table.putClientProperty(AbstractSearchable.MATCH_HIGHLIGHTER, Boolean.TRUE);
 		findBar.setSearchable(table.getSearchable());
 		collapsible.add(findBar);
 		collapsible.setCollapsed(false);
@@ -141,8 +134,7 @@ public class JXTableFindBarMatchHighlighterDemo {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				collapsible.setCollapsed(false);
-				KeyboardFocusManager.getCurrentKeyboardFocusManager()
-						.focusNextComponent(findBar);
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent(findBar);
 			}
 		};
 
@@ -164,8 +156,7 @@ public class JXTableFindBarMatchHighlighterDemo {
 	private static void installTheMatchingTextHighlighter() {
 		MatchingTextHighlighter matchingTextMarker = new XMatchingTextHighlighter();
 		matchingTextMarker.setPainter(DecoratorFactory.createPlainPainter());
-		((AbstractSearchable) table.getSearchable())
-				.setMatchHighlighter(matchingTextMarker);
+		((AbstractSearchable) table.getSearchable()).setMatchHighlighter(matchingTextMarker);
 	}
 
 	private static JCheckBox createComponentOrientationSwitch() {
@@ -184,8 +175,7 @@ public class JXTableFindBarMatchHighlighterDemo {
 		return rightToLeftSwitch;
 	}
 
-	private static void buildGui(final JXCollapsiblePane collapsible,
-			JCheckBox rightToLeftSwitch) {
+	private static void buildGui(final JXCollapsiblePane collapsible, JCheckBox rightToLeftSwitch) {
 		frame = new JFrame();
 		frame.getContentPane().add(collapsible, BorderLayout.NORTH);
 

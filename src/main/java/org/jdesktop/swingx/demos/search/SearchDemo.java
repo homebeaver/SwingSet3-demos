@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -67,7 +68,6 @@ import swingset.AbstractDemo;
 //                "org/jdesktop/swingx/demos/search/resources/SearchDemo.properties"
 //                }
 //)
-// TODO open find dialog wie in swingx-core test FindVisualCheck.interactiveFindDialogSelectionTree()
 /**
  * SearchDemo
  * 
@@ -107,9 +107,10 @@ public class SearchDemo extends AbstractDemo {
 
     private Contributors contributors; // Data
     private String[] keys = {"name", "date", "merits", "email"};
+    private JTabbedPane tabbedPane;
     private JXTreeTable treeTable;
     private JXTree tree;
-    private JXList list;
+    private JXList<Object> list;
     private JXTable table;
     
     private JXFindBar searchPanel;
@@ -125,7 +126,9 @@ public class SearchDemo extends AbstractDemo {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-        initComponents();
+    	tabbedPane = initComponents();
+        add(tabbedPane);
+
         initStringRepresentation();
         installCustomSearch();
         
@@ -146,8 +149,9 @@ public class SearchDemo extends AbstractDemo {
 
     @Override
 	public JXPanel getControlPane() {
-        JXPanel controller = new JXPanel();
+        JXPanel controller = new JXPanel(new BorderLayout());
         
+        JXPanel boxen = new JXPanel();
         extendedMarkerBox = new JCheckBox();
         extendedMarkerBox.setName("extendedMarkerBox");
         extendedMarkerBox.setText(getBundleString("extendedMarkerBox.text"));
@@ -163,8 +167,50 @@ public class SearchDemo extends AbstractDemo {
         	searchControl.setAnimatedPainter(painterBox.isSelected());
         });
         
-        controller.add(extendedMarkerBox);
-        controller.add(painterBox);
+        boxen.add(extendedMarkerBox);
+        boxen.add(painterBox);
+        controller.add(boxen, BorderLayout.NORTH);
+        
+        JButton openFindDialog = new JButton("find dialog");
+        openFindDialog.addActionListener( actionEvent -> {
+        	LOG.fine("actionEvent:"+actionEvent);
+        	int selected = tabbedPane.getSelectedIndex();
+            switch (selected) {
+            case 0:
+            	SearchFactory.getInstance().showFindDialog(table, table.getSearchable());
+                break;
+            case 1:
+            	SearchFactory.getInstance().showFindDialog(list, list.getSearchable());
+                break;
+            case 2:
+            	SearchFactory.getInstance().showFindDialog(tree, tree.getSearchable());
+                break;
+            case 3:
+            	SearchFactory.getInstance().showFindDialog(treeTable, treeTable.getSearchable());
+                break;
+            default:
+                //does nothing
+                break;
+            }
+//        	Component c = tabbedPane.getSelectedComponent();
+//        	if(c instanceof JXTable) {
+//        		JXTable t = (JXTable)c;
+//            	SearchFactory.getInstance().showFindDialog(t, t.getSearchable());
+//        	} else if(c instanceof JXList<?>) {
+//        		JXList<?> t = (JXList<?>)c;
+//            	SearchFactory.getInstance().showFindDialog(t, t.getSearchable());
+//        	} else if(c instanceof JXTree) {
+//        		JXTree t = (JXTree)c;
+//            	SearchFactory.getInstance().showFindDialog(t, t.getSearchable());
+//        	} else if(c instanceof JXTreeTable) {
+//        		JXTreeTable t = (JXTreeTable)c;
+//            	SearchFactory.getInstance().showFindDialog(t, t.getSearchable());
+//        	} else {
+//            	LOG.info("nothing done for "+c);
+//        	}
+        });
+        controller.add(openFindDialog, BorderLayout.SOUTH);
+
     	return controller;
 	}
 
@@ -466,7 +512,11 @@ public class SearchDemo extends AbstractDemo {
 
 //------------------ init ui
     
-    private void initComponents() {
+    /**
+     * creates JTabbedPane with table, list, tree and treeTable tabs
+     * @return JTabbedPane
+     */
+    private JTabbedPane initComponents() {
         setLayout(new BorderLayout());
         
         searchPanel = SearchFactory.getInstance().createFindBar();
@@ -474,20 +524,20 @@ public class SearchDemo extends AbstractDemo {
         
         table = new JXTable();
         table.setName("searchTable");
-        list = new JXList(true);
+        list = new JXList<Object>(true);
         tree = new JXTree();
         treeTable = new JXTreeTable();
         
         table.setColumnControlVisible(true);
         treeTable.setColumnControlVisible(true);
 
-        JTabbedPane tab = new JTabbedPane();
-        tab.setName("searchTabs");
-        addTab(tab, table, "tableTabTitle", true);
-        addTab(tab, list, "listTabTitle", true);
-        addTab(tab, tree, "treeTabTitle", true);
-        addTab(tab, treeTable, "treeTableTabTitle", true);
-        add(tab);
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setName("searchTabs");
+        addTab(tabbedPane, table, "tableTabTitle", true);
+        addTab(tabbedPane, list, "listTabTitle", true);
+        addTab(tabbedPane, tree, "treeTabTitle", true);
+        addTab(tabbedPane, treeTable, "treeTableTabTitle", true);
+        return tabbedPane;
     }
 
 }
