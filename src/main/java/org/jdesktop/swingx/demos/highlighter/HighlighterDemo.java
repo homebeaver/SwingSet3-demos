@@ -8,10 +8,10 @@ import static org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -198,14 +198,6 @@ public class HighlighterDemo extends AbstractDemo {
         list.setModel(listModel);
         
         table.setModel(ComponentModels.getTableModel(this));
-//		table.setDefaultRenderer(Component.class, new DefaultTableRenderer(new StringValue() {
-//			private static final long serialVersionUID = 1L;
-//			@Override
-//			public String getString(Object value) {
-//				Component c = (Component) value;
-//				return c.getClass().getSimpleName()+"|"+c.getName()+"|"+c.getSize();
-//			}
-//		}));
         // now define the TableRenderer per column:
         table.getColumn(0).setCellRenderer(new DefaultTableRenderer(new StringValue() {
 			private static final long serialVersionUID = 1L;
@@ -220,26 +212,11 @@ public class HighlighterDemo extends AbstractDemo {
         table.getColumn(2).setCellRenderer(new DefaultTableRenderer(new StringValue() {
 			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
-                if(value instanceof Component) {
-                	Component c = (Component) value;
-                	if (c.isShowing()) {
-                		return c.getLocationOnScreen().toString();
-                	} else {
-                		return "not showing";
-                	}
-                }
-                return StringValues.TO_STRING.getString(value);
-            }
-        }));
-        table.getColumn(3).setCellRenderer(new DefaultTableRenderer(new StringValue() {
-			private static final long serialVersionUID = 1L;
-            public String getString(Object value) {
-                if(value instanceof Component) {
-                	Component c = (Component) value;
-                	Dimension dim = c.getSize();
-                	return "[width=" + dim.width + ",height=" + dim.height + "]";
-                }
-                return StringValues.TO_STRING.getString(value);
+                if(value instanceof Point) {
+                	Point p = (Point) value;
+                	return "[x=" + p.x + ",y=" + p.y + "]";
+                } 
+                return "not showing";
             }
         }));
         
@@ -247,15 +224,14 @@ public class HighlighterDemo extends AbstractDemo {
         tree.expandAll();
         
         treeTable.setTreeTableModel(ComponentModels.getTreeTableModel(this));
-        treeTable.expandAll();
-        treeTable.getColumn(3).setCellRenderer(new DefaultTableRenderer(new StringValue() {
+        treeTable.expandAll();     
+        treeTable.getColumn(2).setCellRenderer(new DefaultTableRenderer(new StringValue() {
 			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
-                if(value instanceof Component) {
-                	Component c = (Component) value;
-                	Dimension dim = c.getSize();
-                	return "[width=" + dim.width + ",height=" + dim.height + "]"; // TODO funktioniert nicht
-                }
+                if(value instanceof Point) {
+                	Point p = (Point) value;
+                	return "[x=" + p.x + ",y=" + p.y + "]";
+                } 
                 return StringValues.TO_STRING.getString(value);
             }
         }));

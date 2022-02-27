@@ -104,7 +104,7 @@ public final class ComponentModels {
                 case LOCATION_COLUMN:
                     return Point.class;
                 case SIZE_COLUMN:
-                    return Dimension.class;
+                    return String.class; // not Dimension
                 }    
                 return Object.class;
             }
@@ -132,7 +132,8 @@ public final class ComponentModels {
                     }
                     break;
                 case SIZE_COLUMN:
-                    o = c.getSize();
+                	Dimension d = c.getSize();
+                	o = "[width=" + d.width + ",height=" + d.height + "]";
                     break;
                 default:
                     //does nothing
@@ -180,7 +181,8 @@ public final class ComponentModels {
                     }
                     break;
                 case SIZE_COLUMN:
-                    o = c.getSize();
+                	Dimension d = c.getSize();
+                	o = "[width=" + d.width + ",height=" + d.height + "]";
                     break;
                 default:
                     //does nothing
@@ -204,7 +206,7 @@ public final class ComponentModels {
                 case LOCATION_COLUMN:
                     return Point.class;
                 case SIZE_COLUMN:
-                    return Dimension.class;
+                    return String.class; // not Dimension
                 }    
                 return super.getColumnClass(column);
             }
