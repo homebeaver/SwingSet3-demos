@@ -82,11 +82,6 @@ public abstract class AbstractDemo extends JXPanel {
     	return pane;
     }
 
-    @Deprecated
-    protected char getMnemonic(String key) {
-        return (getString(key)).charAt(0);
-    }
-
     private ResourceBundle bundle; 
     private static final String SWINGSET2_PACKAGE_NAME = "swingset";
     private static final String SWINGSET2_RESOURCEBUNDLE_BASENAME = SWINGSET2_PACKAGE_NAME+".swingset";
@@ -170,12 +165,6 @@ public abstract class AbstractDemo extends JXPanel {
         }
         return value;
     } 
-
-    @Deprecated
-    protected String getString(String resourceKey) {
-    	String key = this.getClass().getSimpleName() + '.' + resourceKey;
-    	return StaticUtilities.getResourceAsString(key, resourceKey);
-    }
 
     protected void addTab(JTabbedPane tab, JComponent comp, String name, boolean createScroll) {
 		tab.addTab(getBundleString(name), createScroll ? new JScrollPane(comp) : comp);
