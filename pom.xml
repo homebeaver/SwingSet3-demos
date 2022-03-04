@@ -176,7 +176,7 @@ Unable to find javadoc command: The environment variable JAVA_HOME is not correc
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
+				<version>1.6.12</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
