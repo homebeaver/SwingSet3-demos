@@ -2,8 +2,8 @@ In Summer 2005 [SwingSet2 demo](https://github.com/homebeaver/SwingSet2-demos/re
 
 original 2005 and updated sun Splash: | SwingSet3 Splash:
 ------------ | -------------
-![SplashEpisode2](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/SplashEpisode2.jpg) | ![home_notext.png](src/main/resources/org/jdesktop/swingxset/resources/images/home_notext.png)
-![splash.png](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/splash.png)
+![SplashEpisode2](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/SplashEpisode2.jpg) ![splash.png](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/splash.png)| ![home_notext.png](src/main/resources/org/jdesktop/swingxset/resources/images/home_notext.png)
+
 
 
 This is a rewritten Version of SwingSet2 demos. There are 16 classes demonstrating 
