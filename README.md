@@ -1,8 +1,8 @@
 In Summer 2005 [SwingSet2 demo](https://github.com/homebeaver/SwingSet2-demos/releases/tag/1.0.0) has been  released for [J2SE 5.0](https://en.wikipedia.org/wiki/Java_version_history#J2SE_5.0).
 
-original 2005 sun Splash: | updated Splash:
+original 2005 sun Splash: | SwingSet3 Splash:
 ------------ | -------------
-![SplashEpisode2](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/SplashEpisode2.jpg) | ![splash.png](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/splash.png)
+![SplashEpisode2](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/SplashEpisode2.jpg) | ![splash.png](src/main/resources/org/jdesktop/swingxset/resources/images/home_notext.png)
 
 This is a rewritten Version of SwingSet2 demos. There are 16 classes demonstrating 
 the abilities of the <a href="https://en.wikipedia.org/wiki/Swing_(Java)">Swing User Interface</a> 
