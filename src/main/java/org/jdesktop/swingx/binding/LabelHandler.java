@@ -61,15 +61,12 @@ public class LabelHandler {
     }
 
     /**
-     * <p>
      * Creates a binding for the specified {@code label} that tracks the {@code enabled} and {@code
      * visible} states of its {@#link JLabel#setLabelFor(Component) labelFor} property. If
      * no component is associated with the label or the associated component is removed, the label
      * will retain its current enabled and visible states.
-     * </p>
      * <p>
      * If a component is supplied, then this method will also set the label-for association.
-     * </p>
      * 
      * @param label
      *            the label to bind
