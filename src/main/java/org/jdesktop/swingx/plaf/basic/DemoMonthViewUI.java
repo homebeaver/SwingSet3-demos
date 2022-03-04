@@ -27,8 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ComponentUI;
 
 /**
- * Extension to allow for experimenting with pluggable Rendering- and/or 
- * HeaderHandler.
+ * Extension to allow for experimenting with pluggable Rendering- and/or HeaderHandler.
  * 
  * @author Jeanette Winzenburg
  */
@@ -64,7 +63,7 @@ public class DemoMonthViewUI extends BasicMonthViewUI {
         if (handlerClass != null) {
             try {
                 Class<?> clazz = Class.forName(handlerClass);
-                return (CalendarRenderingHandler) clazz.newInstance();
+                return (CalendarRenderingHandler) clazz.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 // no success - fall back to default
             }
