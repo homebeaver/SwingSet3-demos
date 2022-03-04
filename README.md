@@ -6,18 +6,18 @@ original 2005 and updated sun Splash: | SwingSet3 Splash:
 
 
 
-This is a rewritten Version of SwingSet2 demos. There are 16 classes demonstrating 
+This is a rewritten Version of SwingSet2 and SwingSet3 demos. In SwingSet2 there are 16 classes demonstrating 
 the abilities of the <a href="https://en.wikipedia.org/wiki/Swing_(Java)">Swing User Interface</a> 
-by displaying many of the components in a single showcase application. 
-Use it to try out different components and features provided by Swing.
+by displaying many of the components in a showcase application. Additionally you can see the important SwingSet3 extensions of the `org.jdesktop.swingx` package.
+Use it to try out different components and features.
 
-## TO RUN SwingSet2 demo
+## TO RUN the demo
 
-- download the [latest jar](https://github.com/homebeaver/SwingSet2-demos/releases/)
-- run
+- download the [latest jar](https://github.com/homebeaver/SwingSet3-demos/releases/)
+- run with new java, i.e. openjdk version "17" 2021-09-14:
 
 ```
->java -jar swingset2-demo-1.2.0.jar
+>java -jar swingset3-demos-1.6.8-jar-with-dependencies.jar
 
 ```
 
@@ -27,7 +27,7 @@ The jar was
 
 ## TO MODIFY/BUILD
  
-The full source for the SwingSet2 demo can be found in the "src" subdirectory.
+The full source can be found in the "src" subdirectory.
 
 - clone the git repo
 - build with maven
