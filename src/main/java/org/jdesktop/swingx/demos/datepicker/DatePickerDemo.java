@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFormattedTextField.AbstractFormatterFactory;
@@ -107,13 +106,13 @@ public class DatePickerDemo extends AbstractDemo {
     }
 
     private JXDatePicker datePicker;
-    
+    private JFormattedTextField dateEchoField;
+
+    // Controller:
     private JCheckBox interactivity;
     private JCheckBox editability;
     private JCheckBox orientation;
-
-    private JFormattedTextField dateEchoField;
-    
+  
     /**
      * DatePickerDemo Constructor
      */
@@ -125,12 +124,6 @@ public class DatePickerDemo extends AbstractDemo {
 
     	initComponents();
     	configureComponents();
-//    
-//    public DatePickerDemo() {
-//        initComponents();
-//        configureComponents();
-//        DemoUtils.injectResources(this);
-//        bind();
     }
 
     @Override
@@ -142,7 +135,7 @@ public class DatePickerDemo extends AbstractDemo {
         );
         PanelBuilder builder = new PanelBuilder(formLayout, painterControl);
         builder.setBorder(Borders.DLU4_BORDER);
-        CellConstraints cl = new CellConstraints();
+//        CellConstraints cl = new CellConstraints();
         CellConstraints cc = new CellConstraints();
         
         JXTitledSeparator areaSeparator = new JXTitledSeparator();
@@ -151,7 +144,6 @@ public class DatePickerDemo extends AbstractDemo {
         builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
         
         int labelColumn = 2;
-//        int widgetColumn = labelColumn + 2;
         int currentRow = 3;
 
         interactivity = new JCheckBox();
@@ -171,11 +163,9 @@ public class DatePickerDemo extends AbstractDemo {
         orientation = new JCheckBox();
         orientation.setName("orientation");
         orientation.setText(getBundleString("orientation.text"));
+        orientation.setSelected(!datePicker.getComponentOrientation().isLeftToRight());
         builder.add(orientation, cc.xywh(labelColumn, currentRow, 3, 1));
         currentRow += 2;
-
-        //should be able to set this from properties file
-        orientation.setSelected(!datePicker.getComponentOrientation().isLeftToRight());
 
         bind();
         
@@ -225,11 +215,6 @@ public class DatePickerDemo extends AbstractDemo {
         currentRow += 2;
         
         add(monthViewContainer, BorderLayout.CENTER);
-        
-        // controller:
-//        JComponent panel = createControlPanel();
-//        
-//        add(panel, BorderLayout.SOUTH);
     }
 
     private void configureComponents() {
@@ -265,66 +250,5 @@ public class DatePickerDemo extends AbstractDemo {
         group.addBinding(b);
         group.bind();
     }
-
-//------------------- inti ui
-//    
-//
-//    /**
-//     * @return ControlPane
-//     */
-//    private JComponent createControlPanel() {
-//        JPanel painterControl = new JXPanel();
-//
-//        FormLayout formLayout = new FormLayout(
-//                "5dlu, r:d:n, l:4dlu:n, f:d:g", // , l:4dlu:n, f:d:g", // columns
-//                "c:d:n " +
-//                ", t:4dlu:n, c:d:n " +
-//                ", t:4dlu:n, c:d:n" +
-//                ", t:4dlu:n, c:d:n" +
-//                ", t:4dlu:n, c:d:n" +
-//                ", t:4dlu:n, c:d:n" +
-//                ", t:4dlu:n, c:d:n" +
-//                ", t:4dlu:n, c:d:n"
-//        ); // rows
-//        PanelBuilder builder = new PanelBuilder(formLayout, painterControl);
-//        builder.setBorder(Borders.DLU4_BORDER);
-//        CellConstraints cl = new CellConstraints();
-//        CellConstraints cc = new CellConstraints();
-//        
-//        JXTitledSeparator areaSeparator = new JXTitledSeparator();
-//        areaSeparator.setName("propertySeparator");
-//        builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
-//        
-//        int labelColumn = 2;
-//        int widgetColumn = labelColumn + 2;
-//        int currentRow = 3;
-//
-//
-//        
-//        interactivity = new JCheckBox();
-//        interactivity.setName("interactivity");
-//        builder.add(interactivity, cc.xywh(labelColumn, currentRow, 3, 1));
-//        currentRow += 2;
-//
-////        painterControl.add(interactivity);
-//        
-//        editability = new JCheckBox();
-//        editability.setName("editability");
-//        builder.add(editability, cc.xywh(labelColumn, currentRow, 3, 1));
-//        currentRow += 2;
-//        
-////        painterControl.add(editability);
-//        
-//        orientation = new JCheckBox();
-//        orientation.setName("orientation");
-//
-//        builder.add(orientation, cc.xywh(labelColumn, currentRow, 3, 1));
-//        currentRow += 2;
-//
-//        //should be able to set this from properties file
-//        orientation.setSelected(!datePicker.getComponentOrientation().isLeftToRight());
-////        painterControl.add(orientation);
-//        return painterControl;
-//    }
 
 }

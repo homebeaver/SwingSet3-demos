@@ -55,8 +55,7 @@ public class DemoAction extends AbstractActionExt {
 	// category => color
 	@SuppressWarnings("serial")
 	public static Map<Category, Color> categoryToColor = new HashMap<Category, Color>() {{
-	    put(Category.CHOOSERS, Color.CYAN); // in eclipse hier: 
-// ??? The type java.util.HashMap$HashMapSpliterator cannot be resolved. It is indirectly referenced from required .class files
+	    put(Category.CHOOSERS, Color.CYAN);
 	    put(Category.CONTAINERS, Color.PINK); // examples: ss3:JXCollapsiblePane
 	    put(Category.CONTROLS, Color.RED); // examples: ButtonDemo/ss2, ss3:JXDatePicker, LoginPaneDemo
 	    put(Category.DATA, Color.BLUE); // examples: TableDemo/ss2, ss3:XTableDemo, XTreeDemo
@@ -210,6 +209,7 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.hyperlink.HyperlinkDemo", "Hyperlink", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.loginpane.LoginToDBPaneDemo", "LoginToDBPane", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.loginpane.LoginPaneDemo", "LoginPane", 3, Category.CONTROLS));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.datepicker.DatePickerDemo", "JXDatePicker", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthview.MonthViewDemo", "JXMonthView (basic)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthviewext.MonthViewExtDemo", "JXMonthView (extended)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xbutton.XButtonDemo", "JXButton", 3, Category.CONTROLS));
