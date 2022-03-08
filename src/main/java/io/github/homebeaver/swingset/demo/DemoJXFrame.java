@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -34,6 +35,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.SwingXUtilities;
+import org.jdesktop.swingx.action.AbstractActionExt;
 
 import swingset.StaticUtilities;
 
@@ -49,6 +51,13 @@ public class DemoJXFrame extends JXFrame {
 	private int windowNo;
 	public MainJXframe getRootFrame() {
 		return MainJXframe.getInstance();
+	}
+	
+    ButtonGroup lafMenuGroup;
+	private ButtonGroup lafGroup = null; // wg. mi.setSelected
+	ButtonGroup getLaFGroup() {
+		if(lafGroup==null) lafGroup = new ButtonGroup();
+		return lafGroup;
 	}
 	
 	private int window_ID;
@@ -72,14 +81,7 @@ public class DemoJXFrame extends JXFrame {
 		// bei RootFrame: setJMenuBar:
 		if(this instanceof MainJXframe) {
 			LOG.info("\nthis:"+this);
-//			JMenu jMenu = createPlafMenu(); // aus InteractiveTestCase
-//			JMenuBar jMenuBar = createAndFillMenuBar(null);
-			setJMenuBar(createAndFillMenuBar(null));
-
-//			JXPanel empty = new JXPanel();
-//			empty.setSize(680, 200);
-//        	getContentPane().add(empty); // no controler
-//        	pack();
+			setJMenuBar(new JMenuBar());
 		}
 	}
 	
@@ -90,6 +92,7 @@ public class DemoJXFrame extends JXFrame {
 	public void setTitle(String title) {
 		super.setTitle("#"+this.windowNo+":"+title);
 	}
+	
 	/*
 
 in SwingSet2 gibt es eine inner Klasse ToggleButtonToolBar extends JToolBar
@@ -177,22 +180,6 @@ aus super:
         return null;
     }
 
-    /**
-     * Creates, fills and returns a JMenuBar. 
-     * 
-     * @param component the component that was added to the frame.
-     * @return a menu bar filled with actions as defined in createAndAddMenus
-     * 
-     * @see #createAndAddMenus
-     */
-	// aus InteractiveTestCase.createAndFillMenuBar
-    protected JMenuBar createAndFillMenuBar(JComponent component) {
-        JMenuBar bar = new JMenuBar();
-//        createAndAddMenus(bar, component); // == bar.add(createPlafMenu());
-//        bar.add(createPlafMenu(null));
-        return bar;
-    }
-
     public JMenu createDemosMenu() {
     	LOG.warning("**** nix ****");
     	return null;
@@ -207,21 +194,42 @@ aus super:
      */
     protected JMenu createPlafMenu(Window target) {
     	UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
-        JMenu menu = new JMenu(StaticUtilities.getResourceAsString("LafMenu.laf.labelAndMnemonic", "Set L&F"));
-        ButtonGroup lafMenuGroup = new ButtonGroup(); // wg. mi.setSelected
+        JMenu menu = new JMenu("Set L&F");
+        lafMenuGroup = new ButtonGroup(); // wg. mi.setSelected
         for (LookAndFeelInfo info : lafInfo) {
-//            LOG.info(info.getName()+" "+info.getClassName()+" "+UIManager.getLookAndFeel().getClass().getName());
-            JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(info.getName()));
+            JMenuItem mi = createLafMenuItem(info);
+            LOG.info("JMenuItem mi.Action:"+mi.getAction());
             lafMenuGroup.add(mi);
-        	SetPlafAction action = new SetPlafAction(info.getName(), info.getClassName(), target);
-        	mi.setAction(action);
             if(info.getClassName().equals(UIManager.getLookAndFeel().getClass().getName())) {
             	mi.setSelected(true);
             }
+            menu.add(mi);
         }
         return menu;
     }
     
+    /**
+     * Creates a LaF JMenuItem for the Look and Feel Menu
+     */
+    protected JMenuItem createLafMenuItem(UIManager.LookAndFeelInfo info) {
+    	SetPlafAction action = new SetPlafAction(info.getName(), info.getClassName(), getLaFGroup(), this);
+    	JMenuItem mi = new JRadioButtonMenuItem(action);
+/*
+    	// bei der Reihenfolge getLaFGroup().add(mi); dann mi.setSelected(true) ist JMenu setSelected gesetzt
+    	// nicht aber das JPopupMenu
+    	getLaFGroup().add(mi);
+    	if(info.getClassName().equals(UIManager.getLookAndFeel().getClass().getName())) {
+    		mi.setSelected(true);
+    	}
+    	// dreht man es um, so wird JPopupMenu korrekt angezeigt!
+    	 */
+    	if(info.getClassName().equals(UIManager.getLookAndFeel().getClass().getName())) {
+    		mi.setSelected(true);
+    	}
+    	getLaFGroup().add(mi);
+    	return mi;
+    }
+
     protected JMenu createLanguageMenu(Window target) {
     	Locale defaultLocale = JComponent.getDefaultLocale();
     	List<DisplayLocale> locales = new ArrayList<DisplayLocale>();
@@ -299,14 +307,14 @@ aus super:
      * Action to toggle plaf and update all toplevel windows of the
      * current application. Used to setup the plaf-menu.
      */
-    private static class SetPlafAction extends AbstractAction {
+    private static class SetPlafAction extends AbstractActionExt {
 
         private String plaf;
         private Window toplevel;
 
         @SuppressWarnings("unused")
         public SetPlafAction(String name, String plaf) {
-            this(name, plaf, null);
+            this(name, plaf, null, null);
         }
         
         /**
@@ -317,8 +325,9 @@ aus super:
          * @param toplevel the window to update, may be null to indicate
          *   update of all application windows
          */
-        public SetPlafAction(String name, String plaf, Window toplevel) {
+        public SetPlafAction(String name, String plaf, ButtonGroup group, Window toplevel) {
             super(name);
+            super.setGroup(group);
             this.plaf = plaf;
             this.toplevel = toplevel;
         }
@@ -335,15 +344,29 @@ aus super:
                 } else {
                     SwingXUtilities.updateAllComponentTreeUIs();
                 }
-                
             } catch (Exception e1) {
                 e1.printStackTrace();
                 LOG.log(Level.FINE, "problem in setting laf: " + plaf, e1);
             }
-            // themeMenu setEnabled when LAF is Metal
+            
             if(toplevel instanceof MainJXframe) {
             	MainJXframe rf = (MainJXframe)toplevel;
+            	// themeMenu setEnabled when LAF is Metal
             	rf.themeMenu.setEnabled(plaf.endsWith(".MetalLookAndFeel"));
+            	
+                // JPopupMenu Group (in AbstractActionExt) und JMenu Group synchronisieren:
+            	Enumeration<AbstractButton> abEnum = rf.lafMenuGroup.getElements();
+            	abEnum.asIterator().forEachRemaining(ab -> { 
+            		if(e.getActionCommand().equals(ab.getText())) {
+            			ab.setSelected(true);
+            		}
+            	});
+            	abEnum = rf.getLaFGroup().getElements();
+            	abEnum.asIterator().forEachRemaining(ab -> { 
+            		if(e.getActionCommand().equals(ab.getText())) {
+            			ab.setSelected(true);
+            		}
+            	});
             }
         }
 

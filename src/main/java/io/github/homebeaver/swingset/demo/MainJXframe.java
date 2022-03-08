@@ -1,17 +1,29 @@
 package io.github.homebeaver.swingset.demo;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.jdesktop.swingx.JXFrame;
@@ -42,10 +54,6 @@ in SwingSet3:
 	
 	class JXRootPane extends JRootPane
 	
-es gibt viele WindowFrames, aber nur einen RootFrame ==> Singleton
-TODO andere Namen: WindowFrame ==> DemoJXFrame  
-                   RootFrame   ==> MainJXframe
-
  */
 @SuppressWarnings("serial")
 public class MainJXframe extends DemoJXFrame {
@@ -54,12 +62,9 @@ public class MainJXframe extends DemoJXFrame {
 	 * starts swingset demo application
 	 */
 	public static void main(String[] args) {
-		// hier ist es zu spät, da der DemoJXFrame ctor vorher dran kommt:
-//		LOG.info("swing.boldMetal="+UIManager.get("swing.boldMetal"));
-//        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
         
 		DemoJXFrame gossip = MainJXframe.getInstance(); // RootFrame contains a simple frame manager
-		// to start with Nimbus (tut nicht so richtig)
+		// start with Nimbus (tut nicht so richtig)
 //        try {
 //			NimbusLookAndFeelAddons addon = new NimbusLookAndFeelAddons();
 //			addon.initialize();
@@ -132,26 +137,14 @@ CENTER: JXPanel currentController
     	tabbedpane.setSelectedComponent(currentController);
     	content.add(tabbedpane, BorderLayout.CENTER);
     	getContentPane().add(content);
+
+    	// creates popupMenu accessible via keyboard
+    	createPopupMenu(content);
+
 	}
 	private JXTree demoTree = null;
 	private JMenu menu;
 
-	/*
-	 
-ActionManager manager = ActionManager.getInstance();	 // ActionManager extends ActionMap
-    ActionManager am = new ActionManager();
-//    use ActionContainerFactory.createMenu( ... )
-    ActionContainerFactory acf = new ActionContainerFactory(am);
-    JToolBar bar = null;
-        initActionManager(); // am befüllen
-
-        bar = acf.createToolBar(Arrays.asList(new String[] { "ba", "bb" }));
-        JMenu menu = acf.createMenu( ...
-        
-        acf.createToggleButton(AbstractActionExt a)
-	 
-	 */
-	// So ist es gut:
 	private JMenu createMenu() {
 		ActionManager manager = ActionManager.getInstance(); // ActionManager extends ActionMap
 		ActionContainerFactory factory = new ActionContainerFactory(manager);
@@ -175,8 +168,7 @@ ActionManager manager = ActionManager.getInstance();	 // ActionManager extends A
 			manager.addAction(a.getName(), a);
 			submenu3Ids.add(a.getName());
 		});
-		
-		
+			
 		List<Object> menuIds = new ArrayList<Object>();
 		menuIds.add(DemoAction.getRootAction().getName());
 		menuIds.add(submenu2Ids);
@@ -194,14 +186,9 @@ ActionManager manager = ActionManager.getInstance();	 // ActionManager extends A
 
     	demoTree.setName("demoTree");
     	demoTree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-    	// white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
-//    	demoTree.setBackground(null); // so sind nur die texte weiss
-    	
+
     	demoTree.expandAll(); 
     	demoTree.setEditable(false);
-    	
-//    	demoTree.setComponentPopupMenu(JPopupMenu popup); ????
-//    	demoTree.setSelectionModel(...);
     	
     	demoTree.addTreeSelectionListener( treeSelectionEvent -> {
     		JXTree source = (JXTree)(JXTree)treeSelectionEvent.getSource();
@@ -259,6 +246,54 @@ ActionManager manager = ActionManager.getInstance();	 // ActionManager extends A
        return menu;
     }
 
+    /* <snip> PopupMenu
+     * a small popup menu, activated via keyboard SHIFT_DOWN+F10
+     * shows items with InstalledLookAndFeels
+     * and a class ActivatePopupMenuAction with ActionEvent on SHIFT_DOWN+F10
+     */
+    public JPopupMenu createPopupMenu(JComponent comp) {
+        JPopupMenu popupMenu = new JPopupMenu("JPopupMenu Laf demo");
+
+        UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
+        JMenuItem mi = null;
+        for (int counter = 0; counter < lafInfo.length; counter++) {
+        	String classname = lafInfo[counter].getClassName();
+//        	LOG.info("--->counter "+counter + " lafInfo.ClassName:"+classname);
+        	mi = createLafMenuItem(lafInfo[counter]);
+        	popupMenu.add(mi);
+        }
+
+        InputMap map = comp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.SHIFT_DOWN_MASK), "postMenuAction");
+        comp.getActionMap().put("postMenuAction", new ActivatePopupMenuAction(comp, popupMenu));
+
+        return popupMenu;
+    }
+
+    class ActivatePopupMenuAction extends AbstractAction {
+		private static final long serialVersionUID = 3925663480989462160L;
+		Component invoker;
+        JPopupMenu popup;
+        
+        protected ActivatePopupMenuAction(Component comp, JPopupMenu popupMenu) {
+            super("ActivatePopupMenu"); // the name for the action
+            this.invoker = comp;
+            this.popup = popupMenu;
+        }
+
+        // implements interface ActionListener
+        public void actionPerformed(ActionEvent e) {
+        	LOG.fine("event:"+e);
+            Dimension invokerSize = getSize();
+            Dimension popupSize = popup.getPreferredSize();
+            popup.show(invoker, 
+            		(invokerSize.width - popupSize.width) / 2,
+            		(invokerSize.height - popupSize.height) / 2
+            	);
+        }
+    }
+    // </snip> PopupMenu
+
 	// simple frame manager
 	List<JXFrame> frames;
 	boolean enable = true;
@@ -282,8 +317,6 @@ ActionManager manager = ActionManager.getInstance();	 // ActionManager extends A
 		}
 		return null;
 	}
-	// ...
-	// <<<
 
 	JXPanel content = null;
 	JTabbedPane tabbedpane = null;
