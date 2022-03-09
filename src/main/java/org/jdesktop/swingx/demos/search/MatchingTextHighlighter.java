@@ -1,6 +1,4 @@
 /*
- * $Id$
- *
  * Copyright 2008 Sun Microsystems, Inc., 4150 Network Circle,
  * Santa Clara, California 95054, U.S.A. All rights reserved.
  *
@@ -129,8 +127,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 * @param predicate the HighlightPredicate to use
 	 * @param painter the painter used to render matching text
 	 */
-	public MatchingTextHighlighter(HighlightPredicate predicate,
-			Painter<JLabel> painter) {
+	public MatchingTextHighlighter(HighlightPredicate predicate, Painter<JLabel> painter) {
 		super(predicate);
 		setPainter(painter);
 	}
@@ -142,9 +139,10 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	// Check if Painter applicable
 	@Override
 	protected boolean canHighlight(Component component, ComponentAdapter adapter) {
-		return component instanceof JLabel && component instanceof PainterAware
-				&& painter != null
-				&& getHighlightPredicate() instanceof SearchPredicate;
+		return component instanceof JLabel 
+			&& component instanceof PainterAware
+			&& painter != null
+			&& getHighlightPredicate() instanceof SearchPredicate;
 	}
 
 	// </snip>
@@ -153,10 +151,8 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Component doHighlight(Component component,
-			ComponentAdapter adapter) {
+	protected Component doHighlight(Component component, ComponentAdapter adapter) {
 		((PainterAware) component).setPainter(delegatingPainter);
-
 		return component;
 	}
 
@@ -190,8 +186,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 */
 	protected void installPainterListener() {
 		if (getPainter() instanceof AbstractPainter) {
-			((AbstractPainter<?>) getPainter())
-					.addPropertyChangeListener(getPainterListener());
+			((AbstractPainter<?>) getPainter()).addPropertyChangeListener(getPainterListener());
 		}
 	}
 
@@ -202,8 +197,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 */
 	protected void uninstallPainterListener() {
 		if (getPainter() instanceof AbstractPainter) {
-			((AbstractPainter<?>) getPainter())
-					.removePropertyChangeListener(painterListener);
+			((AbstractPainter<?>) getPainter()).removePropertyChangeListener(painterListener);
 		}
 	}
 
@@ -253,8 +247,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 * @return a <code>List</code> of <code>Rectangle</code>s marking characters
 	 *         to highlight
 	 */
-	protected List<Rectangle> findHighlightAreas(JLabel object, int width,
-			int height) {
+	protected List<Rectangle> findHighlightAreas(JLabel object, int width, int height) {
 		insets = object.getInsets(insets);
 		viewR.x = 0 + insets.left;
 		viewR.y = 0 + insets.bottom;
@@ -279,8 +272,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 				object.getHorizontalTextPosition(), viewR, iconR, textR,
 				object.getIconTextGap());
 
-		int xOffset = calculateXOffset(object, viewR, textR, iconR,
-				object.getIconTextGap());
+		int xOffset = calculateXOffset(object, viewR, textR, iconR,	object.getIconTextGap());
 		int yOffset = textR.y - 1;// magic -1 for a nicer look
 		int highlightHeight = textR.height + 1;// magic +1 for a nicer look
 
@@ -289,8 +281,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 		if (!object.getText().equals(clippedText)) {
 			// TODO There has to be a better way that assuming ellipsis are the
 			// last characters of the text
-			clippedTextToSearch = clippedText.substring(0,
-					clippedText.length() - 3);
+			clippedTextToSearch = clippedText.substring(0, clippedText.length() - 3);
 		}
 
 		return createHighlightAreas(object.getText(), clippedTextToSearch, fm,
@@ -303,7 +294,6 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 * TODO: Improve partial clipped matches: If one of the matched characters
 	 * is clipped, the remaining characters lose their highlight; just the
 	 * ellipsis is highlighted.
-	 * </p>
 	 * 
 	 * @param fullText useful for highlighting if matches exist in clipped text
 	 *        and in the ellipsis
@@ -316,9 +306,8 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 * @param height the height of painted highlights
 	 * @return a <code>List</code> of highlight areas to paint
 	 */
-	protected List<Rectangle> createHighlightAreas(String fullText,
-			String clippedText, FontMetrics fm, int xOffset, int yOffset,
-			int height) {
+	protected List<Rectangle> createHighlightAreas(String fullText, String clippedText, 
+			FontMetrics fm, int xOffset, int yOffset, int height) {
 		SearchPredicate predicate = (SearchPredicate) getHighlightPredicate();
 		Matcher matcher = predicate.getPattern().matcher(clippedText);
 
@@ -404,11 +393,9 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 * @return the number of pixels to offset the highlight from the left edge
 	 *         of the component
 	 */
-	protected int calculateXOffset(JLabel component, Rectangle viewR,
-			Rectangle textR, Rectangle iconR, int iconTextGap) {
+	protected int calculateXOffset(JLabel component, Rectangle viewR, Rectangle textR, Rectangle iconR, int iconTextGap) {
 		int horizAlignment = component.getHorizontalAlignment();
-		boolean leftToRight = component.getComponentOrientation()
-				.isLeftToRight();
+		boolean leftToRight = component.getComponentOrientation().isLeftToRight();
 
 		if (horizAlignment == SwingConstants.LEFT
 				|| (horizAlignment == SwingConstants.LEADING && leftToRight)
@@ -453,8 +440,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 			return offsetWhenCentered;
 		}
 
-		throw new AssertionError("Unknown horizonal alignment "
-				+ horizAlignment);
+		throw new AssertionError("Unknown horizonal alignment "	+ horizAlignment);
 	}
 
 	/**
@@ -468,11 +454,9 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 		// delegate to painter to paint the matches
 		@Override
 		public void paint(Graphics2D g, JLabel object, int width, int height) {
-			List<Rectangle> highlightAreas = findHighlightAreas(object, width,
-					height);
+			List<Rectangle> highlightAreas = findHighlightAreas(object, width, height);
 			for (Rectangle r : highlightAreas) {
-				Graphics2D scratchGraphics = (Graphics2D) g.create(r.x, r.y,
-						r.width, r.height);
+				Graphics2D scratchGraphics = (Graphics2D) g.create(r.x, r.y, r.width, r.height);
 				painter.paint(scratchGraphics, object, r.width, r.height);
 				scratchGraphics.dispose();
 			}

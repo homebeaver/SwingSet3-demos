@@ -38,16 +38,13 @@ public class XMatchingTextHighlighter extends MatchingTextHighlighter {
 	}
 
 	@Override
-	protected List<Rectangle> createHighlightAreas(String fullText,
-			String clippedText, FontMetrics fm, int xOffset, int yOffset,
-			int height) {
-		List<Rectangle> areas = super.createHighlightAreas( fullText, 
-				clippedText, fm, xOffset, yOffset, height );
+	protected List<Rectangle> createHighlightAreas(String fullText, String clippedText, 
+			FontMetrics fm, int xOffset, int yOffset, int height) {
+		List<Rectangle> areas = super.createHighlightAreas( fullText, clippedText, fm, xOffset, yOffset, height );
 
 		// Look for one (or more) 'ellipsed' matches of many matches. Goal is to 
 		// highlight characters in visible AND clipped (ellipsis) text.
-		if ( !fullText.equals( clippedText ) )
-		{
+		if ( !fullText.equals( clippedText ) ) {
 			SearchPredicate predicate = (SearchPredicate) getHighlightPredicate();
 
 			int matchesInFullText = 0;
@@ -62,8 +59,8 @@ public class XMatchingTextHighlighter extends MatchingTextHighlighter {
 			while ( matcher.find() )
 				matchesInClippedText++;
 
-			if ( matchesInFullText > matchesInClippedText )
-			{// happens if at least one match is under the ellipsis
+			if ( matchesInFullText > matchesInClippedText )	{
+				// happens if at least one match is under the ellipsis
 				if ( areas.isEmpty() )
 					areas = new ArrayList<Rectangle>();
 
@@ -86,16 +83,13 @@ public class XMatchingTextHighlighter extends MatchingTextHighlighter {
 	 * Overridden to copy super's private field.
 	 */
 	@Override
-	protected int calculateXOffset(JLabel component, Rectangle viewR,
-			Rectangle textR, Rectangle iconR, int iconTextGap) {
+	protected int calculateXOffset(JLabel component, Rectangle viewR, Rectangle textR, Rectangle iconR, int iconTextGap) {
 		myTextR = textR;
-		return super.calculateXOffset(component, viewR, textR, iconR,
-				iconTextGap);
+		return super.calculateXOffset(component, viewR, textR, iconR, iconTextGap);
 	}
 
 	@Override
-	protected Component doHighlight(Component component,
-			ComponentAdapter adapter) {
+	protected Component doHighlight(Component component, ComponentAdapter adapter) {
 		if (isLabelCompatible(component))
 			return super.doHighlight(component, adapter);
 		((PainterAware) component).setPainter(getPainter());
@@ -113,8 +107,7 @@ public class XMatchingTextHighlighter extends MatchingTextHighlighter {
 
 	protected boolean isLabelCompatible(Component component) {
 		return component instanceof JLabel
-				|| (component instanceof WrappingIconPanel && ((WrappingIconPanel) component)
-						.getComponent() instanceof JLabel);
+		|| (component instanceof WrappingIconPanel && ((WrappingIconPanel) component).getComponent() instanceof JLabel);
 	}
 }
 
