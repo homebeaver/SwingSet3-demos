@@ -85,7 +85,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	/**
 	 * The painter used for highlighting characters.
 	 */
-	private Painter<JLabel> painter;
+	private Painter<? extends Component> painter;
 
 	// Rectangles and insets fields to minimize object instantiation,
 	// used in findHighlightAreas method
@@ -161,7 +161,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 * 
 	 * @return a <code>Painter</code>
 	 */
-	public Painter<JLabel> getPainter() {
+	public Painter<? extends Component> getPainter() {
 		return painter;
 	}
 
@@ -170,7 +170,7 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	 * 
 	 * @param painter a <code>Painter</code>
 	 */
-	public void setPainter(Painter<JLabel> painter) {
+	public void setPainter(Painter<? extends Component> painter) {
 		if (areEqual(painter, this.painter)) {
 			return;
 		}
@@ -454,10 +454,10 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 		// delegate to painter to paint the matches
 		@Override
 		public void paint(Graphics2D g, JLabel object, int width, int height) {
-			List<Rectangle> highlightAreas = findHighlightAreas(object, width, height);
+			List<Rectangle> highlightAreas = findHighlightAreas(object, width, height);			
 			for (Rectangle r : highlightAreas) {
 				Graphics2D scratchGraphics = (Graphics2D) g.create(r.x, r.y, r.width, r.height);
-				painter.paint(scratchGraphics, object, r.width, r.height);
+				((Painter<JLabel>)painter).paint(scratchGraphics, object, r.width, r.height);
 				scratchGraphics.dispose();
 			}
 		}

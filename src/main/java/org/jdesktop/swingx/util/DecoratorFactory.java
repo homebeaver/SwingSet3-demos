@@ -5,6 +5,7 @@
 package org.jdesktop.swingx.util;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,14 +21,14 @@ public class DecoratorFactory {
     public static final Color MATCH_COLOR = Color.YELLOW;
     public static final Color PINSTRIPE_COLOR = Color.GREEN;
     
-    public static Painter createPlainPainter() {
+    public static Painter<? extends Component> createPlainPainter() {
         return new MattePainter(MATCH_COLOR);
     }
     
     /**
      * @return
      */
-    public static Painter createAnimatedPainter() {
+    public static Painter<? extends Component> createAnimatedPainter() {
         final AlphaPainter alpha = new AlphaPainter();
         alpha.setAlpha(1f);
         final PinstripePainter pinstripePainter = new PinstripePainter(PINSTRIPE_COLOR,45,3,3);
