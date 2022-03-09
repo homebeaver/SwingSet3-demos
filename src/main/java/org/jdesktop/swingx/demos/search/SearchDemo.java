@@ -10,17 +10,21 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
@@ -141,8 +145,25 @@ public class SearchDemo extends AbstractDemo {
         searchControl = new SearchControl();        
         
         installRenderers();
+
+        InputMap map = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        map.put(KeyStroke.getKeyStroke(KeyEvent.VK_F5, InputEvent.SHIFT_DOWN_MASK), "SearchAction");
+        this.getActionMap().put("SearchAction", new SearchAction(this));
     }
 
+    class SearchAction extends AbstractActionExt {
+		Component invoker;
+        protected SearchAction(Component comp) {
+            super("SearchAction"); // the name for the action
+            this.invoker = comp;
+        }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+        	LOG.info("invoker:"+invoker+", event:"+e);
+        	cmdFind();
+		}  	
+    }
+    
     // Controller:
     private JCheckBox extendedMarkerBox;
     private JCheckBox painterBox;
@@ -171,49 +192,39 @@ public class SearchDemo extends AbstractDemo {
         boxen.add(painterBox);
         controller.add(boxen, BorderLayout.NORTH);
         
-        JButton openFindDialog = new JButton("find dialog");
+        JButton openFindDialog = new JButton("find dialog or SHIFT_DOWN+F5");
+        
         openFindDialog.addActionListener( actionEvent -> {
         	LOG.fine("actionEvent:"+actionEvent);
-        	int selected = tabbedPane.getSelectedIndex();
-            switch (selected) {
-            case 0:
-            	SearchFactory.getInstance().showFindDialog(table, table.getSearchable());
-                break;
-            case 1:
-            	SearchFactory.getInstance().showFindDialog(list, list.getSearchable());
-                break;
-            case 2:
-            	SearchFactory.getInstance().showFindDialog(tree, tree.getSearchable());
-                break;
-            case 3:
-            	SearchFactory.getInstance().showFindDialog(treeTable, treeTable.getSearchable());
-                break;
-            default:
-                //does nothing
-                break;
-            }
-//        	Component c = tabbedPane.getSelectedComponent();
-//        	if(c instanceof JXTable) {
-//        		JXTable t = (JXTable)c;
-//            	SearchFactory.getInstance().showFindDialog(t, t.getSearchable());
-//        	} else if(c instanceof JXList<?>) {
-//        		JXList<?> t = (JXList<?>)c;
-//            	SearchFactory.getInstance().showFindDialog(t, t.getSearchable());
-//        	} else if(c instanceof JXTree) {
-//        		JXTree t = (JXTree)c;
-//            	SearchFactory.getInstance().showFindDialog(t, t.getSearchable());
-//        	} else if(c instanceof JXTreeTable) {
-//        		JXTreeTable t = (JXTreeTable)c;
-//            	SearchFactory.getInstance().showFindDialog(t, t.getSearchable());
-//        	} else {
-//            	LOG.info("nothing done for "+c);
-//        	}
+        	cmdFind();
         });
         controller.add(openFindDialog, BorderLayout.SOUTH);
 
     	return controller;
 	}
 
+    private void cmdFind() {
+//    	LOG.info("---find---find---find---find---find---find---");
+    	int selected = tabbedPane.getSelectedIndex();
+        switch (selected) {
+        case 0:
+        	SearchFactory.getInstance().showFindDialog(table, table.getSearchable());
+            break;
+        case 1:
+        	SearchFactory.getInstance().showFindDialog(list, list.getSearchable());
+            break;
+        case 2:
+        	SearchFactory.getInstance().showFindDialog(tree, tree.getSearchable());
+            break;
+        case 3:
+        	SearchFactory.getInstance().showFindDialog(treeTable, treeTable.getSearchable());
+            break;
+        default:
+            //does nothing
+            break;
+        }
+    }
+    
 //-------------------------- custom search logic    
     /**
      * Replaces the default findAction with one using the per-demo panel findBar.
@@ -479,6 +490,7 @@ public class SearchDemo extends AbstractDemo {
         private void createColorCellMarkers() {
             colorCellMarkers = new HashMap<String, ColorHighlighter>();
             Color matchColor = HighlighterFactory.LINE_PRINTER;
+//            Color matchColor = Color.PINK;
             for (String string : tabs) {
                 colorCellMarkers.put(string, new ColorHighlighter(matchColor, null, matchColor, Color.BLACK));
             }
