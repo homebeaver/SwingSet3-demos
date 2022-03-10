@@ -82,6 +82,7 @@ public class DemoAction extends AbstractActionExt {
 	Class<?> democlass = null;
 	String className = null;
 	AbstractButton jToggleButton = null;
+	Category category = null;
 
 	/* super (AbstractActionExt) ctors:
 
@@ -115,9 +116,11 @@ public class DemoAction extends AbstractActionExt {
 	}
 	public DemoAction(String className, String name, int ssv, Category cat) {
 		this(className, name, getSmallIcon(ssv, cat), null);
+		this.category = cat;
 	}
 	public DemoAction(String className, String name, int ssv, Category cat, Icon icon) {
 		this(className, name, getSmallIcon(ssv, cat), icon);
+		this.category = cat;
 	}
 
     /**
@@ -148,9 +151,11 @@ public class DemoAction extends AbstractActionExt {
 	}
 	public DemoAction(Class<?> democlass, String name, int ssv, Category cat) {
 		this(democlass, name, getSmallIcon(ssv, cat), null);
+		this.category = cat;
 	}
 	public DemoAction(Class<?> democlass, String name, int ssv, Category cat, Icon icon) {
 		this(democlass, name, getSmallIcon(ssv, cat), icon);
+		this.category = cat;
 	}
 
     private static DemoAction root = null;
@@ -230,7 +235,11 @@ public class DemoAction extends AbstractActionExt {
 	AbstractButton getToggleButton() {
 		return jToggleButton;
 	}
-	
+
+	Category getCategory() {
+		return category;
+	}
+
     /* implement method public void actionPerformed(ActionEvent e)
      * defined in interface ActionListener extends EventListener
      */
