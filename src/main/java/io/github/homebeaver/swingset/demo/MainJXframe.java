@@ -129,7 +129,6 @@ CENTER: JXPanel currentController
 
  */
     	content = new JXPanel(new BorderLayout());
-    	content.add(new JScrollPane(demoTree), BorderLayout.WEST);
     	tabbedpane = new JTabbedPane();
     	tabbedpane.add("source", new JXLabel("TODO enpty")); // TODO
     	currentController = new IntroPanelDemo();
