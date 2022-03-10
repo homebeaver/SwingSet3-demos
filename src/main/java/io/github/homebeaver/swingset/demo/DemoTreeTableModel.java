@@ -75,7 +75,9 @@ public class DemoTreeTableModel extends AbstractTreeTableModel {
         case 3: // LONG_DESCRIPTION
             break;
         case 4: // swingSetVersion
-        	if (ma.className.startsWith("swingset.")) {
+        	if (ma.className==null) {
+        		o = null;
+        	} else if (ma.className.startsWith("swingset.")) {
         		o = Integer.valueOf(2);
         	} else {
         		o = Integer.valueOf(3);
