@@ -127,8 +127,11 @@ CENTER: JXPanel currentController
  - source
  - controller : currentController
 
+Alternative 3: DemoJXTasks statt demoTree
  */
     	content = new JXPanel(new BorderLayout());
+    	content.add(new JScrollPane(DemoJXTasks.getTaskPaneContainer()), BorderLayout.WEST);
+    	
     	tabbedpane = new JTabbedPane();
     	tabbedpane.add("source", new JXLabel("TODO enpty")); // TODO
     	currentController = new IntroPanelDemo();
@@ -241,8 +244,8 @@ CENTER: JXPanel currentController
 		
 		demoTree.setCellRenderer(treeRenderer);
 		
-		content.add(new JScrollPane(demoTree), BorderLayout.WEST);
-       return menu;
+//		content.add(new JScrollPane(demoTree), BorderLayout.WEST);
+		return menu;
     }
 
     /* <snip> PopupMenu
