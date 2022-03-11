@@ -70,6 +70,10 @@ public class DemoJXTasks extends JXTaskPane {
         	}
         	JXTaskPane group = categoryToTask.get(cat);
 
+            // in AbstractButton.setIconFromAction ist die Strategie:
+            // zuerst Action.LARGE_ICON_KEY, wenn keine da dann Action.SMALL_ICON
+            // daher:
+            //group.add(ca); // Action ca, shows SwingLargeIconKey
             AbstractActionExt aae = new AbstractActionExt(ca.getName(), ca.getSmallIcon()) {
 
 				@Override
@@ -79,8 +83,8 @@ public class DemoJXTasks extends JXTaskPane {
             	
             };
             aae.setActionCommand(ca.getActionCommand());
+            aae.setShortDescription(ca.getShortDescription());
             group.add(aae);
-//            group.add(ca); // Action ca, shows SwingLargeIconKey
     	}
     }
 
