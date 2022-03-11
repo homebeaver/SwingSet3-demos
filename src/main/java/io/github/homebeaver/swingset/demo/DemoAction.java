@@ -210,6 +210,7 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.search.SearchDemo", "Search", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighter.HighlighterDemo", "Highlighter", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighterext.HighlighterExtDemo", "Highlighter (extended)", 3, Category.FUNCTIONALITY));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.prompt.PromptSupportDemo", "PromptSupport", 3, Category.FUNCTIONALITY));
         	// category CONTROLS:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.hyperlink.HyperlinkDemo", "Hyperlink", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.loginpane.LoginToDBPaneDemo", "LoginToDBPane", 3, Category.CONTROLS));

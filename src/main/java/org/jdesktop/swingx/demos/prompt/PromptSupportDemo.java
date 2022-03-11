@@ -1,47 +1,34 @@
-/*
- * $Id$
- *
- * Copyright 2009 Sun Microsystems, Inc., 4150 Network Circle,
- * Santa Clara, California 95054, U.S.A. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
+/* Copyright 2007-2009 Sun Microsystems, Inc.  All Rights Reserved.
+Copyright notice, list of conditions and disclaimer see LICENSE file
+*/ 
 package org.jdesktop.swingx.demos.prompt;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
@@ -53,7 +40,6 @@ import org.jdesktop.swingx.prompt.PromptSupport.FocusBehavior;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.util.PaintUtils;
 import org.jdesktop.swingx.util.ShapeUtils;
-import org.jdesktop.swingxset.util.DemoUtils;
 import org.jdesktop.swingxset.util.DisplayValues;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -61,116 +47,94 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-import com.sun.swingset3.DemoProperties;
+
+import swingset.AbstractDemo;
 
 /**
  * A demo for {@code PromptSupport}.
  *
  * @author Karl George Schaefer
  * @author Peter Weishapl (original prompt demos)
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-@DemoProperties(
-    value = "PromptSupport Demo",
-    category = "Functionality",
-    description = "Demonstrates PromptSupport, a prompting decoration for text components.",
-    sourceFiles = {
-        "org/jdesktop/swingx/demos/prompt/PromptSupportDemo.java",
-        "org/jdesktop/swingx/demos/prompt/resources/PromptSupportDemo.properties",
-        "org/jdesktop/swingx/demos/prompt/resources/images/PromptSupportDemo.png"
+//@DemoProperties(
+//    value = "PromptSupport Demo",
+//    category = "Functionality",
+//    description = "Demonstrates PromptSupport, a prompting decoration for text components.",
+//    sourceFiles = {
+//        "org/jdesktop/swingx/demos/prompt/PromptSupportDemo.java",
+//        "org/jdesktop/swingx/demos/prompt/resources/PromptSupportDemo.properties",
+//        "org/jdesktop/swingx/demos/prompt/resources/images/PromptSupportDemo.png"
+//    }
+//)
+public class PromptSupportDemo extends AbstractDemo {
+	
+	private static final long serialVersionUID = -2286660834393833047L;
+	private static final Logger LOG = Logger.getLogger(PromptSupportDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates PromptSupport, a prompting decoration for text components.";
+
+    /**
+     * main method allows us to run as a standalone demo.
+     */
+    public static void main(String[] args) {
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new PromptSupportDemo(controller);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
-)
-@SuppressWarnings("serial")
-public class PromptSupportDemo extends JPanel {
-    private JTextField textField;
+
+	private JTextField textField;
+	// Controller:
     private JComboBox focusCombo;
     private JTextField promptText;
     private JComboBox backgroundPainter;
     private JComboBox fontStyle;
-    
-    public PromptSupportDemo() {
-        super(new BorderLayout());
-        
-        createPromptSupportDemo();
-        
-        bind();
-        
-        // inject after bind - overwriting some properies of hyperlinks
-        DemoUtils.injectResources(this);
-//        Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(this);
-        
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                focusCombo.requestFocusInWindow();
-            }
-        });
-    }
-    
-    private void bind() {
-        focusCombo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PromptSupport.setFocusBehavior((FocusBehavior) focusCombo.getSelectedItem(), textField);
-            }
-        });
-        
-        promptText.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                PromptSupport.setPrompt(promptText.getText(), textField);
-            }
-            
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                PromptSupport.setPrompt(promptText.getText(), textField);
-            }
-            
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                PromptSupport.setPrompt(promptText.getText(), textField);
-            }
-        });
-        PromptSupport.setPrompt(promptText.getText(), textField);
-        
-        backgroundPainter.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PromptSupport.setBackgroundPainter(((DisplayInfo<Painter>) backgroundPainter.getSelectedItem()).getValue(), textField);
-            }
-        });
-        
-        fontStyle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PromptSupport.setFontStyle(((DisplayInfo<Integer>) fontStyle.getSelectedItem()).getValue(), textField);
-            }
-        });
-    }
-    
-//-------------------------- init ui
-    private void createPromptSupportDemo() {
+
+    /**
+     * DatePickerDemo Constructor
+     */
+    public PromptSupportDemo(Frame frame) {
+    	super(new BorderLayout());
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+
+        textField = new JTextField(20); // 20 columns
         JPanel p = new JPanel();
-        textField = new JTextField(10);
         p.add(textField);
         add(p);
-        
-        add(buildControlPanel(), BorderLayout.SOUTH);
-        
-//        initComponents();
     }
+ 
 
-    private JPanel buildControlPanel() {
-        JPanel panel = new JPanel();
+    @Override
+	public JXPanel getControlPane() {
+    	JXPanel panel = new JXPanel();
+
         panel.setBorder(new TitledBorder("Prompt Controls"));
-        panel.setLayout(new FormLayout(
-            new ColumnSpec[] {
+		// jgoodies layout and builder:
+        panel.setLayout(new FormLayout(  		
+            new ColumnSpec[] { // 2 columns + glue
                 FormFactory.GLUE_COLSPEC,
-                FormFactory.DEFAULT_COLSPEC,
+                FormFactory.DEFAULT_COLSPEC,	// 1st column
                 FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-                FormFactory.PREF_COLSPEC,
+                FormFactory.PREF_COLSPEC,		// 2nd column
                 FormFactory.GLUE_COLSPEC,
             },
-            new RowSpec[] {
+            new RowSpec[] { // 5 rows + glue
                 FormFactory.DEFAULT_ROWSPEC,
                 FormFactory.LINE_GAP_ROWSPEC,
                 FormFactory.DEFAULT_ROWSPEC, 
@@ -238,10 +202,60 @@ public class PromptSupportDemo extends JPanel {
         fontStyle = new JComboBox(new ListComboBoxModel<DisplayInfo<Integer>>(getFontStyles()));
         fontStyle.setRenderer(new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
         panel.add(fontStyle, cc.rc(9, 4));
-        
+
+        bind();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                focusCombo.requestFocusInWindow();
+            }
+        });
+
         return panel;
+	}
+
+    private void bind() {
+        focusCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PromptSupport.setFocusBehavior((FocusBehavior) focusCombo.getSelectedItem(), textField);
+            }
+        });
+        
+        promptText.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                PromptSupport.setPrompt(promptText.getText(), textField);
+            }
+            
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                PromptSupport.setPrompt(promptText.getText(), textField);
+            }
+            
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                PromptSupport.setPrompt(promptText.getText(), textField);
+            }
+        });
+        PromptSupport.setPrompt(promptText.getText(), textField);
+        
+        backgroundPainter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PromptSupport.setBackgroundPainter(((DisplayInfo<Painter>) backgroundPainter.getSelectedItem()).getValue(), textField);
+            }
+        });
+        
+        fontStyle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PromptSupport.setFontStyle(((DisplayInfo<Integer>) fontStyle.getSelectedItem()).getValue(), textField);
+            }
+        });
     }
-    
+        
     private List<DisplayInfo<Painter<?>>> getPainters() {
         List<DisplayInfo<Painter<?>>> painters = new ArrayList<DisplayInfo<Painter<?>>>();
         
@@ -264,22 +278,4 @@ public class PromptSupportDemo extends JPanel {
         return fontStyles;
     }
     
-    /**
-     * main method allows us to run as a standalone demo.
-     */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new JFrame(PromptSupportDemo.class.getAnnotation(DemoProperties.class).value());
-                
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.getContentPane().add(new PromptSupportDemo());
-                frame.setPreferredSize(new Dimension(800, 600));
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-            }
-        });
-    }
 }
