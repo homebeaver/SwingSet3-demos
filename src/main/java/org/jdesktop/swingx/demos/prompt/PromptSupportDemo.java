@@ -105,7 +105,7 @@ public class PromptSupportDemo extends AbstractDemo {
     private JComboBox fontStyle;
 
     /**
-     * DatePickerDemo Constructor
+     * PromptSupportDemo Constructor
      */
     public PromptSupportDemo(Frame frame) {
     	super(new BorderLayout());
