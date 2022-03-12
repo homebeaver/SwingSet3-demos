@@ -1,100 +1,92 @@
-/*
- * $Id$
- *
- * Copyright 2009 Sun Microsystems, Inc., 4150 Network Circle,
- * Santa Clara, California 95054, U.S.A. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
+/* Copyright 2007-2009 Sun Microsystems, Inc.  All Rights Reserved.
+Copyright notice, list of conditions and disclaimer see LICENSE file
+*/ 
 package org.jdesktop.swingx.demos.collapsiblepane;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Frame;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
-import org.jdesktop.application.Application;
 import org.jdesktop.swingx.JXCollapsiblePane;
 import org.jdesktop.swingx.JXFindPanel;
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 
-import com.sun.swingset3.DemoProperties;
+import swingset.AbstractDemo;
 
 /**
  * A demo for the {@code JXCollapsiblePane}.
  *
  * @author Karl George Schaefer
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-@DemoProperties(
-    value = "JXCollapsiblePane Demo",
-    category = "Containers",
-    description = "Demonstrates JXCollapsiblePane, a container for dynamically hiding contents",
-    sourceFiles = {
-        "org/jdesktop/swingx/demos/collapsiblepane/CollapsiblePaneDemo.java",
-        "org/jdesktop/swingx/demos/collapsiblepane/resources/CollapsiblePaneDemo.properties",
-        "org/jdesktop/swingx/demos/collapsiblepane/resources/CollapsiblePaneDemo.html",
-        "org/jdesktop/swingx/demos/collapsiblepane/resources/images/CollaspiblePaneDemo.png"
+//@DemoProperties(
+//    value = "JXCollapsiblePane Demo",
+//    category = "Containers",
+//    description = "Demonstrates JXCollapsiblePane, a container for dynamically hiding contents",
+//    sourceFiles = {
+//        "org/jdesktop/swingx/demos/collapsiblepane/CollapsiblePaneDemo.java",
+//        "org/jdesktop/swingx/demos/collapsiblepane/resources/CollapsiblePaneDemo.properties",
+//        "org/jdesktop/swingx/demos/collapsiblepane/resources/CollapsiblePaneDemo.html",
+//        "org/jdesktop/swingx/demos/collapsiblepane/resources/images/CollaspiblePaneDemo.png"
+//    }
+//)
+public class CollapsiblePaneDemo extends AbstractDemo {
+	
+	private static final long serialVersionUID = -8035437657756950018L;
+	private static final Logger LOG = Logger.getLogger(CollapsiblePaneDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXCollapsiblePane, a container for dynamically hiding contents";
+
+    /**
+     * main method allows us to run as a standalone demo.
+     */
+    public static void main(String[] args) {
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new CollapsiblePaneDemo(controller);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
-)
-@SuppressWarnings("serial")
-public class CollapsiblePaneDemo extends JPanel {
+    
     private JXCollapsiblePane collapsiblePane;
     private CardLayout containerStack;
+    // Controller:
     private JButton previousButton;
     private JButton collapsingButton;
     private JButton nextButton;
     
     /**
-     * main method allows us to run as a standalone demo.
+     * CollapsiblePaneDemo Constructor
      */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JFrame frame = new JFrame(CollapsiblePaneDemo.class.getAnnotation(DemoProperties.class).value());
-                
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.getContentPane().add(new CollapsiblePaneDemo());
-                frame.setPreferredSize(new Dimension(800, 600));
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-            }
-        });
-    }
-    
-    public CollapsiblePaneDemo() {
-        createCollapsiblePaneDemo();
-        
-        Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(this);
-        
-        bind();
-    }
-    
-    private void createCollapsiblePaneDemo() {
-        setLayout(new BorderLayout());
-        
+    public CollapsiblePaneDemo(Frame frame) {
+    	super(new BorderLayout());
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
+
         collapsiblePane = new JXCollapsiblePane();
         collapsiblePane.setName("collapsiblePane");
         add(collapsiblePane, BorderLayout.NORTH);
@@ -108,37 +100,52 @@ public class CollapsiblePaneDemo extends JPanel {
         collapsiblePane.add(new JXFindPanel(), "");
         
         add(new JLabel("Main Content Goes Here", JLabel.CENTER));
-        
-        JPanel buttonPanel = new JPanel();
-        add(buttonPanel, BorderLayout.SOUTH);
-        
+    }
+    
+    @Override
+	public JXPanel getControlPane() {
+    	JXPanel buttonPanel = new JXPanel();
+
         previousButton = new JButton();
         previousButton.setName("previousButton");
+        previousButton.setText(getBundleString("previousButton.text"));
+        previousButton.addActionListener( ae -> {
+        	containerStack.previous(collapsiblePane.getContentPane());
+        });
         buttonPanel.add(previousButton);
         
         collapsingButton = new JButton();
         collapsingButton.setName("toggleButton");
+        collapsingButton.setText(getBundleString("toggleButton.text"));
         buttonPanel.add(collapsingButton);
         
         nextButton = new JButton();
         nextButton.setName("nextButton");
+        nextButton.setText(getBundleString("nextButton.text"));
+        nextButton.addActionListener( ae -> {
+        	containerStack.next(collapsiblePane.getContentPane());
+        });
         buttonPanel.add(nextButton);
-    }
-    
+
+        bind();
+        
+        return buttonPanel;
+	}
+
+
     private void bind() {
-        collapsingButton.addActionListener(collapsiblePane.getActionMap().get(
-                JXCollapsiblePane.TOGGLE_ACTION));
+        collapsingButton.addActionListener(collapsiblePane.getActionMap().get(JXCollapsiblePane.TOGGLE_ACTION));
         
-        nextButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                containerStack.next(collapsiblePane.getContentPane());
-            }
-        });
-        
-        previousButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                containerStack.previous(collapsiblePane.getContentPane());
-            }
-        });
+//        nextButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                containerStack.next(collapsiblePane.getContentPane());
+//            }
+//        });
+//        
+//        previousButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                containerStack.previous(collapsiblePane.getContentPane());
+//            }
+//        });
     }
 }
