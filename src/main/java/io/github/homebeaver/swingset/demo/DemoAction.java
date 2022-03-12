@@ -227,6 +227,7 @@ public class DemoAction extends AbstractActionExt {
         	// category CONTAINERS:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.collapsiblepane.CollapsiblePaneDemo", "JXCollapsiblePane", 3, Category.CONTAINERS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.taskpane.TaskPaneDemo", "TaskPane", 3, Category.CONTAINERS));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.multisplitpane.MultiSplitPaneDemo", "JXMultiSplitPane", 3, Category.CONTAINERS));
     	}
     	return ss3Actions;
     }
