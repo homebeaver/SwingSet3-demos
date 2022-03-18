@@ -6,11 +6,9 @@ package org.jdesktop.swingx.demos.painter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GradientPaint;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.LinearGradientPaint;
 import java.awt.Paint;
@@ -29,17 +27,13 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -67,8 +61,6 @@ import org.jdesktop.swingx.binding.DisplayInfoArrayConverter;
 import org.jdesktop.swingx.binding.DisplayInfoConverter;
 import org.jdesktop.swingx.binding.LabelHandler;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
-import org.jdesktop.swingx.icon.ColumnControlIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.painter.AbstractAreaPainter;
 import org.jdesktop.swingx.painter.AbstractAreaPainter.Style;
 import org.jdesktop.swingx.painter.AbstractLayoutPainter;
@@ -187,9 +179,6 @@ import swingset.AbstractDemo;
 //        "org/jdesktop/swingx/demos/painter/resources/PainterDemo.properties"
 //    }
 //)
-//@SuppressWarnings("serial")
-// as a standalone demo : tut nicht
-//abstract class DefaultDemoPanel extends JXPanel
 public class PainterDemo extends AbstractDemo {
     
 	private static final long serialVersionUID = 6581588324297355927L;
@@ -221,11 +210,9 @@ public class PainterDemo extends AbstractDemo {
     }
 
     private JXPanel painterDisplay;
-    private JSplitPane contents; // LeftComponent with painter launcher
-//    private JXButton hintButton; // ... on start this Button covers painterDemos 
-    private JXTree painterDemos; // a list of painter launchers
     
-//    private JXPanel painterDisplay;
+    // Controller:
+    private JXTree painterDemos; // a list of painter launchers
     private PainterControl painterControl; // implements AbstractBean, instance created on bind()
 
     /* properties panel (painterControlPanel) made by createPainterPropertiesPanel() consists of
@@ -279,19 +266,14 @@ public class PainterDemo extends AbstractDemo {
         painterDisplay.setPaintBorderInsets(false);
         add(painterDisplay, BorderLayout.CENTER);
         
-        JXPanel iconPanel = new JXPanel(new GridLayout(1, 4, 1, 1));
-        add(iconPanel, BorderLayout.SOUTH);
-        ColumnControlIcon ccIcon = new ColumnControlIcon(SizingConstants.LAUNCHER_ICON);
-        JButton ccButton = new JButton("big ColumnControl", ccIcon);
-        iconPanel.add(ccButton);
-
+        // a CheckerboardPainter as default:
+        int squareSize = 128;
 		GradientPaint gp = new GradientPaint(new Point2D.Double(0, 0), Color.BLACK, 
-				new Point2D.Double(0, 32), Color.GRAY);
+				new Point2D.Double(0, squareSize), Color.GRAY);
 		CheckerboardPainter p = new CheckerboardPainter();
 		p.setDarkPaint(gp);
 		p.setLightPaint(Color.WHITE);
-		p.setSquareSize(32);
-		iconPanel.setBackgroundPainter(p);
+		p.setSquareSize(squareSize);
 		painterDisplay.setBackgroundPainter(p);
     }
 
@@ -306,8 +288,7 @@ public class PainterDemo extends AbstractDemo {
         painterDemos.setRootVisible(false);
         painterDemos.setModel(createPainters());
         panel.add(new JScrollPane(painterDemos), BorderLayout.WEST);
-        Dimension size = painterDemos.getSize();
-        LOG.info("painterDemos.Size="+size);
+
         painterDemos.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         painterDemos.addTreeSelectionListener( treeSelectionEvent -> {
         	// void valueChanged(TreeSelectionEvent e);
@@ -320,23 +301,10 @@ public class PainterDemo extends AbstractDemo {
 				Object uo = node.getUserObject();
 				LOG.info("selected Leaf user Object:"+uo);
 				DisplayInfo<?> di = (DisplayInfo<?>)uo;
-				if(di.getValue()==null) {
-					//
-				} else {
+				if(di.getValue()!=null) {
 					LOG.info("painter:"+di.getValue());
 					Painter<Component> painter = (Painter<Component>)di.getValue();
-					//bind():
-					painterControl = new PainterControl();
-//					painterControl.setPainter(painter);
-					bindSelection2(painterDisplay, painterControl);
-		            // bindEnabled
-		            bindEnabled("areaEnabled", areaSeparator, styleBox, effectBox, borderWidthSlider, paintStretchedBox);
-		            bindEnabled("alignEnabled", layoutSeparator, horizontalAlignmentBox, verticalAlignmentBox, insetSlider, fillHorizontal, fillVertical);
-		            bindEnabled("baseEnabled", baseSeparator, interpolationBox, visibleBox, antialiasBox);
-		            // bind collapsed
-		            bindInversCollapsed("baseEnabled", layoutPainterControlPanel, basePainterControlPanel, areaPainterControlPanel);
-					painterControl.setPainter(painter);
-					painterDisplay.setBackgroundPainter(painter);
+					bind(painter);
 				}
 			} else {
 				LOG.info("selected node is not Leaf user Object:"+node.getUserObject());
@@ -346,7 +314,21 @@ public class PainterDemo extends AbstractDemo {
         return panel;
 	}
 
-    private void bindSelection2(JXPanel backgroundPainter, PainterControl painter) {
+    private void bind(Painter<Component> painter) {
+		painterControl = new PainterControl();
+		painterControl.setPainter(painter);
+		bindSelection(painterDisplay, painterControl);
+        // bindEnabled
+        bindEnabled("areaEnabled", areaSeparator, styleBox, effectBox, borderWidthSlider, paintStretchedBox);
+        bindEnabled("alignEnabled", layoutSeparator, horizontalAlignmentBox, verticalAlignmentBox, insetSlider, fillHorizontal, fillVertical);
+        bindEnabled("baseEnabled", baseSeparator, interpolationBox, visibleBox, antialiasBox);
+        // bind collapsed
+        bindInversCollapsed("baseEnabled", layoutPainterControlPanel, basePainterControlPanel, areaPainterControlPanel);
+        
+		painterDisplay.setBackgroundPainter(painter);   	
+    }
+    
+    private void bindSelection(JXPanel backgroundPainter, PainterControl painter) {
         painterDemos.setCellRenderer(new DefaultTreeRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
         Converter<?, ?> painterConverter = new DisplayInfoConverter<Painter<Object>>();
         
@@ -366,24 +348,7 @@ public class PainterDemo extends AbstractDemo {
         		);
         b2.setConverter(painterConverter);
         group.addBinding(b2);
-        
-//        LOG.info("components.length="+components.length);
-//        for (int i = 0; i < components.length; i++) {
-//        	//@SuppressWarnings("rawtypes") // sourceProperty generic type BeanProperty<S,V>
-//			BeanProperty<JXTree, String> sv =
-//        			BeanProperty.create("selectedElement_UNWRAP_NODE"); // calls new BeanProperty<S, V>(null, path)
-//            //@SuppressWarnings("rawtypes") // targetProperty generic type BeanProperty<S,V>
-//			BeanProperty<Object, String> tv = 
-//				BeanProperty.create(i == 0 ? "backgroundPainter" : "painter");
-//            @SuppressWarnings("rawtypes") // generic type Binding<SS,SV,TS,TV>
-//			Binding b = 
-//            	Bindings.createAutoBinding(UpdateStrategy.READ, // strategy: keep the target in sync with the source
-//                    painterDemos, sv, // SS:JXTree, Property<SS,SV>
-//                    components[i], tv // TS, Property<TS,TV>
-//            		);
-//            b.setConverter(painterConverter); // Converter<SV, TV> converter
-//            group.addBinding(b);       
-//        }
+
         group.bind();
     }
 
@@ -394,23 +359,7 @@ public class PainterDemo extends AbstractDemo {
      */
     private TreeModel createPainters() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-//        root.add(createImagePainterDemos()); TODO Bug:
-/*
-März 17, 2022 11:37:47 PM swingset.AbstractDemo getBundleString
-WARNUNG: missing String resource frame.title; using fallback "Demonstrates Painters, a painting delegate."
-März 17, 2022 11:37:48 PM org.jdesktop.swingx.demos.painter.PainterDemo createImagePainterDemos
-INFORMATION: getResources for class org.jdesktop.swingx.demos.painter.PainterDemo imagedir:images/
-März 17, 2022 11:37:48 PM org.jdesktop.swingx.util.Utilities getResourceAsStream
-WARNUNG: cannot find resource org.jdesktop.swingx.demos.painter.PainterDemo#images/border.gif try FileAsStream ...
-März 17, 2022 11:37:48 PM org.jdesktop.swingx.util.Utilities getFileAsStream
-WARNUNG: cannot find resource images\border.gif
-java.lang.IllegalArgumentException: input == null!
-	at java.desktop/javax.imageio.ImageIO.read(ImageIO.java:1358)
-	at org.jdesktop.swingx.demos.painter.PainterDemo.createImagePainterDemos(PainterDemo.java:408)
-	at org.jdesktop.swingx.demos.painter.PainterDemo.createPainters(PainterDemo.java:359)
-	at org.jdesktop.swingx.demos.painter.PainterDemo.getControlPane(PainterDemo.java:300)
- 
- */
+        root.add(createImagePainterDemos());
         root.add(createShapePainterDemos());
         root.add(createTextPainterDemos());
         root.add(createRectanglePainterDemos());
@@ -454,7 +403,7 @@ java.lang.IllegalArgumentException: input == null!
     private MutableTreeNode createImagePainterDemos() {
         DefaultMutableTreeNode node = createInfoNode("Image Painter Demos", (ImagePainter)null);
         
-        final String imgdir = "images/";
+        final String imgdir = "resources/images/";
         Class<?> thisClass = PainterDemo.class;
         LOG.info("getResources for "+ thisClass + " imagedir:"+imgdir);
         try {
@@ -735,7 +684,7 @@ java.lang.IllegalArgumentException: input == null!
         MattePainter black = new MattePainter(Color.BLACK);
         
         CheckerboardPainter bp = new CheckerboardPainter();
-        LOG.info("CheckerboardPainter bp"+bp);
+        LOG.config("CheckerboardPainter bp"+bp);
         CompoundPainter<Component> cp = new CompoundPainter<Component>(black, bp);
         node.add(createInfoNode("(default) Checkerboard white+light gray, square size 8x8", cp));
         
@@ -747,7 +696,7 @@ java.lang.IllegalArgumentException: input == null!
         bp.setDarkPaint(gp);
         bp.setLightPaint(Color.WHITE);
         bp.setSquareSize(32);
-        LOG.info("CheckerboardPainter bp"+bp);
+        LOG.config("CheckerboardPainter bp"+bp);
         cp = new CompoundPainter<Component>(black, bp);
         node.add(createInfoNode("Checkerboard white+GradientPaint for the dark, square size 32", cp));
                 
@@ -924,54 +873,6 @@ java.lang.IllegalArgumentException: input == null!
     
 //------------------------------- Binding
 
-//	@Override
-//    private void bind() {
-//        // create the painter property controller
-//        painterControl = new PainterControl();
-//        
-//        // bind selection of node
-//        bindSelection(painterDisplay, painterControl);
-////        bindSelection(this, painterControl);
-//        
-//        // bindEnabled
-//        bindEnabled("areaEnabled", areaSeparator, styleBox, effectBox, borderWidthSlider, paintStretchedBox);
-//        bindEnabled("alignEnabled", layoutSeparator, horizontalAlignmentBox, verticalAlignmentBox, insetSlider, fillHorizontal, fillVertical);
-//        bindEnabled("baseEnabled", baseSeparator, interpolationBox, visibleBox, antialiasBox);
-//        
-//        // bind collapsed
-//        bindInversCollapsed("baseEnabled", layoutPainterControlPanel, basePainterControlPanel, areaPainterControlPanel);
-//   }
-
-    /*
-     * used in bind(): bindSelection(painterDisplay // JXPanel        : "backgroundPainter" 
-     *                             , painterControl // PainterControl : "painter"
-     *                             );
-     */
-//    @SuppressWarnings("unchecked")
-    private void bindSelection(Object... components) {
-        painterDemos.setCellRenderer(new DefaultTreeRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
-        Converter<?, ?> painterConverter = new DisplayInfoConverter<Painter<Object>>();
-        BindingGroup group = new BindingGroup();
-        LOG.info("components.length="+components.length);
-        for (int i = 0; i < components.length; i++) {
-        	//@SuppressWarnings("rawtypes") // sourceProperty generic type BeanProperty<S,V>
-			BeanProperty<JXTree, String> sv =
-        			BeanProperty.create("selectedElement_UNWRAP_NODE"); // calls new BeanProperty<S, V>(null, path)
-            //@SuppressWarnings("rawtypes") // targetProperty generic type BeanProperty<S,V>
-			BeanProperty<Object, String> tv = 
-				BeanProperty.create(i == 0 ? "backgroundPainter" : "painter");
-            @SuppressWarnings("rawtypes") // generic type Binding<SS,SV,TS,TV>
-			Binding b = 
-            	Bindings.createAutoBinding(UpdateStrategy.READ, // strategy: keep the target in sync with the source
-                    painterDemos, sv, // SS:JXTree, Property<SS,SV>
-                    components[i], tv // TS, Property<TS,TV>
-            		);
-            b.setConverter(painterConverter); // Converter<SV, TV> converter
-            group.addBinding(b);       
-        }
-        group.bind();
-    }
-    
     /**
      * @param property
      */
@@ -1004,7 +905,7 @@ java.lang.IllegalArgumentException: input == null!
     private void bindEnabled(String property, JComponent... components ) {
         BindingGroup group = new BindingGroup();
         for (JComponent comp : components) {
-        	LOG.info(property+":comp:"+comp);
+        	LOG.fine(property+":comp:"+comp);
             group.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ,
                     painterControl, BeanProperty.create(property),
                     comp, BeanProperty.create("enabled")));       
@@ -1025,7 +926,7 @@ java.lang.IllegalArgumentException: input == null!
         private BindingGroup areaGroup;
 
         public PainterControl() {
-        	LOG.info("ctor");
+        	LOG.fine("ctor");
             StringValue effectInfo = DisplayValues.DISPLAY_INFO_DESCRIPTION;
             
             // effects
@@ -1169,7 +1070,7 @@ java.lang.IllegalArgumentException: input == null!
         }
 
         public void setPainter(Painter<?> painter) {
-        	LOG.info("------------- Painter<?>:"+painter);
+        	LOG.fine("------------- Painter<?>:"+painter);
             releaseBaseBindings();
             releaseAlignBindings();
             releaseAreaBindings();
@@ -1212,38 +1113,6 @@ java.lang.IllegalArgumentException: input == null!
       
     }
     
-//------------------------------ Create UI
-//    private void createControler() {
-//        painterDisplay = createPainterDisplay();
-//        
-//        JComponent painterControlPanel =new JXPanel(new BorderLayout());
-//        painterControlPanel.add(painterDisplay);
-//        painterControlPanel.add(createPainterPropertiesPanel(), BorderLayout.SOUTH);
-//        
-//        hintButton = new JXButton("<html>push here to select and start a painter from a list</html>");
-//        Font font = new Font("SansSerif", Font.PLAIN, 16);
-//        hintButton.setFont(font);
-////        painterControlPanel.add(hint, BorderLayout.NORTH);
-//		hintButton.addActionListener(event -> {
-//			Dimension size = ((JComponent)contents.getLeftComponent()).getSize();
-//			contents.setLeftComponent(new JScrollPane(painterDemos));
-//			((JComponent)contents.getLeftComponent()).setMinimumSize(size);
-//		});
-//        
-//        // fill and configure painter tree model
-//        painterDemos = new JXTree();
-//        painterDemos.setRootVisible(false);
-//        painterDemos.setModel(createPainters());
-//        
-//        // PENDING JW: weird sizing in splitpane
-//        contents = new JSplitPane();
-//        contents.setDividerLocation(240);
-//        contents.setContinuousLayout(true);
-//        contents.setRightComponent(painterControlPanel);
-////        contents.setLeftComponent(new JScrollPane(painterDemos));
-//        contents.setLeftComponent(hintButton);
-//        add(contents);
-//    }
 
     /* some notes on jgoodies layout and builder (used in create*Panel):
      * dlu   == dialog units
@@ -1492,15 +1361,5 @@ java.lang.IllegalArgumentException: input == null!
         
         return pane;
     }
-
-//    /**
-//     */
-//    private JXPanel createPainterDisplay() {
-//        JXPanel painterDisplay = new JXPanel(new BorderLayout());
-//        painterDisplay.setBorder(BorderFactory.createEtchedBorder());
-//        painterDisplay.setPaintBorderInsets(false);
-//        return painterDisplay;
-//    }
-
 
 }
