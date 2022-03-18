@@ -58,6 +58,12 @@ in SwingSet3:
 @SuppressWarnings("serial")
 public class MainJXframe extends DemoJXFrame {
 
+	static private enum DemoSelectorStyle {
+		USE_JXTREE,
+		USE_JXTASKS
+	}
+	static DemoSelectorStyle demoSelectorStyle = DemoSelectorStyle.USE_JXTASKS;
+	
 	/**
 	 * starts swingset demo application
 	 */
@@ -130,8 +136,11 @@ CENTER: JXPanel currentController
 Alternative 3: DemoJXTasks statt demoTree
  */
     	content = new JXPanel(new BorderLayout());
-    	content.add(new JScrollPane(DemoJXTasks.getTaskPaneContainer()), BorderLayout.WEST);
     	
+    	if(demoSelectorStyle==DemoSelectorStyle.USE_JXTASKS) {
+        	content.add(new JScrollPane(DemoJXTasks.getTaskPaneContainer()), BorderLayout.WEST);
+    	}
+
     	tabbedpane = new JTabbedPane();
     	tabbedpane.add("source", new JXLabel("TODO enpty")); // TODO
     	currentController = new IntroPanelDemo();
@@ -191,33 +200,27 @@ Alternative 3: DemoJXTasks statt demoTree
 
     	demoTree.expandAll(); 
     	demoTree.setEditable(false);
+    	demoTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     	
     	demoTree.addTreeSelectionListener( treeSelectionEvent -> {
-    		JXTree source = (JXTree)(JXTree)treeSelectionEvent.getSource();
-    		LOG.info("treeSelectionEvent +.Source: Foreground:"+((JXTree)treeSelectionEvent.getSource()).getForeground()
-                +"\n SelectionModel:"+source.getSelectionModel()
-                +"\n SelectionModel.SelectionMode:"+source.getSelectionModel().getSelectionMode()
-    			//	public int[] getSelectionRows() :
-            	+"\n"+((JXTree)treeSelectionEvent.getSource()).getSelectionRows()[0]
-        		+"\n"+treeSelectionEvent
-    			+"\n"+treeSelectionEvent.getSource());
-    		TreeSelectionModel tsm = source.getSelectionModel();
-    		if(tsm.getSelectionMode()==TreeSelectionModel.SINGLE_TREE_SELECTION) {
-    			LOG.info("SINGLE_TREE_SELECTION SelectionPath:"+tsm.getSelectionPath());
-    		} else if(tsm.getSelectionMode()==TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION) {
-    			LOG.info("DISCONTIGUOUS_TREE_SELECTION SelectionPath:"+tsm.getSelectionPath());
-    			Object o = tsm.getSelectionPath().getLastPathComponent();
-    			LOG.info("LastPathComponent:"+o);
-    			DemoAction action = (DemoAction)o; // root ist DefaultMutableTreeNode! ClassCastException TODO
-    			LOG.info("LastPathComponent.NAME:"+action.getValue(Action.NAME));
-//    			Object[] path = tsm.getSelectionPath().getPath(); // The first element is the root
-//    			for(int i=0;i<path.length;i++) {
-//    				LOG.info(""+i+":"+path[i]);
-////    				DemoMenuAction action = (DemoMenuAction)path[i];
-////    				LOG.info(""+i+":"+action.getValue(Action.NAME));
-//    			}
-    			action.actionPerformed(null); // ohne para  			
-    		}
+    		// implement valueChanged(TreeSelectionEvent e):
+    		JXTree source = (JXTree)treeSelectionEvent.getSource(); // == demoTree
+        	TreeSelectionModel tsm = source.getSelectionModel();
+			Object o = tsm.getSelectionPath().getLastPathComponent();
+//			LOG.info("selected aka LastPathComponent:"+o);
+//			DefaultMutableTreeNode node = (DefaultMutableTreeNode)o;
+//			if(node.isLeaf()) {
+//				Object uo = node.getUserObject();
+//				LOG.info("selected Leaf user Object:"+uo);
+//				DemoAction action = (DemoAction)uo; 
+//    			LOG.info("Selected DemoAction.NAME:"+action.getValue(Action.NAME));
+//    			action.actionPerformed(null); // ohne para 
+//			} else {
+//				LOG.info("selected node is not Leaf user Object:"+node.getUserObject());
+//			}
+			DemoAction action = (DemoAction)o;
+			LOG.info("Selected DemoAction.NAME:"+action.getValue(Action.NAME));
+			action.actionPerformed(null); // ohne para
     	});
 
     	IconValue iv = new IconValue() {
@@ -244,7 +247,9 @@ Alternative 3: DemoJXTasks statt demoTree
 		
 		demoTree.setCellRenderer(treeRenderer);
 		
-//		content.add(new JScrollPane(demoTree), BorderLayout.WEST);
+    	if(demoSelectorStyle==DemoSelectorStyle.USE_JXTREE) {
+    		content.add(new JScrollPane(demoTree), BorderLayout.WEST);
+    	}
 		return menu;
     }
 
