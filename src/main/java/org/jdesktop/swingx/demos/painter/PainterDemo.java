@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GradientPaint;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.LinearGradientPaint;
 import java.awt.Paint;
@@ -57,7 +58,6 @@ import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.binding.DisplayInfoArrayConverter;
-//import org.jdesktop.swingx.binding.DisplayInfoArrayConverter;
 import org.jdesktop.swingx.binding.DisplayInfoConverter;
 import org.jdesktop.swingx.binding.LabelHandler;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
@@ -349,6 +349,46 @@ public class PainterDemo extends AbstractDemo {
         b2.setConverter(painterConverter);
         group.addBinding(b2);
 
+        group.bind();
+    }
+
+    /**
+     * @param property
+     */
+    /*
+     * used in bind(): 
+        bindEnabled("areaEnabled"
+        , areaSeparator
+        , styleBox
+        , effectBox
+        , borderWidthSlider
+        , paintStretchedBox
+        );
+        bindEnabled("alignEnabled", layoutSeparator, horizontalAlignmentBox, verticalAlignmentBox, insetSlider, fillHorizontal, fillVertical);
+        bindEnabled("baseEnabled", baseSeparator, interpolationBox, visibleBox, antialiasBox);
+     */
+    private void bindEnabled(String property, JComponent... components ) {
+        BindingGroup group = new BindingGroup();
+        for (JComponent comp : components) {
+        	LOG.fine(property+":comp:"+comp);
+            group.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ,
+                    painterControl, BeanProperty.create(property),
+                    comp, BeanProperty.create("enabled")));       
+        }
+        group.bind();
+    }
+
+    /**
+     * @param property
+     */
+    private void bindInversCollapsed(String property, JComponent... components ) {
+        BindingGroup group = new BindingGroup();
+        for (JComponent comp : components) {
+        	LOG.info(property+":comp:"+comp);
+            group.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ,
+                    painterControl, ELProperty.create("${!" + property + "}"),
+                    comp, BeanProperty.create("collapsed")));
+        }
         group.bind();
     }
 
@@ -871,48 +911,6 @@ public class PainterDemo extends AbstractDemo {
         return model;
     }
     
-//------------------------------- Binding
-
-    /**
-     * @param property
-     */
-    private void bindInversCollapsed(String property, JComponent... components ) {
-        BindingGroup group = new BindingGroup();
-        for (JComponent comp : components) {
-        	LOG.info(property+":comp:"+comp);
-            group.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ,
-                    painterControl, ELProperty.create("${!" + property + "}"),
-                    comp, BeanProperty.create("collapsed")));
-        }
-        group.bind();
-    }
-
-    /**
-     * @param string
-     */
-    /*
-     * used in bind(): 
-        bindEnabled("areaEnabled"
-        , areaSeparator
-        , styleBox
-        , effectBox
-        , borderWidthSlider
-        , paintStretchedBox
-        );
-        bindEnabled("alignEnabled", layoutSeparator, horizontalAlignmentBox, verticalAlignmentBox, insetSlider, fillHorizontal, fillVertical);
-        bindEnabled("baseEnabled", baseSeparator, interpolationBox, visibleBox, antialiasBox);
-     */
-    private void bindEnabled(String property, JComponent... components ) {
-        BindingGroup group = new BindingGroup();
-        for (JComponent comp : components) {
-        	LOG.fine(property+":comp:"+comp);
-            group.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ,
-                    painterControl, BeanProperty.create(property),
-                    comp, BeanProperty.create("enabled")));       
-        }
-        group.bind();
-    }
-
     /**
      * Controller of bindings to Painter properties.
      */
@@ -1133,23 +1131,11 @@ public class PainterDemo extends AbstractDemo {
         basePainterControlPanel = createBasePainterControlPanel();
         layoutPainterControlPanel = createLayoutPainterControl();
         areaPainterControlPanel = createAreaPainterControlPanel();
-        JXPanel properties = new JXPanel();
-        // jgoodies layout and builder:
-        FormLayout formLayout = new FormLayout(
-                "f:d:n, l:4dlu:n, f:d:n, l:4dlu:n, f:d:n", // encodedColumnSpecs 3cols + gaps
-                "t:d:n" // encodedRowSpecs: one row
-        );
         
-        PanelBuilder builder = new PanelBuilder(formLayout, properties);
-        builder.setBorder(Borders.DLU4_BORDER);
-        CellConstraints cl = new CellConstraints(); // jgoodies
-        int currentColumn = 1;
-        builder.add(basePainterControlPanel, cl.xy(currentColumn, 1));
-        currentColumn +=2; // skip gap
-        builder.add(layoutPainterControlPanel, cl.xy(currentColumn, 1));
-        currentColumn +=2;
-        builder.add(areaPainterControlPanel, cl.xy(currentColumn, 1));
-        currentColumn +=2;
+        JXPanel properties = new JXPanel(new GridLayout(3, 1, 1, 1));
+        properties.add(basePainterControlPanel);
+        properties.add(layoutPainterControlPanel);
+        properties.add(areaPainterControlPanel);
         return properties;
     }
 
@@ -1160,14 +1146,14 @@ public class PainterDemo extends AbstractDemo {
         JXCollapsiblePane pane = new JXCollapsiblePane();
         // jgoodies layout and builder:
         FormLayout formLayout = new FormLayout(
-                "5dlu, r:d:n, l:4dlu:n, f:d:n" // encodedColumnSpecs 2gaps+2cols: gap,col,gap,col
-                // 5 rows (+ gaps):
-                , "c:d:n" // baseSeparator
-                + ", t:4dlu:n, c:d:n" // gap, interpolation: label+comboBox
-                + ", t:4dlu:n, c:d:n" // gap, filter
-                + ", t:4dlu:n, c:d:n" // gap, visibleBox
-                + ", t:4dlu:n, c:d:n" // gap, antialiasBox
-                );
+            "5dlu, r:d:n, l:4dlu:n, f:d:n" // encodedColumnSpecs 2gaps+2cols: gap,col,gap,col
+            // 5 rows (+ gaps):
+            , "c:d:n" // baseSeparator
+            + ", t:4dlu:n, c:d:n" // gap, interpolation: label+comboBox
+            + ", t:4dlu:n, c:d:n" // gap, filter
+            + ", t:4dlu:n, c:d:n" // gap, visibleBox
+            + ", t:4dlu:n, c:d:n" // gap, antialiasBox
+        );
         PanelBuilder builder = new PanelBuilder(formLayout, pane);
         builder.setBorder(Borders.DLU4_BORDER);
         CellConstraints cl = new CellConstraints();

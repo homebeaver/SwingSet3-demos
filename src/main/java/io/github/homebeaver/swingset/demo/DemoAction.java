@@ -212,6 +212,7 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighterext.HighlighterExtDemo", "Highlighter (extended)", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.prompt.PromptSupportDemo", "PromptSupport", 3, Category.FUNCTIONALITY));
         	// category CONTROLS:
+// TODO       	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.multithumbslider.MultiThumbSliderDemo", "MultiThumbSlider", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.hyperlink.HyperlinkDemo", "Hyperlink", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.loginpane.LoginToDBPaneDemo", "LoginToDBPane", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.loginpane.LoginPaneDemo", "LoginPane", 3, Category.CONTROLS));
@@ -219,6 +220,8 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthview.MonthViewDemo", "JXMonthView (basic)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthviewext.MonthViewExtDemo", "JXMonthView (extended)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xbutton.XButtonDemo", "JXButton", 3, Category.CONTROLS));
+        	// category DECORATORS:
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.painter.PainterDemo", "Painter", 3, Category.DECORATORS));
         	// category DATA:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlist.XListDemo", "XList", 3, Category.DATA));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.table.XTableDemo", "XTable", 3, Category.DATA));
