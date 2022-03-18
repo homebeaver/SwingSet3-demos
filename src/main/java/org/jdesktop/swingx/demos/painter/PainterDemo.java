@@ -33,6 +33,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -212,6 +213,7 @@ public class PainterDemo extends AbstractDemo {
     private JXPanel painterDisplay;
     
     // Controller:
+    private JSplitPane splitPane;
     private JXTree painterDemos; // a list of painter launchers
     private PainterControl painterControl; // implements AbstractBean, instance created on bind()
 
@@ -280,14 +282,14 @@ public class PainterDemo extends AbstractDemo {
     @Override
 	public JXPanel getControlPane() {
     	JXPanel panel = new JXPanel(new BorderLayout());
-    	
-        panel.add(createPainterPropertiesPanel(), BorderLayout.CENTER);
-        
-        // fill and configure painter tree model
+
         painterDemos = new JXTree();
         painterDemos.setRootVisible(false);
         painterDemos.setModel(createPainters());
-        panel.add(new JScrollPane(painterDemos), BorderLayout.WEST);
+        
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
+        		new JScrollPane(painterDemos), createPainterPropertiesPanel());
+        panel.add(splitPane);
 
         painterDemos.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         painterDemos.addTreeSelectionListener( treeSelectionEvent -> {
