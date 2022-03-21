@@ -1,51 +1,29 @@
-/*
- * $Id$
- *
- * Copyright 2009 Sun Microsystems, Inc., 4150 Network Circle,
- * Santa Clara, California 95054, U.S.A. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
+/* Copyright (c) 2004 Sun Microsystems, Inc. All Rights Reserved.
+Copyright notice, list of conditions and disclaimer see LICENSE file
+*/ 
 package org.jdesktop.swingx.demos.xlabel;
 
-import static org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ;
-
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Frame;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXLabel.TextAlignment;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
-import org.jdesktop.swingxset.DefaultDemoPanel;
 
-import com.sun.swingset3.DemoProperties;
+import swingset.AbstractDemo;
 
 /**
  * A demo for the {@code JXLabel}.
@@ -53,64 +31,92 @@ import com.sun.swingset3.DemoProperties;
  * @author Karl George Schaefer
  * @author rah003 (original JXLabelDemo)
  * @author Richard Bair (original JXLabelDemo)
+ * @author EUG https://github.com/homebeaver (reorg)
  */
-@DemoProperties(
-    value = "JXLabel Demo",
-    category = "Controls",
-    description = "Demonstrates JXLabel, a Painter-enabled multiline label component.",
-    sourceFiles = {
-        "org/jdesktop/swingx/demos/xlabel/XLabelDemo.java",
-        "org/jdesktop/swingx/demos/xlabel/resources/XLabelDemo.properties",
-        "org/jdesktop/swingx/demos/xlabel/resources/XLabelDemo.html",
-        "org/jdesktop/swingx/demos/xlabel/resources/images/XLabelDemo.png",
-        "org/jdesktop/swingx/demos/xlabel/resources/images/exit.png"
-    }
-)
-@SuppressWarnings("serial")
-public class XLabelDemo extends DefaultDemoPanel {
-    private JXLabel label;
-    private JCheckBox lineWrap;
-    private JComboBox alignments;
-    private JButton rotate;
-    
+//@DemoProperties(
+//    value = "JXLabel Demo",
+//    category = "Controls",
+//    description = "Demonstrates JXLabel, a Painter-enabled multiline label component.",
+//    sourceFiles = {
+//        "org/jdesktop/swingx/demos/xlabel/XLabelDemo.java",
+//        "org/jdesktop/swingx/demos/xlabel/resources/XLabelDemo.properties",
+//        "org/jdesktop/swingx/demos/xlabel/resources/XLabelDemo.html",
+//        "org/jdesktop/swingx/demos/xlabel/resources/images/XLabelDemo.png",
+//        "org/jdesktop/swingx/demos/xlabel/resources/images/exit.png"
+//    }
+//)
+//@SuppressWarnings("serial")
+public class XLabelDemo extends AbstractDemo {
+
+	private static final long serialVersionUID = -490251065325879942L;
+	private static final Logger LOG = Logger.getLogger(XLabelDemo.class.getName());
+	private static final String DESCRIPTION = "Demonstrates JXLabel, a Painter-enabled multiline label component.";
+
     /**
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JFrame frame = new JFrame(XLabelDemo.class.getAnnotation(DemoProperties.class).value());
-                
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.getContentPane().add(new XLabelDemo());
-                frame.setPreferredSize(new Dimension(800, 600));
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-            }
-        });
+    	SwingUtilities.invokeLater(new Runnable() {
+    		static final boolean exitOnClose = true;
+			@Override
+			public void run() {
+				JXFrame controller = new JXFrame("controller", exitOnClose);
+				AbstractDemo demo = new XLabelDemo(controller);
+				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+				frame.setStartPosition(StartPosition.CenterInScreen);
+				//frame.setLocationRelativeTo(controller);
+            	frame.getContentPane().add(demo);
+            	frame.pack();
+            	frame.setVisible(true);
+				
+				controller.getContentPane().add(demo.getControlPane());
+				controller.pack();
+				controller.setVisible(true);
+			}		
+    	});
     }
 
+    private JXLabel label;
+    
     /**
-     * {@inheritDoc}
+     * MonthViewDemo Constructor
      */
-    protected void createDemo() {
-        setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-        
+    public XLabelDemo(Frame frame) {
+    	super(new BorderLayout());
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
+    	super.setPreferredSize(PREFERRED_SIZE);
+    	super.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+
         label = new JXLabel();
         label.setName("contents");
+        label.setText(getBundleString("contents.text"));
+        label.setIcon(getResourceAsIcon(getClass(), "resources/images/exit.png"));
         add(label);
-        
-        JPanel p = new JPanel();
-        add(p, BorderLayout.SOUTH);
-        
+    }
+
+    private JCheckBox lineWrap;
+    private JComboBox<TextAlignment> alignments;
+    private JButton rotate;
+
+    @Override
+	public JXPanel getControlPane() {
+    	JXPanel controller = new JXPanel();
+
         lineWrap = new JCheckBox();
         lineWrap.setName("lineWrap");
-        p.add(lineWrap);
+        lineWrap.setText(getBundleString("lineWrap.text", lineWrap));
+        lineWrap.setSelected(Boolean.valueOf(getBundleString("lineWrap.selected")));
+        label.setLineWrap(lineWrap.isSelected());
+        lineWrap.addActionListener( ae -> {
+            label.setLineWrap(lineWrap.isSelected());
+            label.repaint();
+        });
+        controller.add(lineWrap);
         
-        alignments = new JComboBox(new EnumComboBoxModel<TextAlignment>(TextAlignment.class));
+        alignments = new JComboBox<TextAlignment>(new EnumComboBoxModel<TextAlignment>(TextAlignment.class));
+        
         alignments.setRenderer(new DefaultListRenderer(new StringValue() {
+            @Override
             public String getString(Object value) {
                 String s = StringValues.TO_STRING.getString(value);
                 
@@ -122,26 +128,22 @@ public class XLabelDemo extends DefaultDemoPanel {
                 return s;
             }
         }));
-        p.add(alignments);
-        
+        alignments.addActionListener( ae -> {
+            LOG.info("ActionListener:"+ae);
+            Object o = alignments.getSelectedItem();
+            label.setTextAlignment((TextAlignment)o);
+        });
+        controller.add(alignments);
+
         rotate = new JButton();
         rotate.setName("rotate");
-        p.add(rotate);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    protected void bind() {
-        Bindings.createAutoBinding(READ, lineWrap, BeanProperty.create("selected"),
-                label, BeanProperty.create("lineWrap")).bind();
-        Bindings.createAutoBinding(READ, alignments, BeanProperty.create("selectedItem"),
-                label, BeanProperty.create("textAlignment")).bind();
-        //TODO build a converter to handle this via BeanBinding
-        rotate.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                label.setTextRotation((label.getTextRotation() + Math.PI / 16) % (2 * Math.PI));
-            }
+        rotate.setText(getBundleString("rotate.text", rotate));
+        rotate.addActionListener( ae -> {
+            label.setTextRotation((label.getTextRotation() + Math.PI / 16) % (2 * Math.PI));
         });
+        controller.add(rotate);
+        
+        return controller;
     }
+
 }

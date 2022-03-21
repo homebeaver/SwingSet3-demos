@@ -220,6 +220,7 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthview.MonthViewDemo", "JXMonthView (basic)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthviewext.MonthViewExtDemo", "JXMonthView (extended)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xbutton.XButtonDemo", "JXButton", 3, Category.CONTROLS));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlabel.XLabelDemo", "XLabel", 3, Category.CONTROLS));
         	// category DECORATORS:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.painter.PainterDemo", "Painter", 3, Category.DECORATORS));
         	// category DATA:
