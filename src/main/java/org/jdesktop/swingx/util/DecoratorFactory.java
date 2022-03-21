@@ -9,11 +9,11 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Painter;
 import javax.swing.Timer;
 
 import org.jdesktop.swingx.painter.AlphaPainter;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.painter.PinstripePainter;
 
 public class DecoratorFactory {
@@ -21,15 +21,15 @@ public class DecoratorFactory {
     public static final Color MATCH_COLOR = Color.YELLOW;
     public static final Color PINSTRIPE_COLOR = Color.GREEN;
     
-    public static Painter<? extends Component> createPlainPainter() {
+    public static Painter<Component> createPlainPainter() {
         return new MattePainter(MATCH_COLOR);
     }
     
     /**
      * @return
      */
-    public static Painter<? extends Component> createAnimatedPainter() {
-        final AlphaPainter alpha = new AlphaPainter();
+    public static Painter<Component> createAnimatedPainter() {
+        final AlphaPainter<Component> alpha = new AlphaPainter<Component>();
         alpha.setAlpha(1f);
         final PinstripePainter pinstripePainter = new PinstripePainter(PINSTRIPE_COLOR,45,3,3);
         alpha.setPainters(new MattePainter(MATCH_COLOR), pinstripePainter);

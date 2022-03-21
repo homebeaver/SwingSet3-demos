@@ -22,6 +22,7 @@ package org.jdesktop.swingxset.util;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
+
 /**
  * Convenience display converters used in Demos.
  * 

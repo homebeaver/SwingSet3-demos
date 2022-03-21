@@ -5,6 +5,7 @@ package org.jdesktop.swingx.demos.prompt;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Painter;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
@@ -33,7 +35,6 @@ import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.painter.ShapePainter;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jdesktop.swingx.prompt.PromptSupport.FocusBehavior;
@@ -99,10 +100,10 @@ public class PromptSupportDemo extends AbstractDemo {
 
 	private JTextField textField;
 	// Controller:
-    private JComboBox focusCombo;
+    private JComboBox<FocusBehavior> focusCombo;
     private JTextField promptText;
-    private JComboBox backgroundPainter;
-    private JComboBox fontStyle;
+    private JComboBox<DisplayInfo<Painter<? super Component>>> backgroundPainter;
+    private JComboBox<DisplayInfo<Integer>> fontStyle;
 
     /**
      * PromptSupportDemo Constructor
@@ -154,7 +155,7 @@ public class PromptSupportDemo extends AbstractDemo {
         JLabel label = new JLabel("Focus Behavior:");
         panel.add(label, cc.rc(1, 2));
         
-        focusCombo = new JComboBox(new EnumComboBoxModel<FocusBehavior>(FocusBehavior.class));
+        focusCombo = new JComboBox<FocusBehavior>(new EnumComboBoxModel<FocusBehavior>(FocusBehavior.class));
         focusCombo.setRenderer(new DefaultListRenderer(DisplayValues.TITLE_WORDS_UNDERSCORE));
         panel.add(focusCombo, cc.rc(1, 4));
         
@@ -192,14 +193,15 @@ public class PromptSupportDemo extends AbstractDemo {
         label = new JLabel("Painter:");
         panel.add(label, cc.rc(7, 2));
         
-        backgroundPainter = new JComboBox(new ListComboBoxModel<DisplayInfo<Painter<?>>>(getPainters()));
+        backgroundPainter = new JComboBox<DisplayInfo<Painter<? super Component>>>(new ListComboBoxModel<DisplayInfo<Painter<? super Component>>>(getPainters()));
         backgroundPainter.setRenderer(new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
         panel.add(backgroundPainter, cc.rc(7, 4));
         
         label = new JLabel("Font Style:");
         panel.add(label, cc.rc(9, 2));
         
-        fontStyle = new JComboBox(new ListComboBoxModel<DisplayInfo<Integer>>(getFontStyles()));
+        ListComboBoxModel<DisplayInfo<Integer>> model = new ListComboBoxModel<DisplayInfo<Integer>>(getFontStyles());
+        fontStyle = new JComboBox<DisplayInfo<Integer>>(model);
         fontStyle.setRenderer(new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
         panel.add(fontStyle, cc.rc(9, 4));
 
@@ -244,25 +246,33 @@ public class PromptSupportDemo extends AbstractDemo {
         backgroundPainter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PromptSupport.setBackgroundPainter(((DisplayInfo<Painter>) backgroundPainter.getSelectedItem()).getValue(), textField);
+                Object o = backgroundPainter.getSelectedItem();
+                if(o instanceof DisplayInfo) {
+                    DisplayInfo<Painter<? super Component>> di = (DisplayInfo<Painter<? super Component>>)o;
+                    PromptSupport.setBackgroundPainter(di.getValue(), textField);
+                }
             }
         });
         
         fontStyle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PromptSupport.setFontStyle(((DisplayInfo<Integer>) fontStyle.getSelectedItem()).getValue(), textField);
+            	Object o = fontStyle.getSelectedItem();
+            	if(o instanceof DisplayInfo) {
+            		DisplayInfo<Integer> di = (DisplayInfo<Integer>)o;
+                    PromptSupport.setFontStyle(di.getValue(), textField);
+            	}
             }
         });
     }
         
-    private List<DisplayInfo<Painter<?>>> getPainters() {
-        List<DisplayInfo<Painter<?>>> painters = new ArrayList<DisplayInfo<Painter<?>>>();
+    private List<DisplayInfo<Painter<? super Component>>> getPainters() {
+        List<DisplayInfo<Painter<? super Component>>> painters = new ArrayList<DisplayInfo<Painter<? super Component>>>();
         
-        painters.add(new DisplayInfo<Painter<?>>("None", null));
-        painters.add(new DisplayInfo<Painter<?>>("Checkered", new MattePainter(PaintUtils.getCheckerPaint(new Color(0, 0, 0, 0), new Color(33, 33, 128), 20))));
-        painters.add(new DisplayInfo<Painter<?>>("Gradient", new MattePainter(PaintUtils.AERITH, true)));
-        painters.add(new DisplayInfo<Painter<?>>("Star Shape", new ShapePainter(ShapeUtils.generatePolygon(5, 10, 5, true), Color.GREEN)));
+        painters.add(new DisplayInfo<Painter<? super Component>>("None", null));
+        painters.add(new DisplayInfo<Painter<? super Component>>("Checkered", new MattePainter(PaintUtils.getCheckerPaint(new Color(0, 0, 0, 0), new Color(33, 33, 128), 20))));
+        painters.add(new DisplayInfo<Painter<? super Component>>("Gradient", new MattePainter(PaintUtils.AERITH, true)));
+        painters.add(new DisplayInfo<Painter<? super Component>>("Star Shape", new ShapePainter(ShapeUtils.generatePolygon(5, 10, 5, true), Color.GREEN)));
         
         return painters;
     }

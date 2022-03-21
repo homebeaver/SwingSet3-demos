@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
+import javax.swing.Painter;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -76,7 +77,6 @@ import org.jdesktop.swingx.painter.GlossPainter;
 import org.jdesktop.swingx.painter.GlossPainter.GlossPosition;
 import org.jdesktop.swingx.painter.ImagePainter;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.painter.PinstripePainter;
 import org.jdesktop.swingx.painter.RectanglePainter;
 import org.jdesktop.swingx.painter.ShapePainter;
@@ -303,8 +303,8 @@ public class PainterDemo extends AbstractDemo {
 				Object uo = node.getUserObject();
 				LOG.info("selected Leaf user Object:"+uo);
 				DisplayInfo<?> di = (DisplayInfo<?>)uo;
-				if(di.getValue()!=null) {
-					LOG.info("painter:"+di.getValue());
+				if(di.getValue()!=null && di.getValue() instanceof Painter) {
+					LOG.fine("painter:"+di.getValue());
 					Painter<Component> painter = (Painter<Component>)di.getValue();
 					bind(painter);
 				}
