@@ -90,6 +90,13 @@ public class XLabelDemo extends AbstractDemo {
         label = new JXLabel();
         label.setName("contents");
         label.setText(getBundleString("contents.text"));
+        /*
+         * BUG: contents.text=<html> ... ==> die controller funcs 
+         *  - label.setLineWrap
+         *  - label.setTextAlignment
+         * tuen nicht! TODO
+         *  - label.setTextRotation aber schon
+         */
         label.setIcon(getResourceAsIcon(getClass(), "resources/images/exit.png"));
         add(label);
     }
