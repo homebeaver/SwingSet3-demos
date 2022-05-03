@@ -3,8 +3,6 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 */ 
 package org.jdesktop.swingx.demos.autocomplete;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -15,7 +13,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -25,19 +22,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
-//import org.jdesktop.application.Application;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import org.jdesktop.swingx.binding.LabelHandler;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
-//import org.jdesktop.swingxset.DefaultDemoPanel;
-import org.jdesktop.swingx.demos.collapsiblepane.CollapsiblePaneDemo;
-import org.jdesktop.swingx.demos.taskpane.TaskPaneDemo;
 
 import swingset.AbstractDemo;
-
-//import com.sun.swingset3.DemoProperties;
 
 /**
  * A demo for the {@code AutoCompleteDecorator}.
@@ -48,7 +38,7 @@ import swingset.AbstractDemo;
  */
 //@DemoProperties(
 //    value = "AutoComplete Demo",
-//    category = "Functionality",
+//    category = "Functionality", ===> Decorator
 //    description = "Demonstrates AutoComplete, a decorator that automatically completes selections",
 //    sourceFiles = {
 //        "org/jdesktop/swingx/demos/autocomplete/AutoCompleteDemo.java",
@@ -69,20 +59,6 @@ public class AutoCompleteDemo extends AbstractDemo { // extends DefaultDemoPanel
 	/**
      * main method allows us to run as a standalone demo.
      */
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                JFrame frame = new JFrame(AutoCompleteDemo.class.getAnnotation(DemoProperties.class).value());
-//                
-//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                frame.getContentPane().add(new AutoCompleteDemo());
-//                frame.setPreferredSize(new Dimension(800, 600));
-//                frame.pack();
-//                frame.setLocationRelativeTo(null);
-//                frame.setVisible(true);
-//            }
-//        });
-//    }
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
     		static final boolean exitOnClose = true;
@@ -114,20 +90,17 @@ public class AutoCompleteDemo extends AbstractDemo { // extends DefaultDemoPanel
      * Constructor
      */
     public AutoCompleteDemo(Frame frame) {
-//    	super(new BorderLayout());
     	super(new GridBagLayout());
     	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-    	LOG.info("getBundleString for key names...");
+    	//LOG.info("getBundleString for key names...");
     	String namesString = getBundleString("names", "empty");
     	LOG.info("getBundleString for key names="+namesString);
     	names = Collections.unmodifiableList(Arrays.asList(namesString.split(",")));
-//        createTaskPaneDemo();
-//    public AutoCompleteDemo() {
     	createDemo();
-/* bind with props 
+/* in createDemo() bind with props 
 strictComboBoxLabel.text = JComboBox (strict)
 nonStrictComboBoxLabel.text = JComboBox (non-strict)
 strictTextFieldLabel.text = JTextField (strict)
@@ -150,13 +123,7 @@ airportLabel.text = JComboBox w/ multiple strings
 		return emptyControlPane();
 	}
 
-
-//    /**
-//     * {@inheritDoc}
-//     */
-    protected void createDemo() {
-//        setLayout(new GridBagLayout());
-        
+    private void createDemo() {
         GridBagConstraints gridBagConstraints;
 
         strictComboBox = new JComboBox();
@@ -294,25 +261,6 @@ airportLabel.text = JComboBox w/ multiple strings
         gridBagConstraints.insets = new Insets(3, 3, 3, 3);
         add(airportComboBox, gridBagConstraints);
     }
-    
-    protected void injectResources() {
-//        super.injectResources();
-//        
-//        String s = Application.getInstance().getContext().getResourceMap(getClass()).getString("names");
-//        //prevent changes; we're sharing the list among several models
-//        names = Collections.unmodifiableList(Arrays.asList(s.split(",")));
-    }
-    
-//    /**
-//     * {@inheritDoc}
-//     */
-//    protected void bind() {
-//        strictComboBox.setModel(new ListComboBoxModel<String>(names));
-//        nonStrictComboBox.setModel(new ListComboBoxModel<String>(names));
-//        airportComboBox.setModel(new ListComboBoxModel<Airport>(Airports.ALL_AIRPORTS));
-//        //use the combo box model because it's SwingX
-//        list.setModel(new ListComboBoxModel<String>(names));
-//    }
     
     private void decorate() {
         AutoCompleteDecorator.decorate(strictComboBox);

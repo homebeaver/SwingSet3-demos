@@ -60,7 +60,7 @@ public class DemoAction extends AbstractActionExt {
 	    put(Category.CONTROLS, Color.RED); // examples: ButtonDemo/ss2, ss3:JXDatePicker, LoginPaneDemo
 	    put(Category.DATA, Color.BLUE); // examples: TableDemo/ss2, ss3:XTableDemo, XTreeDemo
 	    put(Category.DECORATORS, Color.MAGENTA); // examples: ProgressBarDemo/ss2 ss3:JXBusyLabel
-	    put(Category.FUNCTIONALITY, Color.YELLOW); // examples: ss3:AutoComplete, Decorator ????
+	    put(Category.FUNCTIONALITY, Color.YELLOW); // examples: ss3:SearchDemo
 	    put(Category.GRAPHICS, Color.ORANGE); // examples: ss3:BlendComposite
 	    put(Category.TEXT, Color.GREEN);
 	    put(Category.VISUALIZATION, Color.GRAY);
@@ -222,6 +222,7 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xbutton.XButtonDemo", "JXButton", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlabel.XLabelDemo", "XLabel", 3, Category.CONTROLS));
         	// category DECORATORS:
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.autocomplete.AutoCompleteDemo", "AutoComplete", 3, Category.DECORATORS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.painter.PainterDemo", "Painter", 3, Category.DECORATORS));
         	// category DATA:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlist.XListDemo", "XList", 3, Category.DATA));
