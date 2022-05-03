@@ -80,7 +80,7 @@ public class TaskPaneDemo extends AbstractDemo {
     private JXTaskPane detailsGroup;
     
     /**
-     * HyperlinkDemo Constructor
+     * Constructor
      */
     public TaskPaneDemo(Frame frame) {
     	super(new BorderLayout());
