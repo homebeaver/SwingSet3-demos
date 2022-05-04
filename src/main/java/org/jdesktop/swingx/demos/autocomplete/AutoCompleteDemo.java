@@ -112,6 +112,10 @@ airportLabel.text = JComboBox w/ multiple strings
         strictComboBox.setModel(new ListComboBoxModel<String>(names));
         nonStrictComboBox.setModel(new ListComboBoxModel<String>(names));
         airportComboBox.setModel(new ListComboBoxModel<Airport>(Airports.ALL_AIRPORTS));
+        airportComboBox.addActionListener( ae -> {
+        	LOG.info("selected Airport:" + airportComboBox.getSelectedItem());
+        });
+
         //use the combo box model because it's SwingX
         list.setModel(new ListComboBoxModel<String>(names));
    	
