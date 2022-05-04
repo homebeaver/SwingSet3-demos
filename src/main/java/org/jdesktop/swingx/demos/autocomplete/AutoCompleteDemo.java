@@ -78,11 +78,11 @@ public class AutoCompleteDemo extends AbstractDemo { // extends DefaultDemoPanel
 
     private List<String> names;
     
-    private JComboBox airportComboBox;
-    private JList list;
-    private JComboBox nonStrictComboBox;
+    private JComboBox<Airport> airportComboBox;
+    private JList<String> list;
+    private JComboBox<String> nonStrictComboBox;
     private JTextField nonStrictTextField;
-    private JComboBox strictComboBox;
+    private JComboBox<String> strictComboBox;
     private JTextField strictTextField;
     private JTextField textFieldForList;
     
@@ -126,13 +126,13 @@ airportLabel.text = JComboBox w/ multiple strings
     private void createDemo() {
         GridBagConstraints gridBagConstraints;
 
-        strictComboBox = new JComboBox();
-        nonStrictComboBox = new JComboBox();
+        strictComboBox = new JComboBox<String>();
+        nonStrictComboBox = new JComboBox<String>();
         strictTextField = new JTextField();
         nonStrictTextField = new JTextField();
         textFieldForList = new JTextField();
-        list = new JList();
-        airportComboBox = new JComboBox();
+        list = new JList<String>();
+        airportComboBox = new JComboBox<Airport>();
 
         JLabel strictComboBoxLabel = new JLabel();
         strictComboBoxLabel.setName("strictComboBoxLabel");
@@ -158,7 +158,7 @@ airportLabel.text = JComboBox w/ multiple strings
         gridBagConstraints.insets = new Insets(3, 3, 3, 3);
         add(nonStrictComboBoxLabel, gridBagConstraints);
 
-        nonStrictComboBox.setEditable(true);
+//        nonStrictComboBox.setEditable(true);
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -263,7 +263,12 @@ airportLabel.text = JComboBox w/ multiple strings
     }
     
     private void decorate() {
+    	LOG.info("strictComboBox "+ (strictComboBox.isEditable() ? "is editable" : "is NOT editable"));
+    	// strictComboBox is NOT editable ==> only items from the combo box can be selected :
         AutoCompleteDecorator.decorate(strictComboBox);
+        
+    	// nonStrictComboBox is editable : any items from can be added :
+        nonStrictComboBox.setEditable(true);
         AutoCompleteDecorator.decorate(nonStrictComboBox);
         
         AutoCompleteDecorator.decorate(strictTextField, names, true);
@@ -271,6 +276,9 @@ airportLabel.text = JComboBox w/ multiple strings
         
         AutoCompleteDecorator.decorate(list, textFieldForList);
         
+    	LOG.info("airportComboBox "+ (airportComboBox.isEditable() ? "is editable" : "is NOT editable"));
+    	// strictComboBox is NOT editable ==> only items from the combo box can be selected :
+    	// ObjectToStringConverter used to create an AutoCompleteDocument
         AutoCompleteDecorator.decorate(airportComboBox, new AirportConverter());
     }
 }
