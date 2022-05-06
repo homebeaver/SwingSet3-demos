@@ -269,7 +269,8 @@ airportLabel.text = JComboBox w/ multiple strings
     private void decorate() {
     	LOG.info("strictComboBox "+ (strictComboBox.isEditable() ? "is editable" : "is NOT editable"));
     	// strictComboBox is NOT editable ==> only items from the combo box can be selected :
-        AutoCompleteDecorator.decorate(strictComboBox);
+        AutoCompleteDecorator.decorate(strictComboBox);    
+    	LOG.warning("AutoCompleteDecorator.decorate sets strictComboBox.isEditable flag to "+strictComboBox.isEditable());
         
     	// nonStrictComboBox is editable : any items from can be added :
         nonStrictComboBox.setEditable(true);
