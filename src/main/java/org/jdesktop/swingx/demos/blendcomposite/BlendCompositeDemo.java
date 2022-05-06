@@ -11,8 +11,6 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Dictionary;
@@ -21,21 +19,16 @@ import java.util.logging.Logger;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import org.jdesktop.swingx.JXCollapsiblePane;
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
-import org.jdesktop.swingx.demos.collapsiblepane.CollapsiblePaneDemo;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.graphics.BlendComposite;
 import org.jdesktop.swingx.graphics.BlendComposite.BlendingMode;
 import org.jdesktop.swingx.util.GraphicsUtilities;
@@ -72,18 +65,6 @@ public class BlendCompositeDemo extends AbstractDemo {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                JFrame frame = new JFrame(BlendCompositeDemo.class.getAnnotation(DemoProperties.class).value());
-//                
-//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                frame.getContentPane().add(new BlendCompositeDemo());
-//                frame.setPreferredSize(new Dimension(800, 600));
-//                frame.pack();
-//                frame.setLocationRelativeTo(null);
-//                frame.setVisible(true);
-//            }
-//        });
     	SwingUtilities.invokeLater(new Runnable() {
     		static final boolean exitOnClose = true;
 			@Override
@@ -104,7 +85,8 @@ public class BlendCompositeDemo extends AbstractDemo {
     	});
     }
 
-    private static class CompositeTestPanel extends JPanel {
+    @SuppressWarnings("serial")
+	private static class CompositeTestPanel extends JPanel {
         private BufferedImage image = null;
         private Composite composite = AlphaComposite.Src;
         private BufferedImage imageA;
@@ -183,43 +165,6 @@ public class BlendCompositeDemo extends AbstractDemo {
     	compositeTestPanel = new CompositeTestPanel();
     	compositeTestPanel.setComposite(BlendComposite.Average);
     	add(new JScrollPane(compositeTestPanel));
-
-//    public BlendCompositeDemo() {
-//        setLayout(new BorderLayout());
-//        compositeTestPanel = new CompositeTestPanel();
-//        compositeTestPanel.setComposite(BlendComposite.Average);
-//        add(new JScrollPane(compositeTestPanel));
-//
-//        combo = new JComboBox(BlendComposite.BlendingMode.values());
-//        combo.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                compositeTestPanel.setComposite(
-//                    BlendComposite.getInstance(
-//                        (BlendingMode) combo.getSelectedItem(),
-//                        slider.getValue() / 100.0f
-//                    ));
-//            }
-//        });
-//
-//        slider = new JSlider(0, 100, 100);
-//        slider.addChangeListener(new ChangeListener() {
-//            public void stateChanged(ChangeEvent e) {
-//                BlendComposite blend = (BlendComposite) compositeTestPanel.getComposite();
-//                blend = blend.derive(slider.getValue() / 100.0f);
-//                compositeTestPanel.setComposite(blend);
-//            }
-//        });
-//        Dictionary<Integer, JComponent> labels = new Hashtable<Integer, JComponent>();
-//        //TODO can we fill these labels from the properties file?
-//        labels.put(0, new JLabel("0%"));
-//        labels.put(100, new JLabel("100%"));
-//        slider.setLabelTable(labels);
-//        slider.setPaintLabels(true);
-//
-//        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//        controls.add(combo);
-//        controls.add(slider);
-//        add(controls, BorderLayout.SOUTH);
     }
     
 	@Override
@@ -241,6 +186,15 @@ public class BlendCompositeDemo extends AbstractDemo {
     	});
         Dictionary<Integer, JComponent> labels = new Hashtable<Integer, JComponent>();
         //TODO can we fill these labels from the properties file?
+/*
+controlPanel.opaque=false
+
+trailSlider.opaque=false
+trailSlider.paintLabels=true
+trailSlider.minimum=1
+trailSlider.maximum=20
+trailSlider.value=3
+ */
         labels.put(0, new JLabel("0%"));
         labels.put(100, new JLabel("100%"));
         slider.setLabelTable(labels);
