@@ -49,8 +49,7 @@ import swingset.AbstractDemo;
 //        "org/jdesktop/swingx/demos/autocomplete/resources/AutoCompleteDemo.html"
 //    }
 //)
-//@SuppressWarnings("serial")
-public class AutoCompleteDemo extends AbstractDemo { // extends DefaultDemoPanel {
+public class AutoCompleteDemo extends AbstractDemo {
     
 	private static final long serialVersionUID = -5135820727419304840L;
 	private static final Logger LOG = Logger.getLogger(AutoCompleteDemo.class.getName());
