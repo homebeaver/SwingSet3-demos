@@ -24,7 +24,7 @@ import org.jdesktop.beansbinding.Converter;
  *
  * @author Karl George Schaefer
  */
-//No speed testing performed on this class, but I bet it's slow
+//No speed testing performed on this class, but I bet it's slow, was used in BusyLabelDemo
 @SuppressWarnings("unchecked")
 public class FactorConverter<N extends Number> extends Converter<N, N> {
     private N factor;

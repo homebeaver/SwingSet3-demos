@@ -206,12 +206,12 @@ public class DemoAction extends AbstractActionExt {
     public static ArrayList<DemoAction> getSS3Actions() {
     	if(ss3Actions==null) {
     		ss3Actions = new ArrayList<DemoAction>();
-        	// category FUNCTIONALITY:
+        	// category FUNCTIONALITY 4/5 (Autocomplete ist DECORATOR):
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.search.SearchDemo", "Search", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighter.HighlighterDemo", "Highlighter", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighterext.HighlighterExtDemo", "Highlighter (extended)", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.prompt.PromptSupportDemo", "PromptSupport", 3, Category.FUNCTIONALITY));
-        	// category CONTROLS:
+        	// category CONTROLS 8/10: TODO: ErrorPane ImageView
 // TODO       	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.multithumbslider.MultiThumbSliderDemo", "MultiThumbSlider", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.hyperlink.HyperlinkDemo", "Hyperlink", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.loginpane.LoginToDBPaneDemo", "LoginToDBPane", 3, Category.CONTROLS));
@@ -221,20 +221,22 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthviewext.MonthViewExtDemo", "JXMonthView (extended)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xbutton.XButtonDemo", "JXButton", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlabel.XLabelDemo", "XLabel", 3, Category.CONTROLS));
-        	// category DECORATORS:
+        	// category DECORATORS 3/3: TODO JXTitledSeparator
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.busylabel.BusyLabelDemo", "BusyLabel", 3, Category.DECORATORS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.autocomplete.AutoCompleteDemo", "AutoComplete", 3, Category.DECORATORS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.painter.PainterDemo", "Painter", 3, Category.DECORATORS));
-        	// category DATA:
+        	// category DATA 4/4:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlist.XListDemo", "XList", 3, Category.DATA));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.table.XTableDemo", "XTable", 3, Category.DATA));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.tree.XTreeDemo", "XTree", 3, Category.DATA));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.treetable.TreeTableDemo", "XTreeTable",  3, Category.DATA));
-        	// category CONTAINERS:
+        	// category CONTAINERS 3/6: TODO JXPanel JXTipOfTheDay JXTitlePanel
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.collapsiblepane.CollapsiblePaneDemo", "JXCollapsiblePane", 3, Category.CONTAINERS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.taskpane.TaskPaneDemo", "TaskPane", 3, Category.CONTAINERS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.multisplitpane.MultiSplitPaneDemo", "JXMultiSplitPane", 3, Category.CONTAINERS));
-        	// category GRAPHICS:
+        	// category GRAPHICS 1/1:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.blendcomposite.BlendCompositeDemo", "BlendComposite", 3, Category.GRAPHICS));
+        	// TODO JXGraph
     	}
     	return ss3Actions;
     }
