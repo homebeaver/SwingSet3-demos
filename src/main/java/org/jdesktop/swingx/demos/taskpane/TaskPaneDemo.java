@@ -127,7 +127,7 @@ help.Action.shortDescription=The place where you can't find anything
 
         AbstractActionExt help = new TaskAction(getBundleString("help.Action.text"), getResourceAsIcon(getClass(), "resources/images/tasks-question.png"));
         help.setActionCommand("help");
-        exploreInternet.setShortDescription(getBundleString("help.Action.shortDescription"));
+        help.setShortDescription(getBundleString("help.Action.shortDescription"));
         seeAlsoGroup.add(help);
     }
 
@@ -147,7 +147,9 @@ help.Action.shortDescription=The place where you can't find anything
         systemGroup.setTitle(getBundleString("systemGroup.title", systemGroup));
         systemGroup.setIcon(getResourceAsIcon(getClass(), "resources/images/tasks-email.png"));
         systemGroup.setToolTipText(getBundleString("systemGroup.toolTipText"));
+        // use Boolean.valueOf or Boolean.parseBoolean:
         systemGroup.setSpecial(Boolean.valueOf(getBundleString("systemGroup.special")));
+        LOG.info("systemGroup.Special="+systemGroup.isSpecial());
         tpc.add(systemGroup);
 
         // "Office" GROUP
