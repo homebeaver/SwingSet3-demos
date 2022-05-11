@@ -3,42 +3,31 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 */ 
 package org.jdesktop.swingx.demos.busylabel;
 
-import static org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.GradientPaint;
+import java.awt.geom.Point2D;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.VerticalLayout;
-import org.jdesktop.swingx.binding.FactorConverter;
-import org.jdesktop.swingx.graphics.BlendComposite;
-import org.jdesktop.swingx.graphics.BlendComposite.BlendingMode;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.util.PaintUtils;
 
 import swingset.AbstractDemo;
-
-//import com.sun.swingset3.DemoProperties;
 
 /**
  * A demo for the {@code JXBusyLabel}.
@@ -77,18 +66,6 @@ public class BusyLabelDemo extends AbstractDemo {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-//        SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//                JFrame frame = new JFrame(BusyLabelDemo.class.getAnnotation(DemoProperties.class).value());
-//                
-//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                frame.getContentPane().add(new BusyLabelDemo());
-//                frame.setPreferredSize(new Dimension(800, 600));
-//                frame.pack();
-//                frame.setLocationRelativeTo(null);
-//                frame.setVisible(true);
-//            }
-//        });
     	SwingUtilities.invokeLater(new Runnable() {
     		static final boolean exitOnClose = true;
 			@Override
@@ -118,27 +95,23 @@ public class BusyLabelDemo extends AbstractDemo {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
+    	// use GradientPaint for Background:
     	setBackgroundPainter(new MattePainter(PaintUtils.BLUE_EXPERIENCE, true));
 
-        //TODO uncomment when SwingX #999 is fixed
-//      label = new JXBusyLabel(); // default 26 by 26 points
-    	label = new JXBusyLabel(new Dimension(50, 50));
+        // uncomment when SwingX #999 ? is fixed:
+//    	label = new JXBusyLabel(); // default 26 by 26 points
+    	label = new JXBusyLabel(new Dimension(50, 50)); // looks smarter
     	label.setName("busyLabel");
-    	label.getBusyPainter().setHighlightColor(new Color(44, 61, 146).darker());
-    	label.getBusyPainter().setBaseColor(new Color(168, 204, 241).brighter());
+    	LOG.info("BLUE_EXPERIENCE.Color1:"+PaintUtils.BLUE_EXPERIENCE.getColor1()); // [r=168,g=204,b=241]
+    	LOG.info("BLUE_EXPERIENCE.Color2:"+PaintUtils.BLUE_EXPERIENCE.getColor2()); // [r=44,g=61,b=146]
+    	LOG.info("BaseColor:"+label.getBusyPainter().getBaseColor()); // [r=192,g=192,b=192]
+    	LOG.info("HighlightColor:"+label.getBusyPainter().getHighlightColor()); // [r=51,g=51,b=51]
+    	label.getBusyPainter().setHighlightColor(PaintUtils.BLUE_EXPERIENCE.getColor2().darker());
+    	label.getBusyPainter().setBaseColor(PaintUtils.BLUE_EXPERIENCE.getColor1().brighter());
+//    	label.getBusyPainter().setHighlightColor(label.getBusyPainter().getHighlightColor().darker());
+//    	label.getBusyPainter().setBaseColor(label.getBusyPainter().getBaseColor().brighter());
     	label.setBusy(true);
-//    	label.setDelay(ABORT);.getBusyPainter().setDe.setPoints(pointsSlider.getValue());
-    	add(label, BorderLayout.EAST);
-//    	add(label);
-
-//    public BusyLabelDemo() {
-//        super(new BorderLayout());
-//        
-//        createBusyLabelDemo();
-//        
-//        Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(this);
-//        
-//        bind();
+    	add(label, BorderLayout.EAST); // EAST, damit controls den label nicht überdeckt
     }
 
 	@Override
@@ -164,7 +137,6 @@ speedSlider.value=41
         //TODO can we fill these labels from the properties file?
         labels.put(speedSlider.getMinimum(), new JLabel("Faster"));
         labels.put(speedSlider.getMaximum(), new JLabel("Slower"));
-//        speedSlider.setPaintLabels( true );
         speedSlider.setLabelTable(labels);
         speedSlider.addChangeListener( ce -> {
         	LOG.info("BusyPainter.Delay:"+speedSlider.getValue());
@@ -199,75 +171,30 @@ pointsSlider.value=12
 
         trailSlider = new JSlider();
         trailSlider.setName("trailSlider");
+/* expected props:
+trailSlider.opaque=false
+trailSlider.paintLabels=true
+trailSlider.minimum=1
+trailSlider.maximum=20
+trailSlider.value=3
+ */
+        trailSlider.setOpaque(Boolean.parseBoolean(getBundleString("trailSlider.opaque")));
+        trailSlider.setPaintLabels(Boolean.parseBoolean(getBundleString("trailSlider.paintLabels")));
+        trailSlider.setMinimum(Integer.parseInt(getBundleString("trailSlider.minimum")));
+        trailSlider.setMaximum(Integer.parseInt(getBundleString("trailSlider.maximum")));
+        trailSlider.setValue(Integer.parseInt(getBundleString("trailSlider.value")));
         labels = new Hashtable<Integer, JComponent>();
         //TODO can we fill these labels from the properties file?
-        labels.put(1, new JLabel("Short Trail"));
-        labels.put(20, new JLabel("Long Trail"));
+        labels.put(trailSlider.getMinimum(), new JLabel("Short Trail"));
+        labels.put(trailSlider.getMaximum(), new JLabel("Long Trail"));
         trailSlider.setLabelTable(labels);
+        trailSlider.addChangeListener( ce -> {
+        	LOG.info("BusyPainter.TrailLength:"+trailSlider.getValue());
+        	label.getBusyPainter().setTrailLength(trailSlider.getValue());
+    	});
         controls.add(trailSlider);
 
         return controls;
     }
 
-//    private void createBusyLabelDemo() {
-//        setBackgroundPainter(new MattePainter(PaintUtils.BLUE_EXPERIENCE, true));
-//        
-//        //TODO uncomment when SwingX #999 is fixed
-////        label = new JXBusyLabel();
-//        label = new JXBusyLabel(new Dimension(50, 50));
-//        label.setName("busyLabel");
-//        label.getBusyPainter().setHighlightColor(new Color(44, 61, 146).darker());
-//        label.getBusyPainter().setBaseColor(new Color(168, 204, 241).brighter());
-//        label.setBusy(true);
-//        add(label, BorderLayout.NORTH);
-//        
-//        JPanel control = new JPanel(new VerticalLayout());
-//        control.setName("controlPanel");
-//        
-//        speedSlider = new JSlider();
-//        speedSlider.setName("speedSlider");
-//        Dictionary<Integer, JComponent> labels = new Hashtable<Integer, JComponent>();
-//        //TODO can we fill these labels from the properties file?
-//        labels.put(1, new JLabel("Faster"));
-//        labels.put(50, new JLabel("Slower"));
-//        speedSlider.setLabelTable(labels);
-//        control.add(speedSlider);
-//        
-//        pointsSlider = new JSlider();
-//        pointsSlider.setName("pointsSlider");
-//        labels = new Hashtable<Integer, JComponent>();
-//        //TODO can we fill these labels from the properties file?
-//        labels.put(1, new JLabel("Fewer Points"));
-//        labels.put(50, new JLabel("More Points"));
-//        pointsSlider.setLabelTable(labels);
-//        control.add(pointsSlider);
-//        
-//        trailSlider = new JSlider();
-//        trailSlider.setName("trailSlider");
-//        labels = new Hashtable<Integer, JComponent>();
-//        //TODO can we fill these labels from the properties file?
-//        labels.put(1, new JLabel("Short Trail"));
-//        labels.put(20, new JLabel("Long Trail"));
-//        trailSlider.setLabelTable(labels);
-//        control.add(trailSlider);
-//
-//        add(control);
-//    }
-    
-    @SuppressWarnings("unchecked")
-    private void bind() {
-        Binding b = Bindings.createAutoBinding(READ,
-                speedSlider, BeanProperty.create("value"),
-                label, BeanProperty.create("delay"));
-        b.setConverter(new FactorConverter<Integer>(10));
-        b.bind();
-        
-//        Bindings.createAutoBinding(READ,
-//                pointsSlider, BeanProperty.create("value"),
-//                label, ELProperty.create("${busyPainter.points}")).bind();
-//        
-//        Bindings.createAutoBinding(READ,
-//                trailSlider, BeanProperty.create("value"),
-//                label, ELProperty.create("${busyPainter.trailLength}")).bind();
-    }
 }
