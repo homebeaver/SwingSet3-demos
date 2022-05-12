@@ -136,7 +136,11 @@ public class BusyLabelDemo extends AbstractDemo implements ChangeListener {
     	// more complicated example:
     	JXBusyLabel mcLabel = new JXBusyLabel(new Dimension(100,84));
     	BusyPainter painter = new BusyPainter(
-    			new Rectangle2D.Float(0, 0, 13.500001f, 1),  // point shape
+//    			new Rectangle2D.Float(0, 0, 13.500001f, 1),  // point shape, create using awt.geom or ShapeFactory:
+    			ShapeFactory.createEllipticalPoint(13, 10),
+//    			ShapeFactory.createLinearPoint(13, 10),
+//    			ShapeFactory.createSquarePoint(13, 10),
+//    			ShapeFactory.createRectangularPoint(13, 10),
     			new RoundRectangle2D.Float(12.5f, 12.5f, 59.0f, 59.0f, 10, 10)  // trajectory 
     			);
     	painter.setTrailLength(5);
