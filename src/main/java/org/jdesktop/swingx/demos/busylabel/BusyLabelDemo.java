@@ -4,16 +4,11 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package org.jdesktop.swingx.demos.busylabel;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GradientPaint;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
-
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.logging.Logger;
@@ -31,13 +26,14 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.VerticalLayout;
-import org.jdesktop.swingx.icon.EmptyIcon;
 import org.jdesktop.swingx.painter.BusyPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.util.PaintUtils;
@@ -62,9 +58,7 @@ import swingset.AbstractDemo;
 //        "org/jdesktop/swingx/demos/busylabel/resources/images/BusyLabelDemo.png"
 //    }
 //)
-//TODO demo incomplete
-//@SuppressWarnings("serial")
-public class BusyLabelDemo extends AbstractDemo {
+public class BusyLabelDemo extends AbstractDemo implements ChangeListener {
 	
 	private static final long serialVersionUID = 7645879039288285071L;
 	private static final Logger LOG = Logger.getLogger(BusyLabelDemo.class.getName());
@@ -74,6 +68,7 @@ public class BusyLabelDemo extends AbstractDemo {
 	private static final String SIZE_SLIDER = "sizeSlider";
 	
 	private JXBusyLabel label;
+//	private boolean changeSize = false;
     
     // Controller:
     private JSlider sizeSlider;   
@@ -173,28 +168,16 @@ public class BusyLabelDemo extends AbstractDemo {
         sizeSlider.setOpaque(Boolean.parseBoolean(getBundleString(SIZE_SLIDER+".opaque", Boolean.toString(false))));
         sizeSlider.setPaintLabels(Boolean.valueOf(getBundleString(SIZE_SLIDER+".paintLabels", Boolean.toString(true))));
         sizeSlider.setMinimum(Integer.parseInt(getBundleString(SIZE_SLIDER+".minimum", "10")));
-        sizeSlider.setMaximum(Integer.parseInt(getBundleString(SIZE_SLIDER+".maximum", "100")));
-        sizeSlider.setValue(Integer.parseInt(getBundleString(SIZE_SLIDER+".value", "26")));
+        sizeSlider.setMaximum(Integer.parseInt(getBundleString(SIZE_SLIDER+".maximum", "200")));
+        sizeSlider.setValue(Integer.parseInt(getBundleString(SIZE_SLIDER+".value", "50")));
         Dictionary<Integer, JComponent> labels = new Hashtable<Integer, JComponent>();
         String labelTable = getBundleString(SIZE_SLIDER+".labelTable");
         LOG.info("sizeSlider.labelTable:"+labelTable);
         labels.put(sizeSlider.getMinimum(), new JLabel("Smaller"));
         labels.put(sizeSlider.getMaximum(), new JLabel("Bigger"));
         sizeSlider.setLabelTable(labels);
-        sizeSlider.addChangeListener( ce -> {
-        	LOG.info("BusyPainter.Size aka Dimension:"+sizeSlider.getValue());
-//        	label.setBusy(false);
-//        	label.setPreferredSize(new Dimension(sizeSlider.getValue(),sizeSlider.getValue()));
-//        	label.setBusy(true);
-// Das funktioniert so nicht! ==> ChangeListener
-        	remove(label);
-        	this.repaint(getVisibleRect());
-        	label = new JXBusyLabel(new Dimension(sizeSlider.getValue(),sizeSlider.getValue()));
-        	add(label, BorderLayout.WEST);
-        	label.setBusy(true);
-        	this.repaint(getVisibleRect());
-    	});
-//        controls.add(sizeSlider); // TODO zuerst muss size dynamisch änderbar sein
+        sizeSlider.addChangeListener(this); // see method stateChanged
+        controls.add(sizeSlider);
 
         speedSlider = new JSlider();
         speedSlider.setName("speedSlider");
@@ -278,6 +261,25 @@ trailSlider.value=3
 
         return controls;
     }
+
+    /**
+     * implements ChangeListener
+     */
+	@Override
+	public void stateChanged(ChangeEvent ce) {
+//		if(changeSize) return;
+		synchronized (this) {
+//			changeSize = true;
+			int size = sizeSlider.getValue();
+			LOG.info("BusyPainter.Size aka Dimension:"+size + ", ChangeEvent:"+ce);
+			remove(label);
+			label = new JXBusyLabel(new Dimension(size, size));
+			add(label, BorderLayout.EAST);
+			label.setBusy(true);
+			SwingUtilities.updateComponentTreeUI(this);
+//			changeSize = false;
+		}
+	}
 
     // wie in ButtonDemo:
     Border loweredBorder = new CompoundBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED), new EmptyBorder(5,5,5,5));
