@@ -206,7 +206,7 @@ public class DemoAction extends AbstractActionExt {
     public static ArrayList<DemoAction> getSS3Actions() {
     	if(ss3Actions==null) {
     		ss3Actions = new ArrayList<DemoAction>();
-        	// category FUNCTIONALITY 4/5 (Autocomplete ist DECORATOR):
+        	// category FUNCTIONALITY 4/5 (Autocomplete is DECORATOR):
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.search.SearchDemo", "Search", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighter.HighlighterDemo", "Highlighter", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighterext.HighlighterExtDemo", "Highlighter (extended)", 3, Category.FUNCTIONALITY));
@@ -221,19 +221,21 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthviewext.MonthViewExtDemo", "JXMonthView (extended)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xbutton.XButtonDemo", "JXButton", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlabel.XLabelDemo", "XLabel", 3, Category.CONTROLS));
-        	// category DECORATORS 3/3: TODO JXTitledSeparator
-        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.busylabel.BusyLabelDemo", "BusyLabel", 3, Category.DECORATORS));
+        	// category DECORATORS 4/3:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.autocomplete.AutoCompleteDemo", "AutoComplete", 3, Category.DECORATORS));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.busylabel.BusyLabelDemo", "BusyLabel", 3, Category.DECORATORS));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.titledseparator.TitledSeparatorDemo", "JXTitledSeparator", 3, Category.DECORATORS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.painter.PainterDemo", "Painter", 3, Category.DECORATORS));
         	// category DATA 4/4:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlist.XListDemo", "XList", 3, Category.DATA));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.table.XTableDemo", "XTable", 3, Category.DATA));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.tree.XTreeDemo", "XTree", 3, Category.DATA));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.treetable.TreeTableDemo", "XTreeTable",  3, Category.DATA));
-        	// category CONTAINERS 3/6: TODO JXPanel JXTipOfTheDay JXTitlePanel
+        	// category CONTAINERS 4/6: TODO JXPanel JXTipOfTheDay 
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.collapsiblepane.CollapsiblePaneDemo", "JXCollapsiblePane", 3, Category.CONTAINERS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.taskpane.TaskPaneDemo", "TaskPane", 3, Category.CONTAINERS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.multisplitpane.MultiSplitPaneDemo", "JXMultiSplitPane", 3, Category.CONTAINERS));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.titledpanel.TitledPanelDemo", "JXTitledPanel", 3, Category.CONTAINERS));
         	// category GRAPHICS 1/1:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.blendcomposite.BlendCompositeDemo", "BlendComposite", 3, Category.GRAPHICS));
         	// TODO JXGraph
