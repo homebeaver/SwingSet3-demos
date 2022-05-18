@@ -5,6 +5,7 @@ package org.jdesktop.swingx.demos.titledpanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
@@ -14,18 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.MutableComboBoxModel;
 import javax.swing.Painter;
 import javax.swing.SwingUtilities;
@@ -33,36 +30,22 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.plaf.FontUIResource;
 
-//import org.jdesktop.application.Action;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTitledPanel;
 import org.jdesktop.swingx.JXTitledSeparator;
-import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.binding.DisplayInfo;
-import org.jdesktop.swingx.binding.DisplayInfoConverter;
 import org.jdesktop.swingx.binding.LabelHandler;
-import org.jdesktop.swingx.demos.autocomplete.AutoCompleteDemo;
-import org.jdesktop.swingx.demos.tree.XTreeDemo;
 import org.jdesktop.swingx.icon.ArrowIcon;
 import org.jdesktop.swingx.painter.CheckerboardPainter;
 import org.jdesktop.swingx.plaf.PainterUIResource;
-import org.jdesktop.swingx.renderer.DefaultListRenderer;
-//import org.jdesktop.swingxset.util.DemoUtils;
-import org.jdesktop.swingxset.util.DisplayValues;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.factories.Borders;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-//import com.sun.swingset3.DemoProperties;
-//import com.sun.swingset3.utilities.ArrowIcon;
 
 import swingset.AbstractDemo;
 
@@ -79,7 +62,6 @@ import swingset.AbstractDemo;
 //        "org/jdesktop/swingx/demos/titledpanel/TitledPanelDemo.java",
 //        "org/jdesktop/swingx/demos/titledpanel/resources/TitledPanelDemo.properties"
 //        })
-//@SuppressWarnings("serial")
 public class TitledPanelDemo extends AbstractDemo {
 	
     // PENDING JW: removed extending DefaultDemoPanel because fell into the pit
@@ -124,7 +106,7 @@ public class TitledPanelDemo extends AbstractDemo {
     private JXTitledSeparator controlSeparator;
     private JTextField titleField;
     private JComboBox<DisplayInfo<Font>> fontChooserCombo;
-    private JComboBox backgroundChooserCombo;
+    private JComboBox<DisplayInfo<Painter<?>>> backgroundChooserCombo;
     private JCheckBox visibleBox;
     
     /**
@@ -136,7 +118,10 @@ public class TitledPanelDemo extends AbstractDemo {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-//        initComponents():
+    	/* initComponents
+    	 * the only component is a titledPanel with 3 cards.
+    	 * titledPanel is decorated left and right with buttons for card navigation
+    	 */
         titledPanel = new JXTitledPanel() {
 
             /** 
@@ -217,7 +202,6 @@ public class TitledPanelDemo extends AbstractDemo {
         return thirdCard;
     }
 
-
     @Override
 	public JXPanel getControlPane() {
         JXPanel control = new JXPanel();
@@ -272,20 +256,28 @@ public class TitledPanelDemo extends AbstractDemo {
         });        
         currentRow += 2;
         
-        backgroundChooserCombo = new JComboBox();
-        backgroundChooserCombo.setName("backgroundChooserCombo");
-        
+        backgroundChooserCombo = new JComboBox<DisplayInfo<Painter<?>>>();
+        backgroundChooserCombo.setName("backgroundChooserCombo");       
         JLabel backgroundLabel = builder.addLabel("", cl.xywh(labelColumn, currentRow, 1, 1),
                 backgroundChooserCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
-        currentRow += 2;
         backgroundLabel.setName("backgroundChooserLabel");
+        backgroundLabel.setText(getBundleString("backgroundChooserLabel.text", backgroundLabel));
         LabelHandler.bindLabelFor(backgroundLabel, backgroundChooserCombo);
+        backgroundChooserCombo.addActionListener(ae -> {
+        	LOG.info("actionEvent:"+ae + " backgroundChooserCombo.SelectedIndex="+backgroundChooserCombo.getSelectedIndex());
+        	DisplayInfo<Painter<Component>> item = (DisplayInfo<Painter<Component>>)backgroundChooserCombo.getSelectedItem();
+        	LOG.info(" backgroundChooserCombo.SelectedItem (Painter)="+item.getValue());
+        	titledPanel.setTitlePainter(item.getValue());
+        });        
+        currentRow += 2;
         
         updateUIProperties();
         
         visibleBox = new JCheckBox(); // JCheckBox extends JToggleButton, JToggleButton extends AbstractButton
+        visibleBox.setSelected(true);
+        setNavigatorVisible(visibleBox.isSelected());
         visibleBox.setName("visibleBox");
-        visibleBox.setText(getBundleString("visibleBox.text"));
+        visibleBox.setText(getBundleString("toggleNavigatorVisible.Action.text")); //"visibleBox.text"));
         visibleBox.addActionListener( ae -> {
         	LOG.info("visibleBox.isSelected/setNavigatorVisible="+visibleBox.isSelected());
         	setNavigatorVisible(visibleBox.isSelected());
@@ -297,119 +289,24 @@ public class TitledPanelDemo extends AbstractDemo {
 		return control;
 	}
 
-//    private void initComponents() {
-//
-//        setLayout(new BorderLayout());
-//        titledPanel = new JXTitledPanel() {
-//
-//            /** 
-//             * @inherited <p>
-//             * 
-//             * Overridden to adjust to size requirements of invisible cards.
-//             */
-//            @Override
-//            public Dimension getPreferredSize() {
-//                Dimension dim = super.getPreferredSize();
-//                Dimension child = getContentContainer().getPreferredSize();
-//                int width = child.width;
-//                for (JComponent card : cards) {
-//                    if (card != getContentContainer()) {
-//                        Dimension cardDim = card.getPreferredSize();
-//                        width = Math.max(width, cardDim.width);
-//                    }
-//                }
-//                if (width > child.width) {
-//                    dim.width += width - child.width;
-//                }
-//                return dim;
-//            }
-//            
-//        };
-//        titledPanel.setName("titledPanel");
-//
-//        prevButton = new JButton();
-//        prevButton.setName("previousButton");
-//        nextButton = new JButton(); 
-//        nextButton.setName("nextButton");
-//
-//        
-//        JComponent firstCard = createFirstCard();
-//        firstCard.setName("firstCard");
-//        
-//        titledPanel.setContentContainer(firstCard);
-//        
-//        JComponent secondCard = createSecondCard();
-//        secondCard.setName("secondCard");
-//        
-//        JComponent thirdCard = createThirdCard();
-//        thirdCard.setName("thirdCard");
-//        
-//        cards = new ArrayList<JComponent>();
-//        cards.add(firstCard);
-//        cards.add(secondCard);
-//        cards.add(thirdCard);
-//        
-//        add(titledPanel);
-//        // panel4 = new JXTitledPanel("Image");
-//        // //TODO add image
-//        // add(panel4);
-//    }
-
-//-------------------- Actions
-    
-    
-//    @Action (enabledProperty = "trailing")
-    public void previousCard() {
-        if (!isTrailing()) return;
-        boolean oldTrailing = isTrailing();
-        boolean oldLeading = isLeading();
-        // <snip> JXTitledPanel use decoration components
-        // replace content with previous
-        int card = cards.indexOf(titledPanel.getContentContainer());
-        titledPanel.setContentContainer(cards.get(card - 1));
-        // </snip>
-        titledPanel.revalidate();
-        titledPanel.repaint();
-        firePropertyChange("trailing", oldTrailing, isTrailing());
-        firePropertyChange("leading", oldLeading, isLeading());
-    }
-    
-//    @Action (enabledProperty = "leading")
-    public void nextCard() {
-        if (!isLeading()) return;
-        boolean oldTrailing = isTrailing();
-        boolean oldLeading = isLeading();
-        // <snip> JXTitledPanel use decoration components
-        // replace content with next
-        int card = cards.indexOf(titledPanel.getContentContainer());
-        titledPanel.setContentContainer(cards.get(card + 1));
-        // </snip>
-
-        titledPanel.revalidate();
-        titledPanel.repaint();
-        firePropertyChange("leading", oldLeading, isLeading());
-        firePropertyChange("trailing", oldTrailing, isTrailing());
-        
-    }
-
-    public boolean isTrailing() {
+    private boolean isTrailing() {
         return titledPanel.getContentContainer() != cards.get(0);
     }
     
-    public boolean isLeading() {
+    private boolean isLeading() {
         return titledPanel.getContentContainer() != cards.get(cards.size() - 1);
     }
     
 //    @Action (selectedProperty = "navigatorVisible") 
-    public void toggleNavigatorVisible() {
-        // do nothing - action happens in setter of selectedProperty
-    }
+//    public void toggleNavigatorVisible() {
+//        // do nothing - action happens in setter of selectedProperty
+//    }
     
-    public boolean isNavigatorVisible() {
+    private boolean isNavigatorVisible() {
         return titledPanel.getLeftDecoration() != null;
     }
     
-    public void setNavigatorVisible(boolean visible) {
+    private void setNavigatorVisible(boolean visible) {
         // <snip> JXTitledPanel configure title properties
         // Show/Hide left and right decoration options
         if (isNavigatorVisible() == visible) return;
@@ -438,12 +335,12 @@ public class TitledPanelDemo extends AbstractDemo {
         return model;
     }
     
-    private ComboBoxModel createBackgroundModel() {
-        MutableComboBoxModel model = new DefaultComboBoxModel();
+    private ComboBoxModel<DisplayInfo<Painter<?>>> createBackgroundModel() {
+        MutableComboBoxModel<DisplayInfo<Painter<?>>> model = new DefaultComboBoxModel<DisplayInfo<Painter<?>>>();
         // <snip> JXTitledPanel configure title properties
         // Background Painter options 
-        Painter<?> baseFont =  (Painter<?>) UIManager.get("JXTitledPanel.titlePainter");
-        model.addElement(new DisplayInfo<Painter<?>>("Default ", baseFont));
+        Painter<?> bgPainter =  (Painter<?>) UIManager.get("JXTitledPanel.titlePainter");
+        model.addElement(new DisplayInfo<Painter<?>>("Default ", bgPainter));
         model.addElement(new DisplayInfo<Painter<?>>("Checkerboard", 
                 new PainterUIResource<JComponent>(new CheckerboardPainter())));
         // PENDING JW: add more options - image, gradient, animated... 
@@ -451,7 +348,7 @@ public class TitledPanelDemo extends AbstractDemo {
         return model;
     }
     
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
 //    private void bind() {
 //        // set actions
 //        prevButton.setAction(DemoUtils.getAction(this, "previousCard"));
@@ -512,17 +409,6 @@ public class TitledPanelDemo extends AbstractDemo {
     
 //------------------- init view
     
-//    private void configureComponents() {
-//        // JW: default bevel border is ugly - should change?
-//        titledPanel.setBorder(BorderFactory.createEmptyBorder());
-//        
-//        // demo specifics
-//        DemoUtils.setSnippet("JXTitledPanel use decoration components", titledPanel);
-//        DemoUtils.setSnippet("JXTitledPanel configure title properties", 
-//                titleField, fontChooserCombo, backgroundChooserCombo, visibleBox);
-//    }
-
-
 //    private JXPanel createFirstCard() {
 //        JXPanel control = new JXPanel();
 //        FormLayout formLayout = new FormLayout(
