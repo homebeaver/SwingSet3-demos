@@ -9,6 +9,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GradientPaint;
+import java.awt.Paint;
+import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.binding.LabelHandler;
 import org.jdesktop.swingx.icon.ArrowIcon;
 import org.jdesktop.swingx.painter.CheckerboardPainter;
+import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.plaf.PainterUIResource;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -97,7 +101,21 @@ public class TitledPanelDemo extends AbstractDemo {
     	});
     }
 
-    private JXTitledPanel titledPanel; // with 3 cards, the first holds a controller
+	/**
+	 * A special type of Panel that has a Title section and a Content section.
+	 * <br>
+	 * The following properties can be set with the UIManager to change the look and feel of the JXTitledPanel:
+	 * <ul>
+	 * <li>JXTitledPanel.titleForeground</li>
+	 * <li>JXTitledPanel.titleBackground</li>
+	 * <li>JXTitledPanel.titleFont</li>
+	 * <li>JXTitledPanel.titlePainter</li>
+	 * <li>JXTitledPanel.captionInsets</li>
+	 * <li>JXTitledPanel.rightDecorationInsets</li>
+	 * <li>JXTitledPanel.leftDecorationInsets</li>
+	 * </ul>
+	 */
+	private JXTitledPanel titledPanel; // with 3 cards, the first holds a controller
     private List<JComponent> cards;
     private JButton prevButton;
     private JButton nextButton;
@@ -174,8 +192,6 @@ public class TitledPanelDemo extends AbstractDemo {
         
         add(titledPanel);
 
-//        configureComponents();
-//        DemoUtils.injectResources(this);
 //        bind();
         applyNavigationDefaults();
         installUIListener();
@@ -221,6 +237,7 @@ public class TitledPanelDemo extends AbstractDemo {
         
         controlSeparator = new JXTitledSeparator();
         controlSeparator.setName("controlSeparator");
+        controlSeparator.setTitle(getBundleString("controlSeparator.title"));
         builder.add(controlSeparator, cc.xywh(1, 1, 4, 1));
         
         int labelColumn = 2;
@@ -236,7 +253,7 @@ public class TitledPanelDemo extends AbstractDemo {
 //        LabelHandler.bindLabelFor(titleLabel, titleField); // calls titleLabel.setLabelFor(titleField);
 //        titleLabel.setLabelFor(titleField);
         titleField.addActionListener(ae -> {
-        	LOG.info("actionEvent:"+ae + " titleField.Text="+titleField.getText());
+//        	LOG.info("actionEvent:"+ae + " titleField.Text="+titleField.getText());
         	titledPanel.setTitle(titleField.getText());
         });        
         currentRow += 2;
@@ -249,7 +266,7 @@ public class TitledPanelDemo extends AbstractDemo {
         fontLabel.setText(getBundleString("fontChooserLabel.text", fontLabel));
         LabelHandler.bindLabelFor(fontLabel, fontChooserCombo);
         fontChooserCombo.addActionListener(ae -> {
-        	LOG.info("actionEvent:"+ae + " fontChooserCombo.SelectedIndex="+fontChooserCombo.getSelectedIndex());
+//        	LOG.info("actionEvent:"+ae + " fontChooserCombo.SelectedIndex="+fontChooserCombo.getSelectedIndex());
         	DisplayInfo<Font> item = (DisplayInfo<Font>)fontChooserCombo.getSelectedItem();
         	LOG.info(" fontChooserCombo.SelectedItem (Font)="+item.getValue());
         	titledPanel.setTitleFont(item.getValue());
@@ -264,7 +281,7 @@ public class TitledPanelDemo extends AbstractDemo {
         backgroundLabel.setText(getBundleString("backgroundChooserLabel.text", backgroundLabel));
         LabelHandler.bindLabelFor(backgroundLabel, backgroundChooserCombo);
         backgroundChooserCombo.addActionListener(ae -> {
-        	LOG.info("actionEvent:"+ae + " backgroundChooserCombo.SelectedIndex="+backgroundChooserCombo.getSelectedIndex());
+//        	LOG.info("actionEvent:"+ae + " backgroundChooserCombo.SelectedIndex="+backgroundChooserCombo.getSelectedIndex());
         	DisplayInfo<Painter<Component>> item = (DisplayInfo<Painter<Component>>)backgroundChooserCombo.getSelectedItem();
         	LOG.info(" backgroundChooserCombo.SelectedItem (Painter)="+item.getValue());
         	titledPanel.setTitlePainter(item.getValue());
@@ -277,7 +294,7 @@ public class TitledPanelDemo extends AbstractDemo {
         visibleBox.setSelected(true);
         setNavigatorVisible(visibleBox.isSelected());
         visibleBox.setName("visibleBox");
-        visibleBox.setText(getBundleString("toggleNavigatorVisible.Action.text")); //"visibleBox.text"));
+        visibleBox.setText(getBundleString("toggleNavigatorVisible.Action.text")); // NOT "visibleBox.text"!
         visibleBox.addActionListener( ae -> {
         	LOG.info("visibleBox.isSelected/setNavigatorVisible="+visibleBox.isSelected());
         	setNavigatorVisible(visibleBox.isSelected());
@@ -319,7 +336,6 @@ public class TitledPanelDemo extends AbstractDemo {
         titledPanel.repaint();
         firePropertyChange("navigatorVisible", old, isNavigatorVisible());
     }
-//------------------- bind/configure    
     
     private ComboBoxModel<DisplayInfo<Font>> createFontModel() {
         MutableComboBoxModel<DisplayInfo<Font>> model = new DefaultComboBoxModel<DisplayInfo<Font>>();
@@ -341,9 +357,11 @@ public class TitledPanelDemo extends AbstractDemo {
         // Background Painter options 
         Painter<?> bgPainter =  (Painter<?>) UIManager.get("JXTitledPanel.titlePainter");
         model.addElement(new DisplayInfo<Painter<?>>("Default ", bgPainter));
-        model.addElement(new DisplayInfo<Painter<?>>("Checkerboard", 
-                new PainterUIResource<JComponent>(new CheckerboardPainter())));
+        model.addElement(new DisplayInfo<Painter<?>>("Checkerboard", new PainterUIResource<JComponent>(new CheckerboardPainter())));
         // PENDING JW: add more options - image, gradient, animated... 
+        // add Matte Painter Gradient "single stop, horiz", see PainterDemo
+        Paint gradient = new GradientPaint(new Point(30, 30), Color.RED, new Point(80, 30),  Color.GREEN);
+        model.addElement(new DisplayInfo<Painter<?>>("GradientPaint", new PainterUIResource<JComponent>(new MattePainter(gradient))));
         // </snip>
         return model;
     }
@@ -394,12 +412,22 @@ public class TitledPanelDemo extends AbstractDemo {
 //        applyNavigationDefaults();
     }
 
+    // fired whenever a bean changes a "bound"property
     private void installUIListener() {
         PropertyChangeListener listener = new PropertyChangeListener() {
             
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
+// java.beans.PropertyChangeEvent[propertyName=lookAndFeel; oldValue=[The Java(tm) Look and Feel - javax.swing.plaf.metal.MetalLookAndFeel]; newValue=[Nimbus Look and Feel - javax.swing.plaf.nimbus.NimbusLookAndFeel]; propagationId=null; source=class javax.swing.UIManager]          	
+            	LOG.info("PropertyChangeEvent "+evt);
                 updateUIProperties();
+            	if(evt.getPropertyName().equals("lookAndFeel")) {
+            		// update UI:
+            		titledPanel.updateUI();
+            		prevButton.updateUI();
+            		nextButton.updateUI();
+            		setNavigatorVisible(isNavigatorVisible());
+            	}
             }
         };
         UIManager.addPropertyChangeListener(listener);
