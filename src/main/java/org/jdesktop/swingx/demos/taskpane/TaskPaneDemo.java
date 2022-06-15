@@ -157,6 +157,7 @@ help.Action.shortDescription=The place where you can't find anything
         officeGroup.setName("officeGroup");
         officeGroup.setTitle(getBundleString("officeGroup.title", officeGroup));
         officeGroup.setCollapsed(Boolean.valueOf(getBundleString("officeGroup.collapsed")));
+        LOG.info("officeGroup.isCollapsed="+officeGroup.isCollapsed());
         officeGroup.setScrollOnExpand(Boolean.valueOf(getBundleString("officeGroup.scrollOnExpand")));
         tpc.add(officeGroup);
         
