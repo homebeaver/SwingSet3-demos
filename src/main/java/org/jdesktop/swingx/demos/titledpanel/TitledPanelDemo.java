@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.MutableComboBoxModel;
 import javax.swing.Painter;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
@@ -42,6 +43,7 @@ import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.binding.LabelHandler;
 import org.jdesktop.swingx.icon.ArrowIcon;
+import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.painter.CheckerboardPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.plaf.PainterUIResource;
@@ -108,11 +110,11 @@ public class TitledPanelDemo extends AbstractDemo {
 	 * <ul>
 	 * <li>JXTitledPanel.titleForeground</li>
 	 * <li>JXTitledPanel.titleBackground</li>
-	 * <li>JXTitledPanel.titleFont</li>
-	 * <li>JXTitledPanel.titlePainter</li>
+	 * <li>JXTitledPanel.titleFont ==> fontChooserCombo</li>
+	 * <li>JXTitledPanel.titlePainter ==> backgroundChooserCombo </li> 
 	 * <li>JXTitledPanel.captionInsets</li>
-	 * <li>JXTitledPanel.rightDecorationInsets</li>
-	 * <li>JXTitledPanel.leftDecorationInsets</li>
+	 * <li>JXTitledPanel.rightDecoration ==> setNavigatorVisible</li>
+	 * <li>JXTitledPanel.leftDecoration ==> setNavigatorVisible</li>
 	 * </ul>
 	 */
 	private JXTitledPanel titledPanel; // with 3 cards, the first holds a controller
@@ -500,24 +502,25 @@ public class TitledPanelDemo extends AbstractDemo {
     
     /**
      * @param button
-     * @param direction
+     * @param direction of nutton icon Compass-direction, use SwingConstants.WEST or SwingConstants.EAST
      */
-    private void applyNavigationDefaults(JButton button, ArrowIcon.Direction direction) {
-        int arrowSize = 10;
+    private void applyNavigationDefaults(JButton button, int direction) {
+        int arrowSize = SizingConstants.SMALL_ICON; // 16
+        int buttonSize = 22;
         Color arrowColor = UIManager.getColor("Label.foreground");
         Color inactiveColor = Color.LIGHT_GRAY; //UIManager.getColor("Label.disabledText");
-        Dimension buttonSize = new Dimension(arrowSize + 12, arrowSize + 12);
+        Dimension buttonDim = new Dimension(buttonSize, buttonSize);
 
         button.setIcon(new ArrowIcon(direction, arrowSize, arrowColor));
         button.setDisabledIcon(new ArrowIcon(direction, arrowSize, inactiveColor));
-        button.setPreferredSize(buttonSize);
+        button.setPreferredSize(buttonDim);
         button.setFocusable(false);
     }
 
     private void applyNavigationDefaults() {
-        applyNavigationDefaults(prevButton, ArrowIcon.Direction.WEST);
+        applyNavigationDefaults(prevButton, SwingConstants.WEST);
         prevButton.setEnabled(isTrailing());
-        applyNavigationDefaults(nextButton, ArrowIcon.Direction.EAST);
+        applyNavigationDefaults(nextButton, SwingConstants.EAST);
         nextButton.setEnabled(isLeading());
         //prevButton.setAction:
         prevButton.addActionListener(ae -> {
