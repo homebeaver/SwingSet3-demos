@@ -6,17 +6,15 @@ package org.jdesktop.swingx.demos.errorpane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -134,13 +132,6 @@ public class ErrorPaneDemo extends AbstractDemo {
     }
 
     public JButton createBasicButton() {
-        @SuppressWarnings("serial")
-        Action a = new AbstractAction(getBundleString("generateBasicDialog.Action.text")) {
-            public void actionPerformed(ActionEvent e) {
-            	generateBasicDialog();
-            }
-        };
-        
         /*
          * get the default error icon, see BasicErrorPaneUI.getDefaultErrorIcon() or getDefaultWarningIcon()
          * JXErrorPane.errorIcon or OptionPane.errorIcon
@@ -150,58 +141,44 @@ public class ErrorPaneDemo extends AbstractDemo {
             LOG.warning("JXErrorPane.errorIcon is null, use OptionPane.errorIcon.");
             icon = UIManager.getIcon("OptionPane.errorIcon");
         }
-        a.putValue(Action.LARGE_ICON_KEY, icon);
-        return createButton(a);
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("generateBasicDialog.Action.text"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, BorderLayout.WEST);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+			generateBasicDialog();
+		});
+    	return b;
     }
 
 	public JButton createOwnerButton() {
-//		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
-//		JButton owner = new JButton(getBundleString("generateDialogWithOwner.Action.text"), icon);
-//		owner.addActionListener(event -> {
-//			generateDialogWithOwner();
-//		});
-//		owner.setAlignmentX(JButton.CENTER_ALIGNMENT);
-//    	return owner;
-        @SuppressWarnings("serial")
-        Action a = new AbstractAction(getBundleString("generateDialogWithOwner.Action.text")) {
-            public void actionPerformed(ActionEvent e) {
-            	generateDialogWithOwner();
-            }
-        };
-        Icon icon = UIManager.getIcon("OptionPane.warningIcon");
-        a.putValue(Action.LARGE_ICON_KEY, icon);
-        return createButton(a);
+		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("generateDialogWithOwner.Action.text"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, BorderLayout.WEST);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+			generateDialogWithOwner();
+		});
+    	return b;
     }
 
     public JButton createNestedButton() {
-        @SuppressWarnings("serial")
-        Action a = new AbstractAction(getBundleString("generateNestedExceptions.Action.text")) {
-            public void actionPerformed(ActionEvent e) {
-            	generateNestedExceptions();
-            }
-        };
-        Icon icon = UIManager.getIcon("OptionPane.warningIcon");
-        a.putValue(Action.LARGE_ICON_KEY, icon);
-        return createButton(a);
-    }
-
-    public JButton createButton(Action a) {
-        @SuppressWarnings("serial")
-        JButton b = new JButton() {
-            public Dimension getMaximumSize() {
-                int width = Short.MAX_VALUE;
-                int height = super.getMaximumSize().height;
-                return new Dimension(width, height);
-            }
-        };
-        // setting the following client property informs the button to show the action text as it's name. 
-        // The default is to not show the action text.
-        b.putClientProperty("displayActionText", Boolean.TRUE);
-        b.setAction(a);
-//        b.setAlignmentX(JButton.LEFT_ALIGNMENT);
-//        b.setAlignmentY(JButton.BOTTOM_ALIGNMENT);
-        b.setVerticalTextPosition(SwingConstants.CENTER); // ((key == TOP) || (key == CENTER) || (key == BOTTOM)
-        return b;
+		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("generateNestedExceptions.Action.text"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, BorderLayout.WEST);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+			generateNestedExceptions();
+		});
+    	return b;
     }
 
     public void generateBasicDialog() {
