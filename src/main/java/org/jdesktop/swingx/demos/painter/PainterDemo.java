@@ -255,7 +255,7 @@ public class PainterDemo extends AbstractDemo {
     private JCheckBox paintStretchedBox;
    
     /**
-     * PromptSupportDemo Constructor
+     * PainterDemo Constructor
      */
     public PainterDemo(Frame frame) {
     	super(new BorderLayout());
