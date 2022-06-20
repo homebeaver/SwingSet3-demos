@@ -4,28 +4,28 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package org.jdesktop.swingx.demos.errorpane;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTree;
-import org.jdesktop.swingx.VerticalLayout;
-import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import swingset.AbstractDemo;
@@ -54,10 +54,8 @@ public class ErrorPaneDemo extends AbstractDemo {
 	private static final Logger LOG = Logger.getLogger(ErrorPaneDemo.class.getName());
 	private static final String DESCRIPTION = "Demonstrates JXErrorPane, a control for displaying errors";
 	
-	private JButton basic;
-    private JButton owner;
-    private JButton nested;
-    
+	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = false;
+
     /**
      * main method allows us to run as a standalone demo.
      */
@@ -85,100 +83,127 @@ public class ErrorPaneDemo extends AbstractDemo {
     /**
      * ErrorPaneDemo Constructor
      */
+	// TODO weitere Beispiele in JXErrorPaneIssues und JXErrorPaneVisualCheck
+	/* showXXX() , XXX could be one of Dialog, Frame, or InternalFrame
+	 * - Unterschied zwischen showDialog() und showFrame() bzw showInternalFrame()
+	 */
     public ErrorPaneDemo(Frame frame) {
     	super(new BorderLayout());
     	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(BorderFactory.createLoweredBevelBorder());
-    	
-    	// TODO weitere Beispiele in JXErrorPaneIssues und JXErrorPaneVisualCheck
-    	/* showXXX() , XXX could be one of Dialog, Frame, or InternalFrame
-    	 * - Unterschied zwischen showDialog() und showFrame() bzw showInternalFrame()
-    	 */
-        JPanel panel = new JXPanel(new GridLayout(3, 1, 1, 1));
-        /*
-         * get the default error icon, see BasicErrorPaneUI.getDefaultErrorIcon() or getDefaultWarningIcon()
-         * JXErrorPane.errorIcon or OptionPane.errorIcon
-         */
-        Icon errorIcon = UIManager.getIcon("JXErrorPane.errorIcon");
-        if(errorIcon==null) {
-            LOG.warning("JXErrorPane.errorIcon is null, use OptionPane.errorIcon.");
-            errorIcon = UIManager.getIcon("OptionPane.errorIcon");
+
+        if(CONTROLLER_IN_PRESENTATION_FRAME) {
+            super.add(getBoxPane());
         }
-        Icon warningIcon = UIManager.getIcon("OptionPane.warningIcon");
-        
-    	basic = new JButton(getBundleString("generateBasicDialog.Action.text"), errorIcon);
-    	basic.addActionListener(event -> {
-//    		basic.setSelected(true);
-    		generateBasicDialog();
-        });
-        panel.add(basic);
-        
-    	owner = new JButton(getBundleString("generateDialogWithOwner.Action.text"), warningIcon);
-    	owner.addActionListener(event -> {
-    		generateDialogWithOwner();
-        });
-        panel.add(owner);
-
-        nested = new JButton(getBundleString("generateNestedExceptions.Action.text"), warningIcon);
-        nested.addActionListener(event -> {
-    		generateNestedExceptions();
-        });
-    	panel.add(nested);
-
-        add(panel);
     }
 
     @Override
 	public JXPanel getControlPane() {
-    	JXPanel panel = new JXPanel(new BorderLayout());
+        if(CONTROLLER_IN_PRESENTATION_FRAME) return emptyControlPane();
     	
-//        JXPanel controller = new JXPanel(new BorderLayout());
-//        JPanel control = new JPanel(new GridLayout(2, 2));
-//        control.add(new JLabel("Highlighter Options:"));
-    	JXTree painterDemos = new JXTree();
-        painterDemos.setRootVisible(false);
-        //painterDemos.setModel(createPainters());
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-//        new DefaultMutableTreeNode(new DisplayInfo<ImagePainter>("desc", new ImagePainter(img))
-//        root.add(createImagePainterDemos());
-        root.add(new DefaultMutableTreeNode(new DisplayInfo<JXErrorPane>("desc - Show Basic Dialog", new JXErrorPane())));
-        
-//        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
-//        		new JScrollPane(painterDemos), createPainterPropertiesPanel());
-        panel.add(painterDemos);
-
-    	// TODO
-        return panel;
+        JXPanel controller = new JXPanel();
+        controller.add(getBoxPane());
+    	return controller;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void createDemo() {
-        setLayout(new VerticalLayout(5));
+    private JPanel getBoxPane() {
+    	JPanel demo = new JPanel();
+        demo.setLayout(new BoxLayout(demo, BoxLayout.X_AXIS));
+
+        @SuppressWarnings("serial")
+        JPanel bp = new JPanel() {
+            public Dimension getMaximumSize() {
+                return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
+            }
+        };
+        bp.setLayout(new BoxLayout(bp, BoxLayout.Y_AXIS));
+
+        bp.add(Box.createRigidArea(VGAP30));
+//        bp.add(Box.createRigidArea(VGAP30));
+
+        bp.add(createBasicButton());	bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createOwnerButton());	bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createNestedButton());	bp.add(Box.createVerticalGlue());
+
+        demo.add(Box.createHorizontalGlue());
+        demo.add(bp);
+        demo.add(Box.createHorizontalGlue());
         
-        basic = new JButton();
-        add(basic);
-        
-        owner = new JButton();
-        add(owner);
-        
-        nested = new JButton();
-        add(nested);
+        return demo;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-//    protected void bind() {
-//    	// org.jdesktop.application.ApplicationActionMap map;
-//        basic.setAction(map.get("generateBasicDialog"));
-//        owner.setAction(map.get("generateDialogWithOwner"));
-//        nested.setAction(map.get("generateNestedExceptions"));
-//    }
-//    
-//    @Action org.jdesktop.application.Action
+
+    public JButton createBasicButton() {
+        @SuppressWarnings("serial")
+        Action a = new AbstractAction(getBundleString("generateBasicDialog.Action.text")) {
+            public void actionPerformed(ActionEvent e) {
+            	generateBasicDialog();
+            }
+        };
+        
+        /*
+         * get the default error icon, see BasicErrorPaneUI.getDefaultErrorIcon() or getDefaultWarningIcon()
+         * JXErrorPane.errorIcon or OptionPane.errorIcon
+         */
+        Icon icon = UIManager.getIcon("JXErrorPane.errorIcon");
+        if(icon==null) {
+            LOG.warning("JXErrorPane.errorIcon is null, use OptionPane.errorIcon.");
+            icon = UIManager.getIcon("OptionPane.errorIcon");
+        }
+        a.putValue(Action.LARGE_ICON_KEY, icon);
+        return createButton(a);
+    }
+
+	public JButton createOwnerButton() {
+//		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
+//		JButton owner = new JButton(getBundleString("generateDialogWithOwner.Action.text"), icon);
+//		owner.addActionListener(event -> {
+//			generateDialogWithOwner();
+//		});
+//		owner.setAlignmentX(JButton.CENTER_ALIGNMENT);
+//    	return owner;
+        @SuppressWarnings("serial")
+        Action a = new AbstractAction(getBundleString("generateDialogWithOwner.Action.text")) {
+            public void actionPerformed(ActionEvent e) {
+            	generateDialogWithOwner();
+            }
+        };
+        Icon icon = UIManager.getIcon("OptionPane.warningIcon");
+        a.putValue(Action.LARGE_ICON_KEY, icon);
+        return createButton(a);
+    }
+
+    public JButton createNestedButton() {
+        @SuppressWarnings("serial")
+        Action a = new AbstractAction(getBundleString("generateNestedExceptions.Action.text")) {
+            public void actionPerformed(ActionEvent e) {
+            	generateNestedExceptions();
+            }
+        };
+        Icon icon = UIManager.getIcon("OptionPane.warningIcon");
+        a.putValue(Action.LARGE_ICON_KEY, icon);
+        return createButton(a);
+    }
+
+    public JButton createButton(Action a) {
+        @SuppressWarnings("serial")
+        JButton b = new JButton() {
+            public Dimension getMaximumSize() {
+                int width = Short.MAX_VALUE;
+                int height = super.getMaximumSize().height;
+                return new Dimension(width, height);
+            }
+        };
+        // setting the following client property informs the button to show the action text as it's name. 
+        // The default is to not show the action text.
+        b.putClientProperty("displayActionText", Boolean.TRUE);
+        b.setAction(a);
+//        b.setAlignmentX(JButton.LEFT_ALIGNMENT);
+//        b.setAlignmentY(JButton.BOTTOM_ALIGNMENT);
+        b.setVerticalTextPosition(SwingConstants.CENTER); // ((key == TOP) || (key == CENTER) || (key == BOTTOM)
+        return b;
+    }
+
     public void generateBasicDialog() {
     	// showXXX() , XXX could be one of Dialog, Frame, or InternalFrame
 /*
