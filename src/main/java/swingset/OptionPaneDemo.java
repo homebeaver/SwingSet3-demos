@@ -13,12 +13,14 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXFrame;
@@ -90,6 +92,7 @@ public class OptionPaneDemo extends AbstractDemo {
     	JPanel demo = new JPanel();
         demo.setLayout(new BoxLayout(demo, BoxLayout.X_AXIS));
 
+        @SuppressWarnings("serial")
         JPanel bp = new JPanel() {
             public Dimension getMaximumSize() {
                 return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
@@ -114,7 +117,8 @@ public class OptionPaneDemo extends AbstractDemo {
     }
 
     public JButton createWarningDialogButton() {
-        Action a = new AbstractAction(getBundleString("warningbutton")) {
+        @SuppressWarnings("serial")
+		Action a = new AbstractAction(getBundleString("warningbutton")) {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(
                 	OptionPaneDemo.this,
@@ -124,10 +128,16 @@ public class OptionPaneDemo extends AbstractDemo {
                 );
             }
         };
+        // see protected Icon BasicOptionPaneUI.getIconForType(int messageType)
+        //Icon errorIcon = UIManager.getIcon("OptionPane.errorIcon"); // messageType == 0
+        Icon icon = UIManager.getIcon("OptionPane.warningIcon"); // messageType == 2
+//		System.err.println("icon:"+icon.getIconHeight()); // 32
+        a.putValue(Action.LARGE_ICON_KEY, icon);
         return createButton(a);
     }
 
     public JButton createMessageDialogButton() {
+        @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("messagebutton")) {
             URL img = getClass().getResource("images/optionpane/bottle.gif");
             String imagesrc = "<img src=\"" + img + "\" width=\"284\" height=\"100\">";
@@ -138,10 +148,13 @@ public class OptionPaneDemo extends AbstractDemo {
                 );
             }
         };
+        Icon icon = UIManager.getIcon("OptionPane.informationIcon"); // messageType == 1
+        a.putValue(Action.LARGE_ICON_KEY, icon);
         return createButton(a);
     }
 
     public JButton createConfirmDialogButton() {
+        @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("confirmbutton")) {
             public void actionPerformed(ActionEvent e) {
                 int result = JOptionPane.showConfirmDialog(OptionPaneDemo.this, getBundleString("confirmquestion"));
@@ -152,10 +165,13 @@ public class OptionPaneDemo extends AbstractDemo {
                 }
             }
         };
+        Icon icon = UIManager.getIcon("OptionPane.questionIcon"); // messageType == 3
+        a.putValue(Action.LARGE_ICON_KEY, icon);
         return createButton(a);
     }
 
     public JButton createInputDialogButton() {
+        @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("inputbutton")) {
             public void actionPerformed(ActionEvent e) {
                 String result = JOptionPane.showInputDialog(OptionPaneDemo.this, getBundleString("inputquestion"));
@@ -165,10 +181,13 @@ public class OptionPaneDemo extends AbstractDemo {
                 }
             }
         };
+        Icon icon = UIManager.getIcon("OptionPane.questionIcon"); // messageType == 3
+        a.putValue(Action.LARGE_ICON_KEY, icon);
         return createButton(a);
     }
 
     public JButton createComponentDialogButton() {
+        @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("componentbutton")) {
             public void actionPerformed(ActionEvent e) {
                 // In a ComponentDialog, you can show as many message components and
@@ -179,7 +198,7 @@ public class OptionPaneDemo extends AbstractDemo {
                 message[0] = getBundleString("componentmessage");
                 message[1] = new JTextField(getBundleString("componenttextfield"));
 
-                JComboBox cb = new JComboBox();
+                JComboBox<String> cb = new JComboBox<String> ();
                 cb.addItem(getBundleString("component_cb1"));
                 cb.addItem(getBundleString("component_cb2"));
                 cb.addItem(getBundleString("component_cb3"));
@@ -224,10 +243,13 @@ public class OptionPaneDemo extends AbstractDemo {
 
             }
         };
+        Icon icon = UIManager.getIcon("OptionPane.informationIcon"); // messageType == 1
+        a.putValue(Action.LARGE_ICON_KEY, icon);
         return createButton(a);
     }
 
     public JButton createButton(Action a) {
+        @SuppressWarnings("serial")
         JButton b = new JButton() {
             public Dimension getMaximumSize() {
                 int width = Short.MAX_VALUE;
