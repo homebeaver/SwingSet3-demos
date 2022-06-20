@@ -51,8 +51,9 @@ public class ErrorPaneDemo extends AbstractDemo {
 	private static final long serialVersionUID = 553318600929011235L;
 	private static final Logger LOG = Logger.getLogger(ErrorPaneDemo.class.getName());
 	private static final String DESCRIPTION = "Demonstrates JXErrorPane, a control for displaying errors";
-	
+
 	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = false;
+	private static final String CONTROLLER_ICON_POSITION = BorderLayout.WEST; // also good: NORTH
 
     /**
      * main method allows us to run as a standalone demo.
@@ -118,7 +119,6 @@ public class ErrorPaneDemo extends AbstractDemo {
         bp.setLayout(new BoxLayout(bp, BoxLayout.Y_AXIS));
 
         bp.add(Box.createRigidArea(VGAP30));
-//        bp.add(Box.createRigidArea(VGAP30));
 
         bp.add(createBasicButton());	bp.add(Box.createRigidArea(VGAP15));
         bp.add(createOwnerButton());	bp.add(Box.createRigidArea(VGAP15));
@@ -145,7 +145,7 @@ public class ErrorPaneDemo extends AbstractDemo {
 		JLabel clickMe = new JLabel(getBundleString("generateBasicDialog.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
         b.setLayout(new BorderLayout());
-        b.add(iconLabel, BorderLayout.WEST);
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
         b.add(clickMe, BorderLayout.CENTER);
 		b.addActionListener(event -> {
 			generateBasicDialog();
@@ -159,7 +159,7 @@ public class ErrorPaneDemo extends AbstractDemo {
 		JLabel clickMe = new JLabel(getBundleString("generateDialogWithOwner.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
         b.setLayout(new BorderLayout());
-        b.add(iconLabel, BorderLayout.WEST);
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
         b.add(clickMe, BorderLayout.CENTER);
 		b.addActionListener(event -> {
 			generateDialogWithOwner();
@@ -173,7 +173,7 @@ public class ErrorPaneDemo extends AbstractDemo {
 		JLabel clickMe = new JLabel(getBundleString("generateNestedExceptions.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
         b.setLayout(new BorderLayout());
-        b.add(iconLabel, BorderLayout.WEST);
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
         b.add(clickMe, BorderLayout.CENTER);
 		b.addActionListener(event -> {
 			generateNestedExceptions();
@@ -205,7 +205,7 @@ public class ErrorPaneDemo extends AbstractDemo {
 
     public void generateNestedExceptions() {
         Exception ex = new Exception("I'm a secondary exception", new Exception("I'm the cause"));
-        ErrorInfo info = new ErrorInfo("Dialog with NestedExceptions", "basic error message", null,
+        ErrorInfo info = new ErrorInfo("Dialog with Nested Exceptions", "basic error message", null,
         		"category", ex, Level.ALL, null);
         JXErrorPane.showDialog(this, info);
     }
