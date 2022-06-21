@@ -89,31 +89,32 @@ public class OptionPaneDemo extends AbstractDemo {
     }
 
     private JPanel getBoxPane() {
-    	JPanel demo = new JPanel();
-        demo.setLayout(new BoxLayout(demo, BoxLayout.X_AXIS));
+    	JPanel boxPane = new JPanel();
+        boxPane.setLayout(new BoxLayout(boxPane, BoxLayout.X_AXIS));
 
+        // Create a panel to hold buttons
         @SuppressWarnings("serial")
-        JPanel bp = new JPanel() {
+        JPanel buttonPanel = new JPanel() {
             public Dimension getMaximumSize() {
                 return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
             }
         };
-        bp.setLayout(new BoxLayout(bp, BoxLayout.Y_AXIS));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
-        bp.add(Box.createRigidArea(VGAP30));
-        bp.add(Box.createRigidArea(VGAP30));
+        buttonPanel.add(Box.createRigidArea(VGAP30));
+//        buttonPanel.add(Box.createRigidArea(VGAP30));
 
-        bp.add(createInputDialogButton());      bp.add(Box.createRigidArea(VGAP15));
-        bp.add(createWarningDialogButton());    bp.add(Box.createRigidArea(VGAP15));
-        bp.add(createMessageDialogButton());    bp.add(Box.createRigidArea(VGAP15));
-        bp.add(createComponentDialogButton());  bp.add(Box.createRigidArea(VGAP15));
-        bp.add(createConfirmDialogButton());    bp.add(Box.createVerticalGlue());
+        buttonPanel.add(createInputDialogButton());      buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createWarningDialogButton());    buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createMessageDialogButton());    buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createComponentDialogButton());  buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createConfirmDialogButton());    buttonPanel.add(Box.createVerticalGlue());
 
-        demo.add(Box.createHorizontalGlue());
-        demo.add(bp);
-        demo.add(Box.createHorizontalGlue());
+        boxPane.add(Box.createHorizontalGlue());
+        boxPane.add(buttonPanel);
+        boxPane.add(Box.createHorizontalGlue());
         
-        return demo;
+        return boxPane;
     }
 
     public JButton createWarningDialogButton() {

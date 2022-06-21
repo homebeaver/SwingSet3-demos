@@ -48,9 +48,13 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  */
 public class FileChooserDemo extends AbstractDemo {
 
+	/*
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JFileChooser.gif";
 	
 	private static final long serialVersionUID = 3758119595406064166L;
+	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = false;
 
     /**
      * main method allows us to run as a standalone demo.
@@ -88,6 +92,14 @@ public class FileChooserDemo extends AbstractDemo {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
     	frame.setTitle(getBundleString("name"));
 
+        jpgIcon = StaticUtilities.createImageIcon("filechooser/jpgIcon.jpg");
+        gifIcon = StaticUtilities.createImageIcon("filechooser/gifIcon.gif");
+        pngIcon = StaticUtilities.createImageIcon("filechooser/pngIcon.gif");
+        
+        if(CONTROLLER_IN_PRESENTATION_FRAME) {
+            super.add(getBoxPane(), BorderLayout.NORTH);
+        }
+
         theImage = new JLabel("");
 
         JPanel innerPanel = new JPanel();
@@ -116,38 +128,38 @@ public class FileChooserDemo extends AbstractDemo {
 
     @Override
 	public JXPanel getControlPane() {
+        if(CONTROLLER_IN_PRESENTATION_FRAME) return emptyControlPane();
+    	
         JXPanel controller = new JXPanel();
-        controller.setLayout(new BoxLayout(controller, BoxLayout.X_AXIS));
-        
-        controller.add(Box.createRigidArea(HGAP20));
+        controller.add(getBoxPane());
+    	return controller;
+    }
 
-        jpgIcon = StaticUtilities.createImageIcon("filechooser/jpgIcon.jpg");
-        gifIcon = StaticUtilities.createImageIcon("filechooser/gifIcon.gif");
-        pngIcon = StaticUtilities.createImageIcon("filechooser/pngIcon.gif");
+    private JPanel getBoxPane() {
+    	JPanel boxPane = new JPanel();
+        boxPane.setLayout(new BoxLayout(boxPane, BoxLayout.X_AXIS));
 
         // Create a panel to hold buttons
-        JXPanel buttonPanel = new JXPanel() {
+        @SuppressWarnings("serial")
+        JPanel buttonPanel = new JPanel() {
             public Dimension getMaximumSize() {
                 return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
             }
         };
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
-        buttonPanel.add(Box.createRigidArea(VGAP15));
-        buttonPanel.add(createPlainFileChooserButton());
-        
-        buttonPanel.add(Box.createRigidArea(VGAP15));
-        buttonPanel.add(createPreviewFileChooserButton());
-        
-        buttonPanel.add(Box.createRigidArea(VGAP15));
-        buttonPanel.add(createCustomFileChooserButton());
-        
+        buttonPanel.add(Box.createRigidArea(VGAP30));
+
+        buttonPanel.add(createPlainFileChooserButton());	buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createPreviewFileChooserButton());	buttonPanel.add(Box.createRigidArea(VGAP15));
+        buttonPanel.add(createCustomFileChooserButton());	buttonPanel.add(Box.createRigidArea(VGAP30));
         buttonPanel.add(Box.createVerticalGlue());
-        buttonPanel.add(Box.createRigidArea(VGAP15));
-        controller.add(buttonPanel);
+
+        boxPane.add(Box.createHorizontalGlue());
+        boxPane.add(buttonPanel);
+        boxPane.add(Box.createHorizontalGlue());
         
-        controller.add(Box.createRigidArea(HGAP20));
-    	return controller;
+        return boxPane;
     }
 
     public JFileChooser createFileChooser() {
@@ -169,6 +181,7 @@ public class FileChooserDemo extends AbstractDemo {
 
     // controller
     private JButton createPlainFileChooserButton() {
+        @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("plainbutton")) {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = createFileChooser();
@@ -182,11 +195,15 @@ public class FileChooserDemo extends AbstractDemo {
                 }
             }
         };
+        // See protected void BasicFileChooserUI#installIcons(JFileChooser fc)
+        Icon icon = UIManager.getIcon("FileView.fileIcon");
+        a.putValue(Action.LARGE_ICON_KEY, icon);
         return createButton(a);
     }
 
     // controller
     private JButton createPreviewFileChooserButton() {
+        @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("previewbutton")) {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fc = createFileChooser();
@@ -214,6 +231,11 @@ public class FileChooserDemo extends AbstractDemo {
                 }
             }
         };
+//        Icon icon = UIManager.getIcon("FileChooser.viewMenuIcon"); // null ? detailsViewIcon
+//        Icon icon = UIManager.getIcon("FileChooser.listViewIcon"); 
+//        Icon icon = UIManager.getIcon("FileChooser.detailsViewIcon"); 
+        Icon icon = StaticUtilities.createImageIcon("filechooser/gifIcon.gif");
+        a.putValue(Action.LARGE_ICON_KEY, icon);
         return createButton(a);
     }
 
@@ -238,6 +260,7 @@ public class FileChooserDemo extends AbstractDemo {
 
     // controller
     private JButton createCustomFileChooserButton() {
+        @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("custombutton")) {
             public void actionPerformed(ActionEvent e) {
                 fc = createFileChooser();
@@ -300,6 +323,8 @@ public class FileChooserDemo extends AbstractDemo {
                 dialog.setVisible(true);
             }
         };
+        Icon icon = StaticUtilities.createImageIcon("filechooser/find.gif");
+        a.putValue(Action.LARGE_ICON_KEY, icon);
         return createButton(a);
     }
 
