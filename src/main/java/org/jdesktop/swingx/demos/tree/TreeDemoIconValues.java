@@ -15,11 +15,11 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.Painter;
 
 import org.jdesktop.swingx.icon.PainterIcon;
 import org.jdesktop.swingx.painter.AbstractAreaPainter;
 import org.jdesktop.swingx.painter.ImagePainter;
-import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.util.GraphicsUtilities;
