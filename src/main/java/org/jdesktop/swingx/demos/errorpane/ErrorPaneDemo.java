@@ -25,6 +25,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.error.ErrorInfo;
+import org.jdesktop.swingx.icon.DefaultIcons;
 
 import swingset.AbstractDemo;
 
@@ -138,8 +139,8 @@ public class ErrorPaneDemo extends AbstractDemo {
          */
         Icon icon = UIManager.getIcon("JXErrorPane.errorIcon");
         if(icon==null) {
-            LOG.warning("JXErrorPane.errorIcon is null, use OptionPane.errorIcon.");
-            icon = UIManager.getIcon("OptionPane.errorIcon");
+            LOG.warning("JXErrorPane.errorIcon is null, use default UI OptionPane.errorIcon.");
+            icon = DefaultIcons.getIcon(DefaultIcons.ERROR);
         }
 		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("generateBasicDialog.Action.text"), SwingConstants.CENTER);
@@ -154,8 +155,7 @@ public class ErrorPaneDemo extends AbstractDemo {
     }
 
 	public JButton createOwnerButton() {
-		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
-		JLabel iconLabel = new JLabel(icon);
+		JLabel iconLabel = new JLabel(DefaultIcons.getIcon(DefaultIcons.WARNING));
 		JLabel clickMe = new JLabel(getBundleString("generateDialogWithOwner.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
         b.setLayout(new BorderLayout());
@@ -168,8 +168,7 @@ public class ErrorPaneDemo extends AbstractDemo {
     }
 
     public JButton createNestedButton() {
-		Icon icon = UIManager.getIcon("OptionPane.warningIcon");
-		JLabel iconLabel = new JLabel(icon);
+		JLabel iconLabel = new JLabel(DefaultIcons.getIcon(DefaultIcons.WARNING));
 		JLabel clickMe = new JLabel(getBundleString("generateNestedExceptions.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
         b.setLayout(new BorderLayout());
