@@ -322,6 +322,7 @@ aus super:
          * 
          * @param name the name of the action
          * @param plaf the class name of the LAF to set
+         * @param group identity of the state action
          * @param toplevel the window to update, may be null to indicate
          *   update of all application windows
          */
