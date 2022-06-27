@@ -5,12 +5,16 @@ package swingset;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.util.logging.Logger;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -28,8 +32,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 
 /**
  * Split Pane demo
@@ -38,11 +42,12 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  * @author Jeff Dinkins
  * @author EUG https://github.com/homebeaver (reorg)
  */
-public class SplitPaneDemo extends AbstractDemo {
+public class SplitPaneDemo extends AbstractDemo implements ComponentListener {
 
 	public static final String ICON_PATH = "toolbar/JSplitPane.gif";
 
 	private static final long serialVersionUID = 5987956209025810711L;
+	private static final Logger LOG = Logger.getLogger(SplitPaneDemo.class.getName());
 	private static final String DESCRIPTION = "JSplitPane Demo";
     private static final String IMG_PATH = "splitpane/"; // prefix dir
 
@@ -55,6 +60,7 @@ public class SplitPaneDemo extends AbstractDemo {
 			@Override
 			public void run() {
 				JXFrame controller = new JXFrame("controller", exitOnClose);
+				controller.setName("controller");
 				AbstractDemo demo = new SplitPaneDemo(controller);
 				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
 				frame.setStartPosition(StartPosition.CenterInScreen);
@@ -62,6 +68,7 @@ public class SplitPaneDemo extends AbstractDemo {
             	frame.getContentPane().add(demo);
             	frame.pack();
             	frame.setVisible(true);
+        		LOG.info("frame isResizable="+frame.isResizable()+" size/min "+frame.getSize() + " / "+frame.getMinimumSize());
 				
 				controller.getContentPane().add(demo.getControlPane());
 				controller.pack();
@@ -82,12 +89,14 @@ public class SplitPaneDemo extends AbstractDemo {
     /**
      * SplitPaneDemo Constructor
      */
-    public SplitPaneDemo(Frame frame) {
+    public SplitPaneDemo(Frame controllerFrame) {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getBundleString("name"));
+    	controllerFrame.setTitle(getBundleString("name"));
 
+    	this.addComponentListener(this);
+    	
     	earth = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"earth.jpg"));
         earth.setMinimumSize(new Dimension(20, 20));
 
@@ -185,6 +194,7 @@ public class SplitPaneDemo extends AbstractDemo {
                 }
                 if(newSize > 0) {
                     splitPane.setDividerSize(newSize);
+                    setMinimumSize();
                 } else {
                     JOptionPane.showMessageDialog(splitPane,
                                                   getBundleString("invalid_divider_size"),
@@ -205,25 +215,24 @@ public class SplitPaneDemo extends AbstractDemo {
         earthSize = new JTextField(String.valueOf(earth.getMinimumSize().width));
         earthSize.setColumns(5);
         earthSize.getAccessibleContext().setAccessibleName("first_component_min_size");
-        earthSize.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String           value = ((JTextField)e.getSource()).getText();
-                int              newSize;
-
-                try {
-                    newSize = Integer.parseInt(value);
-                } catch (Exception ex) {
-                    newSize = -1;
-                }
-                if(newSize > 10) {
-                    earth.setMinimumSize(new Dimension(newSize, newSize));
-                } else {
-                    JOptionPane.showMessageDialog(splitPane,
-                                                  getBundleString("invalid_min_size") +
-                                                  getBundleString("must_be_greater_than") + 10,
-                                                  getBundleString("error"),
-                                                  JOptionPane.ERROR_MESSAGE);
-                }
+        earthSize.addActionListener( ae -> {
+        	String value = ((JTextField)ae.getSource()).getText();
+        	int newSize;
+            try {
+                newSize = Integer.parseInt(value);
+            } catch (Exception ex) {
+                newSize = -1;
+            }
+            if(newSize > 10) {
+            	// this is a demo, so square Size is enough
+            	earth.setMinimumSize(new Dimension(newSize, newSize));
+            	setMinimumSize();
+            } else {
+                JOptionPane.showMessageDialog(splitPane,
+                        getBundleString("invalid_min_size") +
+                        getBundleString("must_be_greater_than") + 10,
+                        getBundleString("error"),
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
         label = new JLabel();
@@ -249,7 +258,9 @@ public class SplitPaneDemo extends AbstractDemo {
                     newSize = -1;
                 }
                 if(newSize > 10) {
+                	// this is a demo, so square Size is enough
                     moon.setMinimumSize(new Dimension(newSize, newSize));
+                    setMinimumSize();
                 } else {
                     JOptionPane.showMessageDialog(splitPane,
                                                   getBundleString("invalid_min_size") +
@@ -270,10 +281,48 @@ public class SplitPaneDemo extends AbstractDemo {
         return controller;
     }
 
+    /**
+     * setMinimumSize of the frame 
+     */
+    void setMinimumSize() {
+    	int width = earth.getMinimumSize().width + moon.getMinimumSize().width + splitPane.getDividerSize();
+    	int height = earth.getMinimumSize().height + moon.getMinimumSize().height;
+    	LOG.info("---------sets MinimumSize of frame to:"+width + "x"+height);
+    	// Resizing operation may be restricted if the user tries to resize window below the minimumSize value. 
+    	// This window behaviour is platform-dependent. 
+    	JXFrame frame = (JXFrame) SwingUtilities.windowForComponent(this);
+    	frame.setMinimumSize(new Dimension(width, height));   	
+    }
     void updateDragEnabled(boolean dragEnabled) {
         divSize.setDragEnabled(dragEnabled);
         earthSize.setDragEnabled(dragEnabled);
         moonSize.setDragEnabled(dragEnabled);
     }
+
+    // implements ComponentListener :
+    
+    /**
+     * show a warning, when componentResized is below limits
+     */
+	@Override
+	public void componentResized(ComponentEvent e) {
+		Component comp = (Component)(e.getSource());
+		if(getMinimumSize().getWidth()>getSize().getWidth() || getMinimumSize().getHeight()>getSize().getHeight()) {
+			LOG.warning("!!!!!! comp.size "+comp.getSize()+ " < "+comp.getMinimumSize());
+//			comp.setSize(comp.getMinimumSize());
+		}
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+	}
 
 }
