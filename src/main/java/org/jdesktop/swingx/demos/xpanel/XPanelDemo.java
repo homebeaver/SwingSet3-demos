@@ -122,6 +122,7 @@ alphaSlider.opaque=false
         labels.put(alphaSlider.getMinimum(), new JLabel("Transparent"));
         labels.put(alphaSlider.getMaximum(), new JLabel("Opaque"));
         alphaSlider.setLabelTable(labels);
+        alphaSlider.setValue(20); xpanel.setAlpha(0.2f);
         alphaSlider.addChangeListener(this); // see method stateChanged
         
         // slider : WEST + VERTICAL damit er nicht von panel verdeckt wird
@@ -139,7 +140,7 @@ alphaSlider.opaque=false
         
     	// malt anfangs mit thumbColor (grau/OceanTheme.PRIMARY2 [r=163,g=184,b=204] "#A3B8CC")
     	// Northern Pond , Mood Cloud Blue 
-        setBackground(UIManager.getDefaults().getColor("ScrollBar.thumb"));
+//        setBackground(UIManager.getDefaults().getColor("ScrollBar.thumb"));
         
         opaque = Boolean.parseBoolean(getBundleString("panel.opaque", Boolean.toString(false)));
         xpanel.setOpaque(opaque);
@@ -152,7 +153,7 @@ alphaSlider.opaque=false
         JLabel moon = new JLabel(StaticUtilities.createImageIcon("images/XPanelDemo.png"));
         moon.setMinimumSize(new Dimension(20, 20));
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, earth, moon);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, moon, earth);
 //        splitPane.setContinuousLayout(true);
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation(200); // BUG?, nein ausserhalb vom xpanel, wenn moon.jpg verwedet
