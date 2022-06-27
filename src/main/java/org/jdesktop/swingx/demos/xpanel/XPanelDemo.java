@@ -4,6 +4,7 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package org.jdesktop.swingx.demos.xpanel;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -14,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,6 +25,7 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 
 import swingset.AbstractDemo;
+import swingset.StaticUtilities;
 
 /**
  * A demo for the {@code JXPanel}.
@@ -72,7 +75,10 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     	});
     }
     
-	private JXPanel panel;
+	private JXPanel xpanel;
+	private boolean opaque = false;
+	
+	// controller:
     private JSlider alphaSlider;
 	// controller prop name
 	private static final String SLIDER = "alphaSlider";
@@ -80,9 +86,9 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     /**
      * Constructor
      */
-    public XPanelDemo(Frame frame) {
+    public XPanelDemo(Frame controllerFrame) {
     	super(new BorderLayout());
-    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
+    	controllerFrame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -102,6 +108,9 @@ alphaSlider.paintLabels=true
 alphaSlider.value=100
 alphaSlider.opaque=false
  */
+        // name Cobalite in https://icolorpalette.com/color/9999ff
+        // in https://colornames.org/color/9999ff : Star Dust Purple  
+//        alphaSlider.setBackground(new Color(153, 153, 255)); 
         alphaSlider.setOpaque(Boolean.parseBoolean(getBundleString(SLIDER+".opaque", Boolean.toString(false))));
         alphaSlider.setPaintLabels(Boolean.valueOf(getBundleString(SLIDER+".paintLabels", Boolean.toString(true))));
         alphaSlider.setValue(Integer.parseInt(getBundleString(SLIDER+".value", "50")));
@@ -109,27 +118,46 @@ alphaSlider.opaque=false
         // can we fill these labels from the properties file? Yes, we can!
         String labelTable = getBundleString(SLIDER+".labelTable");
         LOG.info("alphaSlider.labelTable:"+labelTable);
+        // TODO: Muss die Beschriftung nicht andersrum sein?!
         labels.put(alphaSlider.getMinimum(), new JLabel("Transparent"));
         labels.put(alphaSlider.getMaximum(), new JLabel("Opaque"));
         alphaSlider.setLabelTable(labels);
         alphaSlider.addChangeListener(this); // see method stateChanged
         
-        panel.add(alphaSlider, BorderLayout.SOUTH); // nicht CENTER, damit der Controller ganz sichtbar ist
-        // TODO: besser vertikal!
+        // slider : WEST + VERTICAL damit er nicht von panel verdeckt wird
+        panel.add(new JLabel(" "), BorderLayout.NORTH);
+        panel.add(alphaSlider, BorderLayout.WEST);
+        alphaSlider.setOrientation(JSlider.VERTICAL);
 
     	return panel;
 	}
 
-
+    private static final String IMG_PATH = "splitpane/"; // prefix dir
     private void createXPanelDemo() {
-        setBackground(javax.swing.UIManager.getDefaults().getColor("ScrollBar.thumb"));
+        xpanel = new JXPanel();
+        xpanel.setName("panel");
         
-        panel = new JXPanel();
-        panel.setName("panel");
-        // TODO:
-//        panel.setOpaque(Boolean.parseBoolean(getBundleString("panel.opaque", Boolean.toString(false))));
-        panel.add(new JSplitPane());
-        add(panel);
+    	// malt anfangs mit thumbColor (grau/OceanTheme.PRIMARY2 [r=163,g=184,b=204] "#A3B8CC")
+    	// Northern Pond , Mood Cloud Blue 
+        setBackground(UIManager.getDefaults().getColor("ScrollBar.thumb"));
+        
+        opaque = Boolean.parseBoolean(getBundleString("panel.opaque", Boolean.toString(false)));
+        xpanel.setOpaque(opaque);
+        
+        //panel.add(new JSplitPane());
+        JLabel earth = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"earth.jpg"));
+        earth.setMinimumSize(new Dimension(20, 20));
+
+//        JLabel moon = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"moon.jpg"));
+        JLabel moon = new JLabel(StaticUtilities.createImageIcon("images/XPanelDemo.png"));
+        moon.setMinimumSize(new Dimension(20, 20));
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, earth, moon);
+//        splitPane.setContinuousLayout(true);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setDividerLocation(200); // BUG?, nein ausserhalb vom xpanel, wenn moon.jpg verwedet
+        xpanel.add(splitPane);
+        add(xpanel);
     }
     
     /**
@@ -140,10 +168,16 @@ alphaSlider.opaque=false
 //		if(changeSize) return;
 		synchronized (this) {
 //			changeSize = true;
+//	        panel.setOpaque(opaque);
 			int alpha = alphaSlider.getValue();
-			LOG.info("XPanelDemo.Alpha old/new:"+panel.getAlpha()+"/"+alpha + ", ChangeEvent:"+ce);
+			LOG.fine("XPanelDemo.Opaque="+xpanel.isOpaque()+", alpha old/new:"+xpanel.getAlpha()+"/"+alpha + ", ChangeEvent:"+ce);
 			// alphaSlider liefert int 0..100, setAlpha erwartet float 0..1
-			panel.setAlpha(1f/100*alpha);
+			if(alpha==1) {
+		        xpanel.setOpaque(opaque);
+//			} else {
+//				panel.setAlpha(1f*alpha/100);
+			}
+			xpanel.setAlpha(1f*alpha/100);
 			SwingUtilities.updateComponentTreeUI(this);
 //			changeSize = false;
 		}
