@@ -10,7 +10,7 @@
   
   <name>swingset3 demos</name>
   <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 + swingset3</description>
-  <version>1.6.9-SNAPSHOT</version>
+  <version>1.7.0-SNAPSHOT</version>
   
   <inceptionYear>2005</inceptionYear>
 	
@@ -176,7 +176,7 @@ Unable to find javadoc command: The environment variable JAVA_HOME is not correc
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.12</version>
+				<version>1.6.13</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -239,37 +239,37 @@ Unable to find javadoc command: The environment variable JAVA_HOME is not correc
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-core</artifactId>
-			<version>1.6.9-SNAPSHOT</version>
+			<version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-action</artifactId>
-			<version>1.6.9-SNAPSHOT</version>
+			<version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-autocomplete</artifactId>
-			<version>1.6.9-SNAPSHOT</version>
+			<version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-plaf</artifactId>
-			<version>1.6.9-SNAPSHOT</version>
+			<version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-painters</artifactId>
-			<version>1.6.9-SNAPSHOT</version>
+			<version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-common</artifactId>
-			<version>1.6.9-SNAPSHOT</version>
+			<version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-testsupport</artifactId>
-			<version>1.6.9-SNAPSHOT</version>
+			<version>1.7.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
