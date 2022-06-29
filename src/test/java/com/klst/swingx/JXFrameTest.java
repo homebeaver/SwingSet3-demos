@@ -4,6 +4,9 @@ import javax.swing.JMenu;
 
 import org.jdesktop.swingx.JXStatusBar;
 
+import io.github.homebeaver.swingset.demo.DemoJXFrame;
+import io.github.homebeaver.swingset.demo.MainJXframe;
+
 public class JXFrameTest {
 
 	public static void main(String args[]) {
@@ -36,7 +39,7 @@ public class JXFrameTest {
      * - closing other WindowFrame closes only this window
      */
     public void interactiveMultipleFrames() {
-        WindowFrame gossip = RootFrame.getInstance(); // RootFrame contains a simple frame manager
+    	DemoJXFrame gossip = MainJXframe.getInstance(); // MainJXframe contains a simple frame manager
         @SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
 
