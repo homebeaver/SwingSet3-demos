@@ -7,12 +7,25 @@
   <artifactId>swingset3-demos</artifactId>
   <packaging>jar</packaging>
   <url>https://github.com/homebeaver/SwingSet3-demos</url>
+
+  <scm>
+	<url>https://github.com/homebeaver/SwingSet3-demos</url>
+	<connection>scm:git:https://github.com/homebeaver/SwingSet3-demos.git</connection>
+	<developerConnection>scm:git:https://github.com/homebeaver/</developerConnection>
+  </scm>
   
   <name>swingset3 demos</name>
   <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 + swingset3</description>
   <version>1.6.9</version>
   
   <inceptionYear>2005</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL)</name>
+      <url>http://www.gnu.org/copyleft/lesser.html</url>
+    </license>
+  </licenses>
 	
   <distributionManagement>
     <snapshotRepository>
@@ -138,13 +151,10 @@
                 </executions>
             </plugin>
 
-<!-- [ERROR] Failed to execute goal org.apache.maven.plugins:maven-javadoc-plugin:3.1.1:jar 
-(attach-javadocs) on project swingset3-demos: MavenReportException: Error while generating Javadoc: 
-Unable to find javadoc command: The environment variable JAVA_HOME is not correctly set.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.3.2</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -154,8 +164,7 @@ Unable to find javadoc command: The environment variable JAVA_HOME is not correc
                     </execution>
                 </executions>
             </plugin>
- -->
-
+ 
 			<plugin>
 				<groupId>org.simplify4u.plugins</groupId>
 				<artifactId>sign-maven-plugin</artifactId>
