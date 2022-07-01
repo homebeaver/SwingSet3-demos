@@ -7,6 +7,11 @@
   <artifactId>swingset3-demos</artifactId>
   <packaging>jar</packaging>
   <url>https://github.com/homebeaver/SwingSet3-demos</url>
+  <developers>
+	<developer>
+		<name>Eugen H</name>
+	</developer>
+  </developers>
 
   <scm>
 	<url>https://github.com/homebeaver/SwingSet3-demos</url>
