@@ -42,7 +42,7 @@ import org.pushingpixels.trident.interpolator.PropertyInterpolatorSource;
  */
 public class AWTPropertyInterpolators implements PropertyInterpolatorSource {
 	private Set<PropertyInterpolator> interpolators;
-
+	/** ctor */
 	public AWTPropertyInterpolators() {
 		this.interpolators = new HashSet<PropertyInterpolator>();
 		this.interpolators.add(new ColorInterpolator());

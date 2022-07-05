@@ -31,23 +31,43 @@ public class DisplayInfo<T> {
     private final String description;
     private final T item;
     
+    /**
+     * ctor
+     * @param item of class T
+     */
     public DisplayInfo(T item) {
         this(item.getClass().getSimpleName(), item);
     }
     
+    /**
+     * ctor
+     * @param description for the item
+     * @param item of class T
+     */
     public DisplayInfo(String description, T item) {
         this.description = Contract.asNotNull(description, "description cannot be null");
         this.item = item;
     }
     
+    /**
+     * getter
+     * @return description
+     */
     public String getDescription() {
         return description;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public String toString() {
         return getDescription();
     }
     
+    /**
+     * getter
+     * @return item of class T
+     */
     public T getValue() {
         return item;
     }

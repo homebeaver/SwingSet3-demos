@@ -39,6 +39,9 @@ import org.jdesktop.swingx.action.AbstractActionExt;
 
 import swingset.StaticUtilities;
 
+/**
+ * multi window Frame used for Demos
+ */
 @SuppressWarnings("serial")
 public class DemoJXFrame extends JXFrame {
 
@@ -49,6 +52,10 @@ public class DemoJXFrame extends JXFrame {
 		return windowCounter;
 	}
 	private int windowNo;
+	/**
+	 * get singleton instance of MainJXframe
+	 * @return MainJXframe singleton
+	 */
 	public MainJXframe getRootFrame() {
 		return MainJXframe.getInstance();
 	}
@@ -122,10 +129,21 @@ Es sei denn man implementiert JXToggleButton TODO
             return tb;
         }
  */
+	/**
+	 * a special ToolBar with toggle Buttons
+	 */
     protected class ToggleButtonToolBar extends JToolBar {
+    	/**
+    	 * ctor
+    	 */
         public ToggleButtonToolBar() {
             super();
         }
+        /**
+         * add ToggleButton for Action a
+         * @param a the Action
+         * @return JToggleButton
+         */
         public JToggleButton addToggleButton(Action a) {
 /*
 aus super:        	
@@ -137,6 +155,11 @@ aus super:
             return b;
 
         }
+        /**
+         * create ToggleComponent (JToggleButton) for an Action
+         * @param a the Action
+         * @return JToggleButton
+         */
         protected JToggleButton createToggleComponent(Action a) {
         	JToggleButton b = new JToggleButton() {
                 protected PropertyChangeListener createActionPropertyChangeListener(Action a) {
@@ -158,6 +181,12 @@ aus super:
 
     }
 
+    /**
+     * add Action To ToolBar
+     * @param frame JXFrame with ToolBar
+     * @param action to add
+     * @return Button added to ToolBar
+     */
 	// aus InteractiveTestCase.createAndFillMenuBar:
     public AbstractButton addActionToToolBar(JXFrame frame, Action action) {
         JToolBar toolbar = frame.getRootPaneExt().getToolBar();
@@ -180,6 +209,10 @@ aus super:
         return null;
     }
 
+    /**
+     * TODO
+     * @return JMenu
+     */
     public JMenu createDemosMenu() {
     	LOG.warning("**** nix ****");
     	return null;
@@ -210,6 +243,8 @@ aus super:
     
     /**
      * Creates a LaF JMenuItem for the Look and Feel Menu
+     * @param info LookAndFeelInfo
+     * @return JMenuItem
      */
     protected JMenuItem createLafMenuItem(UIManager.LookAndFeelInfo info) {
     	SetPlafAction action = new SetPlafAction(info.getName(), info.getClassName(), getLaFGroup(), this);
@@ -230,6 +265,11 @@ aus super:
     	return mi;
     }
 
+    /**
+     * Creates a LaF JMenu for languages
+     * @param target Window
+     * @return JMenu
+     */
     protected JMenu createLanguageMenu(Window target) {
     	Locale defaultLocale = JComponent.getDefaultLocale();
     	List<DisplayLocale> locales = new ArrayList<DisplayLocale>();
@@ -263,6 +303,11 @@ aus super:
     }
 
     JMenu themeMenu;
+    /**
+     * Creates a LaF JMenu for metal Themes Menu
+     * @param target Window
+     * @return JMenu
+     */
     protected JMenu createThemeMenu(Window target) {
     	String[] themeInfo = { "javax.swing.plaf.metal.OceanTheme" , "javax.swing.plaf.metal.DefaultMetalTheme"
     		, "swingset.plaf.AquaTheme"

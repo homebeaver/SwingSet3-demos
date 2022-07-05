@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.pushingpixels.trident.interpolator;
 
 import org.pushingpixels.trident.ease.TimelineEase;
@@ -94,7 +93,7 @@ public class KeyFrames<T> {
 	 * @param interpolators
 	 *            collection of Interpolators that control the calculation of
 	 *            values in each of the intervals defined by keyFrames. If this
-	 *            value is null, a {@link LinearInterpolator} will be used for
+	 *            value is null, a LinearInterpolator {@link interpolators} will be used for
 	 *            all intervals. If there is only one interpolator, that
 	 *            interpolator will be used for all intervals. Otherwise, there
 	 *            must be a number of interpolators equal to the number of
@@ -123,7 +122,7 @@ public class KeyFrames<T> {
 	 * @param interpolators
 	 *            collection of Interpolators that control the calculation of
 	 *            values in each of the intervals defined by keyFrames. If this
-	 *            value is null, a {@link LinearInterpolator} will be used for
+	 *            value is null, a LinearInterpolator {@link interpolators} will be used for
 	 *            all intervals. If there is only one interpolator, that
 	 *            interpolator will be used for all intervals. Otherwise, there
 	 *            must be a number of interpolators equal to the number of

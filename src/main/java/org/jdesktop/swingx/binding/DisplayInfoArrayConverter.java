@@ -34,6 +34,10 @@ public class DisplayInfoArrayConverter<T> extends Converter<DisplayInfo<T>, T[]>
     private Class<T> type;
     private T[] empty;
     
+    /**
+     * ctor
+     * @param type Class cannot be null
+     */
     public DisplayInfoArrayConverter(Class<T> type) {
         this.type = Contract.asNotNull(type, "type cannot be null");
         empty = createArray(0);
@@ -56,9 +60,9 @@ public class DisplayInfoArrayConverter<T> extends Converter<DisplayInfo<T>, T[]>
     }
  
     /**
-     * {@inheritDoc} <p>
+     * {@inheritDoc}
      * 
-     * @throws UnsupportedOperationException.
+     * @throws UnsupportedOperationException always throws it
      */
     @Override
     public DisplayInfo<T> convertReverse(T[] value) {

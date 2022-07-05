@@ -6,6 +6,11 @@ import javax.swing.tree.TreeNode;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
+/**
+ * TODO
+ * java doc
+ *
+ */
 public class DemoTreeTableModel extends AbstractTreeTableModel {
 
 //	private static final Logger LOG = Logger.getLogger(DemoTreeTableModel.class.getName());
