@@ -40,7 +40,7 @@ public class DemoCalendarRenderingHandler extends BasicCalendarRenderingHandler 
 
     /**
      * Sets the <code>Highlighter</code>s to the table, replacing any old settings.
-     * None of the given Highlighters must be null.<p>
+     * None of the given Highlighters must be null.
      * 
      * @param highlighters zero or more not null highlighters to use for renderer decoration.
      * @throws NullPointerException if array is null or array contains null values.
@@ -55,7 +55,6 @@ public class DemoCalendarRenderingHandler extends BasicCalendarRenderingHandler 
     /**
      * Appends the <code>Highlighter</code>s to the end of the list of used
      * <code>Highlighter</code>s. None of the given Highlighters must be null.
-     * <p>
      * 
      * @param highlighters zero or more not null highlighters to use for renderer decoration.
      * @throws NullPointerException if array is null or array contains null values.
@@ -94,13 +93,12 @@ public class DemoCalendarRenderingHandler extends BasicCalendarRenderingHandler 
     }
 
     /**
-     * Returns a CalendarAdapter installed with the given monthView and 
-     * state.
+     * Returns a CalendarAdapter installed with the given monthView and state.
      * 
-     * @param monthView
-     * @param calendar
-     * @param dayState
-     * @return
+     * @param monthView JXMonthView
+     * @param calendar Calendar
+     * @param dayState CalendarState
+     * @return DemoCalendarAdapter
      */
     protected DemoCalendarAdapter getCalendarAdapter(JXMonthView monthView, Calendar calendar, CalendarState dayState) {
         if (adapter == null) {
@@ -119,7 +117,7 @@ public class DemoCalendarRenderingHandler extends BasicCalendarRenderingHandler 
         /**
          * Instantiates a ComponentAdapter with the given monthView.
          * 
-         * @param component
+         * @param component monthView
          */
         public DemoCalendarAdapter(JXMonthView component) {
             super(component);
@@ -149,7 +147,7 @@ public class DemoCalendarRenderingHandler extends BasicCalendarRenderingHandler 
         
         /**
          * Returns a clone of the current calendar.
-         * @return
+         * @return Calendar
          */
         public Calendar getCalendar() {
             // PENDING JW: this should be handled in super
@@ -157,8 +155,8 @@ public class DemoCalendarRenderingHandler extends BasicCalendarRenderingHandler 
         }
         
         /**
-         * @param dayState
-         * @return
+         * boolean getter for DayInMonth
+         * @return true for isDayInMonth 
          */
         public boolean isDayInMonth() {
             return (CalendarState.IN_MONTH == getCalendarState()) 

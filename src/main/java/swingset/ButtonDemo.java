@@ -49,6 +49,9 @@ import org.jdesktop.swingx.icon.CircleIcon;
  */
 public class ButtonDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JButton.gif";
 
 	private static final long serialVersionUID = -61808634982886166L;
@@ -56,6 +59,7 @@ public class ButtonDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
@@ -106,6 +110,8 @@ public class ButtonDemo extends AbstractDemo {
 
     /**
      * ButtonDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public ButtonDemo(Frame frame) {
     	super(new BorderLayout());
@@ -181,6 +187,9 @@ public class ButtonDemo extends AbstractDemo {
         return p;
     }
 
+    /**
+     * add Buttons
+     */
     public void addButtons() {
         tab.addTab(getBundleString("buttons"), buttonPanel);
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -354,6 +363,9 @@ public class ButtonDemo extends AbstractDemo {
         buttons.add(button);
     }
     
+    /**
+     * add RadioButtons
+     */
     public void addRadioButtons() {
         ButtonGroup group = new ButtonGroup();
 
@@ -443,7 +455,9 @@ public class ButtonDemo extends AbstractDemo {
         currentControls = radiobuttons;
     }
 
-
+    /**
+     * add CheckBoxes
+     */
     public void addCheckBoxes() {
         tab.addTab(getBundleString("checkboxes"), checkboxPanel);
         checkboxPanel.setLayout(new BoxLayout(checkboxPanel, BoxLayout.X_AXIS));
@@ -727,6 +741,10 @@ public class ButtonDemo extends AbstractDemo {
         return controls;
     }
 
+    /**
+     * getter
+     * @return currentControls
+     */
     public Vector<AbstractButton> getCurrentControls() {
         return currentControls;
     }

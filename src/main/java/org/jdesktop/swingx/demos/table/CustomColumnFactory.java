@@ -85,6 +85,10 @@ public class CustomColumnFactory extends ColumnFactory {
         }
     }
 //    </snip>
+    /**
+     * Sets the title of view column
+     * @param columnExt TableColumn extension for enhanced view column configuration
+     */
     protected void configureTitle(TableColumnExt columnExt) {
     	columnExt.setTitle(OscarTableModel.columnIds[columnExt.getModelIndex()]);
     }
@@ -124,22 +128,46 @@ public class CustomColumnFactory extends ColumnFactory {
         }
     }
 
+    /**
+     * set Base Class
+     * @param baseClass the Base Class
+     */
     public void setBaseClass(Class<?> baseClass) {
         this.baseClass = baseClass;
     }
     
+    /**
+     * add Component Provider
+     * @param id with which the provider is to be associated
+     * @param provider ComponentProvider to add
+     */
     public void addComponentProvider(Object id, ComponentProvider<?> provider) {
         getComponentProviders().put(id, provider);
     }
     
+    /**
+     * add Prototype Value
+     * @param id with which the prototype is to be associated
+     * @param prototype value Object to add
+     */
     public void addPrototypeValue(Object id, Object prototype) {
         getPrototypeValues().put(id, prototype);
     }
     
+    /**
+     * add Highlighter Object
+     * @param id with which the highlighter is to be associated
+     * @param hl Highlighter to add
+     */
     public void addHighlighter(Object id, Highlighter hl) {
         getHighlighters().put(id, hl);
     }
 
+    /**
+     * add Comparator Object
+     * @param id with which the comparator is to be associated
+     * @param comparator Comparator to add
+     */
     public void addComparator(Object id, Comparator<?> comparator) {
         getComparators().put(id, comparator);
     }

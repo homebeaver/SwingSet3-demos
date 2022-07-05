@@ -59,15 +59,18 @@ import javax.swing.filechooser.FileView;
  *    chooser.setFileView(fileView);
  *
  * @author Jeff Dinkins
+ * @author EUG https://github.com/homebeaver (reorg + doc)
  */
 public class ExampleFileView extends FileView {
-    private Hashtable icons = new Hashtable(5);
-    private Hashtable fileDescriptions = new Hashtable(5);
-    private Hashtable typeDescriptions = new Hashtable(5);
+	
+    private Hashtable<String, Icon> icons = new Hashtable<String, Icon>(5);
+    private Hashtable<File, String> fileDescriptions = new Hashtable<File, String>(5);
+    private Hashtable<String, String> typeDescriptions = new Hashtable<String, String>(5);
 
     /**
      * The name of the file.  Do nothing special here. Let
      * the system file view handle this.
+     * @param f File 
      * @see FileView#getName
      */
     public String getName(File f) {
@@ -76,6 +79,9 @@ public class ExampleFileView extends FileView {
 
     /**
      * Adds a human readable description of the file.
+     * 
+     * @param f File 
+     * @param fileDescription the description
      */
     public void putDescription(File f, String fileDescription) {
         fileDescriptions.put(f, fileDescription);
@@ -84,6 +90,7 @@ public class ExampleFileView extends FileView {
     /**
      * A human readable description of the file.
      *
+     * @param f File 
      * @see FileView#getDescription
      */
     public String getDescription(File f) {
@@ -93,6 +100,9 @@ public class ExampleFileView extends FileView {
     /**
      * Adds a human readable type description for files. Based on "dot"
      * extension strings, e.g: ".gif". Case is ignored.
+     * 
+     * @param extension, 
+     * @param typeDescription the description
      */
     public void putTypeDescription(String extension, String typeDescription) {
         typeDescriptions.put(extension, typeDescription);
@@ -102,6 +112,9 @@ public class ExampleFileView extends FileView {
      * Adds a human readable type description for files of the type of
      * the passed in file. Based on "dot" extension strings, e.g: ".gif".
      * Case is ignored.
+     * 
+     * @param f File 
+     * @param typeDescription the description
      */
     public void putTypeDescription(File f, String typeDescription) {
         putTypeDescription(getExtension(f), typeDescription);
@@ -117,8 +130,10 @@ public class ExampleFileView extends FileView {
     }
 
     /**
-     * Convenience method that returns the "dot" extension for the
-     * given file.
+     * Convenience method that returns the "dot" extension for the given file.
+     * 
+     * @param f File
+     * @return extension or null
      */
     public String getExtension(File f) {
         String name = f.getName();
@@ -133,20 +148,26 @@ public class ExampleFileView extends FileView {
     }
 
     /**
-     * Adds an icon based on the file type "dot" extension
-     * string, e.g: ".gif". Case is ignored.
+     * Adds an icon based on the file type "dot" extension string, e.g: ".gif". 
+     * Case is ignored.
+     * 
+     * @param extension e.g: ".gif"
+     * @param icon Icon
      */
     public void putIcon(String extension, Icon icon) {
         icons.put(extension, icon);
     }
 
     /**
-     * Icon that reperesents this file. Default implementation returns
-     * null. You might want to override this to return something more
-     * interesting.
+     * Icon that reperesents this file. 
+     * Default implementation returns null. 
+     * You might want to override this to return something more interesting.
+     * @param f File 
+     * @return Icon
      *
      * @see FileView#getIcon
      */
+    @Override
     public Icon getIcon(File f) {
         Icon icon = null;
         String extension = getExtension(f);

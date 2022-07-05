@@ -78,6 +78,7 @@ public class BusyLabelDemo extends AbstractDemo implements ChangeListener {
     
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -102,6 +103,8 @@ public class BusyLabelDemo extends AbstractDemo implements ChangeListener {
   
     /**
      * HighlighterDemo Constructor
+     * 
+     * @param frame controller Frame
      */
 	public BusyLabelDemo(Frame frame) {
     	super(new BorderLayout());

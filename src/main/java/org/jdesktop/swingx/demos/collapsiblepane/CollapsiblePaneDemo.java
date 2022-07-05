@@ -49,6 +49,7 @@ public class CollapsiblePaneDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -80,6 +81,8 @@ public class CollapsiblePaneDemo extends AbstractDemo {
     
     /**
      * CollapsiblePaneDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public CollapsiblePaneDemo(Frame frame) {
     	super(new BorderLayout());

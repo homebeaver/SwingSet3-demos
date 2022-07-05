@@ -40,7 +40,7 @@ import swingset.AbstractDemo;
  *
  * @author EUG https://github.com/homebeaver (reorg)
  * @author Karl George Schaefer
- * @author Romain Guy <romain.guy@mac.com> (original version)
+ * @author Romain Guy romain.guy@mac.com (original version)
  */
 //@DemoProperties(
 //    value = "BlendComposite Demo",
@@ -63,6 +63,7 @@ public class BlendCompositeDemo extends AbstractDemo {
 
 	/**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -155,6 +156,8 @@ public class BlendCompositeDemo extends AbstractDemo {
     
     /**
      * BlendCompositeDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public BlendCompositeDemo(Frame frame) {
     	super(new BorderLayout());

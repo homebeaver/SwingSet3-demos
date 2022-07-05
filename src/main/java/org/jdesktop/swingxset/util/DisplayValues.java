@@ -30,8 +30,9 @@ import org.jdesktop.swingx.renderer.StringValues;
  */
 public class DisplayValues {
 
+    /** TITLE_WORDS_UNDERSCORE */
     public static final StringValue TITLE_WORDS_UNDERSCORE = new TitleWords("_");
-    
+    /** DISPLAY_INFO_DESCRIPTION */
     public static final StringValue DISPLAY_INFO_DESCRIPTION = new StringValue() {
 
         @Override
@@ -45,15 +46,25 @@ public class DisplayValues {
         
     };
     
-  
+    /**
+     * TODO
+     * desc
+     */
     public static class TitleWords implements StringValue {
 
         private String breakRegex;
         
+        /**
+         * ctor
+         */
         public TitleWords() {
             this(null);
         }
         
+        /**
+         * ctor
+         * @param breakRegex regular Expression to break words
+         */
         public TitleWords(String breakRegex) {
             this.breakRegex = breakRegex != null ? breakRegex : "\\s"; 
         }

@@ -16,17 +16,29 @@ import org.jdesktop.swingx.painter.AlphaPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.PinstripePainter;
 
+/**
+ * a simple DecoratorFactory
+ * used in SearchDemo
+ *
+ */
 public class DecoratorFactory {
 
+	/** Color */
     public static final Color MATCH_COLOR = Color.YELLOW;
+	/** Color */
     public static final Color PINSTRIPE_COLOR = Color.GREEN;
     
+    /**
+     * Factory for PlainPainter
+     * @return MattePainter
+     */
     public static Painter<Component> createPlainPainter() {
         return new MattePainter(MATCH_COLOR);
     }
     
     /**
-     * @return
+     * create AnimatedPainter
+     * @return Painter
      */
     public static Painter<Component> createAnimatedPainter() {
         final AlphaPainter<Component> alpha = new AlphaPainter<Component>();

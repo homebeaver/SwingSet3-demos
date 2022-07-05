@@ -45,16 +45,26 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 
-
 /**
+ * used as controller in ButtonDemo
+ * 
  * @author Jeff Dinkins
  * @author Chester Rose
  * @author Brian Beck
+ * @author EUG https://github.com/homebeaver (reorg + doc)
  */
+// @see ButtonDemo#createControls
+@SuppressWarnings("serial")
 public class DirectionPanel extends JPanel {
 
     private ButtonGroup group;
 
+    /**
+     * ctor
+     * @param enable true to enable the selection
+     * @param selection String indicating Compass-direction
+     * @param l ActionListener
+     */
     public DirectionPanel(boolean enable, String selection, ActionListener l) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setAlignmentY(TOP_ALIGNMENT);
@@ -94,10 +104,18 @@ public class DirectionPanel extends JPanel {
         add(thirdThree);
     }
 
+    /**
+     * returns the Action Command of the selected Button
+     * @return the selected button command
+     */
     public String getSelection() {
         return group.getSelection().getActionCommand();
     }
 
+    /**
+     * TODO
+     * @param selection ActionCommand of the button
+     */
     public void setSelection( String selection  ) {
         Enumeration<?> e = group.getElements();
         while( e.hasMoreElements() ) {
@@ -109,26 +127,26 @@ public class DirectionPanel extends JPanel {
     }
 
     // Chester's way cool layout buttons
-    public ImageIcon bl_dot   = loadImageIcon("bl.gif","bottom left layout button");
-    public ImageIcon bldn_dot = loadImageIcon("bldn.gif","selected bottom left layout button");
-    public ImageIcon bm_dot   = loadImageIcon("bm.gif","bottom middle layout button");
-    public ImageIcon bmdn_dot = loadImageIcon("bmdn.gif","selected bottom middle layout button");
-    public ImageIcon br_dot   = loadImageIcon("br.gif","bottom right layout button");
-    public ImageIcon brdn_dot = loadImageIcon("brdn.gif","selected bottom right layout button");
-    public ImageIcon c_dot    = loadImageIcon("c.gif","center layout button");
-    public ImageIcon cdn_dot  = loadImageIcon("cdn.gif","selected center layout button");
-    public ImageIcon ml_dot   = loadImageIcon("ml.gif","middle left layout button");
-    public ImageIcon mldn_dot = loadImageIcon("mldn.gif","selected middle left layout button");
-    public ImageIcon mr_dot   = loadImageIcon("mr.gif","middle right layout button");
-    public ImageIcon mrdn_dot = loadImageIcon("mrdn.gif","selected middle right layout button");
-    public ImageIcon tl_dot   = loadImageIcon("tl.gif","top left layout button");
-    public ImageIcon tldn_dot = loadImageIcon("tldn.gif","selected top left layout button");
-    public ImageIcon tm_dot   = loadImageIcon("tm.gif","top middle layout button");
-    public ImageIcon tmdn_dot = loadImageIcon("tmdn.gif","selected top middle layout button");
-    public ImageIcon tr_dot   = loadImageIcon("tr.gif","top right layout button");
-    public ImageIcon trdn_dot = loadImageIcon("trdn.gif","selected top right layout button");
+    private ImageIcon bl_dot   = loadImageIcon("bl.gif","bottom left layout button");
+    private ImageIcon bldn_dot = loadImageIcon("bldn.gif","selected bottom left layout button");
+    private ImageIcon bm_dot   = loadImageIcon("bm.gif","bottom middle layout button");
+    private ImageIcon bmdn_dot = loadImageIcon("bmdn.gif","selected bottom middle layout button");
+    private ImageIcon br_dot   = loadImageIcon("br.gif","bottom right layout button");
+    private ImageIcon brdn_dot = loadImageIcon("brdn.gif","selected bottom right layout button");
+    private ImageIcon c_dot    = loadImageIcon("c.gif","center layout button");
+    private ImageIcon cdn_dot  = loadImageIcon("cdn.gif","selected center layout button");
+    private ImageIcon ml_dot   = loadImageIcon("ml.gif","middle left layout button");
+    private ImageIcon mldn_dot = loadImageIcon("mldn.gif","selected middle left layout button");
+    private ImageIcon mr_dot   = loadImageIcon("mr.gif","middle right layout button");
+    private ImageIcon mrdn_dot = loadImageIcon("mrdn.gif","selected middle right layout button");
+    private ImageIcon tl_dot   = loadImageIcon("tl.gif","top left layout button");
+    private ImageIcon tldn_dot = loadImageIcon("tldn.gif","selected top left layout button");
+    private ImageIcon tm_dot   = loadImageIcon("tm.gif","top middle layout button");
+    private ImageIcon tmdn_dot = loadImageIcon("tmdn.gif","selected top middle layout button");
+    private ImageIcon tr_dot   = loadImageIcon("tr.gif","top right layout button");
+    private ImageIcon trdn_dot = loadImageIcon("trdn.gif","selected top right layout button");
 
-    public ImageIcon loadImageIcon(String filename, String description) {
+    private ImageIcon loadImageIcon(String filename, String description) {
     	String path = "/swingset/images/buttons/" + filename;
         return new ImageIcon(getClass().getResource(path), description);
     }
@@ -138,7 +156,15 @@ public class DirectionPanel extends JPanel {
 
         /**
          * A layout direction button
-         */
+    	 * 
+    	 * @param icon Image Icon
+    	 * @param downIcon Image Icon for pressed button
+    	 * @param direction Compass-direction TODO use javax.swing.SwingConstants.EAST instead "E"
+    	 * @param description a description String
+    	 * @param l ActionListener
+    	 * @param group ButtonGroup of the button
+    	 * @param selected boolean expression 
+    	 */
         public DirectionButton(Icon icon, Icon downIcon, String direction,
                                String description, ActionListener l,
                                ButtonGroup group, boolean selected)

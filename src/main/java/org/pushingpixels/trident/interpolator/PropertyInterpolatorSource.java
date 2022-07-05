@@ -32,5 +32,6 @@ package org.pushingpixels.trident.interpolator;
 import java.util.Set;
 
 public interface PropertyInterpolatorSource {
+	/** @return PropertyInterpolators */
 	public Set<PropertyInterpolator> getPropertyInterpolators();
 }

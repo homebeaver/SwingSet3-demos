@@ -12,6 +12,9 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import io.github.homebeaver.swingset.demo.DemoAction.Category;
 
+/**
+ * a JXTaskPane singleton for DEMO Tasks
+ */
 public class DemoJXTasks extends JXTaskPane {
 
 	private static final long serialVersionUID = -5696726866113684525L;
@@ -25,6 +28,10 @@ public class DemoJXTasks extends JXTaskPane {
         return INSTANCE;
     }
     
+    /**
+     * get TaskPaneContainer
+     * @return JXTaskPaneContainer
+     */
     public static JXTaskPaneContainer getTaskPaneContainer() {
     	return getInstance().tpc;
     }

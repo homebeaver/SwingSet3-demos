@@ -25,6 +25,11 @@ import org.jdesktop.swingx.treetable.TreeTableNode;
 
 import swingset.StaticUtilities;
 
+/**
+ * Class Contributors
+ * used in SearchDemo, XListDemo, HighlighterExtDemo
+ *
+ */
 public class Contributors {
 
     private static final Logger LOG = Logger.getLogger(Contributors.class.getName());
@@ -37,10 +42,17 @@ public class Contributors {
     private NodeModel contributorNodeModel;
     private int columnCount;
 
+    /**
+     * ctor
+     */
     public Contributors() {
         this(4);
     }
     
+    /**
+     * ctor
+     * @param columnCount number of columns
+     */
     public Contributors(int columnCount) {
         this.columnCount = columnCount;
         try {
@@ -51,22 +63,42 @@ public class Contributors {
 
     }
 
+    /**
+     * Returns Contributor TableModel
+     * @return TableModel
+     */
     public TableModel getTableModel() {
         return tableModel;
     }
     
+    /**
+     * Returns Contributor ListModel
+     * @return ListModel
+     */
     public ListModel<Object> getListModel() {
         return listModel;
     }
     
+    /**
+     * Returns RootNode of the Tree
+     * @return rootNode
+     */
     public TreeNode getRootNode() {
         return rootNode;
     }
     
+    /**
+     * Returns Contributor List
+     * @return List
+     */
     public static List<Contributor> getContributors() {
         return new Contributors().contributors;
     }
     
+    /**
+     * Returns Contributor ListModel
+     * @return ListModel
+     */
     public static ListModel<Contributor> getContributorListModel() {
         List<Contributor> list = getContributors();
         DefaultComboBoxModel<Contributor> model = new DefaultComboBoxModel<Contributor>();
@@ -203,6 +235,10 @@ public class Contributors {
         }
     }
 
+    /**
+     * Returns Contributor NodeModel
+     * @return NodeModel
+     */
     public NodeModel getContributorNodeModel() {
         return contributorNodeModel;
         

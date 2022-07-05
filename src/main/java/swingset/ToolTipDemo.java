@@ -26,6 +26,9 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class ToolTipDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/ToolTip.gif";
 
 	private static final long serialVersionUID = 8981063652293220475L;

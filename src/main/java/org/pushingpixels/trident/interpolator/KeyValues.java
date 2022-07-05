@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.pushingpixels.trident.interpolator;
 
 import java.util.*;
@@ -45,11 +44,11 @@ import org.pushingpixels.trident.TimelinePropertyBuilder.PropertySetter;
  * At each of the times in {@link KeyTimes}, the property will take on the
  * corresponding value in the KeyValues object. Between these times, the
  * property will take on a value based on the interpolation information stored
- * in the KeyFrames object and the {@link Evaluator} for the type of the values
+ * in the KeyFrames object and the {@link evaluator} for the type of the values
  * in KeyValues.
  * <p>
  * This class has built-in support for various known types, as defined in
- * {@link Evaluator}.
+ * {@link evaluator}.
  * <p>
  * For a simple example using KeyValues to create a KeyFrames and PropertySetter
  * object, see the class header comments in {@link PropertySetter}.
@@ -74,7 +73,7 @@ public class KeyValues<T> {
 	 *            first value is dynamically determined at runtime when the
 	 *            animation is started.
 	 * @throws IllegalArgumentException
-	 *             if an {@link Evaluator} cannot be found that can interpolate
+	 *             if an {@link evaluator} cannot be found that can interpolate
 	 *             between the value types supplied
 	 */
 	public static <T> KeyValues<T> create(T... params) {

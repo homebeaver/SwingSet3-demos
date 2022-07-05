@@ -12,13 +12,25 @@ public class DisplayLocale {
 
     private final Locale locale;
     
+    /**
+     * ctor 
+     * @param lang language code for Locale to wrap
+     */
     public DisplayLocale(String lang) {
         this.locale = new Locale(lang);
     }
+    /**
+     * ctor
+     * @param item Locale to wrap
+     */
     public DisplayLocale(Locale item) {
         this.locale = item;
     }
     
+    /**
+     * get the wrapped locale 
+     * @return Locale locale
+     */
     public Locale getLocale() {
         return locale;
     }

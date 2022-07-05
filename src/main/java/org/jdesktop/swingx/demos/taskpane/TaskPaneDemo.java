@@ -56,6 +56,7 @@ public class TaskPaneDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -81,6 +82,8 @@ public class TaskPaneDemo extends AbstractDemo {
     
     /**
      * Constructor
+     * 
+     * @param frame controller Frame
      */
     public TaskPaneDemo(Frame frame) {
     	super(new BorderLayout());

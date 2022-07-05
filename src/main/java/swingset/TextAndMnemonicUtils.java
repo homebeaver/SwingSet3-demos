@@ -45,13 +45,13 @@ import javax.swing.JComponent;
 
 /**
  * <code>TextAndMnemonicUtils</code> allows to extract text and mnemonic values
- * from the unified text & mnemonic strings. For example:
- *   LafMenu.laf.labelAndMnemonic=&Look && Feel
- * The extracted text is "Look & Feel" and the extracted mnemonic mnemonic is "L".
+ * from the unified text &amp; mnemonic strings. For example:
+ *   LafMenu.laf.labelAndMnemonic=&amp;Look &amp;&amp; Feel
+ * The extracted text is "Look &amp; Feel" and the extracted mnemonic mnemonic is "L".
  *
  * There are several patterns for the text and mnemonic suffixes which are used
  * in the resource file. The patterns format is:
- * (resource key -> unified text & mnemonic resource key).
+ * (resource key -> unified text &amp; mnemonic resource key).
  *
  * Keys that have label suffixes:
  * (xxx_label -> xxx.labelAndMnemonic)
@@ -127,7 +127,7 @@ MissingResourceException - if no resource bundle for the specified base name can
 
     /**
      * Returns accessible and internationalized strings or mnemonics from the
-     * resource bundle. The key is converted to the text & mnemonic key.
+     * resource bundle. The key is converted to the text and mnemonic key.
      *
      * The following patterns are checked:
      * Keys that have label suffixes:
@@ -175,12 +175,15 @@ MissingResourceException - if no resource bundle for the specified base name can
     }
 
     /**
-     * Convert the text & mnemonic string to text string
+     * Convert the text &amp; mnemonic string to text string
      *
-     * The '&' symbol is treated as the mnemonic pointer
-     * The double "&&" symbols are treated as the single '&'
+     * The '&amp;' symbol is treated as the mnemonic pointer
+     * The double "&amp;&amp;" symbols are treated as the single '&amp;'
      *
-     * For example the string "&Look && Feel" is converted to "Look & Feel"
+     * For example the string "&amp;Look &amp;&amp; Feel" is converted to "Look &amp; Feel"
+     * 
+     * @param text
+     * @return the text String without Mnemonics
      */
     public static String getTextFromTextAndMnemonic(String text) {
 
@@ -211,15 +214,17 @@ MissingResourceException - if no resource bundle for the specified base name can
     }
 
     /**
-     * Convert the text & mnemonic string to mnemonic
+     * Convert the text &amp; mnemonic string to mnemonic
      *
-     * The '&' symbol is treated the mnemonic pointer
-     * The double "&&" symbols are treated as the single '&'
+     * The '&amp;' symbol is treated the mnemonic pointer
+     * The double "&amp;&amp;" symbols are treated as the single '&amp;'
      *
-     * For example the string "&Look && Feel" is converted to "L"
+     * For example the string "&amp;Look &amp;&amp; Feel" is converted to "L"
+     * 
+     * @param text
+     * @return the mnemonic String
      */
     public static String getMnemonicFromTextAndMnemonic(String text) {
-//        int len = text.length();
         int index = text.indexOf('&');
 
         while (0 <= index && index < text.length() - 1) {

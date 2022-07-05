@@ -44,6 +44,9 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class SplitPaneDemo extends AbstractDemo implements ComponentListener {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JSplitPane.gif";
 
 	private static final long serialVersionUID = 5987956209025810711L;

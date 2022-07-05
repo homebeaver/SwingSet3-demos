@@ -66,6 +66,7 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
@@ -97,6 +98,11 @@ public class LoginToDBPaneDemo extends AbstractDemo implements ActionListener {
     // controler:
     private JXButton loginLauncher;
     
+    /**
+     * LoginToDBPaneDemo Constructor
+     * 
+     * @param frame controller Frame
+     */
     public LoginToDBPaneDemo(Frame frame) {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);

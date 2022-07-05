@@ -35,6 +35,9 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class OptionPaneDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JOptionPane.gif";
 
 	private static final long serialVersionUID = 3164409244554337243L;
