@@ -45,10 +45,10 @@ import swingset.AbstractDemo;
 
 /**
  * A demo for the {@code JXTable}. This demo displays the same functionality as
- * {@link com.sun.swingset3.demos.table.TableDemo}, using SwingX components and methodologies.
+ * {@link swingset.TableDemo TableDemo}, using SwingX components and methodologies.
  * <p>
- * It is not possible to extend {@code TableDemo}, since the display components are private. This
- * class replicates contents and behavior in that class and may fall out of sync.
+ * It is not possible to extend {@code TableDemo}, since the display components are private. 
+ * This class replicates contents and behavior in that class and may fall out of sync.
  * 
  * @author Karl George Schaefer
  * @author Jeanette Winzenberg (Devoxx '08 version)
@@ -75,6 +75,7 @@ public class XTableDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -114,6 +115,8 @@ public class XTableDemo extends AbstractDemo {
 
     /**
      * XTableDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public XTableDemo(Frame frame) {
     	super(new BorderLayout());

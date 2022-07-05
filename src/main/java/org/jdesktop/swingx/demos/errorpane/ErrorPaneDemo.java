@@ -58,6 +58,7 @@ public class ErrorPaneDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -82,6 +83,8 @@ public class ErrorPaneDemo extends AbstractDemo {
     
     /**
      * ErrorPaneDemo Constructor
+     * 
+     * @param frame controller Frame
      */
 	// TODO weitere Beispiele in JXErrorPaneIssues und JXErrorPaneVisualCheck
 	/* showXXX() , XXX could be one of Dialog, Frame, or InternalFrame
@@ -132,7 +135,7 @@ public class ErrorPaneDemo extends AbstractDemo {
         return demo;
     }
 
-    public JButton createBasicButton() {
+    private JButton createBasicButton() {
         /*
          * get the default error icon, see BasicErrorPaneUI.getDefaultErrorIcon() or getDefaultWarningIcon()
          * JXErrorPane.errorIcon or OptionPane.errorIcon
@@ -154,7 +157,7 @@ public class ErrorPaneDemo extends AbstractDemo {
     	return b;
     }
 
-	public JButton createOwnerButton() {
+    private JButton createOwnerButton() {
 		JLabel iconLabel = new JLabel(DefaultIcons.getIcon(DefaultIcons.WARNING));
 		JLabel clickMe = new JLabel(getBundleString("generateDialogWithOwner.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -167,7 +170,7 @@ public class ErrorPaneDemo extends AbstractDemo {
     	return b;
     }
 
-    public JButton createNestedButton() {
+    private JButton createNestedButton() {
 		JLabel iconLabel = new JLabel(DefaultIcons.getIcon(DefaultIcons.WARNING));
 		JLabel clickMe = new JLabel(getBundleString("generateNestedExceptions.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -180,7 +183,7 @@ public class ErrorPaneDemo extends AbstractDemo {
     	return b;
     }
 
-    public void generateBasicDialog() {
+    private void generateBasicDialog() {
     	// showXXX() , XXX could be one of Dialog, Frame, or InternalFrame
 /*
  * ... to modify the icon shown with a particular
@@ -195,14 +198,14 @@ public class ErrorPaneDemo extends AbstractDemo {
 //        JXErrorPane.showFrame(new Exception());
     }
 
-    public void generateDialogWithOwner() {
+    private void generateDialogWithOwner() {
         ErrorInfo info = new ErrorInfo("DialogWithOwner", "basic error message", null, 
         		"category", new Exception(), Level.ALL, null);
         JXErrorPane.showDialog(this, info);
 //        JXErrorPane.showInternalFrame(this, info);
     }
 
-    public void generateNestedExceptions() {
+    private void generateNestedExceptions() {
         Exception ex = new Exception("I'm a secondary exception", new Exception("I'm the cause"));
         ErrorInfo info = new ErrorInfo("Dialog with Nested Exceptions", "basic error message", null,
         		"category", ex, Level.ALL, null);

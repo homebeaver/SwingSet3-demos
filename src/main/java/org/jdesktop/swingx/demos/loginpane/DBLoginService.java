@@ -33,6 +33,7 @@ public class DBLoginService extends JDBCLoginService {
     
     /**
      * Constructs the default service.
+     * @param url db url
      */
     /*
      * in super:

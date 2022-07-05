@@ -37,30 +37,55 @@ public class DerivedFontHighlighter extends AbstractHighlighter {
     private int style;
     private float size;
     
+    /**
+     * ctor
+     */
     public DerivedFontHighlighter() {
         this((HighlightPredicate) null);
     }
-    
+    /**
+     * ctor
+     * @param style int
+     */
     public DerivedFontHighlighter(int style) {
         this(null, style);
     }
-    
+    /**
+     * ctor
+     * @param size float
+     */
     public DerivedFontHighlighter(float size) {
         this(null, size);
     }
-    
+    /**
+     * ctor
+     * @param predicate HighlightPredicate
+     */
     public DerivedFontHighlighter(HighlightPredicate predicate) {
         this(predicate, -1);
     }
-    
+    /**
+     * ctor
+     * @param predicate HighlightPredicate
+     * @param style int
+     */
     public DerivedFontHighlighter(HighlightPredicate predicate, int style) {
         this(predicate, style, -1f);
     }
-    
+    /**
+     * ctor
+     * @param predicate HighlightPredicate
+     * @param size float
+     */
     public DerivedFontHighlighter(HighlightPredicate predicate, float size) {
         this(predicate, -1, size);
     }
-    
+    /**
+     * ctor
+     * @param predicate HighlightPredicate
+     * @param style int
+     * @param size float
+     */
     public DerivedFontHighlighter(HighlightPredicate predicate, int style, float size) {
         super(predicate);
         
@@ -94,6 +119,10 @@ public class DerivedFontHighlighter extends AbstractHighlighter {
         fireStateChanged();
     }
     
+    /**
+     * getter
+     * @return size
+     */
     public float getSize() {
         return size;
     }

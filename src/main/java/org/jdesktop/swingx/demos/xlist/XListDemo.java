@@ -78,6 +78,7 @@ public class XListDemo extends AbstractDemo {
 
 	/**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
@@ -121,6 +122,8 @@ public class XListDemo extends AbstractDemo {
 
     /**
      * XListDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public XListDemo(Frame frame) {
     	super(new BorderLayout());

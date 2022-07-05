@@ -33,7 +33,9 @@ import javax.swing.plaf.ComponentUI;
  */
 public class DemoMonthViewUI extends BasicMonthViewUI {
 
+	/** RENDERING_HANDLER_KEY */
     public static final String RENDERING_HANDLER_KEY = "monthView.renderingHandler";
+	/** RENDERING_HANDLER_CLASS_NAME_KEY */
     public static final String RENDERING_HANDLER_CLASS_NAME_KEY = "monthView.renderingHandlerClassName";
     
     /**
@@ -158,7 +160,11 @@ public class DemoMonthViewUI extends BasicMonthViewUI {
         return ml;
     }
    
-    @SuppressWarnings({"UnusedDeclaration"})
+    /**
+     * UI factory
+     * @param c JComponent
+     * @return DemoMonthViewUI
+     */
     public static ComponentUI createUI(JComponent c) {
         return new DemoMonthViewUI();
     }

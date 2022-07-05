@@ -44,6 +44,7 @@ public class MultiSplitPaneDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -64,6 +65,8 @@ public class MultiSplitPaneDemo extends AbstractDemo {
     
     /**
      * MultiSplitPaneDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public MultiSplitPaneDemo(Frame frame) {
     	super(new BorderLayout());
