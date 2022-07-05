@@ -188,6 +188,7 @@ public class PainterDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -256,6 +257,8 @@ public class PainterDemo extends AbstractDemo {
    
     /**
      * PainterDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public PainterDemo(Frame frame) {
     	super(new BorderLayout());

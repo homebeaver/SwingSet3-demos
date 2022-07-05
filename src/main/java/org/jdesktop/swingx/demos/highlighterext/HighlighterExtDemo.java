@@ -76,6 +76,7 @@ public class HighlighterExtDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
@@ -115,6 +116,8 @@ public class HighlighterExtDemo extends AbstractDemo {
 
     /**
      * HighlighterExtDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public HighlighterExtDemo(Frame frame) {
     	super(new BorderLayout());
@@ -192,8 +195,10 @@ public class HighlighterExtDemo extends AbstractDemo {
         add(tab);
     }
 
+    /**
+     * implement custom Relativizer class
+     */
     // <snip> Relativizer
-    // implement custom Relativizer class
     public static class MeritRelativizer extends NumberRelativizer {
 
         public MeritRelativizer(int column, boolean spreadColumns, Number max, Number current) {
@@ -212,6 +217,9 @@ public class HighlighterExtDemo extends AbstractDemo {
         
     }
     
+    /**
+     * TODO
+     */
     public class HighlighterControl extends AbstractBean {
         
         private RelativePainterHighlighter tableValueBasedHighlighter;

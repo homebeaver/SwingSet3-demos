@@ -7,4 +7,7 @@
  * - demo content classes named *Demo.java, which are subclass of DemoModule: InternalFrameDemo, ButtonDemo, ...
  * - helper CodeViewer, ExampleFileView, DirectionPanel, LayoutControlPanel, ...
  */
+/**
+ * TODO
+ */
 package swingset;

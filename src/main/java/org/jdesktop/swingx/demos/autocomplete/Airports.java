@@ -27,26 +27,28 @@ import java.util.List;
  * @author Karl George Schaefer
  */
 public final class Airports {
+	/** Airport data */
     public static final Airport SCHOENEFELD = new Airport("Berlin - Sch\u00F6nefeld", "EDDB", "SXF");
-    
+	/** Airport data */
     public static final Airport WICKEDE = new Airport("Dortmund - Wickede", "EDLW", "DTM");
-    
+	/** Airport data */
     public static final Airport RHEIN_MAIN = new Airport("Frankfurt - Rhein Main", "EDDF", "FRA");
-    
+	/** Airport data */
     public static final Airport LANGENHAGEN = new Airport("Hannover - Langenhagen", "EDDV", "HAJ");
-    
+	/** Airport data */
     public static final Airport FUHLSBEETTEL = new Airport("Hamburg - Fuhlsb\u00FCttel", "EDDH", "HAM");
-    
+	/** Airport data */
     public static final Airport KONRAD_ADENAUER = new Airport("K\u00F6ln/Bonn - Konrad Adenauer", "EDDK", "CGN");
-    
+	/** Airport data */
     public static final Airport HALLE = new Airport("Leipzig/Halle", "EDDP", "LEJ");
-    
+	/** Airport data */
     public static final Airport FRANZ_JOSEF_STRAUSS = new Airport("M\u00FCnchen - Franz Josef Strauss", "EDDM", "MUC");
-    
+	/** Airport data */
     public static final Airport NUERNBERG = new Airport("N\u00F6rnberg", "EDDN", "NUE");
-    
+	/** Airport data */
     public static final Airport ECHTERDINGEN = new Airport("Stuttgart - Echterdingen", "EDDS", "STR");
     
+	/** ALL_AIRPORTS used for Demo */
     public static final List<Airport> ALL_AIRPORTS = Arrays.asList(
         SCHOENEFELD,
         WICKEDE,

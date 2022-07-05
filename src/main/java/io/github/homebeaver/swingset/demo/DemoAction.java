@@ -44,16 +44,39 @@ import swingset.TableDemo;
 import swingset.ToolTipDemo;
 import swingset.TreeDemo;
 
+/**
+ * TODO
+ */
 //                                                                        interface ItemListener extends EventListener
 //                        class AbstractActionExt extends AbstractAction implements ItemListener
 public class DemoAction extends AbstractActionExt {
 
 	private static final Logger LOG = Logger.getLogger(DemoAction.class.getName());
 
-	public enum Category {CHOOSERS, CONTAINERS, CONTROLS, DATA, DECORATORS, FUNCTIONALITY, GRAPHICS, TEXT, VISUALIZATION}
+	/** TODO */
+	public enum Category {
+		/** demo Category */
+		CHOOSERS, 
+		/** demo Category */
+		CONTAINERS, 
+		/** demo Category */
+		CONTROLS, 
+		/** demo Category */
+		DATA, 
+		/** demo Category */
+		DECORATORS, 
+		/** demo Category */
+		FUNCTIONALITY, 
+		/** demo Category */
+		GRAPHICS, 
+		/** demo Category */
+		TEXT, 
+		/** demo Category */
+		VISUALIZATION}
 	
 	// category => color
 	@SuppressWarnings("serial")
+	/** categoryToColor */
 	public static Map<Category, Color> categoryToColor = new HashMap<Category, Color>() {{
 	    put(Category.CHOOSERS, Color.CYAN);
 	    put(Category.CONTAINERS, Color.PINK); // examples: ss3:JXCollapsiblePane
@@ -66,12 +89,24 @@ public class DemoAction extends AbstractActionExt {
 	    put(Category.VISUALIZATION, Color.GRAY);
 	}};
 
+	/**
+	 * get SmallIcon for swingSetVersion,color
+	 * @param ssv swingSetVersion
+	 * @param color Color of the icon
+	 * @return Icon
+	 */
 	// swingSetVersion,color => smallIcon
 	public static Icon getSmallIcon(int ssv, Color color) {
 		if(ssv==2) return new StopIcon(SizingConstants.SMALL_ICON, color);
 		if(ssv==3) return new PlayIcon(SizingConstants.SMALL_ICON, color);
 		return new PauseIcon(SizingConstants.SMALL_ICON, color);		
 	}
+	/**
+	 * get SmallIcon for swingSetVersion,category
+	 * @param ssv swingSetVersion
+	 * @param category demo Category
+	 * @return Icon
+	 */
 	// swingSetVersion,category => smallIcon
 	public static Icon getSmallIcon(int ssv, Category category) {
 		if(ssv==2) return new StopIcon(SizingConstants.SMALL_ICON, categoryToColor.get(category));
@@ -108,16 +143,42 @@ public class DemoAction extends AbstractActionExt {
 		this.className = className;
         if(icon!=null) super.setLargeIcon(icon);
 	}
+	/**
+	 * ctor
+	 * @param className String
+	 * @param name String
+	 * @param icon Icon
+	 */
 	public DemoAction(String className, String name, Icon icon) {
 		this(className, name, null, icon);
 	}
+	/**
+	 * ctor
+	 * @param className String
+	 * @param name String
+	 */
 	public DemoAction(String className, String name) {
 		this(className, name, null, null);
 	}
+	/**
+	 * ctor
+	 * @param className String
+	 * @param name String
+	 * @param ssv swingSetVersion
+	 * @param cat Action Category
+	 */
 	public DemoAction(String className, String name, int ssv, Category cat) {
 		this(className, name, getSmallIcon(ssv, cat), null);
 		this.category = cat;
 	}
+	/**
+	 * ctor
+	 * @param className String
+	 * @param name String
+	 * @param ssv swingSetVersion
+	 * @param cat Action Category
+	 * @param icon Icon
+	 */
 	public DemoAction(String className, String name, int ssv, Category cat, Icon icon) {
 		this(className, name, getSmallIcon(ssv, cat), icon);
 		this.category = cat;
@@ -143,16 +204,42 @@ public class DemoAction extends AbstractActionExt {
             super.setShortDescription(desc);
         }
 	}
+	/**
+	 * convenience ctor
+     * @param democlass the demo class
+	 * @param name the name ({@code Action.NAME}) for the action
+	 * @param icon the large icon 
+	 */
 	public DemoAction(Class<?> democlass, String name, Icon icon) {
 		this(democlass, name, null, icon);
 	}
+	/**
+	 * convenience ctor
+     * @param democlass the demo class
+	 * @param name the name ({@code Action.NAME}) for the action
+	 */
 	public DemoAction(Class<?> democlass, String name) {
 		this(democlass, name, null, null);
 	}
+	/**
+	 * convenience ctor with swingSetVersion and demo Category
+     * @param democlass the demo class
+	 * @param name the name ({@code Action.NAME}) for the action
+	 * @param ssv swingSetVersion
+	 * @param cat demo Category
+	 */
 	public DemoAction(Class<?> democlass, String name, int ssv, Category cat) {
 		this(democlass, name, getSmallIcon(ssv, cat), null);
 		this.category = cat;
 	}
+	/**
+	 * convenience ctor with swingSetVersion, demo Category and large icon
+     * @param democlass the demo class
+	 * @param name the name ({@code Action.NAME}) for the action
+	 * @param ssv swingSetVersion
+	 * @param cat demo Category
+	 * @param icon the large icon 
+	 */
 	public DemoAction(Class<?> democlass, String name, int ssv, Category cat, Icon icon) {
 		this(democlass, name, getSmallIcon(ssv, cat), icon);
 		this.category = cat;
@@ -161,18 +248,30 @@ public class DemoAction extends AbstractActionExt {
     private static DemoAction root = null;
     private static DemoAction ss2 = null;
     private static DemoAction ss3 = null;
+    /**
+     * Returns Root Action
+     * @return DemoAction
+     */
     public static DemoAction getRootAction() {
     	if(root==null) {
     		root = new DemoAction((String)null, "Demo");
     	}
     	return root;
     }
+    /**
+     * get SwingSet2 Action
+     * @return DemoAction
+     */
     public static DemoAction getSS2Action() {
     	if(ss2==null) {
     		ss2 = new DemoAction((String)null, "SwingSet2", 2, null, null);
     	}
     	return ss2;
     }
+    /**
+     * get SwingSet3 Action
+     * @return DemoAction
+     */
     public static DemoAction getSS3Action() {
     	if(ss3==null) {
     		ss3 = new DemoAction((String)null, "SwingSet3", 3, null, null);
@@ -181,6 +280,10 @@ public class DemoAction extends AbstractActionExt {
     }
 	private static ArrayList<DemoAction> ss2Actions = null;
 	private static ArrayList<DemoAction> ss3Actions = null;
+    /**
+     * get List of SwingSet2 Actions
+     * @return List
+     */
     public static ArrayList<DemoAction> getSS2Actions() {
     	if(ss2Actions==null) {
     		ss2Actions = new ArrayList<DemoAction>();
@@ -203,6 +306,10 @@ public class DemoAction extends AbstractActionExt {
     	}
     	return ss2Actions;
     }
+    /**
+     * get List of SwingSet3 Actions
+     * @return List
+     */
     public static ArrayList<DemoAction> getSS3Actions() {
     	if(ss3Actions==null) {
     		ss3Actions = new ArrayList<DemoAction>();

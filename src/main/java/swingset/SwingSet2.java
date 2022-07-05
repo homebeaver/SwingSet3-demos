@@ -116,6 +116,22 @@ public class SwingSet2 extends JPanel {
 	private static final long serialVersionUID = 3856695829171691102L;
 	private static final Logger LOG = Logger.getLogger(SwingSet2.class.getName());
 
+    private static String getIconPath(Class<?> demoClass) {
+    	try {
+			Field field = demoClass.getField("ICON_PATH");
+			Object value = field.get(null);
+			return (String)value;
+		} catch (NoSuchFieldException | SecurityException e) {
+			// thrown by getField
+			e.printStackTrace();
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			// thrown by get
+			e.printStackTrace();
+		}
+    	return "toolbar/JMenu.gif"; // any default
+    }
+
+
 	// simple lass name (without package name)
     String[] demos = {
       "InternalFrameDemo",
@@ -888,8 +904,8 @@ public class SwingSet2 extends JPanel {
      * and/or if there is any kind of error checking if the LookAndFeel
      * is supported.
      *
-     * The L&F menu will use this method to detemine whether the various
-     * L&F options should be active or inactive.
+     * The LaF menu will use this method to detemine whether the various
+     * LaF options should be active or inactive.
      *
      */
      protected boolean isAvailableLookAndFeel(String laf) {
@@ -1070,7 +1086,7 @@ via PopupMenu shift-F10 kann ich alle drei aktivieren.
     }
 
     /**
-     * Stores the current L&F, and calls updateLookAndFeel, below
+     * Stores the current LaF, and calls updateLookAndFeel, below
      */
     public void setLookAndFeel(String laf) {
         if(!currentLookAndFeel.equals(laf)) {
@@ -1117,7 +1133,7 @@ via PopupMenu shift-F10 kann ich alle drei aktivieren.
     }
 
     /**
-     * Sets the current L&F on each demo module
+     * Sets the current LaF on each demo module
      */
     public void updateLookAndFeel() {
         try {
@@ -1234,21 +1250,6 @@ via PopupMenu shift-F10 kann ich alle drei aktivieren.
             this.swingset = swingset;
             this.demo = demo;
             this.demoClass = demoClass;
-        }
-
-        private static String getIconPath(Class<?> demoClass) {
-        	try {
-				Field field = demoClass.getField("ICON_PATH");
-				Object value = field.get(null);
-				return (String)value;
-			} catch (NoSuchFieldException | SecurityException e) {
-				// thrown by getField
-				e.printStackTrace();
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				// thrown by get
-				e.printStackTrace();
-			}
-        	return "toolbar/JMenu.gif"; // any default
         }
 
         // implements interface ActionListener

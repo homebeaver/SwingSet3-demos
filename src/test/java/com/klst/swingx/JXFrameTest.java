@@ -40,7 +40,6 @@ public class JXFrameTest {
      */
     public void interactiveMultipleFrames() {
     	DemoJXFrame gossip = MainJXframe.getInstance(); // MainJXframe contains a simple frame manager
-        @SuppressWarnings("unused")
 		JXStatusBar statusBar = gossip.getStatusBar(); // just to paint it
 
         JMenu demoMenu = gossip.createDemosMenu();

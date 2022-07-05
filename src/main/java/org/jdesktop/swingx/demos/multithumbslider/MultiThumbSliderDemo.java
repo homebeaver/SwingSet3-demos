@@ -69,6 +69,7 @@ public class MultiThumbSliderDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -89,6 +90,8 @@ public class MultiThumbSliderDemo extends AbstractDemo {
 
     /**
      * MultiThumbSliderDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public MultiThumbSliderDemo(Frame frame) {
     	super(new BorderLayout());
@@ -109,8 +112,8 @@ public class MultiThumbSliderDemo extends AbstractDemo {
     private void createSliderAt(String layoutConstraint) {
     	LOG.info("JXMultiThumbSlider at "+ layoutConstraint);
     	slider = new JXMultiThumbSlider<Blue>();
-        slider.getModel().addThumb(Blue.LIGHT_GRAY, new Blue(Color.LIGHT_GRAY));
-        slider.getModel().addThumb(Blue.GRAY, new Blue(Color.GRAY));
+        slider.getModel().addThumb(LIGHT_GRAY, new Blue(Color.LIGHT_GRAY));
+        slider.getModel().addThumb(GRAY, new Blue(Color.GRAY));
         
         for(int c=0; c<LAYOUT_CONSTRAINTS.length; c++) {
         	String lc = LAYOUT_CONSTRAINTS[c];
@@ -184,12 +187,12 @@ public class MultiThumbSliderDemo extends AbstractDemo {
     	return emptyControlPane();
 	}
 
+	static final float LIGHT_GRAY = (float)(Color.LIGHT_GRAY.getBlue())/255f; // 192/255
+	static final float GRAY = (float)(Color.GRAY.getBlue())/255f; // 128/255
+	static final float BLUE = (float)(Color.BLUE.getBlue())/255f; // 255/255
+	
     // inner classes:
     private class Blue extends Color { 
-    	
-    	static public final float LIGHT_GRAY = (float)(Color.LIGHT_GRAY.getBlue())/255f; // 192/255
-    	static public final float GRAY = (float)(Color.GRAY.getBlue())/255f; // 128/255
-    	static public final float BLUE = (float)(Color.BLUE.getBlue())/255f; // 255/255
     	
     	public Blue(Color c) {
     		super(c.getRGB());

@@ -8,7 +8,7 @@ package org.jdesktop.swingx.treetable;
  * A model for any columnar information of a tree node. It encapsulates
  * the methods which a TreeTableModel must implement in addition to
  * those of a TreeModel. It is used by a TreeTableModelAdapter to
- * expose a TreeModel as a TreeTableModel. <p>
+ * expose a TreeModel as a TreeTableModel.
  * 
  * @see org.jdesktop.swingx.treetable.TreeTableModel
  */
@@ -19,7 +19,7 @@ public interface NodeModel {
      * column. This is used by the {@code JXTreeTable} to set up a default
      * renderer and editor for the column.
      * 
-     * @param columnIndex
+     * @param column
      *            the index of the column
      * @return the common ancestor class of the object values in the model.
      * @see javax.swing.table.TableModel#getColumnClass(int)

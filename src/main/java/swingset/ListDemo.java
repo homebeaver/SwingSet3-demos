@@ -49,6 +49,9 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  */
 public class ListDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JList.gif";
 	
 	private static final long serialVersionUID = -6590141127414585946L;

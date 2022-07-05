@@ -53,6 +53,7 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -85,6 +86,8 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     
     /**
      * Constructor
+     * 
+     * @param controllerFrame controller Frame
      */
     public XPanelDemo(Frame controllerFrame) {
     	super(new BorderLayout());

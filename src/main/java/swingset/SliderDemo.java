@@ -33,6 +33,9 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  */
 public class SliderDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JSlider.gif";
 
 	private static final long serialVersionUID = 2798412694764911672L;

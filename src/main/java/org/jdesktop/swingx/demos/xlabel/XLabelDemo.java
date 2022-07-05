@@ -54,6 +54,7 @@ public class XLabelDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -79,7 +80,9 @@ public class XLabelDemo extends AbstractDemo {
     private JXLabel label;
     
     /**
-     * MonthViewDemo Constructor
+     * Constructor
+     * 
+     * @param frame controller Frame
      */
     public XLabelDemo(Frame frame) {
     	super(new BorderLayout());

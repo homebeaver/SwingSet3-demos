@@ -48,7 +48,7 @@ public class LabelHandler {
 
     /**
      * Creates a binding for the specified {@code label} that tracks the {@code enabled} state of
-     * its {@#link JLabel#setLabelFor(Component) labelFor} property. If no component is
+     * its {@link JLabel#setLabelFor(Component) labelFor} property. If no component is
      * associated with the label, the label will be enabled.
      * 
      * @param label
@@ -62,7 +62,7 @@ public class LabelHandler {
 
     /**
      * Creates a binding for the specified {@code label} that tracks the {@code enabled} and {@code
-     * visible} states of its {@#link JLabel#setLabelFor(Component) labelFor} property. If
+     * visible} states of its {@link JLabel#setLabelFor(Component) labelFor} property. If
      * no component is associated with the label or the associated component is removed, the label
      * will retain its current enabled and visible states.
      * <p>
@@ -99,8 +99,8 @@ public class LabelHandler {
 
     /**
      * <p>
-     * Removes a binding for the specified {@code label} that tracks the its {@#link
-     * JLabel#setLabelFor(Component) labelFor} property.
+     * Removes a binding for the specified {@code label} that tracks the its 
+     * {@link JLabel#setLabelFor(Component) labelFor} property.
      * </p>
      * 
      * @param label

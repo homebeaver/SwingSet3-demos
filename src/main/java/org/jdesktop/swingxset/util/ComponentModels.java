@@ -65,10 +65,20 @@ public final class ComponentModels {
         return components;
     }
     
+    /**
+     * Returns ListModel with Root root
+     * @param root the root Component
+     * @return ListModel
+     */
     public static ListModel<Component> getListModel(Component root) {
         return getComboBoxModel(root);
     }
     
+    /**
+     * Returns ComboBoxModel with Root root
+     * @param root the root Component
+     * @return ComboBoxModel
+     */
     public static ComboBoxModel<Component> getComboBoxModel(Component root) {
         return new ListComboBoxModel<Component>(getComponents(root));
     }
@@ -85,6 +95,11 @@ public final class ComponentModels {
     	    3, "Size"
     );
 
+    /**
+     * Returns TableModel with Root root
+     * @param root the root Component
+     * @return TableModel
+     */
     public static TableModel getTableModel(Component root) {
 
         AbstractListTableModel<Component> tm = new AbstractListTableModel<Component>() {
@@ -152,10 +167,20 @@ public final class ComponentModels {
         return tm;
     }
     
+    /**
+     * Returns TreeModel with Root root
+     * @param root the root Component
+     * @return TreeModel
+     */
     public static TreeModel getTreeModel(Component root) {
         return getTreeTableModel(root);
     }
     
+    /**
+     * Returns TreeTableModel with Root root
+     * @param root the root Component
+     * @return TreeTableModel
+     */
     public static TreeTableModel getTreeTableModel(Component root) {
     	
         return new AbstractTreeTableModel(root) {

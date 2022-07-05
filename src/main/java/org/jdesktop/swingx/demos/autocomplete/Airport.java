@@ -25,9 +25,12 @@ package org.jdesktop.swingx.demos.autocomplete;
  * @author Thomas Bierhance (original AutoCompleteDemoPanel.Airport)
  */
 public class Airport {
-    public String name;
-    public String icaoCode;
-    public String iataCode;
+	/** name */
+	public String name;
+	/** ICAO Code */
+	public String icaoCode;
+	/** IATA Code */
+	public String iataCode;
     
     public Airport(String name, String icaoCode, String iataCode) {
         this.name = name;

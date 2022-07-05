@@ -25,7 +25,7 @@ import org.jdesktop.beansbinding.PropertyStateListener;
 
 /**
  * An {@code Aggregator} is a binding mechanism to convert a collection of source values into one output value. 
- * Typically, these case convert source values into {@link java.util.Collectioncollections}, 
+ * Typically, these case convert source values into {@link java.util.Collection collections}, 
  * {@link java.util.Map maps}, or arrays; however, it is possible to aggregate properties of a single object. 
  * This allows multiple input sources to create (or modify) a single object.
  * 

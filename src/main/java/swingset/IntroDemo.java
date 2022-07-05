@@ -27,9 +27,12 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  */
 public class IntroDemo extends DemoModule {
 
-	private static final long serialVersionUID = 1867077915822954698L;
-
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JMenu.gif";
+
+	private static final long serialVersionUID = 1867077915822954698L;
 
     private JEditorPane html;
     private JSplitPane splitPane = null;

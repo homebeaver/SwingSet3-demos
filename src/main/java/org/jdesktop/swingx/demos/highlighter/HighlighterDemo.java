@@ -101,6 +101,7 @@ public class HighlighterDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
@@ -136,6 +137,8 @@ public class HighlighterDemo extends AbstractDemo {
     
     /**
      * HighlighterDemo Constructor
+     * 
+     * @param frame controller Frame
      */
 	public HighlighterDemo(Frame frame) {
     	super(new BorderLayout());

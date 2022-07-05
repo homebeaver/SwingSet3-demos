@@ -31,9 +31,15 @@ package org.pushingpixels.trident.interpolator;
 
 import java.util.*;
 
+/**
+ * copied from org.pushingpixels.trident
+ */
 public class CorePropertyInterpolators implements PropertyInterpolatorSource {
 	private Set<PropertyInterpolator> interpolators;
 
+	/**
+	 * ctor
+	 */
 	public CorePropertyInterpolators() {
 		this.interpolators = new HashSet<PropertyInterpolator>();
 		this.interpolators.add(new IntegerPropertyInterpolator());

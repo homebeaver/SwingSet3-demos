@@ -40,9 +40,9 @@ public class DisplayInfoConverter<T> extends Converter<DisplayInfo<T>, T> {
 
     
     /**
-     * {@inheritDoc} <p>
+     * {@inheritDoc}
      * 
-     * @throws UnsupportedOperationException.
+     * @throws UnsupportedOperationException always throws it
      */
     @Override
     public DisplayInfo<T> convertReverse(T item) {

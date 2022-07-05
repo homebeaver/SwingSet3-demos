@@ -40,12 +40,16 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  */
 public class InternalFrameDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JDesktop.gif";
 	
 	private static final long serialVersionUID = 8207106273505201473L;
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
@@ -75,24 +79,24 @@ public class InternalFrameDemo extends AbstractDemo {
     ImageIcon icon1, icon2, icon3, icon4;
     ImageIcon smIcon1, smIcon2, smIcon3, smIcon4;
 
-    public Integer FIRST_FRAME_LAYER  = Integer.valueOf(1);
-    public Integer DEMO_FRAME_LAYER   = Integer.valueOf(2);
-//    public Integer PALETTE_LAYER      = Integer.valueOf(3);
+    private Integer FIRST_FRAME_LAYER  = Integer.valueOf(1);
+    private Integer DEMO_FRAME_LAYER   = Integer.valueOf(2);
+//    private Integer PALETTE_LAYER      = Integer.valueOf(3);
 
-    public int FRAME0_X        = 15;
-    public int FRAME0_Y        = 280;
+    private int FRAME0_X        = 15;
+    private int FRAME0_Y        = 280;
 
-    public int FRAME0_WIDTH    = 320;
-    public int FRAME0_HEIGHT   = 230;
+    private int FRAME0_WIDTH    = 320;
+    private int FRAME0_HEIGHT   = 230;
 
-    public int FRAME_WIDTH     = 225;
-    public int FRAME_HEIGHT    = 150;
+    private int FRAME_WIDTH     = 225;
+    private int FRAME_HEIGHT    = 150;
 
-    public int PALETTE_X      = 375;
-    public int PALETTE_Y      = 20;
+    private int PALETTE_X      = 375;
+    private int PALETTE_Y      = 20;
 
-    public int PALETTE_WIDTH  = 260;
-    public int PALETTE_HEIGHT = 260;
+    private int PALETTE_WIDTH  = 260;
+    private int PALETTE_HEIGHT = 260;
 
     JCheckBox windowResizable   = null;
     JCheckBox windowClosable    = null;
@@ -104,6 +108,8 @@ public class InternalFrameDemo extends AbstractDemo {
 
     /**
      * InternalFrameDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public InternalFrameDemo(Frame frame) {
         super(new BorderLayout());
@@ -325,15 +331,15 @@ public class InternalFrameDemo extends AbstractDemo {
         }
     }
 
-    public int getFrameWidth() {
+    int getFrameWidth() {
         return FRAME_WIDTH;
     }
 
-    public int getFrameHeight() {
+    int getFrameHeight() {
         return FRAME_HEIGHT;
     }
 
-    public Integer getDemoFrameLayer() {
+    Integer getDemoFrameLayer() {
         return DEMO_FRAME_LAYER;
     }
 

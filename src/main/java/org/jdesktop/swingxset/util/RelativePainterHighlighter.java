@@ -60,7 +60,8 @@ public class RelativePainterHighlighter extends PainterHighlighter {
     }
 
     /**
-     * @param maxValue the maxValue to set
+     * 
+     * @param relativizer the Relativizer (maxValue) to set
      */
     public void setRelativizer(Relativizer relativizer) {
         this.relativizer = relativizer;
@@ -117,8 +118,8 @@ public class RelativePainterHighlighter extends PainterHighlighter {
          * Returns a float in the range of 0.0f to 1.0f inclusive which
          * indicates the relative value of the given adapter's value.
          * 
-         * @param adapter
-         * @return
+         * @param adapter ComponentAdapter
+         * @return the relative value
          */
         public float getRelativeValue(ComponentAdapter adapter);
         // </snip>
@@ -144,7 +145,7 @@ public class RelativePainterHighlighter extends PainterHighlighter {
         }
 
         /**
-         * @param i
+         * @param column
          * @param max
          * @param current
          */

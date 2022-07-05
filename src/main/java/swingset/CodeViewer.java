@@ -95,40 +95,88 @@ public class CodeViewer {
     public CodeViewer() {
     }
 
+    /**
+     * set CommentStart
+     * @param commentStart String
+     */
     public void setCommentStart(String commentStart) {
         this.commentStart = commentStart;
     }
+    /**
+     * set CommentEnd
+     * @param commentEnd String
+     */
     public void setCommentEnd(String commentEnd) {
         this.commentEnd = commentEnd;
     }
+    /**
+     * set StringStart
+     * @param stringStart String
+     */
     public void setStringStart(String stringStart) {
         this.stringStart = stringStart;
     }
+    /**
+     * set StringEnd
+     * @param stringEnd String
+     */
     public void setStringEnd(String stringEnd) {
         this.stringEnd = stringEnd;
     }
+    /**
+     * set ReservedWordStart
+     * @param reservedWordStart String
+     */
     public void setReservedWordStart(String reservedWordStart) {
         this.reservedWordStart = reservedWordStart;
     }
+    /**
+     * set ReservedWordEnd
+     * @param reservedWordEnd String
+     */
     public void setReservedWordEnd(String reservedWordEnd) {
         this.reservedWordEnd = reservedWordEnd;
     }
 
+    /**
+     * getter
+     * @return commentStart
+     */
     public String getCommentStart() {
         return commentStart;
     }
+    /**
+     * getter
+     * @return commentStart
+     */
     public String getCommentEnd() {
         return commentEnd;
     }
+    /**
+     * getter
+     * @return stringStart
+     */
     public String getStringStart() {
         return stringStart;
     }
+    /**
+     * getter
+     * @return stringEnd
+     */
     public String getStringEnd() {
         return stringEnd;
     }
+    /**
+     * getter
+     * @return reservedWordStart
+     */
     public String getReservedWordStart() {
         return reservedWordStart;
     }
+    /**
+     * getter
+     * @return reservedWordEnd
+     */
     public String getReservedWordEnd() {
         return reservedWordEnd;
     }
