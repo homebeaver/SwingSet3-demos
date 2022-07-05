@@ -237,19 +237,6 @@
 		    <version>1.0</version>
 		</dependency>
 
-<!-- public 1.6.8 jars:
-    	<module>swingx-mavensupport</module>
-    swingx-testsupport
-    swingx-common
-    swingx-autocomplete
-    swingx-action
-    swingx-painters
-    TODO swingx-graphics</module>
-    swingx-plaf
-    swingx-core
-    	<module>swingx-all</module>
-    	<module>swingx-beaninfo</module>
- -->
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-core</artifactId>
@@ -273,6 +260,11 @@
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-painters</artifactId>
+			<version>1.7.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.homebeaver</groupId>
+			<artifactId>swingx-graphics</artifactId>
 			<version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -306,7 +298,7 @@
 		<dependency>
 		    <groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
-		    <version>42.3.3</version>
+		    <version>42.3.6</version>
 		</dependency>
 		
 	</dependencies>
