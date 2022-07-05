@@ -34,12 +34,16 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class ColorChooserDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JColorChooser.gif";
 
 	private static final long serialVersionUID = 6436900967666892689L;
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
@@ -74,6 +78,8 @@ public class ColorChooserDemo extends AbstractDemo {
 
     /**
      * ColorChooserDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public ColorChooserDemo(Frame frame) {
         super(new BorderLayout());

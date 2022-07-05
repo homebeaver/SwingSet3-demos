@@ -36,43 +36,74 @@ public abstract class AbstractDemo extends JXPanel {
 	private static final long serialVersionUID = -6208597812505361313L;
 	
 	// The preferred size of the demo
+	/** PREFERRED_WIDTH */
     static int PREFERRED_WIDTH = 680;
+	/** PREFERRED_HEIGHT */
     static int PREFERRED_HEIGHT = 600;
     public static final Dimension PREFERRED_SIZE = new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT);
 
     // Premade convenience dimensions, for use wherever you need 'em.
+    /** convenience dimension for horizontal gap */
     public static Dimension HGAP2 = new Dimension(2,1);
+    /** convenience dimension for vertical gap */
     public static Dimension VGAP2 = new Dimension(1,2);
 
+    /** convenience dimension for horizontal gap */
     public static Dimension HGAP5 = new Dimension(5,1);
+    /** convenience dimension for vertical gap */
     public static Dimension VGAP5 = new Dimension(1,5);
 
+    /** convenience dimension for horizontal gap */
     public static Dimension HGAP10 = new Dimension(10,1);
+    /** convenience dimension for vertical gap */
     public static Dimension VGAP10 = new Dimension(1,10);
 
+    /** convenience dimension for horizontal gap */
     public static Dimension HGAP15 = new Dimension(15,1);
+    /** convenience dimension for vertical gap */
     public static Dimension VGAP15 = new Dimension(1,15);
 
+    /** convenience dimension for horizontal gap */
     public static Dimension HGAP20 = new Dimension(20,1);
+    /** convenience dimension for vertical gap */
     public static Dimension VGAP20 = new Dimension(1,20);
 
+    /** convenience dimension for horizontal gap */
     public static Dimension HGAP25 = new Dimension(25,1);
+    /** convenience dimension for vertical gap */
     public static Dimension VGAP25 = new Dimension(1,25);
 
+    /** convenience dimension for horizontal gap */
     public static Dimension HGAP30 = new Dimension(30,1);
+    /** convenience dimension for vertical gap */
     public static Dimension VGAP30 = new Dimension(1,30);
 
+    /**
+     * ctor
+     */
     public AbstractDemo() {
     	super();
     }
+    /**
+     * ctor with layout
+     * @param layout LayoutManager
+     */
     public AbstractDemo(LayoutManager layout) {
         super(layout);
     	Window w = (Window)MainJXframe.getInstance();
     	super.setDefaultLocale(w.getLocale());
     }
 
+    /**
+     * get ControlPane - to be implemented in subclass
+     * @return JXPanel
+     */
     public abstract JXPanel getControlPane();
 
+    /**
+     * 
+     * @return empty ControlPane
+     */
     protected JXPanel emptyControlPane() {
     	JXPanel pane = new JXPanel();
     	pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
@@ -92,6 +123,12 @@ public abstract class AbstractDemo extends JXPanel {
      * TODO JXLabel implements Mnemonicable
      *      AbstractActionExt implements Mnemonicable, da es auch xetMnemonic hat
      *  AbstractButton ist in package javax.swing - in jdesktop gibt es JXAbstractButton nicht
+     */
+    /**
+     * get a String property with Mnemonicable for comp
+     * @param key property name
+     * @param comp AbstractButton, JLabel or JXTaskPane
+     * @return property value
      */
     protected String getBundleString(String key, JComponent comp) {
     	String s = 
@@ -113,6 +150,11 @@ public abstract class AbstractDemo extends JXPanel {
     	}
     	return TextAndMnemonicUtils.getTextFromTextAndMnemonic(s);    	
     }
+    /**
+     * get a String property
+     * @param key property name
+     * @return property value
+     */
     protected String getBundleString(String key) {
     	if(SWINGSET2_PACKAGE_NAME.equals(getClass().getPackage().getName())) {
     		// die Props haben prefix "class SimpleName."
@@ -120,6 +162,12 @@ public abstract class AbstractDemo extends JXPanel {
     	}
     	return TextAndMnemonicUtils.getTextFromTextAndMnemonic(getBundleString(key, key));
     }
+    /**
+     * get a String property
+     * @param key property name
+     * @param fallback String
+     * @return property value
+     */
     protected String getBundleString(String key, String fallback) {
         String value = fallback;
         if (bundle == null) {
@@ -166,6 +214,13 @@ public abstract class AbstractDemo extends JXPanel {
         return value;
     } 
 
+    /**
+     * Adds a component to TabbedPane represented by a title and no icon
+     * @param tab JTabbedPane
+     * @param comp JComponent
+     * @param name title
+     * @param createScroll to create a new ScrollPane
+     */
     protected void addTab(JTabbedPane tab, JComponent comp, String name, boolean createScroll) {
 		tab.addTab(getBundleString(name), createScroll ? new JScrollPane(comp) : comp);
 	}

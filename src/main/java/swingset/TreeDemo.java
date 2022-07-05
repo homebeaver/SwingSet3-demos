@@ -32,6 +32,9 @@ import org.jdesktop.swingx.JXTree;
  */
 public class TreeDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JTree.gif";
 
 	private static final long serialVersionUID = -932066695707626601L;

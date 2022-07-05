@@ -32,6 +32,9 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class HtmlDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JEditorPane.gif";
 
 	private static final long serialVersionUID = 1867077915822954698L;
@@ -39,6 +42,7 @@ public class HtmlDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -61,6 +65,8 @@ public class HtmlDemo extends AbstractDemo {
 
     /**
      * HtmlDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public HtmlDemo(Frame frame) {
     	super(new BorderLayout());
@@ -103,7 +109,7 @@ public class HtmlDemo extends AbstractDemo {
         return emptyControlPane();
     }
 
-    public HyperlinkListener createHyperLinkListener() {
+    private HyperlinkListener createHyperLinkListener() {
         return new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {

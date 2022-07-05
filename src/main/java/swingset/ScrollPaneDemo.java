@@ -27,6 +27,9 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class ScrollPaneDemo extends AbstractDemo {
 	
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JScrollPane.gif";
 
 	private static final long serialVersionUID = 9199557527894145835L;

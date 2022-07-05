@@ -32,6 +32,9 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  */
 public class ProgressBarDemo extends AbstractDemo {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JProgressBar.gif";
 
 	private static final long serialVersionUID = -5132422584566294096L;

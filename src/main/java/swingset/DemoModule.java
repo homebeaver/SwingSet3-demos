@@ -78,25 +78,39 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
                                               new EmptyBorder(5,5,5,5));
 
     // Premade convenience dimensions, for use wherever you need 'em.
+    /** Dim for Horizontal Gap */
     public static Dimension HGAP2 = new Dimension(2,1);
+    /** Dim for Vertical Gap */
     public static Dimension VGAP2 = new Dimension(1,2);
 
+    /** Dim for Horizontal Gap */
     public static Dimension HGAP5 = new Dimension(5,1);
+    /** Dim for Vertical Gap */
     public static Dimension VGAP5 = new Dimension(1,5);
 
+    /** Dim for Horizontal Gap */
     public static Dimension HGAP10 = new Dimension(10,1);
+    /** Dim for Vertical Gap */
     public static Dimension VGAP10 = new Dimension(1,10);
 
+    /** Dim for Horizontal Gap */
     public static Dimension HGAP15 = new Dimension(15,1);
+    /** Dim for Vertical Gap */
     public static Dimension VGAP15 = new Dimension(1,15);
 
+    /** Dim for Horizontal Gap */
     public static Dimension HGAP20 = new Dimension(20,1);
+    /** Dim for Vertical Gap */
     public static Dimension VGAP20 = new Dimension(1,20);
 
+    /** Dim for Horizontal Gap */
     public static Dimension HGAP25 = new Dimension(25,1);
+    /** Dim for Vertical Gap */
     public static Dimension VGAP25 = new Dimension(1,25);
 
+    /** Dim for Horizontal Gap */
     public static Dimension HGAP30 = new Dimension(30,1);
+    /** Dim for Vertical Gap */
     public static Dimension VGAP30 = new Dimension(1,30);
 
     private SwingSet2 swingset = null;
@@ -105,14 +119,18 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
     private String iconPath = null;
     private String sourceCode = null;
 
+    /**
+     * ctor
+     * @param swingset SwingSet2
+     */
     public DemoModule(SwingSet2 swingset) {
         this(swingset, null, null);
     }
 
     /**
      * ctor
-     * @param swingset
-     * @param resourceName
+     * @param swingset SwingSet2
+     * @param resourceName String
      * @param iconPath used to represent this demo inside the SwingSet2 tool bar
      */
     public DemoModule(SwingSet2 swingset, String resourceName, String iconPath) {
@@ -127,19 +145,35 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
         loadSourceCode();
     }
 
+    /**
+     * getter 
+     * @return resourceName
+     */
     public String getResourceName() {
         return resourceName;
     }
 
+    /**
+     * getter for DemoPanel
+     * @return panel
+     */
     public JPanel getDemoPanel() {
         return panel;
     }
 
+    /**
+     * getter
+     * @return SwingSet2
+     */
     public SwingSet2 getSwingSet2() {
         return swingset;
     }
 
-
+    /**
+     * get getSwingSet2 resource
+     * @param key resource name
+     * @return String resource value
+     */
 	public String getString(String key) {
 		if (getSwingSet2() != null) {
 			return getSwingSet2().getString(key);
@@ -148,10 +182,21 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
 		}
 	}
 
+	/**
+	 * get Mnemonic Char for String resource
+	 * @param key resource name
+	 * @return char
+	 */
     public char getMnemonic(String key) {
         return (getString(key)).charAt(0);
     }
 
+    /**
+     * create ImageIcon from resource
+     * @param filename of the resource image file
+     * @param description of the resource
+     * @return ImageIcon
+     */
     public ImageIcon createImageIcon(String filename, String description) {
         if(getSwingSet2() != null) {
             return getSwingSet2().createImageIcon(filename, description);
@@ -161,11 +206,17 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
         }
     }
 
-
+    /**
+     * getter
+     * @return sourceCode
+     */
     public String getSourceCode() {
         return sourceCode;
     }
 
+    /**
+     * loadSourceCode TODO
+     */
     public void loadSourceCode() {
         if(getResourceName() == null) {
         	LOG.warning("No resource to load");
@@ -199,18 +250,33 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getName() {
         return getString(getResourceName() + ".name");
     };
 
+    /**
+     * create Icon from resource
+     * @return Icon
+     */
     public Icon getIcon() {
         return createImageIcon(iconPath, getResourceName() + ".name");
     };
 
+    /**
+     * get tooltip Resource
+     * @return tooltip
+     */
     public String getToolTip() {
         return getString(getResourceName() + ".tooltip");
     };
 
+    /**
+     * the main implementation
+     */
     public void mainImpl() {
     	JFrame frame = swingset.getFrame();
     	frame.setName(getName());
@@ -221,6 +287,11 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
         frame.setVisible(true);
     }
 
+    /**
+     * create a HorizontalPanel
+     * @param threeD true to set lowered Border
+     * @return JPanel
+     */
     public JPanel createHorizontalPanel(boolean threeD) {
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
@@ -232,6 +303,11 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
         return p;
     }
 
+    /**
+     * create a VerticalPanel
+     * @param threeD true to set lowered Border
+     * @return JPanel
+     */
     public JPanel createVerticalPanel(boolean threeD) {
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
@@ -243,11 +319,18 @@ public class DemoModule extends JPanel implements Accessible, RootPaneContainer 
         return p;
     }
 
+    /**
+     * the main method
+     * @param args no args accepted
+     */
     public static void main(String[] args) {
         DemoModule demo = new DemoModule(null);
         demo.mainImpl();
     }
 
+    /**
+     * init layout
+     */
     public void init() {
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(getDemoPanel(), BorderLayout.CENTER);

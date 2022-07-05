@@ -888,8 +888,8 @@ public class SwingSet2 extends JPanel {
      * and/or if there is any kind of error checking if the LookAndFeel
      * is supported.
      *
-     * The L&F menu will use this method to detemine whether the various
-     * L&F options should be active or inactive.
+     * The LaF menu will use this method to detemine whether the various
+     * LaF options should be active or inactive.
      *
      */
      protected boolean isAvailableLookAndFeel(String laf) {
@@ -1070,7 +1070,7 @@ via PopupMenu shift-F10 kann ich alle drei aktivieren.
     }
 
     /**
-     * Stores the current L&F, and calls updateLookAndFeel, below
+     * Stores the current LaF, and calls updateLookAndFeel, below
      */
     public void setLookAndFeel(String laf) {
         if(!currentLookAndFeel.equals(laf)) {
@@ -1117,7 +1117,7 @@ via PopupMenu shift-F10 kann ich alle drei aktivieren.
     }
 
     /**
-     * Sets the current L&F on each demo module
+     * Sets the current LaF on each demo module
      */
     public void updateLookAndFeel() {
         try {

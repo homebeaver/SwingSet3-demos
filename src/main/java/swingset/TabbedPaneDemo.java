@@ -35,6 +35,9 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  */
 public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JTabbedPane.gif";
 
 	private static final long serialVersionUID = 3060212344858037094L;

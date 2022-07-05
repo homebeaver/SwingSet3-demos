@@ -37,6 +37,9 @@ import org.jdesktop.swingx.JXPanel;
  */
 public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
+	/**
+	 * this is used in DemoAction to build the demo toolbar
+	 */
 	public static final String ICON_PATH = "toolbar/JComboBox.gif";
 
 	private static final long serialVersionUID = 6157959394784801204L;
@@ -47,8 +50,9 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
     
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
-    public static void main(String[] args) {  // TODO
+    public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
     	SwingUtilities.invokeLater(new Runnable() {
     		static final boolean exitOnClose = true;
@@ -72,12 +76,14 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
     /**
      * ComboBoxDemo Constructor
+     * 
+     * @param controllerFrame controller Frame
      */
-    public ComboBoxDemo(Frame frame) {
+    public ComboBoxDemo(Frame controllerFrame) {
         super(new BorderLayout());
         super.setPreferredSize(PREFERRED_SIZE);
         super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getBundleString("name"));
+    	controllerFrame.setTitle(getBundleString("name"));
 
         face = new Face();
         xfaceLabel = new JXLabel(face);

@@ -48,7 +48,7 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  */
 public class FileChooserDemo extends AbstractDemo {
 
-	/*
+	/**
 	 * this is used in DemoAction to build the demo toolbar
 	 */
 	public static final String ICON_PATH = "toolbar/JFileChooser.gif";
@@ -58,6 +58,7 @@ public class FileChooserDemo extends AbstractDemo {
 
     /**
      * main method allows us to run as a standalone demo.
+     * @param args params
      */
     public static void main(String[] args) {
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
@@ -85,6 +86,8 @@ public class FileChooserDemo extends AbstractDemo {
 
     /**
      * FileChooserDemo Constructor
+     * 
+     * @param frame controller Frame
      */
     public FileChooserDemo(Frame frame) {
     	super(new BorderLayout());
@@ -162,7 +165,7 @@ public class FileChooserDemo extends AbstractDemo {
         return boxPane;
     }
 
-    public JFileChooser createFileChooser() {
+    private JFileChooser createFileChooser() {
         // create a filechooser
         JFileChooser fc = new JFileChooser();
 //        if (getSwingSet2() != null && getSwingSet2().isDragEnabled()) {
@@ -328,7 +331,7 @@ public class FileChooserDemo extends AbstractDemo {
         return createButton(a);
     }
 
-    public Action createAboutAction() {
+    private Action createAboutAction() {
         return new AbstractAction(getBundleString("about")) {
             public void actionPerformed(ActionEvent e) {
                 File file = fc.getSelectedFile();
@@ -345,7 +348,7 @@ public class FileChooserDemo extends AbstractDemo {
         };
     }
 
-    public Action createOKAction() {
+    private Action createOKAction() {
         return new AbstractAction(getBundleString("ok")) {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
@@ -358,7 +361,7 @@ public class FileChooserDemo extends AbstractDemo {
         };
     }
 
-    public Action createCancelAction() {
+    private Action createCancelAction() {
         return new AbstractAction(getBundleString("cancel")) {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
@@ -366,7 +369,7 @@ public class FileChooserDemo extends AbstractDemo {
         };
     }
 
-    public Action createFindAction() {
+    private Action createFindAction() {
         Icon icon = StaticUtilities.createImageIcon("filechooser/find.gif");
         return new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
@@ -378,7 +381,7 @@ public class FileChooserDemo extends AbstractDemo {
         };
     }
 
-    public Action createHelpAction() {
+    private Action createHelpAction() {
         Icon icon = StaticUtilities.createImageIcon("filechooser/help.gif");
         return new AbstractAction("", icon) {
             public void actionPerformed(ActionEvent e) {
@@ -412,11 +415,11 @@ public class FileChooserDemo extends AbstractDemo {
         }
     }
 
-    public void loadImage(String filename) {
+    private void loadImage(String filename) {
         theImage.setIcon(new MyImageIcon(filename));
     }
 
-    public JButton createButton(Action a) {
+    private JButton createButton(Action a) {
         JButton b = new JButton(a) {
             public Dimension getMaximumSize() {
                 int width = Short.MAX_VALUE;
@@ -427,7 +430,7 @@ public class FileChooserDemo extends AbstractDemo {
         return b;
     }
 
-    public JButton createImageButton(Action a) {
+    private JButton createImageButton(Action a) {
         JButton b = new JButton(a);
         b.setMargin(new Insets(0,0,0,0));
         return b;
