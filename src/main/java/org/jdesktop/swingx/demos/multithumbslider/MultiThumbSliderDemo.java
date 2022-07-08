@@ -5,7 +5,10 @@ package org.jdesktop.swingx.demos.multithumbslider;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -21,8 +24,10 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.multislider.MultiThumbModel;
-import org.jdesktop.swingx.multislider.Thumb;
+import org.jdesktop.swingx.color.GradientTrackRenderer;
+import org.jdesktop.swingx.multislider.ThumbDataEvent;
+import org.jdesktop.swingx.multislider.ThumbDataListener;
+import org.jdesktop.swingx.util.PaintUtils;
 
 import swingset.AbstractDemo;
 
@@ -34,12 +39,20 @@ Also keine Renderer!
 
  * To customize the look of the thumbs and the track behind the thumbs you must provide 
  * a ThumbRenderer and a TrackRenderer implementation. 
-Für ThumbRenderer und TrackRenderer gibt es nur Interfaces
+Für ThumbRenderer und TrackRenderer gibt es Interfaces
+und zwei rudimentäre Implementierungen
+- 1. in package org.jdesktop.swingx.color
+	class GradientThumbRenderer extends JComponent implements ThumbRenderer
+	class GradientTrackRenderer extends JComponent implements TrackRenderer
+- 2. in package org.jdesktop.swingx.plaf.basic als inner class :
+    private class BasicMultiThumbSliderUI$BasicThumbRenderer extends JComponent implements ThumbRenderer {
+    private class BasicMultiThumbSliderUI$BasicTrackRenderer extends JComponent implements ThumbRenderer {
 
-In org.jdesktop.swingx.plaf.basic.BasicMultiThumbSliderUI gibt es dann doch sehr rudimantäre Renderer.
-
-- Der Treck ist eine linie
+- Der Track ist eine linie
 - Die Thumbs sind simple grüne Rauten (Polygon)
+
+mit ThumbDataListener werden thumbs aus JXMultiThumbSlider mit JSlider sliders synchronisiert,
+so dass man mit beiden rumspielen kann
 
  */
 /**
@@ -50,7 +63,7 @@ In org.jdesktop.swingx.plaf.basic.BasicMultiThumbSliderUI gibt es dann doch sehr
  */
 //@DemoProperties(
 //    value = "JXMultiThumbSlider Demo",
-//    category = "Controls",
+//    category = "Controls", ===> DECORATORS
 //    description = "Demonstrates JXMultiThumbSlider, a control containing one or more thumbs on the same slider.",
 //    sourceFiles = {
 //        "org/jdesktop/swingx/demos/multithumbslider/MultiThumbSliderDemo.java",
@@ -61,7 +74,7 @@ In org.jdesktop.swingx.plaf.basic.BasicMultiThumbSliderUI gibt es dann doch sehr
 //)
 //@SuppressWarnings("serial")
 ////TODO complete the demo
-public class MultiThumbSliderDemo extends AbstractDemo {
+public class MultiThumbSliderDemo extends AbstractDemo implements ThumbDataListener {
    
 	private static final long serialVersionUID = 1291497702141918848L;
 	private static final Logger LOG = Logger.getLogger(MultiThumbSliderDemo.class.getName());
@@ -104,16 +117,48 @@ public class MultiThumbSliderDemo extends AbstractDemo {
     	createSliderAt(BorderLayout.NORTH);
     }
 
-    private JXMultiThumbSlider<Blue> slider = null;
-    static private final String[] LAYOUT_CONSTRAINTS = { BorderLayout.WEST, BorderLayout.EAST 
-    		, BorderLayout.NORTH, BorderLayout.SOUTH
-    		, BorderLayout.CENTER };
+    private JXMultiThumbSlider<Color> slider = null;
+    private List<JSlider> sliders = new ArrayList<JSlider>();
+    static private final String[] LAYOUT_CONSTRAINTS = 
+    	{ BorderLayout.WEST, BorderLayout.EAST 
+    	, BorderLayout.NORTH, BorderLayout.SOUTH
+    	, BorderLayout.CENTER };
     
     private void createSliderAt(String layoutConstraint) {
     	LOG.info("JXMultiThumbSlider at "+ layoutConstraint);
-    	slider = new JXMultiThumbSlider<Blue>();
-        slider.getModel().addThumb(LIGHT_GRAY, new Blue(Color.LIGHT_GRAY));
-        slider.getModel().addThumb(GRAY, new Blue(Color.GRAY));
+//    	slider = new JXMultiThumbSlider<Blue>();
+    	// --------- wie in JXGradientChooser + JXGradientChooser.ChangeAlphaListener
+        slider = new JXMultiThumbSlider<Color>();
+        slider.setOpaque(false);
+        slider.setPreferredSize(new Dimension(100,35)); // default ist 60,16
+        slider.getModel().setMinimumValue(0f);
+        slider.getModel().setMaximumValue(1.0f);
+        
+//        slider.getModel().addThumb(0,Color.black);
+//        slider.getModel().addThumb(0.5f,Color.red);
+//        slider.getModel().addThumb(1.0f,Color.white);
+        // calc new color and set it on thumb
+        Color col = Color.BLUE;
+        col = PaintUtils.setAlpha(col, 255*50/100); // 50% alpha (transparency), damit checker_paint durchscheint
+//        thumb.setObject(col);
+        slider.getModel().addThumb(0, col);
+        slider.getModel().addThumb(1.0f, Color.RED);
+        
+        /*
+         * EUG used indirectly in in (swingx-beaninfo) test org.jdesktop.beans.editors.PaintPickerDemo
+         */
+        LOG.info("ThumbRenderer and TrackRenderer ...");
+        //slider.setThumbRenderer(new GradientThumbRenderer());
+        slider.setTrackRenderer(new GradientTrackRenderer());
+        //slider.addMultiThumbListener(new StopListener());
+    	// --------- wie in JXGradientChooser<<<< 
+
+//    	GradientTrackRenderer trackRenderer = new GradientTrackRenderer();
+//    	GradientThumbRenderer thumbRenderer = new GradientThumbRenderer();
+//    	slider.setTrackRenderer(trackRenderer);
+//    	slider.setThumbRenderer(thumbRenderer);
+//        slider.getModel().addThumb(LIGHT_GRAY, new Blue(Color.LIGHT_GRAY));
+//        slider.getModel().addThumb(GRAY, new Blue(Color.GRAY));
         
         for(int c=0; c<LAYOUT_CONSTRAINTS.length; c++) {
         	String lc = LAYOUT_CONSTRAINTS[c];
@@ -123,7 +168,33 @@ public class MultiThumbSliderDemo extends AbstractDemo {
             	add(jSliderOrLabel(lc), lc);
         	}
         }
+        slider.getModel().addThumbDataListener(this);
     }
+    
+//    private class ThumbHandler implements ThumbDataListener {
+	@Override
+	public void valueChanged(ThumbDataEvent e) {
+		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
+	}
+
+	@Override
+	public void positionChanged(ThumbDataEvent e) {
+		LOG.fine(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
+		int v = (int) (255 * e.getThumb().getPosition()); // float
+		sliders.get(e.getIndex()).setValue(v);
+	}
+
+	@Override
+	public void thumbAdded(ThumbDataEvent e) {
+		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
+	}
+
+	@Override
+	public void thumbRemoved(ThumbDataEvent e) {
+		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
+	}  	
+//    }
+
     private JComponent jSliderOrLabel(String layoutConstraint) {
     	if(BorderLayout.SOUTH==layoutConstraint) {
         	JXPanel pane = new JXPanel();
@@ -131,7 +202,7 @@ public class MultiThumbSliderDemo extends AbstractDemo {
         	pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         	Box box = Box.createVerticalBox();
         	
-            final JSlider blueSlider = new JSlider(0, 255, 192); // javax.swing ( min, max, initial
+            final JSlider blueSlider = new JSlider(0, 255, 0); // javax.swing ( min, max, initial
             blueSlider.setExtent(10); // thumb width
             blueSlider.putClientProperty("JSlider.isFilled", Boolean.TRUE );
             blueSlider.setForeground(Color.BLUE);
@@ -144,10 +215,11 @@ public class MultiThumbSliderDemo extends AbstractDemo {
             	slider.getModel().getThumbAt(0).setPosition(blueSlider.getValue()/255f);
             });
             box.add(blueSlider);
+            sliders.add(blueSlider);
             
             box.add(Box.createRigidArea(VGAP5));
             
-            final JSlider redSlider = new JSlider(0, 255, 128); // javax.swing ( min, max, initial
+            final JSlider redSlider = new JSlider(0, 255, 255); // javax.swing ( min, max, initial
             redSlider.setExtent(10); // thumb width
             redSlider.putClientProperty("JSlider.isFilled", Boolean.TRUE );
 //            LOG.info(" setCreatedDoubleBuffer ============== "+redSlider.isDoubleBuffered());
@@ -160,6 +232,7 @@ public class MultiThumbSliderDemo extends AbstractDemo {
             	slider.getModel().getThumbAt(1).setPosition(redSlider.getValue()/255f);
             });
             box.add(redSlider);
+            sliders.add(redSlider);
             
         	pane.add(box);
         	return pane;
@@ -187,36 +260,4 @@ public class MultiThumbSliderDemo extends AbstractDemo {
     	return emptyControlPane();
 	}
 
-	static final float LIGHT_GRAY = (float)(Color.LIGHT_GRAY.getBlue())/255f; // 192/255
-	static final float GRAY = (float)(Color.GRAY.getBlue())/255f; // 128/255
-	static final float BLUE = (float)(Color.BLUE.getBlue())/255f; // 255/255
-	
-    // inner classes:
-    private class Blue extends Color { 
-    	
-    	public Blue(Color c) {
-    		super(c.getRGB());
-    	}
-    	public Blue(int rgb) {
-    		super(rgb);
-    	}
-    	
-        /**
-         * Returns the blue components of the {@code Color}.
-         */
-    	float blue() {
-    		return ((float)super.getBlue())/255f;
-    	}
-    }
-    
-    private class BlueThumb extends Thumb<Blue> {
-
-		public BlueThumb(Blue thumb, MultiThumbModel<Blue> model) {
-			super(model);
-			super.setObject(thumb);
-			super.setPosition(thumb.blue());
-		}
-    	
-    }
-    
 }
