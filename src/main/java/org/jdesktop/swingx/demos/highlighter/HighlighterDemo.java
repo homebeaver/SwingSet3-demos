@@ -325,8 +325,8 @@ public class HighlighterDemo extends AbstractDemo {
         info.add(new HighlighterInfo("Alternating Groups (2) UI-Dependent", HighlighterFactory.createAlternateStriping(2)));
         info.add(new HighlighterInfo("Alternating Groups (3) UI-Dependent", HighlighterFactory.createAlternateStriping(3)));
         
-        Color lightBlue = new Color(0xC0D9D9);
-        Color gold = new Color(0xDBDB70);
+        Color lightBlue = new Color(0xC0D9D9); // Haint Blue https://icolorpalette.com/color/C0D9D9
+        Color gold = new Color(0xDBDB70); // Moist Gold
         info.add(new HighlighterInfo("Alternating Blue-Gold", HighlighterFactory.createAlternateStriping(lightBlue, gold)));
         info.add(new HighlighterInfo("Alternating Groups (2) Blue-Gold", HighlighterFactory.createAlternateStriping(lightBlue, gold, 2)));
         info.add(new HighlighterInfo("Alternating Groups (3) Blue-Gold", HighlighterFactory.createAlternateStriping(lightBlue, gold, 3)));
