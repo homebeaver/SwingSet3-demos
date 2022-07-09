@@ -24,7 +24,9 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXMultiThumbSlider;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.color.GradientThumbRenderer;
 import org.jdesktop.swingx.color.GradientTrackRenderer;
+import org.jdesktop.swingx.multislider.Thumb;
 import org.jdesktop.swingx.multislider.ThumbDataEvent;
 import org.jdesktop.swingx.multislider.ThumbDataListener;
 import org.jdesktop.swingx.util.PaintUtils;
@@ -74,7 +76,7 @@ so dass man mit beiden rumspielen kann
 //)
 //@SuppressWarnings("serial")
 ////TODO complete the demo
-public class MultiThumbSliderDemo extends AbstractDemo implements ThumbDataListener {
+public class MultiThumbSliderDemo extends AbstractDemo {
    
 	private static final long serialVersionUID = 1291497702141918848L;
 	private static final Logger LOG = Logger.getLogger(MultiThumbSliderDemo.class.getName());
@@ -114,134 +116,112 @@ public class MultiThumbSliderDemo extends AbstractDemo implements ThumbDataListe
     	// create labeled layout
 //    	labeledLayout(SwingConstants.CENTER);
     	
-    	createSliderAt(BorderLayout.NORTH);
+    	createMultiSliderAt(BorderLayout.NORTH);
     }
 
-    private JXMultiThumbSlider<Color> slider = null;
-    private List<JSlider> sliders = new ArrayList<JSlider>();
     static private final String[] LAYOUT_CONSTRAINTS = 
     	{ BorderLayout.WEST, BorderLayout.EAST 
     	, BorderLayout.NORTH, BorderLayout.SOUTH
     	, BorderLayout.CENTER };
     
-    private void createSliderAt(String layoutConstraint) {
+    // NORTH: one multiSlider initialy with two thumbs:
+    private JXMultiThumbSlider<Color> multiSlider = null;
+    // SOUTH: two JSlider:
+    private List<JSlider> sliders = new ArrayList<JSlider>();
+    
+    private void createMultiSliderAt(String layoutConstraint) {
     	LOG.info("JXMultiThumbSlider at "+ layoutConstraint);
 //    	slider = new JXMultiThumbSlider<Blue>();
     	// --------- wie in JXGradientChooser + JXGradientChooser.ChangeAlphaListener
-        slider = new JXMultiThumbSlider<Color>();
-        slider.setOpaque(false);
-        slider.setPreferredSize(new Dimension(100,35)); // default ist 60,16
-        slider.getModel().setMinimumValue(0f);
-        slider.getModel().setMaximumValue(1.0f);
+        multiSlider = new JXMultiThumbSlider<Color>();
+        multiSlider.setOpaque(false);
+        multiSlider.setPreferredSize(new Dimension(100,35)); // default ist 60,16
+        multiSlider.getModel().setMinimumValue(0f);
+        multiSlider.getModel().setMaximumValue(1.0f);
         
 //        slider.getModel().addThumb(0,Color.black);
 //        slider.getModel().addThumb(0.5f,Color.red);
 //        slider.getModel().addThumb(1.0f,Color.white);
         // calc new color and set it on thumb
-        Color col = Color.BLUE;
+        Color col = Color.RED;
         col = PaintUtils.setAlpha(col, 255*50/100); // 50% alpha (transparency), damit checker_paint durchscheint
 //        thumb.setObject(col);
-        slider.getModel().addThumb(0, col);
-        slider.getModel().addThumb(1.0f, Color.RED);
+        multiSlider.getModel().addThumb(0, col);
+        multiSlider.getModel().addThumb(1.0f, Color.BLUE);
         
         /*
          * EUG used indirectly in in (swingx-beaninfo) test org.jdesktop.beans.editors.PaintPickerDemo
          */
         LOG.info("ThumbRenderer and TrackRenderer ...");
-        //slider.setThumbRenderer(new GradientThumbRenderer());
-        slider.setTrackRenderer(new GradientTrackRenderer());
+        multiSlider.setThumbRenderer(new GradientThumbRenderer());
+        multiSlider.setTrackRenderer(new GradientTrackRenderer());
         //slider.addMultiThumbListener(new StopListener());
     	// --------- wie in JXGradientChooser<<<< 
 
-//    	GradientTrackRenderer trackRenderer = new GradientTrackRenderer();
-//    	GradientThumbRenderer thumbRenderer = new GradientThumbRenderer();
-//    	slider.setTrackRenderer(trackRenderer);
-//    	slider.setThumbRenderer(thumbRenderer);
-//        slider.getModel().addThumb(LIGHT_GRAY, new Blue(Color.LIGHT_GRAY));
-//        slider.getModel().addThumb(GRAY, new Blue(Color.GRAY));
-        
         for(int c=0; c<LAYOUT_CONSTRAINTS.length; c++) {
         	String lc = LAYOUT_CONSTRAINTS[c];
         	if(lc.equals(layoutConstraint)) {
-        		add(slider, lc);
+        		add(multiSlider, lc);
             } else {
-            	add(jSliderOrLabel(lc), lc);
+            	add(createSliderOrLabelAt(lc), lc);
         	}
         }
-        slider.getModel().addThumbDataListener(this);
+        multiSlider.getModel().addThumbDataListener(new ThumbDataListener() {
+        	@Override
+        	public void valueChanged(ThumbDataEvent e) {
+        		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
+        	}
+
+        	@Override
+        	public void positionChanged(ThumbDataEvent e) {
+        		LOG.fine(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
+        		int v = (int) (255 * e.getThumb().getPosition()); // float
+        		sliders.get(e.getIndex()).setValue(v);
+        	}
+
+        	@Override
+        	public void thumbAdded(ThumbDataEvent e) {
+        		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
+        	}
+
+        	@Override
+        	public void thumbRemoved(ThumbDataEvent e) {
+        		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
+        	}  	
+        });
     }
     
-//    private class ThumbHandler implements ThumbDataListener {
-	@Override
-	public void valueChanged(ThumbDataEvent e) {
-		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
-	}
-
-	@Override
-	public void positionChanged(ThumbDataEvent e) {
-		LOG.fine(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
-		int v = (int) (255 * e.getThumb().getPosition()); // float
-		sliders.get(e.getIndex()).setValue(v);
-	}
-
-	@Override
-	public void thumbAdded(ThumbDataEvent e) {
-		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
-	}
-
-	@Override
-	public void thumbRemoved(ThumbDataEvent e) {
-		LOG.info(">>>>>>>>> Thumb[" + e.getIndex() + "]:" + e.getThumb());
-	}  	
-//    }
-
-    private JComponent jSliderOrLabel(String layoutConstraint) {
+    private JComponent createSliderOrLabelAt(String layoutConstraint) {
     	if(BorderLayout.SOUTH==layoutConstraint) {
         	JXPanel pane = new JXPanel();
         	pane.setBorder(BorderFactory.createLineBorder(Color.RED));
         	pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        	Box box = Box.createVerticalBox();
         	
-            final JSlider blueSlider = new JSlider(0, 255, 0); // javax.swing ( min, max, initial
-            blueSlider.setExtent(10); // thumb width
-            blueSlider.putClientProperty("JSlider.isFilled", Boolean.TRUE );
-            blueSlider.setForeground(Color.BLUE);
-            blueSlider.setPaintTicks(true);
-            blueSlider.setMajorTickSpacing(50);
-//            coreSlider.setMinimum(0);
-//            coreSlider.setMaximum(255);
-            blueSlider.setPaintLabels( true );
-            blueSlider.addChangeListener( ae -> {
-            	slider.getModel().getThumbAt(0).setPosition(blueSlider.getValue()/255f);
-            });
-            box.add(blueSlider);
-            sliders.add(blueSlider);
-            
-            box.add(Box.createRigidArea(VGAP5));
-            
-            final JSlider redSlider = new JSlider(0, 255, 255); // javax.swing ( min, max, initial
-            redSlider.setExtent(10); // thumb width
-            redSlider.putClientProperty("JSlider.isFilled", Boolean.TRUE );
-//            LOG.info(" setCreatedDoubleBuffer ============== "+redSlider.isDoubleBuffered());
-//            redSlider.setDoubleBuffered(true);
-            redSlider.setForeground(Color.RED);
-            redSlider.setPaintTicks(true);
-            redSlider.setMajorTickSpacing(50);
-            redSlider.setPaintLabels( true );
-            redSlider.addChangeListener( ae -> {
-            	slider.getModel().getThumbAt(1).setPosition(redSlider.getValue()/255f);
-            });
-            box.add(redSlider);
-            sliders.add(redSlider);
-            
-        	pane.add(box);
+        	this.multiSlider.getModel().forEach( element -> {
+        		Thumb<Color> thumb = (Thumb<Color>)element;
+        		Float initial = Float.valueOf(255*thumb.getPosition());
+        		JSlider slider = new JSlider(0, 255, initial.intValue()); // from javax.swing (min, max, initial
+                slider.setExtent(10); // thumb width ??? 
+                slider.putClientProperty("JSlider.isFilled", Boolean.TRUE );
+                slider.setForeground(thumb.getObject());
+                slider.setPaintTicks(true);
+                slider.setMajorTickSpacing(50);
+                slider.setPaintLabels( true );
+                slider.addChangeListener( ae -> {
+                	thumb.setPosition(slider.getValue()/255f);
+                });
+                sliders.add(slider);
+                // JSlider in Box verpacken:
+            	Box box = Box.createVerticalBox();
+                box.add(slider);
+                box.add(Box.createRigidArea(VGAP5));
+                pane.add(box);
+        	});
         	return pane;
-        	//add(pane, layoutConstraint);
     	} else {
         	JXLabel l = new JXLabel(layoutConstraint, SwingConstants.CENTER);
         	l.setBorder(BorderFactory.createLineBorder(Color.RED));
         	return l;
-//        	add(l, layoutConstraint);
     	}
     }
 
