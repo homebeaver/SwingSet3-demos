@@ -49,40 +49,35 @@ public class AquaTheme extends DefaultMetalTheme {
     /**
      * Replaces the primary 1 color <a href="https://en.wikipedia.org/wiki/Blue-gray#Dark_blue-gray" title="Blue-gray">Dark blue-gray</a>:
 <p title="𝗥𝗚𝗕 (102 102 153)&#10;𝗛𝗘𝗫 #666699" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(102,102,153); border:solid 1px #ccc;text-align:right;cursor:help;">
-   <span title="Web-safe" style="font-weight:bold; font-size:100%; color:#f00;"></span>
 </p>
      * 
      * with <a href="https://colornames.org/color/669999">Desaturated Cyan</a> :
 <p title="𝗥𝗚𝗕 (102 153 153)&#10;𝗛𝗘𝗫 #669999" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(102,153,153); border:solid 1px #ccc;text-align:right;cursor:help;">
-   <span title="Web-safe" style="font-weight:bold; font-size:100%; color:#f00;"></span>
 </p>
      */
     @Override
     protected ColorUIResource getPrimary1() { return primary1; }
     
     /**
-     * Replaces the primary 2 color <a href="https://colornames.org/color/9999CC">MarioKart Cubic Centimeters Hack</a>:
+     * Replaces the primary 2 color <a href="https://www.htmlcsscolor.com/hex/9999CC">Blue Bell in htmlcsscolor.com</a>:
 <p title="𝗥𝗚𝗕 (153 153 204)&#10;𝗛𝗘𝗫 #9999CC" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(153,153,204); border:solid 1px #ccc;text-align:right;cursor:help;">
-   <span title="Web-safe" style="font-weight:bold; font-size:100%; color:#f00;"></span>
 </p>
      * 
-     * with <a href="https://colornames.org/color/80C0C0">Misali Neptune</a> :
+     * with <a href="https://colornames.org/color/80C0C0">Misali Neptune</a> 
+     * or <a href="https://www.htmlcsscolor.com/hex/80C0C0">Glacier</a> :
 <p title="𝗥𝗚𝗕 (128 192 192)&#10;𝗛𝗘𝗫 #80C0C0" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(128,192,192); border:solid 1px #ccc;text-align:right;cursor:help;">
-   <span title="Web-safe" style="font-weight:bold; font-size:100%; color:#f00;"></span>
 </p>
      */
     @Override
     protected ColorUIResource getPrimary2() { return primary2; }
     
     /**
-     * Replaces the primary 3 color <a href="/wiki/Lavender_(color)#Lavender_blue" title="Lavender (color)">Lavender blue</a>:
+     * Replaces the primary 3 color <a href="https://en.wikipedia.org//wiki/Lavender_(color)#Lavender_blue" title="Lavender (color)">Lavender blue</a>:
 <p title="𝗥𝗚𝗕 (204 204 255)&#10;𝗛𝗘𝗫 #CCCCFF" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(204,204,255); border:solid 1px #ccc;text-align:right;cursor:help;">
-   <span title="Web-safe" style="font-weight:bold; font-size:100%; color:#f00;"></span>
 </p>
      * 
      * with <a href="https://www.htmlcsscolor.com/hex/9FEBEB">Blizzard Blue</a> :
 <p title="𝗥𝗚𝗕 (159 235 235)&#10;𝗛𝗘𝗫 #9FEBEB" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(159,235,235); border:solid 1px #ccc;text-align:right;cursor:help;">
-   <span title="Web-safe" style="font-weight:bold; font-size:100%; color:#f00;"></span>
 </p>
      */
     @Override
