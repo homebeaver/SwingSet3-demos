@@ -51,7 +51,8 @@ public class AquaTheme extends DefaultMetalTheme {
 <p title="𝗥𝗚𝗕 (102 102 153)&#10;𝗛𝗘𝗫 #666699" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(102,102,153); border:solid 1px #ccc;text-align:right;cursor:help;">
 </p>
      * 
-     * with <a href="https://colornames.org/color/669999">Desaturated Cyan</a> :
+     * with <a href="https://www.htmlcsscolor.com/hex/669999">Cadet Blue</a>
+     * or <a href="https://colornames.org/color/669999">Desaturated Cyan</a> :
 <p title="𝗥𝗚𝗕 (102 153 153)&#10;𝗛𝗘𝗫 #669999" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(102,153,153); border:solid 1px #ccc;text-align:right;cursor:help;">
 </p>
      */
