@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.JXFrame;
@@ -102,6 +103,16 @@ public class XLabelDemo extends AbstractDemo {
          */
         label.setIcon(getResourceAsIcon(getClass(), "resources/images/exit.png"));
         add(label);
+        
+        // FULL BLOCK to check the INACTIVE_CONTROL_TEXT_COLOR in Ocean
+        // Block Color:
+        // #999999 in STEEL, OCEAN, ...
+        // #8e8f91 in Nimbus
+        // #797c88 in Motif
+        // #6d6d6d in Windows
+        JLabel labelWithDisabledForeground = new JLabel("\u2588 Block Label With DisabledForeground");
+        labelWithDisabledForeground.setEnabled(false);
+        add(labelWithDisabledForeground, BorderLayout.NORTH);
     }
 
     private JCheckBox lineWrap;
