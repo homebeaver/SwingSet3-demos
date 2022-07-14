@@ -42,9 +42,23 @@ public class AquaTheme extends DefaultMetalTheme {
 
     public String getName() { return "Aqua"; }
 
-    private final ColorUIResource primary1 = new ColorUIResource(102, 153, 153);
-    private final ColorUIResource primary2 = new ColorUIResource(128, 192, 192);
-    private final ColorUIResource primary3 = new ColorUIResource(159, 235, 235);
+    // aka primary control color
+    private final ColorUIResource primary1 = new ColorUIResource(ColorUnit.CADET_BLUE);
+    // aka primary control shadow color
+    private final ColorUIResource primary2 = new ColorUIResource(ColorUnit.GLACIER);
+    // aka primary control color
+    private final ColorUIResource primary3 = new ColorUIResource(ColorUnit.BLIZZARD_BLUE);
+
+    // control info, control highlight and the secondary colors remain unchanged / here the names for docu
+    // control info : color/Black
+    // control highlight : color/White
+    
+    // aka control dark shadow color
+    private final ColorUIResource secondary1 = new ColorUIResource(ColorUnit.CURSED_GRAY);
+    // aka control disabled color
+    private final ColorUIResource secondary2 = new ColorUIResource(ColorUnit.NOBEL);
+    // aka control color
+    private final ColorUIResource secondary3 = new ColorUIResource(ColorUnit.NEON_SILVER);
 
     /**
      * Replaces the primary 1 color <a href="https://en.wikipedia.org/wiki/Blue-gray#Dark_blue-gray" title="Blue-gray">Dark blue-gray</a>:
