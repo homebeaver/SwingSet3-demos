@@ -73,47 +73,14 @@ public class ColorUnit extends Color {
 		super(rgb);
 		this.context = context;
 	}
-	public ColorUnit(Color c, Context context, String name) {
-		super(c.getRed(), c.getGreen(), c.getBlue());
+	private ColorUnit(int r, int g, int b, Context context) {
+		super(r, g, b);
 		this.context = context;
-//		getValueToKeyword().put(getRGBwithoutAlpha(c), name+","+Context.STEEL);
-/*
-java.lang.ExceptionInInitializerError
-	at swingset.plaf.ColorUnitTest.testPrimaryColors(ColorUnitTest.java:19)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:93)
-	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:40)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:529)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:756)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:452)
-	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:210)
-Caused by: java.lang.NullPointerException: Cannot invoke "java.awt.Color.getRed()" because "c" is null
-	at swingset.plaf.ColorUnit.getRGBwithoutAlpha(ColorUnit.java:145)
-	at swingset.plaf.ColorUnit.getValueToKeyword(ColorUnit.java:154)
-	at swingset.plaf.ColorUnit.<init>(ColorUnit.java:77)
-	at swingset.plaf.ColorUnit.<clinit>(ColorUnit.java:123)
-	... 27 more
-
- */
+	}
+	public ColorUnit(Color c, Context context, String name) {
+		this(c.getRed(), c.getGreen(), c.getBlue(), context);
+		ColorUnit cu = new ColorUnit(c.getRed(), c.getGreen(), c.getBlue(), context);
+		NameManager.add(getRGBwithoutAlpha(cu), name+","+context);
 	}
 
 	private static final String PRIMARY1 = "primary1";
@@ -122,27 +89,31 @@ Caused by: java.lang.NullPointerException: Cannot invoke "java.awt.Color.getRed(
 	private static final String SECONDARY1 = "secondary1";
 	private static final String SECONDARY2 = "secondary2";
 	private static final String SECONDARY3 = "secondary3";
+	
     public static final Color DARK_BLUE_GRAY = new Color(0x666699);
-    public static final ColorUnit STEEL_PRIMARY1 = new ColorUnit(DARK_BLUE_GRAY, Context.STEEL, PRIMARY1);
     public static final Color BLUE_BELL = new Color(0x9999CC);
-    public static final ColorUnit STEEL_PRIMARY2 = new ColorUnit(BLUE_BELL, Context.STEEL, PRIMARY2);
     public static final Color LEVANDER_BLUE = new Color(0xCCCCFF);
-    public static final ColorUnit STEEL_PRIMARY3 = new ColorUnit(LEVANDER_BLUE, Context.STEEL, PRIMARY3);
     public static final Color CURSED_GRAY = new Color(0x666666);
-    public static final ColorUnit STEEL_SECONDARY1 = new ColorUnit(CURSED_GRAY, Context.STEEL, SECONDARY1);
     public static final Color NOBEL = new Color(0x999999);
-    public static final ColorUnit STEEL_SECONDARY2 = new ColorUnit(NOBEL, Context.STEEL, SECONDARY2);
     public static final Color NEON_SILVER = new Color(0xCCCCCC);
+    
+    public static final Color CADET_BLUE = new Color(0x669999);
+    public static final Color GLACIER = new Color(0x80C0C0);
+    public static final Color BLIZZARD_BLUE = new Color(0x9FEBEB);
+    
+    public static final ColorUnit STEEL_PRIMARY1 = new ColorUnit(DARK_BLUE_GRAY, Context.STEEL, PRIMARY1);
+    public static final ColorUnit STEEL_PRIMARY2 = new ColorUnit(BLUE_BELL, Context.STEEL, PRIMARY2);
+    public static final ColorUnit STEEL_PRIMARY3 = new ColorUnit(LEVANDER_BLUE, Context.STEEL, PRIMARY3);
+    public static final ColorUnit STEEL_SECONDARY1 = new ColorUnit(CURSED_GRAY, Context.STEEL, SECONDARY1);
+    public static final ColorUnit STEEL_SECONDARY2 = new ColorUnit(NOBEL, Context.STEEL, SECONDARY2);
     public static final ColorUnit STEEL_SECONDARY3 = new ColorUnit(NEON_SILVER, Context.STEEL, SECONDARY3);
    
-    public static final Color CADET_BLUE = new Color(0x669999);
     public static final ColorUnit AQUA_PRIMARY1 = new ColorUnit(CADET_BLUE, Context.AQUA, PRIMARY1);
-    public static final Color GLACIER = new Color(0x80C0C0);
     public static final ColorUnit AQUA_PRIMARY2 = new ColorUnit(GLACIER, Context.AQUA, PRIMARY2);
-    public static final Color BLIZZARD_BLUE = new Color(0x9FEBEB);
     public static final ColorUnit AQUA_PRIMARY3 = new ColorUnit(BLIZZARD_BLUE, Context.AQUA, PRIMARY3);
 
     private static int getRGBwithoutAlpha(Color c) {
+//    	System.out.println("Color c="+c.getClass() + " .value="+c);   	
     	int context = c instanceof ColorUnit ? ((ColorUnit)(c)).context.ordinal() : 0;
     	int value = ((context & 0xFF) << 24)
     	| ((c.getRed() & 0xFF) << 16)
@@ -166,34 +137,35 @@ Caused by: java.lang.NullPointerException: Cannot invoke "java.awt.Color.getRed(
 //		return valueToKeyword;
 //	}
 		
-	private static Map<Integer, String> valueToKeyword = new HashMap<Integer, String>() {{
-		put(getRGBwithoutAlpha(DARK_BLUE_GRAY), "dark blue gray");
-		put(getRGBwithoutAlpha(BLUE_BELL), "blue bell");
-		put(getRGBwithoutAlpha(LEVANDER_BLUE), "lavender blue");
-		put(getRGBwithoutAlpha(CURSED_GRAY), "cursed gray");
-		put(getRGBwithoutAlpha(NOBEL), "nobel");
-		put(getRGBwithoutAlpha(NEON_SILVER), "neon silver");
-		
-		put(getRGBwithoutAlpha(CADET_BLUE), "cadet blue");
-		put(getRGBwithoutAlpha(GLACIER), "glacier");
-		put(getRGBwithoutAlpha(BLIZZARD_BLUE), "blizzard blue");
-		
-		// TODO diese nur im ctor einfügen!! exception wie oben beim Test
-		put(getRGBwithoutAlpha(STEEL_PRIMARY1), PRIMARY1+","+Context.STEEL);
-		put(getRGBwithoutAlpha(STEEL_PRIMARY2), PRIMARY2+","+Context.STEEL);
-		put(getRGBwithoutAlpha(STEEL_PRIMARY2), PRIMARY2+","+Context.STEEL);
-	}};
+//	private static Map<Integer, String> valueToKeyword = new HashMap<Integer, String>() {{
+//		put(getRGBwithoutAlpha(DARK_BLUE_GRAY), "dark blue gray");
+//		put(getRGBwithoutAlpha(BLUE_BELL), "blue bell");
+//		put(getRGBwithoutAlpha(LEVANDER_BLUE), "lavender blue");
+//		put(getRGBwithoutAlpha(CURSED_GRAY), "cursed gray");
+//		put(getRGBwithoutAlpha(NOBEL), "nobel");
+//		put(getRGBwithoutAlpha(NEON_SILVER), "neon silver");
+//		
+//		put(getRGBwithoutAlpha(CADET_BLUE), "cadet blue");
+//		put(getRGBwithoutAlpha(GLACIER), "glacier");
+//		put(getRGBwithoutAlpha(BLIZZARD_BLUE), "blizzard blue");
+//		
+//		// diese nur im ctor einfügen!! exception wie oben beim Test
+////		put(getRGBwithoutAlpha(STEEL_PRIMARY1), PRIMARY1+","+Context.STEEL);
+////		put(getRGBwithoutAlpha(STEEL_PRIMARY2), PRIMARY2+","+Context.STEEL);
+////		put(getRGBwithoutAlpha(STEEL_PRIMARY2), PRIMARY2+","+Context.STEEL);
+//	}};
 
 	public static String getName(Color c) {
-//		Map<Integer, String> vtk = getValueToKeyword();
-		return valueToKeyword.get(getRGBwithoutAlpha(c));
+		return NameManager.getInstance().vtk.get(getRGBwithoutAlpha(c));
+//		return valueToKeyword.get(getRGBwithoutAlpha(c));
 	}
 
 	public static List<String> getNames(Color c) {
 		List<String> res = new ArrayList<String>();
 		int rgb = getRGBwithoutAlpha(c);
 		String rgbs = Integer.toHexString(rgb).toUpperCase();
-		valueToKeyword.forEach( (k,v) -> {
+		NameManager.getInstance().vtk.forEach( (k,v) -> {
+//		valueToKeyword.forEach( (k,v) -> {
 			// ohne Context
 			String hexk = Integer.toHexString(k).toUpperCase();
 			String rgbk = hexk.length()==6 ? hexk : hexk.substring(1);
@@ -205,10 +177,40 @@ Caused by: java.lang.NullPointerException: Cannot invoke "java.awt.Color.getRed(
 		return res;
 	}
 	public static void printNames() {
-		valueToKeyword.forEach( (k,v) -> {
-			// ohne Context
+		NameManager.getInstance().vtk.forEach( (k,v) -> {
+//		valueToKeyword.forEach( (k,v) -> {
 			String hexk = Integer.toHexString(k).toUpperCase();
-	    	System.out.println("[#"+(hexk.length()==6 ? hexk : hexk.substring(1)) + ","+v + "]");
+//	    	System.out.println("[#"+hexk + ","+v + "]");
+			// ohne Context
+	    	System.out.println("[#"+hexk.substring(hexk.length()-6) + ","+v + "]");
 		});
 	}
+	
+	private static class NameManager {
+	    private static NameManager INSTANCE;
+	    private Map<Integer, String> vtk; //valueToKeyword*/ = new HashMap<Integer, String>();
+	    private NameManager() {
+	    	vtk = new HashMap<Integer, String>();
+			vtk.put(getRGBwithoutAlpha(DARK_BLUE_GRAY), "dark blue gray");
+			vtk.put(getRGBwithoutAlpha(BLUE_BELL), "blue bell");
+			vtk.put(getRGBwithoutAlpha(LEVANDER_BLUE), "lavender blue");
+			vtk.put(getRGBwithoutAlpha(CURSED_GRAY), "cursed gray");
+			vtk.put(getRGBwithoutAlpha(NOBEL), "nobel");
+			vtk.put(getRGBwithoutAlpha(NEON_SILVER), "neon silver");
+			
+			vtk.put(getRGBwithoutAlpha(CADET_BLUE), "cadet blue");
+			vtk.put(getRGBwithoutAlpha(GLACIER), "glacier");
+			vtk.put(getRGBwithoutAlpha(BLIZZARD_BLUE), "blizzard blue");
+	    }
+	    private static NameManager getInstance() {
+	        if (INSTANCE == null) {
+	            INSTANCE = new NameManager();
+	        }
+	        return INSTANCE;
+	    }
+	    private static void add(int rgb, String keyword) {
+	    	getInstance().vtk.put(rgb, keyword);
+	    }
+	}
+	
 }

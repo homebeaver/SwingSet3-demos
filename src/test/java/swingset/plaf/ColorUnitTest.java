@@ -19,7 +19,7 @@ public class ColorUnitTest extends junit.framework.TestCase {
     	assertEquals(0xFF666699, FF666699.hashCode());
     	assertEquals("dark blue gray", ColorUnit.getName(FF666699));
     	
-    	// 2. ColorUnit.darkBlueGray entspricht Color(0x666699) und liefert den selben Namen
+    	// 2. ColorUnit.darkBlueGray entspricht Color(0x666699) und liefert den gleichen Namen
     	Color darkBlueGray = ColorUnit.DARK_BLUE_GRAY;
     	System.out.println("darkBlueGray="+darkBlueGray + " .value="+darkBlueGray.hashCode());
     	assertEquals(0xFF666699, darkBlueGray.hashCode());
@@ -34,7 +34,7 @@ public class ColorUnitTest extends junit.framework.TestCase {
     	// Steel_primary1 gleicht darkBlueGray , aber hat einen anderen Namen
     	assertEquals("primary1,STEEL", ColorUnit.getName(Steel_primary1));
     	List<String> exp2 = ColorUnit.getNames(FF666699);
-    	System.out.println("exp2="+exp2);
+    	System.out.println("expected 2 different names="+exp2 + " for Color FF666699 "+FF666699);
     	assertEquals(2, exp2.size());
     	ColorUnit.printNames();
     }
