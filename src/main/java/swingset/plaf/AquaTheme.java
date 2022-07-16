@@ -42,7 +42,7 @@ public class AquaTheme extends DefaultMetalTheme {
 
     public String getName() { return "Aqua"; }
 
-    // aka primary control color
+    // aka primary control dark shadow color
     private final ColorUIResource primary1 = new ColorUIResource(ColorUnit.CADET_BLUE);
     // aka primary control shadow color
     private final ColorUIResource primary2 = new ColorUIResource(ColorUnit.GLACIER);
@@ -61,39 +61,33 @@ public class AquaTheme extends DefaultMetalTheme {
     private final ColorUIResource secondary3 = new ColorUIResource(ColorUnit.NEON_SILVER);
 
     /**
-     * Replaces the primary 1 color <a href="https://en.wikipedia.org/wiki/Blue-gray#Dark_blue-gray" title="Blue-gray">Dark blue-gray</a>:
-<p title="𝗥𝗚𝗕 (102 102 153)&#10;𝗛𝗘𝗫 #666699" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(102,102,153); border:solid 1px #ccc;text-align:right;cursor:help;">
-</p>
-     * 
+     * Replaces the primary 1 color <a href="https://en.wikipedia.org/wiki/Blue-gray#Dark_blue-gray">Dark blue-gray</a> RGB (102 102 153) HEX #666699:
+<p style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(102,102,153); border:solid 1px #ccc;text-align:right;">
+     * <p>
      * with <a href="https://www.htmlcsscolor.com/hex/669999">Cadet Blue</a>
-     * or <a href="https://colornames.org/color/669999">Desaturated Cyan</a> :
-<p title="𝗥𝗚𝗕 (102 153 153)&#10;𝗛𝗘𝗫 #669999" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(102,153,153); border:solid 1px #ccc;text-align:right;cursor:help;">
-</p>
+     * or <a href="https://colornames.org/color/669999">Desaturated Cyan</a> RGB (102 153 153) HEX #669999:
+<p style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(102,153,153); border:solid 1px #ccc;text-align:right">
      */
     @Override
     protected ColorUIResource getPrimary1() { return primary1; }
     
     /**
-     * Replaces the primary 2 color <a href="https://www.htmlcsscolor.com/hex/9999CC">Blue Bell in htmlcsscolor.com</a>:
-<p title="𝗥𝗚𝗕 (153 153 204)&#10;𝗛𝗘𝗫 #9999CC" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(153,153,204); border:solid 1px #ccc;text-align:right;cursor:help;">
-</p>
-     * 
+     * Replaces the primary 2 color <a href="https://www.htmlcsscolor.com/hex/9999CC">Blue Bell in htmlcsscolor.com</a> RGB (153 153 204) HEX #9999CC:
+<p style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(153,153,204); border:solid 1px #ccc;text-align:right;">
+     * <p>
      * with <a href="https://colornames.org/color/80C0C0">Misali Neptune</a> 
-     * or <a href="https://www.htmlcsscolor.com/hex/80C0C0">Glacier</a> :
-<p title="𝗥𝗚𝗕 (128 192 192)&#10;𝗛𝗘𝗫 #80C0C0" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(128,192,192); border:solid 1px #ccc;text-align:right;cursor:help;">
-</p>
+     * or <a href="https://www.htmlcsscolor.com/hex/80C0C0">Glacier</a> RGB (128 192 192) HEX #80C0C0:
+<p style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(128,192,192); border:solid 1px #ccc;text-align:right;">
      */
     @Override
     protected ColorUIResource getPrimary2() { return primary2; }
-    
+  
     /**
-     * Replaces the primary 3 color <a href="https://en.wikipedia.org//wiki/Lavender_(color)#Lavender_blue" title="Lavender (color)">Lavender blue</a>:
-<p title="𝗥𝗚𝗕 (204 204 255)&#10;𝗛𝗘𝗫 #CCCCFF" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(204,204,255); border:solid 1px #ccc;text-align:right;cursor:help;">
-</p>
-     * 
-     * with <a href="https://www.htmlcsscolor.com/hex/9FEBEB">Blizzard Blue</a> :
-<p title="𝗥𝗚𝗕 (159 235 235)&#10;𝗛𝗘𝗫 #9FEBEB" style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(159,235,235); border:solid 1px #ccc;text-align:right;cursor:help;">
-</p>
+     * Replaces the primary 3 color <a href="https://en.wikipedia.org//wiki/Lavender_(color)#Lavender_blue">Lavender blue</a> RGB (204 204 255) HEX #CCCCFF :
+<p style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(204,204,255); border:solid 1px #ccc;text-align:right;">
+     * <p>
+     * with <a href="https://www.htmlcsscolor.com/hex/9FEBEB">Blizzard Blue</a> RGB (159 235 235) HEX #9FEBEB :
+<p style="width:10em;height:1em; padding:5px;margin:auto; background-color:rgb(159,235,235); border:solid 1px #ccc;text-align:right;">
      */
     @Override
     protected ColorUIResource getPrimary3() { return primary3; }
