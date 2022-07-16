@@ -55,6 +55,9 @@ in SwingSet3:
 	class JXRootPane extends JRootPane
 	
  */
+/**
+ * MainJXframe extends DemoJXFrame. This Frame contains the Demo Controller.
+ */
 @SuppressWarnings("serial")
 public class MainJXframe extends DemoJXFrame {
 
@@ -253,10 +256,14 @@ Alternative 3: DemoJXTasks statt demoTree
 		return menu;
     }
 
-    /* <snip> PopupMenu
+    // <snip> PopupMenu
+    /**
      * a small popup menu, activated via keyboard SHIFT_DOWN+F10
      * shows items with InstalledLookAndFeels
      * and a class ActivatePopupMenuAction with ActionEvent on SHIFT_DOWN+F10
+     * 
+     * @param comp JComponent, typically JXPanel where to show the popup
+     * @return JPopupMenu
      */
     public JPopupMenu createPopupMenu(JComponent comp) {
         JPopupMenu popupMenu = new JPopupMenu("JPopupMenu Laf demo");
@@ -264,7 +271,7 @@ Alternative 3: DemoJXTasks statt demoTree
         UIManager.LookAndFeelInfo[] lafInfo = UIManager.getInstalledLookAndFeels();
         JMenuItem mi = null;
         for (int counter = 0; counter < lafInfo.length; counter++) {
-        	String classname = lafInfo[counter].getClassName();
+//        	String classname = lafInfo[counter].getClassName();
 //        	LOG.info("--->counter "+counter + " lafInfo.ClassName:"+classname);
         	mi = createLafMenuItem(lafInfo[counter]);
         	popupMenu.add(mi);
@@ -328,7 +335,8 @@ Alternative 3: DemoJXTasks statt demoTree
 	JXPanel content = null;
 	JTabbedPane tabbedpane = null;
 	JXPanel currentController = null;
-	public void addController(JXPanel controlPane) {
+	// not public, used in DemoAction
+	void addController(JXPanel controlPane) {
 		if(currentController!=null) tabbedpane.remove(currentController);
 		currentController = controlPane;
 		tabbedpane.add("controller", currentController);

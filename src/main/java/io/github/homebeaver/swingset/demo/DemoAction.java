@@ -45,7 +45,12 @@ import swingset.ToolTipDemo;
 import swingset.TreeDemo;
 
 /**
- * TODO
+ * DemoAction extends <code>AbstractActionExt</code> which includes toggle or group states.
+ * <p>
+ * It implements <code>Action</code> and <code>ItemListener</code> interface.
+ * 
+ * Each DemoAction represents a demo, either SwingSet2 or SwingSet3 demo,
+ * which can be loaded and started in an extra frame.
  */
 //                                                                        interface ItemListener extends EventListener
 //                        class AbstractActionExt extends AbstractAction implements ItemListener
@@ -53,30 +58,20 @@ public class DemoAction extends AbstractActionExt {
 
 	private static final Logger LOG = Logger.getLogger(DemoAction.class.getName());
 
-	/** TODO */
+	/** A Category of Demos */
 	public enum Category {
-		/** demo Category */
 		CHOOSERS, 
-		/** demo Category */
 		CONTAINERS, 
-		/** demo Category */
 		CONTROLS, 
-		/** demo Category */
 		DATA, 
-		/** demo Category */
 		DECORATORS, 
-		/** demo Category */
 		FUNCTIONALITY, 
-		/** demo Category */
 		GRAPHICS, 
-		/** demo Category */
 		TEXT, 
-		/** demo Category */
-		VISUALIZATION}
+		VISUALIZATION};
 	
 	// category => color
 	@SuppressWarnings("serial")
-	/** categoryToColor */
 	public static Map<Category, Color> categoryToColor = new HashMap<Category, Color>() {{
 	    put(Category.CHOOSERS, Color.CYAN);
 	    put(Category.CONTAINERS, Color.PINK); // examples: ss3:JXCollapsiblePane
@@ -200,6 +195,7 @@ public class DemoAction extends AbstractActionExt {
         // SHORT_DESCRIPTION will setToolTipText in addActionToToolBar
         if(this.democlass!=null) {
             String key = this.democlass.getSimpleName() + '.' + "tooltip";
+            // TODO use AbstractDemo.getBundleString(String key, String fallback)
             String desc = StaticUtilities.getResourceAsString(key, null);
             super.setShortDescription(desc);
         }

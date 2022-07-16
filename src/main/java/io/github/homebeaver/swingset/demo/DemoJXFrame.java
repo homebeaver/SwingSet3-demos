@@ -19,6 +19,7 @@ import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -79,6 +80,35 @@ public class DemoJXFrame extends JXFrame {
 			, window_ID==-1 ? true : false // exitOnClose
 			);
         UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+        
+        /*
+         * Frame Title Background Color cannot be set. It is controlled by OS.
+         * see: https://stackoverflow.com/questions/2482971/how-to-change-the-color-of-titlebar-in-jframe
+         * default: isUndecorated=false WindowDecorationStyle=0 (NONE)
+         * activeCaption:ColorUIResource[r=184,g=207,b=229] #B8CFE5 / TROPICAL_BLUE
+         * activeCaptionText:sun.swing.PrintColorUIResource[r=51,g=51,b=51] #333333 / NIGHT_RIDER
+UIDefaults uiDefaults = UIManager.getDefaults();
+uiDefaults.put("activeCaption", new javax.swing.plaf.ColorUIResource(Color.gray));
+uiDefaults.put("activeCaptionText", new javax.swing.plaf.ColorUIResource(Color.white));
+JFrame.setDefaultLookAndFeelDecorated(true);
+         */
+        // in XXX JFrame setBackground(UIManager.getColor("control")); [r=238,g=238,b=238] == EEEEEE
+        LOG.info(">>>>>>>>>>> UIManager.getColor(\"control\":"+UIManager.getColor("control")
+    		+" getBackground:"+super.getBackground() // ColorUIResource[r=238,g=238,b=238]
+        	+" activeCaption:"+UIManager.get("activeCaption")
+        	+" activeCaptionText:"+UIManager.get("activeCaptionText")
+        	+" JFrame.isDefaultLookAndFeelDecorated="+JFrame.isDefaultLookAndFeelDecorated() // false
+        	+"\n isUndecorated="+isUndecorated()+" WindowDecorationStyle="+getRootPane().getWindowDecorationStyle());
+        /*
+         * DefaultLookAndFeelDecorated ist false, ausser bei Metal.
+         * d.h. OS hat die Kontrolle über Frame Title Background.
+         * 
+         * Es sei denn, mann setzt es explizit:
+        JFrame.setDefaultLookAndFeelDecorated(true);
+         */
+//		super.setUndecorated(true);
+//		super.getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+       
 		windowCounter++;
 		this.windowNo = windowCounter-1;
 		this.window_ID = window_ID;
