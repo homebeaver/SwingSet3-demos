@@ -1,6 +1,7 @@
 package io.github.homebeaver.swingset.demo;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -47,7 +48,20 @@ import swingset.StaticUtilities;
 public class DemoJXFrame extends JXFrame {
 
     private static final Logger LOG = Logger.getLogger(DemoJXFrame.class.getName());
+    private static final String METAL = "javax.swing.plaf.metal.MetalLookAndFeel";
+    private static final String STEEL = "javax.swing.plaf.metal.DefaultMetalTheme";
+    private static final String OCEAN = "javax.swing.plaf.metal.OceanTheme";
+    // some UI object keys
+    private static final String UI_KEY_BOLDMETAL = "swing.boldMetal"; // Boolean
+    private static final String UI_KEY_FRAME_TITLEFONT = "InternalFrame.titleFont"; // Font
 
+    public static boolean isMETAL() {
+    	return "Metal".equals(UIManager.getLookAndFeel().getName()); // oder String getID()
+    }
+    public static void setDefaultLookAndFeelDecorated(boolean defaultLookAndFeelDecorated) {
+        JFrame.setDefaultLookAndFeelDecorated(defaultLookAndFeelDecorated);    	
+    }
+    
 	private static int windowCounter = 0; // für windowNo, wird pro ctor hochgezählt
 	int getWindowCounter() {
 		return windowCounter;
@@ -71,15 +85,60 @@ public class DemoJXFrame extends JXFrame {
 	private int window_ID;
 	JXPanel jPanel = new JXPanel(new BorderLayout());
 	
+	@Deprecated // not used
+	static private void initialTheme(String themeClassName) {
+		String plaf = METAL;
+        try {
+            UIManager.setLookAndFeel(plaf);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            LOG.log(Level.FINE, "problem in setting laf: " + plaf, e1);
+        }
+
+		Class<?> themeClass = null;
+		MetalTheme theme = null;
+		try {
+			themeClass = Class.forName(themeClassName); // throws ClassNotFoundException
+		} catch (Exception e) {
+			LOG.warning("Error occurred loading class: "+themeClassName);
+			e.printStackTrace();
+		}
+		try {
+			theme = (MetalTheme)themeClass.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		LOG.info(">>>>>>>>>>>>>>>>>theme:"+theme.getName());
+		MetalLookAndFeel.setCurrentTheme(theme);
+		LOG.info(">>>>>>>>>>>>>>>>>current:"+MetalLookAndFeel.getCurrentTheme());
+	}
+	// Einstellungen vor Frame ctor
+	static private boolean exitOnClose(int window_ID) {
+        UIManager.put(UI_KEY_BOLDMETAL, Boolean.FALSE); // turn off bold fonts in Metal
+        // dieser key gilt nicht für Frame Titel, das macht:
+		Font font = UIManager.getFont(UI_KEY_FRAME_TITLEFONT);
+		Object newFont = UIManager.put(UI_KEY_FRAME_TITLEFONT, new Font(font.getName(), Font.PLAIN, font.getSize()));
+		LOG.info(UI_KEY_FRAME_TITLEFONT+" changed to "+newFont + " was "+font);
+			
+		LOG.info("InternalFrame.closeIcon:"+UIManager.getIcon("InternalFrame.closeIcon"));
+//		initialTheme(STEEL); // uncomment to start explicitly with STEEL
+		if(isMETAL() && window_ID!=-1) { // root Window always OS controlled ID==-1
+			// decorate Demo Frame Title with STEEL when LaF is METAL
+			// otherwise no decoration aka OS controlled
+	        setDefaultLookAndFeelDecorated(UIManager.getLookAndFeel().getSupportsWindowDecorations());
+		}
+		return window_ID==-1 ? true : false;
+	}
 	/*
 	 * window_ID==-1 is used for RootFrame
 	 */
 	DemoJXFrame(String title, int window_ID, Object object) {
 		super(title
 			, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
-			, window_ID==-1 ? true : false // exitOnClose
+			, exitOnClose(window_ID)
 			);
-        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
         
         /*
          * Frame Title Background Color cannot be set. It is controlled by OS.
@@ -106,6 +165,7 @@ JFrame.setDefaultLookAndFeelDecorated(true);
          * Es sei denn, mann setzt es explizit:
         JFrame.setDefaultLookAndFeelDecorated(true);
          */
+
 //		super.setUndecorated(true);
 //		super.getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
        
@@ -261,7 +321,7 @@ aus super:
         lafMenuGroup = new ButtonGroup(); // wg. mi.setSelected
         for (LookAndFeelInfo info : lafInfo) {
             JMenuItem mi = createLafMenuItem(info);
-            LOG.info("JMenuItem mi.Action:"+mi.getAction());
+            LOG.fine("JMenuItem mi.Action:"+mi.getAction() + " ClassName="+info.getClassName());
             lafMenuGroup.add(mi);
             if(info.getClassName().equals(UIManager.getLookAndFeel().getClass().getName())) {
             	mi.setSelected(true);
@@ -339,7 +399,7 @@ aus super:
      * @return JMenu
      */
     protected JMenu createThemeMenu(Window target) {
-    	String[] themeInfo = { "javax.swing.plaf.metal.OceanTheme" , "javax.swing.plaf.metal.DefaultMetalTheme"
+    	String[] themeInfo = { OCEAN , STEEL
     		, "swingset.plaf.AquaTheme"
     		, "swingset.plaf.CharcoalTheme"
     		, "swingset.plaf.ContrastTheme"
@@ -355,7 +415,11 @@ aus super:
         	mi.setAction(action);
         }
         // setEnabled when LAF is Metal
-        themeMenu.setEnabled(UIManager.getLookAndFeel().getClass().getSimpleName().equals("MetalLookAndFeel"));
+        themeMenu.setEnabled(isMETAL());
+        if(isMETAL()) {
+        	// set inital selected default: 
+        	themeMenu.getItem("Steel".equals(MetalLookAndFeel.getCurrentTheme().getName()) ? 1 : 0).setSelected(true);
+        }
         return themeMenu;
     }
 
@@ -427,8 +491,16 @@ aus super:
             
             if(toplevel instanceof MainJXframe) {
             	MainJXframe rf = (MainJXframe)toplevel;
-            	// themeMenu setEnabled when LAF is Metal
-            	rf.themeMenu.setEnabled(plaf.endsWith(".MetalLookAndFeel"));
+//            	// themeMenu setEnabled when LAF is Metal
+            	rf.themeMenu.setEnabled(isMETAL());
+//            	if(isMETAL()) {
+//            		rf.themeMenu.setEnabled(true);
+//        		LOG.info(">>> TODO setEnabled in Theme >>>>>>>>>>>>>>current:"+MetalLookAndFeel.getCurrentTheme());
+////        	        setDefaultLookAndFeelDecorated(UIManager.getLookAndFeel().getSupportsWindowDecorations());
+//            	} else {
+//            		rf.themeMenu.setEnabled(false);
+////        	        setDefaultLookAndFeelDecorated(false);
+//            	}
             	
                 // JPopupMenu Group (in AbstractActionExt) und JMenu Group synchronisieren:
             	Enumeration<AbstractButton> abEnum = rf.lafMenuGroup.getElements();
@@ -479,7 +551,7 @@ class OceanTheme extends DefaultMetalTheme
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-            if(!UIManager.getLookAndFeel().getClass().getSimpleName().equals("MetalLookAndFeel")) return;
+            if(!isMETAL()) return;
             		
 			if (themeClass == null) {
 				String className = (String) super.getValue(Action.NAME);
