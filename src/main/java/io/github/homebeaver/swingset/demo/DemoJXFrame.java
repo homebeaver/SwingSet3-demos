@@ -2,17 +2,14 @@ package io.github.homebeaver.swingset.demo;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.peer.FramePeer;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -38,16 +35,11 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.plaf.RootPaneUI;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.metal.MetalRootPaneUI;
-import javax.swing.plaf.metal.MetalTheme;
-//import javax.swing.plaf.metal.MetalTitlePane; // not visible
 import javax.swing.plaf.metal.MetalTheme;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXRootPane;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.SwingXUtilities;
 import org.jdesktop.swingx.action.AbstractActionExt;
@@ -106,7 +98,7 @@ public class DemoJXFrame extends JXFrame {
 		UIManager.put(UI_KEY_FRAME_TITLEFONT, new Font(font.getName(), Font.PLAIN, font.getSize()));
 		LOG.info(UI_KEY_FRAME_TITLEFONT+" changed to "+UIManager.getFont(UI_KEY_FRAME_TITLEFONT) + " was "+font);
 			
-		LOG.info("InternalFrame.closeIcon:"+UIManager.getIcon("InternalFrame.closeIcon"));
+//		LOG.info("InternalFrame.closeIcon:"+UIManager.getIcon("InternalFrame.closeIcon"));
 
 		if(isMETAL() && window_ID!=-1) { // root Window always OS controlled ID==-1
 			// decorate Demo Frame Title with STEEL when LaF is METAL
@@ -123,88 +115,6 @@ public class DemoJXFrame extends JXFrame {
 			, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration()
 			, exitOnClose(window_ID)
 			);
-        //--------------------
-//		(FramePeer)this.peer; // not visible
-//        LOG.info(">>>>>>>>>>> UIManager.getColor(\"control\":"+UIManager.getColor("control")
-//    		+" getBackground:"+super.getBackground() // ColorUIResource[r=238,g=238,b=238]
-//        	+" activeCaption:"+UIManager.get("activeCaption")
-//        	+" activeCaptionText:"+UIManager.get("activeCaptionText")
-//        	+" JFrame.isDefaultLookAndFeelDecorated="+JFrame.isDefaultLookAndFeelDecorated() // false
-//        	+"\n isUndecorated="+isUndecorated()+" WindowDecorationStyle="+getRootPane().getWindowDecorationStyle());
-//		super.getType();
-//		super.getBackground();
-//		Component[] comps = super.rootPane.getLayeredPane().getComponentsInLayer(JLayeredPane.FRAME_CONTENT_LAYER);
-//		LOG.info("------Type="+getType()+" --BG="+getBackground()+"-----rootPane.LayeredPane:"
-//		+comps.length);
-//		for(int i=0; i<comps.length;i++) {
-//			Component c = comps[i];
-//			LOG.info(""+i+":"+c);
-//			if(i==1) {
-//				JComponent jc = (JComponent)c;
-//				LOG.info("!!!!!!!! "+jc.getUI()+" >>>>>>>>>>>> replace:"+c.getBackground());
-//				jc.setBackground(Color.YELLOW);
-//			}
-//		}
-		
-		
-		
-		
-//		LOG.info("------Type="+getType()+" --BG="+getBackground()+"-----rootPane.getUI:"+super.rootPane.getUI());
-//		MetalRootPaneUI obj = (MetalRootPaneUI)super.rootPane.getUI();
-////		rpui.getTitlePane(); //private <<<<<<<<<<<<<<<<<<<
-////		private JComponent titlePane;
-//		JComponent titlePane = null;
-//		Field field = null;
-//		String fieldName = "titlePane";
-////		try {
-////			field = obj.getClass().getDeclaredField(fieldName);
-////			field.setAccessible(true); // <<<<<<<<<<< ExceptionInInitializerError
-////			Object o = field.get(obj);
-////			LOG.info("<<<<<< titlePane:"+o);
-////			titlePane = (JComponent)o;
-////		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException
-////				| IllegalAccessException 
-//////				| InstantiationException 
-////				e) {
-////			LOG.warning(obj.getClass().getSimpleName() +"."+fieldName + ": Exception:"+e);
-////			e.printStackTrace();		
-////		}
-///*
-//Exception in thread "main" java.lang.ExceptionInInitializerError
-//Caused by: java.lang.reflect.InaccessibleObjectException: Unable to make field private javax.swing.JComponent javax.swing.plaf.metal.MetalRootPaneUI.titlePane accessible: module java.desktop does not "opens javax.swing.plaf.metal" to unnamed module @7d9d1a19
-//	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
-//	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
-//	at java.base/java.lang.reflect.Field.checkCanSetAccessible(Field.java:178)
-//	at java.base/java.lang.reflect.Field.setAccessible(Field.java:172)
-//	at io.github.homebeaver.swingset.demo.DemoJXFrame.<init>(DemoJXFrame.java:156)
-//	at io.github.homebeaver.swingset.demo.DemoJXFrame.<init>(DemoJXFrame.java:183)
-//	at io.github.homebeaver.swingset.demo.MainJXframe.<init>(MainJXframe.java:120)
-//	at io.github.homebeaver.swingset.demo.MainJXframe.<clinit>(MainJXframe.java:108)
-//
-//Caused by: java.lang.reflect.InaccessibleObjectException: 
-//Unable to make private javax.swing.JComponent javax.swing.plaf.metal.MetalRootPaneUI.getTitlePane() accessible: 
-//module java.desktop does not "opens javax.swing.plaf.metal" to unnamed module @642d0eee
-//
-//LÖSUNG: siehe https://stackoverflow.com/questions/41265266/how-to-solve-inaccessibleobjectexception-unable-to-make-member-accessible-m
-//--add-opens java.desktop/javax.swing.plaf.metal=ALL-UNNAMED
-// */
-//		String methodName = "getTitlePane";
-//		try {
-//			Method get = MetalRootPaneUI.class.getDeclaredMethod(methodName);
-//			get.setAccessible(true);
-//			Object o =get.invoke(obj);
-//			LOG.info("!!!!!!!! o:"+o);
-//			if(o!=null) {
-//				titlePane = (JComponent)o;
-//				LOG.info("!!!!!!!! replace:"+titlePane.getBackground());
-////				titlePane.setBackground(getBackground());
-//			}
-//		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-//			e.printStackTrace();
-//		}
-////		
-////		rpui.getNorthPane();
-        //--------------------
 		windowCounter++;
 		this.windowNo = windowCounter-1;
 		this.window_ID = window_ID;
@@ -243,6 +153,20 @@ public class DemoJXFrame extends JXFrame {
 		 */
 	protected void frameInit() {
 		LOG.info("-----statt super JFRame.frameInit() -------------wg LOG");
+	    // Colors in MetalTitlePane
+//	    private Color inactiveBackground = UIManager.getColor("inactiveCaption");
+//	    private Color inactiveForeground = UIManager.getColor("inactiveCaptionText");
+//	    private Color inactiveShadow = UIManager.getColor("inactiveCaptionBorder");
+//	    private Color activeBumpsHighlight = MetalLookAndFeel.getPrimaryControlHighlight();
+//	    private Color activeBumpsShadow = MetalLookAndFeel.getPrimaryControlDarkShadow();
+//	    private Color activeBackground = null;
+//	    private Color activeForeground = null;
+//	    private Color activeShadow = null;
+		// die UI-Farben retten:
+		Color activeBackground = UIManager.getColor("activeCaption");
+		Color activeForeground = UIManager.getColor("activeCaptionText");
+		Color activeShadow = UIManager.getColor("activeCaptionBorder");
+
 		enableEvents(AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK);
 		setLocale( JComponent.getDefaultLocale() );
 		setRootPane(createRootPane());
@@ -251,30 +175,51 @@ public class DemoJXFrame extends JXFrame {
         if (JFrame.isDefaultLookAndFeelDecorated()) {
             boolean supportsWindowDecorations = UIManager.getLookAndFeel().getSupportsWindowDecorations();
             if (supportsWindowDecorations) {
+        		UIManager.put("activeCaption", this.getBackground()); // So geht es!!!
+//        		UIManager.put("activeCaptionBorder", Color.ORANGE);
+// statt MetalLookAndFeel.getPrimaryControl() ==> 
+//                (UIManager.get("InternalFrame.activeTitleGradient") != null) ? null :
+//                    MetalLookAndFeel.getPrimaryControl() );
+
+        		
                 setUndecorated(true);
                 getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
+                
                 Component[] comps = getRootPane().getLayeredPane().getComponentsInLayer(JLayeredPane.FRAME_CONTENT_LAYER);
                 for(int i=0; i<comps.length;i++) {
+                	// es gibt zwei: 0: org.jdesktop.swingx.JXRootPane$1
+                	// und interessanter 1:javax.swing.plaf.metal.MetalTitlePane - not visible class MetalTitlePane extends JComponent
+/* instanziert in MetalRootPaneUI
+    private JComponent createTitlePane(JRootPane root) {
+        return new MetalTitlePane(root, this);
+    }
+
+ */
                 	Component c = comps[i];
                 	JComponent jc = (JComponent)c;
-                	LOG.info("---- "+i +":" +jc); // TODO Die Farbe activeBG setzten
+                	LOG.info("--!!!-- "+i +":" +jc); // TODO Die Farbe activeBG setzten
+                	if(jc.getClass().getName().equals("javax.swing.plaf.metal.MetalTitlePane")) {
+                		// so nicht:
+//                		jc.setBackground(Color.ORANGE);
+//                		jc.revalidate();
+                	}
                 }
-//                LOG.info("getRootPane().ContentPane "+((JXRootPane)(getRootPane().getContentPane())));
-                LOG.info("getRootPane().UI "+getRootPane().getUI()+" .setWindowDecorationStyle(JRootPane.FRAME)");
-//              javax.swing.plaf.metal.MetalRootPaneUI
-                RootPaneUI rootPaneUI = getRootPane().getUI();
-                MetalRootPaneUI metalRootPaneUI = (MetalRootPaneUI)rootPaneUI;
-//                rootPaneUI private JComponent getTitlePane()
                 /* private MetalTitlePane
 activeBG     javax.swing.plaf.ColorUIResource[r=184,g=207,b=229]
 activeShadow javax.swing.plaf.ColorUIResource[r=163,g=184,b=204]
 
 javax.swing.plaf.metal.MetalBumps@69e0b6f6
+BG:    javax.swing.plaf.ColorUIResource[r=184,g=207,b=229]
+shadow javax.swing.plaf.ColorUIResource[r=99,g=130,b=191]
+top:   javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
 
 activeBumpsHighlight javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
 activeBumpsShadow    javax.swing.plaf.ColorUIResource[r=99,g=130,b=191]
 
                  */
+                // UI wieder zurück:
+        		UIManager.put("activeCaption", activeBackground);
+        		UIManager.put("activeCaptionBorder", activeShadow);
                 LOG.info("----------");
             }
         }

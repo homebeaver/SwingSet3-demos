@@ -126,8 +126,9 @@ for INACTIVE_CONTROL_TEXT_COLOR, MENU_DISABLED_FOREGROUND aka (STEEL)secondary 2
 Nobel</p>
 
  */
-
 // Ausserdem werden in Ocean noch weitere Farben verwendet:
+// B8CFE5 184,204,229 activeBackground -4665371 SECONDARY2 =  new ColorUIResource(0xB8CFE5);
+// A3B8CC             activeShadow FRAME
 //  TODO          "Button.disabledToolBarBorderBackground","ToolBar.borderColor" cccccc,
 //  TODO          "TabbedPane.tabAreaBackground", dadada,
 
