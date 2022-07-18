@@ -10,6 +10,7 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -29,8 +30,8 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 
 /**
  * Internal Frames Demo
@@ -46,6 +47,7 @@ public class InternalFrameDemo extends AbstractDemo {
 	public static final String ICON_PATH = "toolbar/JDesktop.gif";
 	
 	private static final long serialVersionUID = 8207106273505201473L;
+	private static final Logger LOG = Logger.getLogger(InternalFrameDemo.class.getName());
 
     /**
      * main method allows us to run as a standalone demo.
@@ -118,18 +120,15 @@ public class InternalFrameDemo extends AbstractDemo {
     	frame.setTitle(getBundleString("name"));
 
         // preload all the icons we need for this demo
-//  TODO nicht StaticUtilities nutzen, sondern etwa so:
     	icon1 = getResourceAsIcon(getClass(), "images/ImageClub/misc/fish.gif");
-    	
-//        icon1 = StaticUtilities.createImageIcon("ImageClub/misc/fish.gif");
-        icon2 = StaticUtilities.createImageIcon("ImageClub/misc/moon.gif");
-        icon3 = StaticUtilities.createImageIcon("ImageClub/misc/sun.gif");
-        icon4 = StaticUtilities.createImageIcon("ImageClub/misc/cab.gif");
+    	icon2 = getResourceAsIcon(getClass(), "images/ImageClub/misc/moon.gif");
+    	icon3 = getResourceAsIcon(getClass(), "images/ImageClub/misc/sun.gif");
+    	icon4 = getResourceAsIcon(getClass(), "images/ImageClub/misc/cab.gif");
 
-        smIcon1 = StaticUtilities.createImageIcon("ImageClub/misc/fish_small.gif");
-        smIcon2 = StaticUtilities.createImageIcon("ImageClub/misc/moon_small.gif");
-        smIcon3 = StaticUtilities.createImageIcon("ImageClub/misc/sun_small.gif");
-        smIcon4 = StaticUtilities.createImageIcon("ImageClub/misc/cab_small.gif");
+    	smIcon1 = getResourceAsIcon(getClass(), "images/ImageClub/misc/fish_small.gif");
+    	smIcon2 = getResourceAsIcon(getClass(), "images/ImageClub/misc/moon_small.gif");
+    	smIcon3 = getResourceAsIcon(getClass(), "images/ImageClub/misc/sun_small.gif");
+    	smIcon4 = getResourceAsIcon(getClass(), "images/ImageClub/misc/cab_small.gif");
 
         windowTitleField = new JTextField(getBundleString("frame.labelAndMnemonic"));
         windowTitleLabel = new JLabel(getBundleString("title_text_field.labelAndMnemonic"));
@@ -163,6 +162,7 @@ public class InternalFrameDemo extends AbstractDemo {
 //        
         if(!windowTitleField.getText().equals(getBundleString("frame.labelAndMnemonic"))) {
             jif.setTitle(windowTitleField.getText() + "  ");
+            LOG.finest("-------------- >>> " +jif);
         } else {
             jif = new JInternalFrame(getBundleString("frame.labelAndMnemonic") + " " + windowCount + "  ");
         }
@@ -214,7 +214,7 @@ public class InternalFrameDemo extends AbstractDemo {
      *  frame title textfield at SOUTH
      *  
      * @param controller a border layouted Panel (optional)
-     * @return
+     * @return InternalFrame
      */
     public JInternalFrame createInternalFramePalette(JXPanel controller) {
         JInternalFrame palette = new JInternalFrame(getBundleString("palette.labelAndMnemonic"));
