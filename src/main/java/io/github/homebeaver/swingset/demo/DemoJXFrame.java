@@ -132,41 +132,22 @@ public class DemoJXFrame extends JXFrame {
 		this(title, -1, null);
 	}
 
-	/* in JFRame:
-    protected void frameInit() {
-        enableEvents(AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK);
-        setLocale( JComponent.getDefaultLocale() );
-        setRootPane(createRootPane());
-        setBackground(UIManager.getColor("control"));
-        setRootPaneCheckingEnabled(true);
-        if (JFrame.isDefaultLookAndFeelDecorated()) {
-            boolean supportsWindowDecorations =
-            UIManager.getLookAndFeel().getSupportsWindowDecorations();
-            if (supportsWindowDecorations) {
-                setUndecorated(true);
-                getRootPane().setWindowDecorationStyle(JRootPane.FRAME);
-            }
-        }
-        sun.awt.SunToolkit.checkAndSetPolicy(this);
-    }
-
-		 */
+    private static final boolean USE_METALTITLEPANE = true;
 	protected void frameInit() {
-		LOG.info("-----statt super JFRame.frameInit() -------------wg LOG");
-	    // Colors in MetalTitlePane
-//	    private Color inactiveBackground = UIManager.getColor("inactiveCaption");
-//	    private Color inactiveForeground = UIManager.getColor("inactiveCaptionText");
-//	    private Color inactiveShadow = UIManager.getColor("inactiveCaptionBorder");
-//	    private Color activeBumpsHighlight = MetalLookAndFeel.getPrimaryControlHighlight();
-//	    private Color activeBumpsShadow = MetalLookAndFeel.getPrimaryControlDarkShadow();
-//	    private Color activeBackground = null;
-//	    private Color activeForeground = null;
-//	    private Color activeShadow = null;
+		if(USE_METALTITLEPANE || !JFrame.isDefaultLookAndFeelDecorated()) {
+			super.frameInit();
+			return;
+		}
+		frameInitPatch();
+	}
+	// siehe https://github.com/homebeaver/SwingSet/issues/25
+	private void frameInitPatch() {
 		// die UI-Farben retten:
 		Color activeBackground = UIManager.getColor("activeCaption");
 		Color activeForeground = UIManager.getColor("activeCaptionText");
 		Color activeShadow = UIManager.getColor("activeCaptionBorder");
 
+		// Code aus JFRame:
 		enableEvents(AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK);
 		setLocale( JComponent.getDefaultLocale() );
 		setRootPane(createRootPane());
@@ -175,11 +156,9 @@ public class DemoJXFrame extends JXFrame {
         if (JFrame.isDefaultLookAndFeelDecorated()) {
             boolean supportsWindowDecorations = UIManager.getLookAndFeel().getSupportsWindowDecorations();
             if (supportsWindowDecorations) {
-        		UIManager.put("activeCaption", this.getBackground()); // So geht es!!!
-//        		UIManager.put("activeCaptionBorder", Color.ORANGE);
-// statt MetalLookAndFeel.getPrimaryControl() ==> 
-//                (UIManager.get("InternalFrame.activeTitleGradient") != null) ? null :
-//                    MetalLookAndFeel.getPrimaryControl() );
+        		UIManager.put("activeCaption", this.getBackground()); // activeBackground wie this
+// statt MetalLookAndFeel.getPrimaryControl() in activeBumps ==> 
+//  (UIManager.get("InternalFrame.activeTitleGradient") != null) ? null :  MetalLookAndFeel.getPrimaryControl() );
 
         		
                 setUndecorated(true);
@@ -189,7 +168,7 @@ public class DemoJXFrame extends JXFrame {
                 for(int i=0; i<comps.length;i++) {
                 	// es gibt zwei: 0: org.jdesktop.swingx.JXRootPane$1
                 	// und interessanter 1:javax.swing.plaf.metal.MetalTitlePane - not visible class MetalTitlePane extends JComponent
-/* instanziert in MetalRootPaneUI
+/* instanziert in MetalRootPaneUI private 
     private JComponent createTitlePane(JRootPane root) {
         return new MetalTitlePane(root, this);
     }
@@ -197,11 +176,9 @@ public class DemoJXFrame extends JXFrame {
  */
                 	Component c = comps[i];
                 	JComponent jc = (JComponent)c;
-                	LOG.info("--!!!-- "+i +":" +jc); // TODO Die Farbe activeBG setzten
                 	if(jc.getClass().getName().equals("javax.swing.plaf.metal.MetalTitlePane")) {
-                		// so nicht:
-//                		jc.setBackground(Color.ORANGE);
-//                		jc.revalidate();
+                    	LOG.info("--!!!-- "+i +":" +jc);
+                		LOG.info("BG:"+jc.getBackground());
                 	}
                 }
                 /* private MetalTitlePane
@@ -217,14 +194,17 @@ activeBumpsHighlight javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
 activeBumpsShadow    javax.swing.plaf.ColorUIResource[r=99,g=130,b=191]
 
                  */
-                // UI wieder zurück:
-        		UIManager.put("activeCaption", activeBackground);
-        		UIManager.put("activeCaptionBorder", activeShadow);
-                LOG.info("----------");
             }
         }
         //sun.awt.SunToolkit.checkAndSetPolicy(this);
+        
+		// die UI-Farben wiederherstellen:
+		UIManager.put("activeCaption", activeBackground);
+		UIManager.put("activeCaptionText", activeForeground);
+		UIManager.put("activeCaptionBorder", activeShadow);
+        LOG.info("----PATCH done------");
 	}
+	
 	public void setTitle(String title) {
 		super.setTitle("#"+this.windowNo+":"+title);
 	}
