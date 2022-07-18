@@ -141,7 +141,9 @@ Alternative 3: DemoJXTasks statt demoTree
     	content = new JXPanel(new BorderLayout());
     	
     	if(demoSelectorStyle==DemoSelectorStyle.USE_JXTASKS) {
-        	content.add(new JScrollPane(DemoJXTasks.getTaskPaneContainer()), BorderLayout.WEST);
+    		JComponent tpc = DemoJXTasks.getTaskPaneContainer();
+    		tpc.setBackground(getBackground());
+        	content.add(new JScrollPane(tpc), BorderLayout.WEST);
     	}
 
     	tabbedpane = new JTabbedPane();

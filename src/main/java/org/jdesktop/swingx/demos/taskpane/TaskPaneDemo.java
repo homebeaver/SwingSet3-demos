@@ -209,11 +209,12 @@ help.Action.shortDescription=The place where you can't find anything
         detailsGroup.add(area);
         
         tpc.add(detailsGroup);
-        
+        tpc.setBackground(getBackground());
+
         add(new JScrollPane(tpc));
     }
     
-    public class TaskAction extends AbstractActionExt {
+    private class TaskAction extends AbstractActionExt {
 
     	public TaskAction(String name, Icon icon) {
     		super(name,icon);

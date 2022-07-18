@@ -44,10 +44,10 @@ public class DemoJXTasks extends JXTaskPane {
     	super();
     	Object r = model.getRoot();
     	int n = model.getChildCount(r);
-    	LOG.info("------------------- "+r + " with "+n+" childs.");
+    	LOG.fine("------------------- "+r + " with "+n+" childs.");
     	for(int i=0; i<n; i++) {
     		Object c = model.getChild(r, i);
-        	LOG.info("------------------- "+c + " with "+model.getChildCount(c)+" childs.");
+        	LOG.fine("------------------- "+c + " with "+model.getChildCount(c)+" childs.");
         	initGroups((DemoAction)c);
     	}
     }
@@ -58,7 +58,7 @@ public class DemoJXTasks extends JXTaskPane {
     	for(int c=0; c<cols; c++) {
     		String colName = model.getColumnName(c);
         	Object colValue = model.getValueAt(da, c);
-        	LOG.info(colName+"/"+c + " : "+colValue);
+        	LOG.fine(colName+"/"+c + " : "+colValue);
     	}
     	for(int i=0; i<n; i++) {
     		Object o = model.getChild(da, i);
