@@ -29,10 +29,10 @@
  */
 package org.pushingpixels.trident.ease;
 
-public class Linear implements TimelineEase {
+public class Sine implements TimelineEase {
     @Override
     public float map(float durationFraction) {
-        return durationFraction;
+        return (float) Math.sin(durationFraction * Math.PI / 2.0);
     }
 
 }
