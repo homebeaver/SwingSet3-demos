@@ -4,18 +4,23 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package org.jdesktop.swingx.demos.xpanel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -80,21 +85,22 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
 	
     // Animation
     Timeline timeline;
-    public void setXalpha(float newValue) {
+    public void setAlphaProp(float newValue) {
 //        LOG.info("timeline pulse " + xpanel.getAlpha() + " -> " + newValue);
         xpanel.setAlpha(newValue);
         alphaSlider.setValue((int)(newValue*255+0.5));
     }
     public void createAnimation(long duration) {
     	timeline = new Timeline(this);
-        timeline.addPropertyToInterpolate("xalpha", 0.0f, 1.0f);
+        timeline.addPropertyToInterpolate("alphaProp", 0.0f, 1.0f);
         timeline.setDuration(duration);
     	LOG.info("Animation Duration = " + timeline.getDuration());
     	timeline.play(); // fade in
     }
-    // TODO fade in & fade out Buttons
 	
 	// controller:
+    private JButton fadeIn;
+    private JButton fadeOut;
     private JSlider alphaSlider;
 	// controller prop name
 	private static final String SLIDER = "alphaSlider";
@@ -146,6 +152,36 @@ alphaSlider.opaque=false
         // slider : WEST + VERTICAL damit er nicht von panel verdeckt wird
         panel.add(new JLabel(" "), BorderLayout.NORTH);
         panel.add(alphaSlider, BorderLayout.WEST);
+
+//        Border loweredBorder = new CompoundBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED), new EmptyBorder(5,5,5,5));
+        Border emptyBorder = new EmptyBorder(5,5,5,5);
+    	JXPanel north = new JXPanel();
+    	north.setLayout(new BoxLayout(north, BoxLayout.X_AXIS));
+    	north.setAlignmentX(Component.LEFT_ALIGNMENT);
+    	north.setBorder(emptyBorder);
+        fadeIn = new JButton();
+        fadeIn.setName("fadeIn");
+        fadeIn.setText(getBundleString("fadeIn.text"));
+        fadeIn.addActionListener( ae -> {
+        	setAlphaProp(0f);
+        	timeline.play(); // fade in
+        });
+        north.add(fadeIn);
+        panel.add(north, BorderLayout.NORTH);
+
+    	JXPanel south = new JXPanel();
+    	south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
+    	south.setAlignmentX(Component.LEFT_ALIGNMENT);
+    	south.setBorder(emptyBorder);
+        fadeOut = new JButton();
+        fadeOut.setName("fadeOut");
+        fadeOut.setText(getBundleString("fadeOut.text"));
+        fadeOut.addActionListener( ae -> {
+        	setAlphaProp(1f);
+        	timeline.playReverse(); // fade out
+        });
+        south.add(fadeOut);
+        panel.add(south, BorderLayout.SOUTH);
 
     	return panel;
 	}
