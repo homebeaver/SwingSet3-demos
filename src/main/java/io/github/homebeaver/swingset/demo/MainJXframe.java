@@ -323,12 +323,10 @@ Alternative 3: DemoJXTasks statt demoTree
     		frames.add(frame);
     		// close/dispose current and make frame current:
     		DemoJXFrame current = currentDemoFrame;
-    		LOG.info("------------ close/dispose "+current);
     		if(current!=null) {
     			current.dispose();
     		}
     		currentDemoFrame = frame;
-    		
     		return frame;
 		}
 		return null;
