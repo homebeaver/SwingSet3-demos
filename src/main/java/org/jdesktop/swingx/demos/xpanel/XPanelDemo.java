@@ -84,6 +84,7 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
 	private boolean opaque = false;
 	
     // Animation
+    Timeline timeline0;
     Timeline timeline;
     public void setAlphaProp(float newValue) {
 //        LOG.info("timeline pulse " + xpanel.getAlpha() + " -> " + newValue);
@@ -91,11 +92,16 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
         alphaSlider.setValue((int)(newValue*255+0.5));
     }
     public void createAnimation(long duration) {
+    	timeline0 = new Timeline(this);
+    	timeline0.addPropertyToInterpolate("alphaProp", 0.0f, 0.4f);
+        timeline0.setDuration(duration*2);
+    	LOG.info("Animation Duration at init = " + timeline0.getDuration());
+    	timeline0.play(); // fade in
+    	
     	timeline = new Timeline(this);
         timeline.addPropertyToInterpolate("alphaProp", 0.0f, 1.0f);
         timeline.setDuration(duration);
     	LOG.info("Animation Duration = " + timeline.getDuration());
-    	timeline.play(); // fade in
     }
 	
 	// controller:
@@ -116,7 +122,7 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
     	createXPanelDemo();
-    	createAnimation(1000); // 1000ms
+    	createAnimation(2000); // 1000ms
     }
 
     @Override
