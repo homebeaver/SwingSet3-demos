@@ -63,7 +63,6 @@ public class BlendCompositeDemo extends AbstractDemo {
 
 	/**
      * main method allows us to run as a standalone demo.
-     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -151,13 +150,14 @@ public class BlendCompositeDemo extends AbstractDemo {
     }
     
     private CompositeTestPanel compositeTestPanel;
+    // controller:
     private JComboBox<BlendingMode> combo;
     private JSlider slider;
     
     /**
      * BlendCompositeDemo Constructor
      * 
-     * @param frame controller Frame
+     * @param frame controller Frame frame.title will be set
      */
     public BlendCompositeDemo(Frame frame) {
     	super(new BorderLayout());
