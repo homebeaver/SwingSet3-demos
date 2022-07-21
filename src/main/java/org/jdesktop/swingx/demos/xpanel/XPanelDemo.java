@@ -6,16 +6,17 @@ package org.jdesktop.swingx.demos.xpanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,6 +24,7 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.util.GraphicsUtilities;
 
 import swingset.AbstractDemo;
 import swingset.StaticUtilities;
@@ -53,7 +55,6 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
 
     /**
      * main method allows us to run as a standalone demo.
-     * @param args params
      */
     public static void main(String[] args) {
     	SwingUtilities.invokeLater(new Runnable() {
@@ -79,6 +80,8 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
 	private JXPanel xpanel;
 	private boolean opaque = false;
 	
+    // Animation TODO
+	
 	// controller:
     private JSlider alphaSlider;
 	// controller prop name
@@ -86,23 +89,24 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     
     /**
      * Constructor
-     * 
-     * @param controllerFrame controller Frame
+     * @param frame controller Frame frame.title will be set
      */
-    public XPanelDemo(Frame controllerFrame) {
+    public XPanelDemo(Frame frame) {
     	super(new BorderLayout());
-    	controllerFrame.setTitle(getBundleString("frame.title", DESCRIPTION));
+    	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
     	createXPanelDemo();
+//    	createAnimation(1000); // 1000ms
     }
 
     @Override
 	public JXPanel getControlPane() {
     	JXPanel panel = new JXPanel(new BorderLayout());
 
-        alphaSlider = new JSlider();
+        alphaSlider = new JSlider(JSlider.VERTICAL, 0, 255, 40);
+        xpanel.setAlpha(1f*40/255);
         alphaSlider.setName(SLIDER);
 /* prpos:
 panel.opaque=false
@@ -112,6 +116,7 @@ alphaSlider.value=100
 alphaSlider.opaque=false
  */
         // name Cobalite in https://icolorpalette.com/color/9999ff
+        // Portage in https://www.htmlcsscolor.com/hex/9999FF
         // in https://colornames.org/color/9999ff : Star Dust Purple  
 //        alphaSlider.setBackground(new Color(153, 153, 255)); 
         alphaSlider.setOpaque(Boolean.parseBoolean(getBundleString(SLIDER+".opaque", Boolean.toString(false))));
@@ -125,13 +130,11 @@ alphaSlider.opaque=false
         labels.put(alphaSlider.getMinimum(), new JLabel("Transparent"));
         labels.put(alphaSlider.getMaximum(), new JLabel("Opaque"));
         alphaSlider.setLabelTable(labels);
-        alphaSlider.setValue(20); xpanel.setAlpha(0.2f);
         alphaSlider.addChangeListener(this); // see method stateChanged
         
         // slider : WEST + VERTICAL damit er nicht von panel verdeckt wird
         panel.add(new JLabel(" "), BorderLayout.NORTH);
         panel.add(alphaSlider, BorderLayout.WEST);
-        alphaSlider.setOrientation(JSlider.VERTICAL);
 
     	return panel;
 	}
@@ -152,12 +155,27 @@ alphaSlider.opaque=false
         JLabel earth = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"earth.jpg"));
         earth.setMinimumSize(new Dimension(20, 20));
 
-//        JLabel moon = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"moon.jpg"));
-        JLabel moon = new JLabel(StaticUtilities.createImageIcon("images/XPanelDemo.png"));
+        JLabel moon = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"moon.jpg"));
+        try {
+        	java.awt.Image img = GraphicsUtilities.loadCompatibleImage(getClass().getResource("resources/images/XPanelDemo.png"));
+        	ImageIcon icon = new ImageIcon(img);
+			moon = new JLabel(icon); // ctor mit Icon
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//        JLabel moon = new JLabel(StaticUtilities.createImageIcon("xpanel/XPanelDemo.png"));
+//        Juli 21, 2022 9:30:14 PM swingset.StaticUtilities getResourceAsStream
+        // TODO:
+        // /SwingSet3-demos/src/main/resources/org/jdesktop/swingx/demos/xpanel/resources/images/XPanelDemo.png
+//        WARNUNG: cannot find resource swingset.StaticUtilities#/swingset/images/xpanel/XPanelDemo.png try FileAsStream ...
+//        WARNUNG: cannot find resource src\main\resources\swingset\swingset\images\xpanel\XPanelDemo.png
+//        WARNUNG: cannot find resource src\main\resources\swingset\images\xpanel\XPanelDemo.png
+//        WARNUNG: cannot find resource \swingset\images\xpanel\XPanelDemo.png
+
         moon.setMinimumSize(new Dimension(20, 20));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, moon, earth);
-//        splitPane.setContinuousLayout(true);
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation(200); // BUG?, nein ausserhalb vom xpanel, wenn moon.jpg verwedet
         xpanel.add(splitPane);
@@ -169,21 +187,17 @@ alphaSlider.opaque=false
      */
 	@Override
 	public void stateChanged(ChangeEvent ce) {
-//		if(changeSize) return;
 		synchronized (this) {
-//			changeSize = true;
-//	        panel.setOpaque(opaque);
 			int alpha = alphaSlider.getValue();
 			LOG.fine("XPanelDemo.Opaque="+xpanel.isOpaque()+", alpha old/new:"+xpanel.getAlpha()+"/"+alpha + ", ChangeEvent:"+ce);
-			// alphaSlider liefert int 0..100, setAlpha erwartet float 0..1
-			if(alpha==1) {
-		        xpanel.setOpaque(opaque);
-//			} else {
-//				panel.setAlpha(1f*alpha/100);
-			}
-			xpanel.setAlpha(1f*alpha/100);
+			// alphaSlider liefert int 0..255, setAlpha erwartet float 0..1
+//			if(alpha==255) {
+//		        xpanel.setOpaque(opaque);
+////			} else {
+////				panel.setAlpha(1f*alpha/100);
+//			}
+			xpanel.setAlpha(1f*alpha/255);
 			SwingUtilities.updateComponentTreeUI(this);
-//			changeSize = false;
 		}
 	}
 }
