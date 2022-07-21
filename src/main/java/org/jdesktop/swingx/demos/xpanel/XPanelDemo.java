@@ -6,12 +6,10 @@ package org.jdesktop.swingx.demos.xpanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
@@ -24,7 +22,7 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.util.GraphicsUtilities;
+import org.pushingpixels.trident.Timeline;
 
 import swingset.AbstractDemo;
 import swingset.StaticUtilities;
@@ -80,7 +78,21 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
 	private JXPanel xpanel;
 	private boolean opaque = false;
 	
-    // Animation TODO
+    // Animation
+    Timeline timeline;
+    public void setXalpha(float newValue) {
+//        LOG.info("timeline pulse " + xpanel.getAlpha() + " -> " + newValue);
+        xpanel.setAlpha(newValue);
+        alphaSlider.setValue((int)(newValue*255+0.5));
+    }
+    public void createAnimation(long duration) {
+    	timeline = new Timeline(this);
+        timeline.addPropertyToInterpolate("xalpha", 0.0f, 1.0f);
+        timeline.setDuration(duration);
+    	LOG.info("Animation Duration = " + timeline.getDuration());
+    	timeline.play(); // fade in
+    }
+    // TODO fade in & fade out Buttons
 	
 	// controller:
     private JSlider alphaSlider;
@@ -98,7 +110,7 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
     	createXPanelDemo();
-//    	createAnimation(1000); // 1000ms
+    	createAnimation(1000); // 1000ms
     }
 
     @Override
@@ -126,9 +138,8 @@ alphaSlider.opaque=false
         // can we fill these labels from the properties file? Yes, we can!
         String labelTable = getBundleString(SLIDER+".labelTable");
         LOG.info("alphaSlider.labelTable:"+labelTable);
-        // TODO: Muss die Beschriftung nicht andersrum sein?!
-        labels.put(alphaSlider.getMinimum(), new JLabel("Transparent"));
-        labels.put(alphaSlider.getMaximum(), new JLabel("Opaque"));
+        labels.put(alphaSlider.getMinimum(), new JLabel("fade out"));
+        labels.put(alphaSlider.getMaximum(), new JLabel("fade in"));
         alphaSlider.setLabelTable(labels);
         alphaSlider.addChangeListener(this); // see method stateChanged
         
@@ -155,29 +166,12 @@ alphaSlider.opaque=false
         JLabel earth = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"earth.jpg"));
         earth.setMinimumSize(new Dimension(20, 20));
 
-        JLabel moon = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"moon.jpg"));
-        try {
-        	java.awt.Image img = GraphicsUtilities.loadCompatibleImage(getClass().getResource("resources/images/XPanelDemo.png"));
-        	ImageIcon icon = new ImageIcon(img);
-			moon = new JLabel(icon); // ctor mit Icon
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//        JLabel moon = new JLabel(StaticUtilities.createImageIcon("xpanel/XPanelDemo.png"));
-//        Juli 21, 2022 9:30:14 PM swingset.StaticUtilities getResourceAsStream
-        // TODO:
-        // /SwingSet3-demos/src/main/resources/org/jdesktop/swingx/demos/xpanel/resources/images/XPanelDemo.png
-//        WARNUNG: cannot find resource swingset.StaticUtilities#/swingset/images/xpanel/XPanelDemo.png try FileAsStream ...
-//        WARNUNG: cannot find resource src\main\resources\swingset\swingset\images\xpanel\XPanelDemo.png
-//        WARNUNG: cannot find resource src\main\resources\swingset\images\xpanel\XPanelDemo.png
-//        WARNUNG: cannot find resource \swingset\images\xpanel\XPanelDemo.png
+        JLabel ourEarth = new JLabel("   our earth:");
+        ourEarth.setMinimumSize(new Dimension(20, 20));
 
-        moon.setMinimumSize(new Dimension(20, 20));
-
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, moon, earth);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, ourEarth, earth);
         splitPane.setOneTouchExpandable(true);
-        splitPane.setDividerLocation(200); // BUG?, nein ausserhalb vom xpanel, wenn moon.jpg verwedet
+        splitPane.setDividerLocation(200);
         xpanel.add(splitPane);
         add(xpanel);
     }
@@ -190,12 +184,7 @@ alphaSlider.opaque=false
 		synchronized (this) {
 			int alpha = alphaSlider.getValue();
 			LOG.fine("XPanelDemo.Opaque="+xpanel.isOpaque()+", alpha old/new:"+xpanel.getAlpha()+"/"+alpha + ", ChangeEvent:"+ce);
-			// alphaSlider liefert int 0..255, setAlpha erwartet float 0..1
-//			if(alpha==255) {
-//		        xpanel.setOpaque(opaque);
-////			} else {
-////				panel.setAlpha(1f*alpha/100);
-//			}
+			// alphaSlider int 0..255 to float 0..1
 			xpanel.setAlpha(1f*alpha/255);
 			SwingUtilities.updateComponentTreeUI(this);
 		}
