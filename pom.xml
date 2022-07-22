@@ -203,6 +203,13 @@
 	</build>
 	
 	<dependencies>
+	
+		<dependency>
+		  <groupId>io.github.homebeaver</groupId>
+		  <artifactId>trident</artifactId>
+		  <version>1.4.1</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
 		<dependency>
 		    <groupId>javax.inject</groupId>

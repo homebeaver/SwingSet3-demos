@@ -217,9 +217,6 @@ public class HighlighterExtDemo extends AbstractDemo {
         
     }
     
-    /**
-     * TODO
-     */
     public class HighlighterControl extends AbstractBean {
         
         private RelativePainterHighlighter tableValueBasedHighlighter;
