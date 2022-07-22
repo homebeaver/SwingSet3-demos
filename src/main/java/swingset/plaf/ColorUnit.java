@@ -133,6 +133,14 @@ public class ColorUnit extends Color {
 	/** BLIZZARD_BLUE is primary control color in AQUA Theme */
     public static final Color BLIZZARD_BLUE = new Color(0x9FEBEB);
     
+    /**
+     * COBALITE is used in XPanelDemo.properties
+     */
+    // https://icolorpalette.com/color/9999ff Cobalite Color
+    // https://colornames.org/color/9999ff  Star Dust Purple , Cobalite
+    // https://www.htmlcsscolor.com/hex/9999FF Portage
+    public static final Color COBALITE = new Color(0x9999FF);
+    
 	private static final String BLACK = "black";
 	private static final String WHITE = "white";
 	private static final String PRIMARY1 = "primary1";

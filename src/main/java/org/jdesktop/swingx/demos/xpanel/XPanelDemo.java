@@ -27,6 +27,7 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.icon.ChevronsIcon;
 import org.pushingpixels.trident.Timeline;
 
 import swingset.AbstractDemo;
@@ -91,10 +92,10 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
         xpanel.setAlpha(newValue);
         alphaSlider.setValue((int)(newValue*255+0.5));
     }
-    public void createAnimation(long duration) {
+    public void createAnimation(long duration, float to) {
     	timeline0 = new Timeline(this);
-    	timeline0.addPropertyToInterpolate("alphaProp", 0.0f, 0.4f);
-        timeline0.setDuration(duration*2);
+    	timeline0.addPropertyToInterpolate("alphaProp", 0.0f, to);
+        timeline0.setDuration(duration);
     	LOG.info("Animation Duration at init = " + timeline0.getDuration());
     	timeline0.play(); // fade in
     	
@@ -122,32 +123,25 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
     	createXPanelDemo();
-    	createAnimation(2000); // 1000ms
+    	createAnimation(2000, 0.6f); // 2000ms , stop at 60%
     }
 
     @Override
 	public JXPanel getControlPane() {
     	JXPanel panel = new JXPanel(new BorderLayout());
 
-        alphaSlider = new JSlider(JSlider.VERTICAL, 0, 255, 40);
+        alphaSlider = new JSlider(JSlider.VERTICAL, 0, 255, 0);
         xpanel.setAlpha(1f*40/255);
         alphaSlider.setName(SLIDER);
-/* prpos:
-panel.opaque=false
-alphaSlider.background=153, 153, 255
-alphaSlider.paintLabels=true
-alphaSlider.value=100
-alphaSlider.opaque=false
+
+/* prop alphaSlider.background COBALITE not used
+        alphaSlider.setBackground(new Color(153, 153, 255)); 
  */
-        // name Cobalite in https://icolorpalette.com/color/9999ff
-        // Portage in https://www.htmlcsscolor.com/hex/9999FF
-        // in https://colornames.org/color/9999ff : Star Dust Purple  
-//        alphaSlider.setBackground(new Color(153, 153, 255)); 
         alphaSlider.setOpaque(Boolean.parseBoolean(getBundleString(SLIDER+".opaque", Boolean.toString(false))));
         alphaSlider.setPaintLabels(Boolean.valueOf(getBundleString(SLIDER+".paintLabels", Boolean.toString(true))));
         alphaSlider.setValue(Integer.parseInt(getBundleString(SLIDER+".value", "50")));
         Dictionary<Integer, JComponent> labels = new Hashtable<Integer, JComponent>();
-        // can we fill these labels from the properties file? Yes, we can!
+        // can we fill these labels from the properties file? Yes, we can! but I do not
         String labelTable = getBundleString(SLIDER+".labelTable");
         LOG.info("alphaSlider.labelTable:"+labelTable);
         labels.put(alphaSlider.getMinimum(), new JLabel("fade out"));
@@ -159,7 +153,6 @@ alphaSlider.opaque=false
         panel.add(new JLabel(" "), BorderLayout.NORTH);
         panel.add(alphaSlider, BorderLayout.WEST);
 
-//        Border loweredBorder = new CompoundBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED), new EmptyBorder(5,5,5,5));
         Border emptyBorder = new EmptyBorder(5,5,5,5);
     	JXPanel north = new JXPanel();
     	north.setLayout(new BoxLayout(north, BoxLayout.X_AXIS));
@@ -168,6 +161,9 @@ alphaSlider.opaque=false
         fadeIn = new JButton();
         fadeIn.setName("fadeIn");
         fadeIn.setText(getBundleString("fadeIn.text"));
+        ChevronsIcon fadeInIcon = new ChevronsIcon(ChevronsIcon.SMALL_ICON);
+        fadeInIcon.setDirection(ChevronsIcon.NORTH);
+        fadeIn.setIcon(fadeInIcon);
         fadeIn.addActionListener( ae -> {
         	setAlphaProp(0f);
         	timeline.play(); // fade in
@@ -182,6 +178,7 @@ alphaSlider.opaque=false
         fadeOut = new JButton();
         fadeOut.setName("fadeOut");
         fadeOut.setText(getBundleString("fadeOut.text"));
+        fadeOut.setIcon(new ChevronsIcon(ChevronsIcon.SMALL_ICON));
         fadeOut.addActionListener( ae -> {
         	setAlphaProp(1f);
         	timeline.playReverse(); // fade out
