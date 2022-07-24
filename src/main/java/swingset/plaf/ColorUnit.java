@@ -55,6 +55,10 @@ in w3.org Basic color keywords sind die Namen anders
 @SuppressWarnings("serial")
 public class ColorUnit extends Color {
 
+	// awt Colors:
+//    public static final Color BLACK = Color.BLACK; // black 	#000000 	0,0,0
+//    public static final Color WHITE = Color.WHITE; // white 	#FFFFFF 	255,255,255
+    
 	/*
 	 * manche Namen sind nur in ihem Context eindeutig, Bsp. (AWT)Color.GREEN <> W3C.green
 	 */
@@ -62,7 +66,8 @@ public class ColorUnit extends Color {
 		AWT, 
 		X11, 
 		W3C, 
-		AQUA, // AquaTheme extends DefaultMetalTheme
+		NIMBUS, 
+		AQUA,  // AquaTheme extends DefaultMetalTheme
 		OCEAN, // OceanTheme extends DefaultMetalTheme in swingx
 		STEEL} // the DefaultMetalTheme in swingx
 
@@ -133,6 +138,39 @@ public class ColorUnit extends Color {
 	/** BLIZZARD_BLUE is primary control color in AQUA Theme */
     public static final Color BLIZZARD_BLUE = new Color(0x9FEBEB);
     
+	// Nimbus Colors see https://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/_nimbusDefaults.html:
+    // Primary Color Names, awt color names (BLACK,WHITE) not listed
+    public static final Color HAWKES_BLUE   = new Color(0xD6D9DF); // Hawkes Blue -> CONTROL
+    public static final Color CUMULUS       = new Color(0xF2F2BD); // Cumulus -> INFO
+    public static final Color TURBO         = new Color(0xFFDC23); // Turbo -> NIMBUSALERTYELLOW
+    public static final Color ENDEAVOUR     = new Color(0x33628C); // Endeavour -> NIMBUSBASE
+    public static final Color MANATEE       = new Color(0x8E8F91); // Manatee -> NIMBUSDISABLEDTEXT
+    public static final Color JORDY_BLUE    = new Color(0x73A4D1); // Jordy Blue -> NIMBUSFOCUS
+    public static final Color EARLS_GREEN   = new Color(0xB0B332); // Earls Green -> NIMBUSGREEN
+    public static final Color CERULEAN_BLUE = new Color(0x2F5CB4); // Cerulean Blue -> NIMBUSINFOBLUE
+    public static final Color TENNE         = new Color(0xBF6204); // Tenne (Tawny, Crema) -> NIMBUSORANGE
+    public static final Color BROWN         = new Color(0xA92E22); // Brown -> NIMBUSRED
+	/** ASTRAL color is in Nimbus primary key NIMBUSSELECTIONBACKGROUND 
+	 * and also in secondary keys NIMBUSSELECTION, TEXTBACKGROUND, TEXTHIGHLIGHT
+	 */
+    public static final Color ASTRAL        = new Color(0x39698A); // Astral -> NIMBUSSELECTIONBACKGROUND
+    
+    // Secondary Colors Names, some are same to primary names, exp. Manatee, Astral
+    public static final Color SPINDLE       = new Color(0xBABEC6); // Spindle
+    public static final Color MISCHKA       = new Color(0xA4ABB8); // Mischka
+    public static final Color SOLITUDE      = new Color(0xE9ECF2); // Solitude
+    public static final Color ALICE_BLUE    = new Color(0xF7F8FA); // Alice Blue
+    public static final Color LINKWATER     = new Color(0xCCD3E0); // Link Water
+    public static final Color MATISSE       = new Color(0x3D6079); // Matisse
+    public static final Color BLUETOYOU     = new Color(0xBDC1C8); // approx Spindle
+    public static final Color INTANGIBLE    = new Color(0xEDEFF2); // approx Solitude
+	/** BLUEGRAY color is used as a secondary Nimbus key NIMBUSBLUEGREY. 
+	 * <p> An alternative name is <A href="https://icolorpalette.com/color/A9B0BE">Eclectic</A>.
+	 */
+    public static final Color BLUEGRAY      = new Color(0xA9B0BE); // approx Mischka / alt.name Eclectic 
+    public static final Color CLASSICCLOUD  = new Color(0x9297A1); // Classic Cloud, approx Manatee
+    public static final Color GHOSTLYSKY    = new Color(0xCDD0D5); // approx Link Water
+    
     /**
      * COBALITE is used in XPanelDemo.properties
      */
@@ -149,7 +187,7 @@ public class ColorUnit extends Color {
 	private static final String SECONDARY1 = "secondary1";
 	private static final String SECONDARY2 = "secondary2";
 	private static final String SECONDARY3 = "secondary3";
-	
+
 	/** STEEL_BLACK aka control info color */
     public static final ColorUnit STEEL_BLACK      = new ColorUnit(Color.BLACK, Context.STEEL, BLACK);
 	/** STEEL_WHITE aka control highlight color */
@@ -190,6 +228,44 @@ public class ColorUnit extends Color {
     public static final ColorUnit AQUA_PRIMARY2 = new ColorUnit(GLACIER, Context.AQUA, PRIMARY2);
 	/** BLIZZARD_BLUE is primary control color in AQUA Theme */
     public static final ColorUnit AQUA_PRIMARY3 = new ColorUnit(BLIZZARD_BLUE, Context.AQUA, PRIMARY3);
+
+    // Nimbus Primary Colors
+    public static final ColorUnit NIMBUS_CONTROL         = new ColorUnit(HAWKES_BLUE, Context.NIMBUS, "CONTROL");
+    public static final ColorUnit NIMBUS_INFO            = new ColorUnit(CUMULUS, Context.NIMBUS, "INFO");
+    public static final ColorUnit NIMBUS_ALERTYELLOW     = new ColorUnit(TURBO, Context.NIMBUS, "NIMBUSALERTYELLOW");
+    public static final ColorUnit NIMBUS_BASE            = new ColorUnit(ENDEAVOUR, Context.NIMBUS, "NIMBUSBASE");
+    public static final ColorUnit NIMBUS_DISABLEDTEXT    = new ColorUnit(MANATEE, Context.NIMBUS, "NIMBUSDISABLEDTEXT");
+    public static final ColorUnit NIMBUS_FOCUS           = new ColorUnit(JORDY_BLUE, Context.NIMBUS, "NIMBUSFOCUS");
+    public static final ColorUnit NIMBUS_GREEN           = new ColorUnit(EARLS_GREEN, Context.NIMBUS, "NIMBUSGREEN");
+    public static final ColorUnit NIMBUS_INFOBLUE        = new ColorUnit(CERULEAN_BLUE, Context.NIMBUS, "NIMBUSINFOBLUE");
+    public static final ColorUnit NIMBUS_LIGHTBACKGROUND = new ColorUnit(Color.WHITE, Context.NIMBUS, "NIMBUSLIGHTBACKGROUND");
+    public static final ColorUnit NIMBUS_ORANGE          = new ColorUnit(TENNE, Context.NIMBUS, "NIMBUSORANGE");
+    public static final ColorUnit NIMBUS_RED             = new ColorUnit(BROWN, Context.NIMBUS, "NIMBUSRED");
+    public static final ColorUnit NIMBUS_SELECTEDTEXT    = new ColorUnit(Color.WHITE, Context.NIMBUS, "NIMBUSSELECTEDTEXT");
+    public static final ColorUnit NIMBUS_SELECTIONBACKGROUND = new ColorUnit(ASTRAL, Context.NIMBUS, "NIMBUSSELECTIONBACKGROUND");     
+    public static final ColorUnit NIMBUS_TEXT            = new ColorUnit(Color.BLACK, Context.NIMBUS, "TEXT");
+    // Nimbus Secondary Colors
+    public static final ColorUnit NIMBUS_ACTIVECAPTION     = new ColorUnit(SPINDLE, Context.NIMBUS, "ACTIVECAPTION");
+    public static final ColorUnit NIMBUS_BACKGROUND        = new ColorUnit(HAWKES_BLUE, Context.NIMBUS, "BACKGROUND");
+    public static final ColorUnit NIMBUS_CONTROLDKSHADOW   = new ColorUnit(MISCHKA, Context.NIMBUS, "CONTROLDKSHADOW");
+    public static final ColorUnit NIMBUS_CONTROLHIGHLIGHT  = new ColorUnit(SOLITUDE, Context.NIMBUS, "CONTROLHIGHLIGHT");
+    public static final ColorUnit NIMBUS_CONTROLLHIGHLIGHT = new ColorUnit(ALICE_BLUE, Context.NIMBUS, "CONTROLLHIGHLIGHT");
+    public static final ColorUnit NIMBUS_CONTROLSHADOW     = new ColorUnit(LINKWATER, Context.NIMBUS, "CONTROLSHADOW");
+    public static final ColorUnit NIMBUS_CONTROLTEXT       = new ColorUnit(Color.BLACK, Context.NIMBUS, "CONTROLTEXT");
+    public static final ColorUnit NIMBUS_DESKTOP           = new ColorUnit(MATISSE, Context.NIMBUS, "DESKTOP");
+    public static final ColorUnit NIMBUS_INACTIVECAPTION   = new ColorUnit(BLUETOYOU, Context.NIMBUS, "INACTIVECAPTION");
+    public static final ColorUnit NIMBUS_INFOTEXT          = new ColorUnit(Color.BLACK, Context.NIMBUS, "INFOTEXT");
+    public static final ColorUnit NIMBUS_MENU              = new ColorUnit(INTANGIBLE, Context.NIMBUS, "MENU");
+    public static final ColorUnit NIMBUS_MENUTEXT          = new ColorUnit(Color.BLACK, Context.NIMBUS, "MENUTEXT");
+    public static final ColorUnit NIMBUS_BLUEGREY          = new ColorUnit(BLUEGRAY, Context.NIMBUS, "NIMBUSBLUEGREY");
+    public static final ColorUnit NIMBUS_BORDER            = new ColorUnit(CLASSICCLOUD, Context.NIMBUS, "NIMBUSBORDER");
+    public static final ColorUnit NIMBUS_SELECTION         = new ColorUnit(ASTRAL, Context.NIMBUS, "NIMBUSSELECTION");
+    public static final ColorUnit NIMBUS_SCROLLBAR         = new ColorUnit(GHOSTLYSKY, Context.NIMBUS, "SCROLLBAR");
+    public static final ColorUnit NIMBUS_TEXTBACKGROUND    = new ColorUnit(ASTRAL, Context.NIMBUS, "TEXTBACKGROUND");
+    public static final ColorUnit NIMBUS_TEXTFOREGROUND    = new ColorUnit(Color.BLACK, Context.NIMBUS, "TEXTFOREGROUND");
+    public static final ColorUnit NIMBUS_TEXTHIGHLIGHT     = new ColorUnit(ASTRAL, Context.NIMBUS, "TEXTHIGHLIGHT");
+    public static final ColorUnit NIMBUS_TEXTHIGHLIGHTTEXT = new ColorUnit(Color.WHITE, Context.NIMBUS, "TEXTHIGHLIGHTTEXT");
+    public static final ColorUnit NIMBUS_TEXTINACTIVETEXT  = new ColorUnit(MANATEE, Context.NIMBUS, "TEXTINACTIVETEXT");
 
     private static int getRGBwithoutAlpha(Color c) {
 //    	System.out.println("Color c="+c.getClass() + " .value="+c);   	
