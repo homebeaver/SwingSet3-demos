@@ -207,7 +207,7 @@
 		<dependency>
 		  <groupId>io.github.homebeaver</groupId>
 		  <artifactId>trident</artifactId>
-		  <version>1.4.1</version>
+		  <version>1.5.2</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
