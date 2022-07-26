@@ -84,14 +84,8 @@ public class GraphDemo extends AbstractDemo {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-//    public GraphDemo() {
-//        super(new BorderLayout());
-//
         createGraphDemo();
-//
-//        Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(this);
-// TODO
-//        bind();
+        bind();
     }
 
     @Override
@@ -108,6 +102,7 @@ public class GraphDemo extends AbstractDemo {
 
         formula = new JFormattedTextField(NumberFormat.getNumberInstance());
         formula.setName("formula");
+        formula.setColumns(3); // TODO get from prop
         formula.setValue(1.0);
         controlPanel.add(formula);
 
@@ -123,7 +118,6 @@ public class GraphDemo extends AbstractDemo {
         add(graph);
     }
 
-//    @SuppressWarnings("unchecked")
     private void bind() {
         Binding b = Bindings.createAutoBinding(READ,
                 formula, BeanProperty.create("value"),
