@@ -52,6 +52,10 @@ public abstract class Aggregator<SV, AV> extends AbstractBean {
     private final Class<SV> sourceType;
     private AV value;
     
+    /**
+     * ctor
+     * @param sourceType Class of source value
+     */
     protected Aggregator(Class<SV> sourceType) {
         sourceType.getClass(); // null check
         
@@ -64,8 +68,20 @@ public abstract class Aggregator<SV, AV> extends AbstractBean {
         firePropertyChange("value", oldValue, getValue());
     }
     
+    /**
+     * addSourceImpl
+     * @param <S> Source Type
+     * @param object Source object
+     * @param property the Property
+     */
     protected abstract <S> void addSourceImpl(S object, Property<S, SV> property);
     
+    /**
+     * addSource
+     * @param <S> Source type
+     * @param object Source object
+     * @param property Property
+     */
     public <S> void addSource(S object, Property<S, SV> property) {
         property.addPropertyStateListener(object, psl);
         
@@ -74,17 +90,35 @@ public abstract class Aggregator<SV, AV> extends AbstractBean {
         fireValueChanged();
     }
 
+    /**
+     * removeSource
+     * @param <S> Source type
+     * @param object Source object
+     * @param property Property
+     */
     public <S> void removeSource(S object, Property<S, SV> property) {
         property.removePropertyStateListener(object, psl);
         fireValueChanged();
     }
     
+    /**
+     * aggregateSourceValues
+     * @return the aggregate value
+     */
     protected abstract AV aggregateSourceValues();
     
+    /**
+     * getter
+     * @return sourceType
+     */
     public final Class<SV> getSourceType() {
         return sourceType;
     }
     
+    /**
+     * getter
+     * @return value
+     */
     public final AV getValue() {
         return value;
     }
