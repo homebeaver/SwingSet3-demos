@@ -6,6 +6,8 @@ package org.jdesktop.swingx.demos.tipoftheday;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Font;
+import java.awt.Color;
 import java.awt.Frame;
 import java.util.logging.Logger;
 
@@ -190,8 +192,24 @@ dialogLink.focusPainted=false
         dialogLink.addActionListener(ae -> {
         	LOG.info("ActionEvent "+ae);
         	// props for dialog, which is a new Instance 
+//            defaults.add("TipOfTheDay.tipFont", getFontUIResource("Label.font"));
+//            defaults.add("TipOfTheDay.font", getFontUIResource("Label.font"));
+    		Object labelFont = UIManager.get("Label.font");
+    		Object tipOfTheDayFont = UIManager.get("TipOfTheDay.font");
+    		Object tipOfTheDayTipFont = UIManager.get("TipOfTheDay.tipFont");
+    		LOG.info("Label.font:"+labelFont +" ==> " +"TipOfTheDay.tipFont:"+tipOfTheDayTipFont);
+    		LOG.info("Label.font:"+labelFont +" ==> " +"TipOfTheDay.font:"+tipOfTheDayFont);
+    		
+    		LOG.info("TextArea.background:"+UIManager.get("TextArea.background"));
+    		LOG.info("TipOfTheDay.foreground/background:"+UIManager.get("TipOfTheDay.foreground")
+			+" / "+UIManager.get("TipOfTheDay.background"));
+    		// try to set colors
+        	UIManager.put("TipOfTheDay.foreground", Color.RED); // no effect
+        	UIManager.put("TipOfTheDay.background", Color.YELLOW); // OK
+    		
+        	// set tipFont and font @see https://github.com/homebeaver/SwingSet/issues/27#issuecomment-1205836748
         	UIManager.put("TipOfTheDay.tipFont", new Font(Font.SANS_SERIF, Font.PLAIN, 24));
-        	UIManager.put("TipOfTheDay.font", new Font(Font.SERIF, Font.PLAIN, 24));
+        	UIManager.put("TipOfTheDay.font", new Font(Font.SERIF, Font.PLAIN, 15));
             JXTipOfTheDay dialog = new JXTipOfTheDay(model);
             dialog.setCurrentTip(0);
             dialog.showDialog(totd);
