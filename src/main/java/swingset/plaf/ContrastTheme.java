@@ -32,12 +32,16 @@ package swingset.plaf;
  */
 
 
-import javax.swing.plaf.*;
-import javax.swing.plaf.basic.*;
-import javax.swing.plaf.metal.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
+import java.awt.Color;
+
+import javax.swing.UIDefaults;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.BorderUIResource;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.basic.BasicBorders;
+import javax.swing.plaf.metal.DefaultMetalTheme;
 
 /**
  * This class describes a higher-contrast Metal Theme.
@@ -47,31 +51,57 @@ import java.awt.*;
 
 public class ContrastTheme extends DefaultMetalTheme {
 
-    public String getName() { return "Contrast"; }
+    /**
+     * Returns the name of this theme. This returns {@code "Contrast"}.
+     */
+	@Override
+	public String getName() { return "Contrast"; }
 
-    private final ColorUIResource primary1 = new ColorUIResource(0, 0, 0);
-    private final ColorUIResource primary2 = new ColorUIResource(204, 204, 204);
-    private final ColorUIResource primary3 = new ColorUIResource(255, 255, 255);
-    private final ColorUIResource primaryHighlight = new ColorUIResource(102,102,102);
+    private final ColorUIResource primary1 = new ColorUIResource(Color.BLACK); 
+    private final ColorUIResource primary2 = new ColorUIResource(204, 204, 204); // neon silver
+    private final ColorUIResource primary3 = new ColorUIResource(Color.WHITE);
+    private final ColorUIResource primaryHighlight = new ColorUIResource(102,102,102); // cursed gray
 
     private final ColorUIResource secondary2 = new ColorUIResource(204, 204, 204);
-    private final ColorUIResource secondary3 = new ColorUIResource(255, 255, 255);
+    private final ColorUIResource secondary3 = new ColorUIResource(Color.WHITE);
     private final ColorUIResource controlHighlight = new ColorUIResource(102,102,102);
 
+    // replaces DARK_BLUE_GRAY 0x666699 102,102,153 with BLACK
     protected ColorUIResource getPrimary1() { return primary1; }
+    // replaces BLUE_BELL      0x9999CC 153,153,204 with neon silver
     protected ColorUIResource getPrimary2() { return primary2; }
+    // replaces LEVANDER_BLUE  0xCCCCFF 204,204,255 with WHITE
     protected ColorUIResource getPrimary3() { return primary3; }
+    
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Replaces key="??controlHighlight" WHITE with cursed gray
+     */
+	@Override
     public ColorUIResource getPrimaryControlHighlight() { return primaryHighlight;}
 
+	// no replacement for getSecondary1 CURSED_GRAY 0x666666 102,102,102
+    // replaces NOBEL          0x999999 153,153,153 with neon silver
     protected ColorUIResource getSecondary2() { return secondary2; }
+    // replaces NEON_SILVER    0xCCCCCC 204,204,204 with WHITE
     protected ColorUIResource getSecondary3() { return secondary3; }
+    
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Replaces key="controlHighlight" WHITE with {@code super.getSecondary3()}, neon silver 204,204,204
+     */
+	@Override
     public ColorUIResource getControlHighlight() { return super.getSecondary3(); }
 
+	// replaces focus color key="Button.focus" und andere, super.getPrimary2(), BLUE_BELL 0x9999CC 153,153,204
     public ColorUIResource getFocusColor() { return getBlack(); }
-
+    // replaces text highlight color
     public ColorUIResource getTextHighlightColor() { return getBlack(); }
+    // replaces highlighted text color
     public ColorUIResource getHighlightedTextColor() { return getWhite(); }
-
+    // replaces menu selected background color
     public ColorUIResource getMenuSelectedBackground() { return getBlack(); }
     public ColorUIResource getMenuSelectedForeground() { return getWhite(); }
     public ColorUIResource getAcceleratorForeground() { return getBlack(); }
@@ -81,20 +111,16 @@ public class ContrastTheme extends DefaultMetalTheme {
     public void addCustomEntriesToTable(UIDefaults table) {
 
         Border blackLineBorder = new BorderUIResource(new LineBorder( getBlack() ));
-
-        Object textBorder = new BorderUIResource( new CompoundBorder(
-                                                       blackLineBorder,
-                                                       new BasicBorders.MarginBorder()));
-
         table.put( "ToolTip.border", blackLineBorder);
         table.put( "TitledBorder.border", blackLineBorder);
 
+        Object textBorder = new BorderUIResource( 
+        	new CompoundBorder(blackLineBorder, new BasicBorders.MarginBorder()) );
         table.put( "TextField.border", textBorder);
         table.put( "PasswordField.border", textBorder);
         table.put( "TextArea.border", textBorder);
         table.put( "TextPane.border", textBorder);
         table.put( "EditorPane.border", textBorder);
-
 
     }
 
