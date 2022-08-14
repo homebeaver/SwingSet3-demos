@@ -314,8 +314,9 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighter.HighlighterDemo", "Highlighter", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.highlighterext.HighlighterExtDemo", "Highlighter (extended)", 3, Category.FUNCTIONALITY));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.prompt.PromptSupportDemo", "PromptSupport", 3, Category.FUNCTIONALITY));
-        	// category CONTROLS 9/10: TODO: ImageView
+        	// category CONTROLS 10/10:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.errorpane.ErrorPaneDemo", "ErrorPane", 3, Category.CONTROLS));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.imageview.ImageViewDemo", "ImageView", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.hyperlink.HyperlinkDemo", "Hyperlink", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.loginpane.LoginToDBPaneDemo", "LoginToDBPane", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.loginpane.LoginPaneDemo", "LoginPane", 3, Category.CONTROLS));

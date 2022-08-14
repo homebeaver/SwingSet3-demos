@@ -94,13 +94,7 @@ public class ImageViewDemo extends AbstractDemo {
     private JButton zoomOutButton;
     private JToggleButton dragEnabledButton;
     
-//    /**
-//     * main method allows us to run as a standalone demo.
-//     */
-//    public static void main(String[] args) {
-//        runDemo(ImageViewDemo.class);
-//    }
-
+    // aus JXImageView, dort private TODO public
     private static FileDialog getSafeFileDialog(Component comp) {
         Window win = SwingUtilities.windowForComponent(comp);
         if(win instanceof Dialog) {
@@ -113,6 +107,25 @@ public class ImageViewDemo extends AbstractDemo {
     }
     
 	private static final String FILENAME = "resources/images/flower.thumbnail.jpg";
+	
+	private static Image rotate(Image img, double theta) {
+//    	Image img = imageView.getImage();
+    	BufferedImage src = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+    	BufferedImage dst = new BufferedImage(img.getHeight(null), img.getWidth(null), BufferedImage.TYPE_INT_ARGB);
+    	Graphics2D g = (Graphics2D)src.getGraphics();
+    	try {
+    		g.drawImage(img, 0, 0, null); // smooth scaling
+    	} finally {
+    		g.dispose();
+    	}
+    	AffineTransform trans = AffineTransform.getRotateInstance(theta, 0, 0);
+//    	trans.translate(0, -src.getHeight()); // clockwise
+    	trans.translate(theta<0 ? -src.getWidth() : 0, theta>0 ? -src.getHeight() : 0);
+    	BufferedImageOp op = new AffineTransformOp(trans, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    	op.filter(src, dst); // dst The BufferedImage in which to store the results
+//    	imageView.setImage(dst);
+    	return dst;
+	}
 	
     /**
      * ImageViewDemo Constructor
@@ -143,8 +156,7 @@ public class ImageViewDemo extends AbstractDemo {
         // openButton.addActionListener(imageView.getOpenAction());
         openButton.addActionListener( ae -> {
         	LOG.info("ActionEvent "+ae);
-        	//imageView.getOpenAction();
-//            FileDialog fd = JXImageView.getSafeFileDialog(imageView); // not visible: getSafeFileDialog
+        	//imageView.getOpenAction(); is deprecated
         	FileDialog fd = getSafeFileDialog(imageView);
             fd.setMode(FileDialog.LOAD);
             fd.setVisible(true);
@@ -152,8 +164,6 @@ public class ImageViewDemo extends AbstractDemo {
                 try {
                 	imageView.setImage(new File(fd.getDirectory(), fd.getFile()));
                 } catch (IOException ex) {
-                    //fireError(ex);
-                	// private ErrorSupport errorSupport = new ErrorSupport(this);
                 	ErrorSupport errorSupport = new ErrorSupport(imageView);
                     errorSupport.fireErrorEvent(ex);
                 }
@@ -170,45 +180,49 @@ public class ImageViewDemo extends AbstractDemo {
         rotateCWButton = new JButton(); // CW = Clockwise
         rotateCWButton.setName("rotateCW");
         rotateCWButton.setText(getBundleString("rotateCW.text"));
-//        rotateCWButton.addActionListener(imageView.getRotateClockwiseAction());
         rotateCWButton.addActionListener( ae -> {
         	LOG.info("ActionEvent "+ae);
-        	//imageView.getRotateClockwiseAction();
-        	Image img = imageView.getImage();
-        	BufferedImage src = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        	BufferedImage dst = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        	Graphics2D g = (Graphics2D)src.getGraphics();
-        	try {
-        		g.drawImage(img, 0, 0, null); // smooth scaling
-        	} finally {
-        		g.dispose();
-        	}
-        	AffineTransform trans = AffineTransform.getRotateInstance(Math.PI/2,0,0);
-        	trans.translate(0,-src.getHeight());
-        	BufferedImageOp op = new AffineTransformOp(trans, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        	op.filter(src,dst);
-        	imageView.setImage(dst);
+        	//imageView.getRotateClockwiseAction(); is deprecated
+        	imageView.setImage(rotate(imageView.getImage(), Math.PI/2));
         });
         sidebar.add(rotateCWButton);
         
         rotateCCWButton = new JButton();
         rotateCCWButton.setName("rotateCCW");
         rotateCCWButton.setText(getBundleString("rotateCCW.text"));
+        rotateCCWButton.addActionListener( ae -> {
+        	LOG.info("ActionEvent "+ae);
+        	imageView.setImage(rotate(imageView.getImage(), -Math.PI/2));
+        });
         sidebar.add(rotateCCWButton);
         
         zoomInButton = new JButton();
         zoomInButton.setName("zoomIn");
         zoomInButton.setText(getBundleString("zoomIn.text"));
+        zoomInButton.addActionListener( ae -> {
+        	LOG.info("ActionEvent "+ae);
+        	//imageView.getZoomInAction(); is deprecated
+        	imageView.setScale(imageView.getScale()*2);
+        });
         sidebar.add(zoomInButton);
         
         zoomOutButton = new JButton();
         zoomOutButton.setName("zoomOut");
         zoomOutButton.setText(getBundleString("zoomOut.text"));
+        zoomOutButton.addActionListener( ae -> {
+        	LOG.info("ActionEvent "+ae);
+        	//imageView.getZoomOutAction(); is deprecated
+        	imageView.setScale(imageView.getScale()*0.5);
+        });
         sidebar.add(zoomOutButton);
         
         dragEnabledButton = new JToggleButton();
         dragEnabledButton.setName("dragEnabled");
         dragEnabledButton.setText(getBundleString("dragEnabled.text"));
+        dragEnabledButton.addActionListener( ae -> {
+        	LOG.info("DragEnabled="+imageView.isDragEnabled() + " ActionEvent "+ae);
+        	imageView.setDragEnabled(!imageView.isDragEnabled());
+        });
         sidebar.add(dragEnabledButton);
         
         add(sidebar, BorderLayout.LINE_START);
@@ -219,61 +233,4 @@ public class ImageViewDemo extends AbstractDemo {
 		return emptyControlPane();
 	}
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    protected void createDemo() {
-//        setLayout(new BorderLayout());
-//        
-//        imageView = new JXImageView();
-//        imageView.setName("imageView");
-//        add(imageView);
-//        
-//        JPanel sidebar = new JPanel(new VerticalLayout());
-//        openButton = new JButton();
-//        openButton.setName("openButton");
-//        sidebar.add(openButton);
-//        
-//        saveButton = new JButton();
-//        saveButton.setName("saveButton");
-//        sidebar.add(saveButton);
-//        
-//        rotateCWButton = new JButton();
-//        rotateCWButton.setName("rotateCW");
-//        sidebar.add(rotateCWButton);
-//        
-//        rotateCCWButton = new JButton();
-//        rotateCCWButton.setName("rotateCCW");
-//        sidebar.add(rotateCCWButton);
-//        
-//        zoomInButton = new JButton();
-//        zoomInButton.setName("zoomIn");
-//        sidebar.add(zoomInButton);
-//        
-//        zoomOutButton = new JButton();
-//        zoomOutButton.setName("zoomOut");
-//        sidebar.add(zoomOutButton);
-//        
-//        dragEnabledButton = new JToggleButton();
-//        dragEnabledButton.setName("dragEnabled");
-//        sidebar.add(dragEnabledButton);
-//        
-//        add(sidebar, BorderLayout.LINE_START);
-//    }
-    
-    /**
-     * {@inheritDoc}
-     */
-//    protected void bind() {
-//        openButton.addActionListener(imageView.getOpenAction());
-//        saveButton.addActionListener(imageView.getSaveAction());
-//        rotateCWButton.addActionListener(imageView.getRotateClockwiseAction());
-//        rotateCCWButton.addActionListener(imageView.getRotateCounterClockwiseAction());
-//        zoomInButton.addActionListener(imageView.getZoomInAction());
-//        zoomOutButton.addActionListener(imageView.getZoomOutAction());
-//        Bindings.createAutoBinding(READ,
-//                dragEnabledButton, BeanProperty.create("selected"),
-//                imageView, BeanProperty.create("dragEnabled")).bind();
-     //	imageView.setDragEnabled(isOptimizedDrawingEnabled()); TODO wg
-//    }
 }
