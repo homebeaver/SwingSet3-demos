@@ -291,7 +291,7 @@ public class SearchDemo extends AbstractDemo {
      * Looks for a searchable provider in the selected tab of the JTabbedPane
      * and updates the searchPanel accordingly.
      * 
-     * @param tabbed
+     * @param tabbed JTabbedPane
      */
     protected void updateSearchable(JTabbedPane tabbed) {
         Component comp = tabbed.getSelectedComponent();
@@ -420,7 +420,9 @@ public class SearchDemo extends AbstractDemo {
         treeTable.getColumn(column).setCellRenderer(renderer);
     }
 
-    public class SearchControl extends AbstractBean {
+    // EUG: im Gegensetz zu PainterDemo$PainterControl ist SearchControl keine AbstractBean!
+    // Weil kein bind() gemacht wird. Daher kann diese Klasse private sein
+    private class SearchControl extends AbstractBean {
         private boolean extendedMarker;
         private boolean animatedPainter;
         private String[] tabs = {"table", "list", "tree", "treeTable", "xTreeTable"};
