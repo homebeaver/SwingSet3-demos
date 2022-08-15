@@ -20,7 +20,6 @@ package org.jdesktop.swingx.demos.busylabel;
 
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
@@ -37,27 +36,66 @@ public class ShapeFactory {
         //does nothing
     }
     
+    /**
+     * createEllipticalPoint
+     * @param xFactor int
+     * @param yFactor int
+     * @return Shape
+     */
     public static Shape createEllipticalPoint(int xFactor, int yFactor) {
         return new Ellipse2D.Float(0f, 0f, xFactor * CNSTS / 100f, yFactor * CNSTS / 100f);
     }
     
+    /**
+     * createLinearPoint
+     * @param xFactor int
+     * @param yFactor int
+     * @return Shape
+     */
     public static Shape createLinearPoint(int xFactor, int yFactor) {
         return new Rectangle2D.Float(0f, 0f, xFactor * CNSTS / 100f, 1f);
     }
     
+    /**
+     * createSquarePoint
+     * @param xFactor int
+     * @param yFactor int
+     * @return Shape
+     */
     public static Shape createSquarePoint(int xFactor, int yFactor) {
         return new Rectangle2D.Float(0f, 0f, xFactor * CNSTS / 100f, yFactor * CNSTS / 100f);
     }
     
+    /**
+     * createRectangularPoint
+     * @param xFactor int
+     * @param yFactor int
+     * @return Shape
+     */
     public static Shape createRectangularPoint(int xFactor, int yFactor) {
         return new Rectangle2D.Float(0f, 0f, xFactor * CNSTS / 100f, yFactor * CNSTS / 500f);
     }
-    
+
+    /**
+     * createRoundedRectangularPoint
+     * @param xFactor int
+     * @param yFactor int
+     * @return Shape
+     */
     public static Shape createRoundedRectangularPoint(int xFactor, int yFactor) {
         return new RoundRectangle2D.Float(0f, 0f, xFactor * CNSTS / 100f,
                 yFactor * CNSTS / 500f, CNSTS / 5f, CNSTS / 5f);
     }
 
+    /**
+     * createEllipticalPath
+     * @param barLength int
+     * @param width int
+     * @param height int
+     * @param xFactor int
+     * @param yFactor int
+     * @return Shape
+     */
     public static Shape createEllipticalPath(int barLength, int width, int height, int xFactor, int yFactor) {
         return new Ellipse2D.Float(barLength / 2, barLength / 2,
                 (width - barLength) * xFactor, (height - barLength)
