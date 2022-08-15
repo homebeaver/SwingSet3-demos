@@ -14,10 +14,19 @@ import org.jdesktop.swingx.plaf.basic.BasicLoginPaneUI;
 
 import swingset.StaticUtilities;
 
+/**
+ * a subclass of BasicLoginPaneUI with moon banner
+ * 
+ * @author homeb
+ */
 public class MoonLoginPaneUI extends BasicLoginPaneUI {
 
     private static final Logger LOG = Logger.getLogger(MoonLoginPaneUI.class.getName());
     
+    /**
+     * ctor
+     * @param dlg JXLoginPane to delegate
+     */
     public MoonLoginPaneUI(JXLoginPane dlg) {
         super(dlg);
     }

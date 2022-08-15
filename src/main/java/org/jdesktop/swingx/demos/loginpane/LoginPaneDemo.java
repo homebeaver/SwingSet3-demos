@@ -287,7 +287,7 @@ public class LoginPaneDemo extends AbstractDemo {
 //        loginPane.setSaveMode(SaveMode.PASSWORD);
     }
    
-    public class LoggingUserNameStore extends DefaultUserNameStore {
+    private class LoggingUserNameStore extends DefaultUserNameStore {
     	
     	LoggingUserNameStore() {
     		super();
