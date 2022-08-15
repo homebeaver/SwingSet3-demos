@@ -39,8 +39,12 @@ public class OscarRendering {
 	private static final Logger LOG = Logger.getLogger(OscarRendering.class.getName());
     
     //<snip> JXTable column properties
-    // Note: the custom column factory is a feature enhanced factory
-    // which allows column configuration based on column identifier
+	/**
+	 * 
+	 * @param factory CustomColumnFactory - Note: the custom column factory is a feature enhanced factory
+	 * 		which allows column configuration based on column identifier
+	 * @param resourceBase Class
+	 */
     public static void configureColumnFactory(CustomColumnFactory factory, Class<?> resourceBase) {
     	LOG.info("resourceBase:"+resourceBase);
         // set location to load resources from
@@ -290,7 +294,7 @@ public class OscarRendering {
         
     }
 
-    public static class ListStringValue implements StringValue {
+    private static class ListStringValue implements StringValue {
 
         boolean isToolTip;
         String singleToolTipPrefix;

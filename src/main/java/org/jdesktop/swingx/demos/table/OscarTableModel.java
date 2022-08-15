@@ -39,7 +39,6 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author aim
  */
-
 public class OscarTableModel extends AbstractTableModel {
 	
     public static final int CATEGORY_COLUMN = 0;
@@ -65,6 +64,10 @@ public class OscarTableModel extends AbstractTableModel {
     
     private final List<OscarCandidate> candidates = new ArrayList<OscarCandidate>();
 
+    /**
+     * add a list of OscarCandidate
+     * @param newCandidates the list
+     */
     public void add(List<OscarCandidate> newCandidates) {
         int first = candidates.size();
         int last = first + newCandidates.size() - 1;
@@ -72,6 +75,10 @@ public class OscarTableModel extends AbstractTableModel {
         fireTableRowsInserted(first, last);
     }
 
+    /**
+     * add an OscarCandidate
+     * @param candidate OscarCandidate
+     */
     public void add(OscarCandidate candidate) {
         int index = candidates.size();
         candidates.add(candidate);
@@ -91,6 +98,11 @@ public class OscarTableModel extends AbstractTableModel {
         return getValueAt(0, column).getClass();
     }
 
+    /**
+     * getCandidate by row
+     * @param row the row number
+     * @return OscarCandidate
+     */
     public OscarCandidate getCandidate(int row) {
         return candidates.get(row);
     }

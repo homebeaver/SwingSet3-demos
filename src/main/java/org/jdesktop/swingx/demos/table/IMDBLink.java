@@ -55,9 +55,11 @@ public class IMDBLink {
     }
 
     /**
+     * getMovieURIString
      * @param movieTitle the title of the movie
      * @param year       the year the movie was nominated for the oscar
      * @return String containing URI for movie's IMDB entry or null if URI could not be found
+     * @throws IOException when Yahoo search query fails
      */
     public static String getMovieURIString(String movieTitle, int year) throws IOException {
         ArrayList<String> matches = new ArrayList<String>();
