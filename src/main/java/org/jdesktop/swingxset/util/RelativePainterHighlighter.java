@@ -46,7 +46,12 @@ public class RelativePainterHighlighter extends PainterHighlighter {
         this(null);
     }
 
-    public RelativePainterHighlighter(Painter delegate) {
+    /**
+     * Instantiates a RelativePainterHighlighter with the given Painter and default predicate.
+     * ctor
+     * @param delegate Painter
+     */
+    public RelativePainterHighlighter(Painter<?> delegate) {
         super(delegate);
     }
 
@@ -112,7 +117,9 @@ public class RelativePainterHighlighter extends PainterHighlighter {
 //------------------- Relativizer
 
     // <snip> Relativizer
-    // One-method interface to map a cell value to a float
+    /**
+     * One-method interface to map a cell value to a float
+     */
     public static interface Relativizer {
         /**
          * Returns a float in the range of 0.0f to 1.0f inclusive which
@@ -140,19 +147,32 @@ public class RelativePainterHighlighter extends PainterHighlighter {
             this(max, max);
         }
 
+        /**
+         * convinient ctor
+         * @param max Number
+         * @param current Number
+         */
         public NumberRelativizer(Number max, Number current) {
             this(0, max, current);
         }
 
         /**
-         * @param column
-         * @param max
-         * @param current
+         * convinient ctor
+         * @param column valueColumn
+         * @param max Number
+         * @param current Number
          */
         public NumberRelativizer(int column, Number max, Number current) {
             this(column, false, max, current);
         }
 
+        /**
+         * ctor
+         * @param column valueColumn
+         * @param spreadColumns true if is spreadColumn
+         * @param max Number
+         * @param current Number
+         */
         public NumberRelativizer(int column, boolean spreadColumns, Number max, Number current) {
             this.current = current;
             this.max = max;
@@ -248,6 +268,11 @@ public class RelativePainterHighlighter extends PainterHighlighter {
             return max;
         }
 
+        /**
+         * 
+         * @param limit float
+         * @return true if near ZERO
+         */
         protected boolean isZero(float limit) {
             return Math.abs(limit) < 0.002;
         }
@@ -259,7 +284,7 @@ public class RelativePainterHighlighter extends PainterHighlighter {
 
     // --------- hack around missing size proportional painters
 
-    public static class RelativePainter<T> extends AbstractLayoutPainter<T> {
+    private static class RelativePainter<T> extends AbstractLayoutPainter<T> {
 
         private Painter<? super T> painter;
         private double xFactor;
