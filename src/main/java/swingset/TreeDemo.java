@@ -68,6 +68,7 @@ public class TreeDemo extends AbstractDemo {
 
     /**
      * TreeDemo Constructor
+     * @param frame controller Frame
      */
     public TreeDemo(Frame frame) {
     	super(new BorderLayout());

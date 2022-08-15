@@ -72,6 +72,7 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
 
     /**
      * TabbedPaneDemo Constructor
+     * @param frame controller Frame
      */
     public TabbedPaneDemo(Frame frame) {
     	super(new BorderLayout());

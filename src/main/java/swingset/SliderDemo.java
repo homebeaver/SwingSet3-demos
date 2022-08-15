@@ -63,6 +63,7 @@ public class SliderDemo extends AbstractDemo {
 
     /**
      * SliderDemo Constructor
+     * @param frame controller Frame
      */
     public SliderDemo(Frame frame) {
     	super(new BorderLayout());

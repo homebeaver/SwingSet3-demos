@@ -56,6 +56,7 @@ public class ToolTipDemo extends AbstractDemo {
 
     /**
      * ToolTipDemo Constructor
+     * @param frame controller Frame
      */
     public ToolTipDemo(Frame frame) {
     	super();

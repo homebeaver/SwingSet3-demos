@@ -58,6 +58,7 @@ public class ScrollPaneDemo extends AbstractDemo {
 
     /**
      * ScrollPaneDemo Constructor
+     * @param frame controller Frame
      */
     public ScrollPaneDemo(Frame frame) {
     	super(new BorderLayout());

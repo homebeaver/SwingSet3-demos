@@ -106,6 +106,7 @@ public class TableDemo extends AbstractDemo {
 
     /**
      * TableDemo Constructor
+     * @param frame controller Frame
      */
     public TableDemo(Frame frame) {
     	super(new BorderLayout());

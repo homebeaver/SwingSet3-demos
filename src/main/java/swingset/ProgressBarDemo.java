@@ -69,6 +69,7 @@ public class ProgressBarDemo extends AbstractDemo {
 
     /**
      * ProgressBarDemo Constructor
+     * @param frame controller Frame
      */
     public ProgressBarDemo(Frame frame) {
     	super(new BorderLayout());
@@ -160,7 +161,7 @@ public class ProgressBarDemo extends AbstractDemo {
 
     String text = getBundleString("text");
 
-    public Action createTextLoadAction() {
+    private Action createTextLoadAction() {
         return new AbstractAction("text load action") {
             public void actionPerformed (ActionEvent e) {
                 if(progressBar.getValue() < progressBar.getMaximum()) {

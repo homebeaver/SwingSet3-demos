@@ -91,6 +91,7 @@ public class SplitPaneDemo extends AbstractDemo implements ComponentListener {
 
     /**
      * SplitPaneDemo Constructor
+     * @param controllerFrame controller Frame
      */
     public SplitPaneDemo(Frame controllerFrame) {
     	super(new BorderLayout());

@@ -69,6 +69,7 @@ public class OptionPaneDemo extends AbstractDemo {
 
     /**
      * OptionPaneDemo Constructor
+     * @param frame controller Frame
      */
     public OptionPaneDemo(Frame frame) {
     	super(new BorderLayout());
@@ -120,7 +121,7 @@ public class OptionPaneDemo extends AbstractDemo {
         return boxPane;
     }
 
-    public JButton createWarningDialogButton() {
+    private JButton createWarningDialogButton() {
         @SuppressWarnings("serial")
 		Action a = new AbstractAction(getBundleString("warningbutton")) {
             public void actionPerformed(ActionEvent e) {
@@ -140,7 +141,7 @@ public class OptionPaneDemo extends AbstractDemo {
         return createButton(a);
     }
 
-    public JButton createMessageDialogButton() {
+    private JButton createMessageDialogButton() {
         @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("messagebutton")) {
             URL img = getClass().getResource("images/optionpane/bottle.gif");
@@ -157,7 +158,7 @@ public class OptionPaneDemo extends AbstractDemo {
         return createButton(a);
     }
 
-    public JButton createConfirmDialogButton() {
+    private JButton createConfirmDialogButton() {
         @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("confirmbutton")) {
             public void actionPerformed(ActionEvent e) {
@@ -174,7 +175,7 @@ public class OptionPaneDemo extends AbstractDemo {
         return createButton(a);
     }
 
-    public JButton createInputDialogButton() {
+    private JButton createInputDialogButton() {
         @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("inputbutton")) {
             public void actionPerformed(ActionEvent e) {
@@ -190,7 +191,7 @@ public class OptionPaneDemo extends AbstractDemo {
         return createButton(a);
     }
 
-    public JButton createComponentDialogButton() {
+    private JButton createComponentDialogButton() {
         @SuppressWarnings("serial")
         Action a = new AbstractAction(getBundleString("componentbutton")) {
             public void actionPerformed(ActionEvent e) {
@@ -252,7 +253,12 @@ public class OptionPaneDemo extends AbstractDemo {
         return createButton(a);
     }
 
-    public JButton createButton(Action a) {
+    /**
+     * createButton for Action
+     * @param a Action
+     * @return JButton
+     */
+    private JButton createButton(Action a) {
         @SuppressWarnings("serial")
         JButton b = new JButton() {
             public Dimension getMaximumSize() {
