@@ -15,7 +15,13 @@ import javax.swing.plaf.metal.MetalBorders;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
 
+/**
+ * a patch to MetalButtonBorder
+ * wg. https://github.com/homebeaver/SwingSet/issues/18 
+ *
+ */
 @SuppressWarnings("serial") // Superclass is not serializable across versions
+@Deprecated
 public class MetalButtonBorder extends MetalBorders.ButtonBorder {
 
 	// copy of sun.swing.StringUIClientPropertyKey; // wg. not accessible
