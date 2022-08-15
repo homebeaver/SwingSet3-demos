@@ -16,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
@@ -25,6 +24,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 /**
  * Intro
  */
+@Deprecated
 public class IntroDemo extends DemoModule {
 
 	/**
@@ -42,7 +42,7 @@ public class IntroDemo extends DemoModule {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-        IntroDemo demo = new IntroDemo(null);
+        IntroDemo demo = new IntroDemo(new SwingSet2());
         demo.mainImpl();
     }
 
