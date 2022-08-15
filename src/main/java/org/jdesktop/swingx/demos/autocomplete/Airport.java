@@ -32,6 +32,12 @@ public class Airport {
 	/** IATA Code */
 	public String iataCode;
     
+	/**
+	 * ctor 
+	 * @param name String
+	 * @param icaoCode String
+	 * @param iataCode String
+	 */
     public Airport(String name, String icaoCode, String iataCode) {
         this.name = name;
         this.icaoCode = icaoCode;
