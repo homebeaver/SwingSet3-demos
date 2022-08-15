@@ -131,7 +131,7 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     	JXPanel panel = new JXPanel(new BorderLayout());
 
         alphaSlider = new JSlider(JSlider.VERTICAL, 0, 255, 0);
-        xpanel.setAlpha(1f*40/255);
+//        xpanel.setAlpha(1f*40/255);
         alphaSlider.setName(SLIDER);
 
 /* prop alphaSlider.background COBALITE not used
@@ -193,13 +193,18 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
     private void createXPanelDemo() {
         xpanel = new JXPanel();
         xpanel.setName("panel");
+        LOG.info("   ----------Font="+xpanel.getFont());
         
     	// malt anfangs mit thumbColor (grau/OceanTheme.PRIMARY2 [r=163,g=184,b=204] "#A3B8CC")
     	// Northern Pond , Mood Cloud Blue 
 //        setBackground(UIManager.getDefaults().getColor("ScrollBar.thumb"));
         
+    	// best practice is to use either alpha support or opacity support, but not both.
+        // so turn off Opaque:
+        LOG.info("               initial xpanel.isOpaque()="+xpanel.isOpaque()); // true
         opaque = Boolean.parseBoolean(getBundleString("panel.opaque", Boolean.toString(false)));
         xpanel.setOpaque(opaque);
+        LOG.info("               initial xpanel.getAlpha()="+xpanel.getAlpha());
         
         //panel.add(new JSplitPane());
         JLabel earth = new JLabel(StaticUtilities.createImageIcon(IMG_PATH+"earth.jpg"));
