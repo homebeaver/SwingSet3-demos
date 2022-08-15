@@ -140,6 +140,9 @@ MissingResourceException - if no resource bundle for the specified base name can
      * (xxx -> xxx.labelAndMnemonic)
      *
      * Properties class is used to check if a key created for mnemonic exists.
+     * 
+     * @param key String
+     * @return strings or mnemonics from the resource bundle
      */
     public static String getTextAndMnemonicString(String key) {
 
@@ -182,7 +185,7 @@ MissingResourceException - if no resource bundle for the specified base name can
      *
      * For example the string "&amp;Look &amp;&amp; Feel" is converted to "Look &amp; Feel"
      * 
-     * @param text
+     * @param text String
      * @return the text String without Mnemonics
      */
     public static String getTextFromTextAndMnemonic(String text) {
@@ -221,7 +224,7 @@ MissingResourceException - if no resource bundle for the specified base name can
      *
      * For example the string "&amp;Look &amp;&amp; Feel" is converted to "L"
      * 
-     * @param text
+     * @param text String
      * @return the mnemonic String
      */
     public static String getMnemonicFromTextAndMnemonic(String text) {

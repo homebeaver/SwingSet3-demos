@@ -11,6 +11,9 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+/**
+ * useful static utils
+ */
 // copied from package (swingx-core test) org.jdesktop.swingx.TestUtilities
 public class StaticUtilities {
 
@@ -18,9 +21,12 @@ public class StaticUtilities {
 
 	private StaticUtilities() {}
 
-    /**
+	/**
      * This method returns a string from the demo's resource bundle.
-     */
+	 * @param key String
+	 * @param def String
+	 * @return String
+	 */
 	// kopiert von SwingSet2.getString(String)
     @Deprecated
     public static String getResourceAsString(String key, String def) {
@@ -37,6 +43,9 @@ public class StaticUtilities {
 
     /**
      * Creates an icon from an image contained in the "images" directory.
+     * 
+     * @param filename of the image
+     * @return ImageIcon
      */
     public static ImageIcon createImageIcon(String filename) { //, String description) {
     	String path = "/swingset/images/" + filename; 
@@ -44,6 +53,12 @@ public class StaticUtilities {
     	if(is==null) return null;
         return new ImageIcon(StaticUtilities.class.getResource(path));
     }
+    /**
+     * 
+     * @param clazz Class
+     * @param filename String
+     * @return ImageIcon
+     */
     @Deprecated
     public static ImageIcon createImageIcon(Class<?> clazz, String filename) {
     	String path = clazz.getPackageName().replace('.', '/')+'/' + filename; 
@@ -58,6 +73,12 @@ public class StaticUtilities {
         return null;
     }
 
+    /**
+     * 
+     * @param clazz Class
+     * @param resourceName String
+     * @return InputStream
+     */
 	public static InputStream getResourceAsStream(Class<?> clazz, String resourceName) {
 		
 		if(clazz==null) return getFileAsStream(resourceName);
@@ -97,6 +118,12 @@ public class StaticUtilities {
 		return is;
 	}
 
+	/**
+	 * 
+	 * @param dir String
+	 * @param resourceName String
+	 * @return InputStream
+	 */
 	public static InputStream getFileAsStream(String dir, String resourceName) {
 		File path = new File(dir);
 		if (!path.exists()) {
