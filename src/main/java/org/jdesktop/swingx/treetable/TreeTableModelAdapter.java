@@ -10,7 +10,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.tree.TreeModelSupport;
-import org.jdesktop.swingx.treetable.TreeTableModel;
 
 /**
  * Adapts a TreeModel to a TreeTableModel. The per-node columnar data is
@@ -326,7 +325,7 @@ public class TreeTableModelAdapter implements TreeTableModel {
     }
 
     /**
-     * {@inheritDoc} <p>
+     * {@inheritDoc}
      * 
      */
     public void addTreeModelListener(TreeModelListener l) {
@@ -334,7 +333,7 @@ public class TreeTableModelAdapter implements TreeTableModel {
     }
 
     /**
-     * {@inheritDoc} <p>
+     * {@inheritDoc}
      * 
      */
     public void removeTreeModelListener(TreeModelListener l) {
