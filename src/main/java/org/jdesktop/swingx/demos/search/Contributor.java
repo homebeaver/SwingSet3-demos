@@ -16,7 +16,6 @@ public class Contributor implements Comparable<Contributor> {
 	
     private String firstName;
     private String lastName;
-    @SuppressWarnings("unused")
     private String userID;
     private URI devnetMail;
     private int merits;

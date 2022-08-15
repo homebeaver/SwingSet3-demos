@@ -384,14 +384,14 @@ public class MatchingTextHighlighter extends AbstractHighlighter {
 	}
 
 	/**
-	 * Calculates the x offset of highlights based on component orientation and
-	 * text direction.
+	 * Calculates the x offset of highlights based on component orientation and text direction.
 	 * 
 	 * @param component the renderer component
 	 * @param viewR the view rectangle of the renderer component
 	 * @param textR the text rectangle of the renderer component
-	 * @return the number of pixels to offset the highlight from the left edge
-	 *         of the component
+	 * @param iconR icon Rectangle
+	 * @param iconTextGap gap between the icon and the text
+	 * @return the number of pixels to offset the highlight from the left edge of the component
 	 */
 	protected int calculateXOffset(JLabel component, Rectangle viewR, Rectangle textR, Rectangle iconR, int iconTextGap) {
 		int horizAlignment = component.getHorizontalAlignment();
