@@ -675,7 +675,7 @@ public class PainterDemo extends AbstractDemo {
         return node;
     }
     
-    public class BusyPainterAction implements ActionListener {
+    private class BusyPainterAction implements ActionListener {
 
     	BusyPainter busyPainter;
     	public BusyPainterAction(BusyPainter bp) {
@@ -919,6 +919,9 @@ public class PainterDemo extends AbstractDemo {
     /**
      * Controller of bindings to Painter properties.
      */
+    // must not be private! 
+    // private leads to: java.lang.IllegalAccessException: 
+    // class org.jdesktop.beansbinding.BeanProperty cannot access a member of class org.jdesktop.swingx.demos.painter.PainterDemo$PainterControl with modifiers "public"
     public class PainterControl extends AbstractBean {
         private Painter<?> painter;
         private boolean alignEnabled;

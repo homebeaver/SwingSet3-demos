@@ -30,7 +30,9 @@ import org.jdesktop.beansbinding.Converter;
  */
 public class PainterDemoUtils {
 
+	/** SLIDER_TO_FLOAT a SliderConverter */
     public static final Converter<?, ?> SLIDER_TO_FLOAT = new SliderConverter();
+	/** SLIDER_TO_INSETS a InsetsConverter */
     public static final Converter<?, ?> SLIDER_TO_INSETS = new InsetsConverter();
     
     private static class InsetsConverter extends Converter<Integer, Insets> {
