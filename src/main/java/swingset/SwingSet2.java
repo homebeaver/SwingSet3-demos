@@ -111,6 +111,7 @@ import swingset.plaf.RubyTheme;
  * @author Jeff Dinkins
  * @author EUG https://github.com/homebeaver (removed usage of JApplet, Applet, now subclass Panel)
  */
+@Deprecated
 public class SwingSet2 extends JPanel {
 
 	private static final long serialVersionUID = 3856695829171691102L;
@@ -231,7 +232,7 @@ public class SwingSet2 extends JPanel {
 
     // Dummy stub for deprecated Applet
     @SuppressWarnings("serial")
-	public class SwingSet2Applet extends Component implements RootPaneContainer {
+	private class SwingSet2Applet extends Component implements RootPaneContainer {
     
     	// used in initializeDemo()
         public void setJMenuBar(final JMenuBar menuBar) {
@@ -296,6 +297,9 @@ public class SwingSet2 extends JPanel {
     }
     /**
      * SwingSet2 Constructor
+     * @param applet SwingSet2Applet
+     * @param gc GraphicsConfiguration
+     * @param initAndStart boolean
      */
     public SwingSet2(SwingSet2Applet applet, GraphicsConfiguration gc, boolean initAndStart) {
 
@@ -1240,7 +1244,7 @@ via PopupMenu shift-F10 kann ich alle drei aktivieren.
 
     //                 interface Action extends ActionListener 
     // AbstractAction implements Action, Cloneable, Serializable
-    public class SwitchToDemoAction extends AbstractAction {
+    private class SwitchToDemoAction extends AbstractAction {
         SwingSet2 swingset;
         DemoModule demo;
         Class<?> demoClass;
