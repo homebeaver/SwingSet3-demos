@@ -348,6 +348,9 @@ public class MonthViewDemo extends AbstractDemo {
 
 
 //--------------------- MonthViewDemoControl
+    // must not be private! 
+    // private leads to: java.lang.IllegalAccessException: 
+    // class org.jdesktop.beansbinding.BeanProperty cannot access a member of class org.jdesktop.swingx.demos.monthview.MonthViewDemo$MonthViewDemoControl with modifiers "public"
     public class MonthViewDemoControl extends AbstractBean {
         
         private Date lastFlagged;
@@ -410,7 +413,69 @@ public class MonthViewDemo extends AbstractDemo {
                     this, BeanProperty.create("lowerBound")));
             
             group.bind();
-            
+/* TODO remove this log
+Aug. 13, 2022 9:12:31 PM org.jdesktop.swingx.JXDatePicker initMonthView
+INFO: monthView.SelectionModel/Mode:org.jdesktop.swingx.calendar.DaySelectionModel@5c413ee5/SINGLE_SELECTION
+Exception in thread "AWT-EventQueue-0" org.jdesktop.beansbinding.PropertyResolutionException: Exception invoking method public void org.jdesktop.swingx.demos.monthview.MonthViewDemo$MonthViewDemoControl.setLastFlagged(java.util.Date) on org.jdesktop.swingx.demos.monthview.MonthViewDemo$MonthViewDemoControl@1fc99a44
+	at org.jdesktop.beansbinding.BeanProperty.invokeMethod(BeanProperty.java:791)
+	at org.jdesktop.beansbinding.BeanProperty.write(BeanProperty.java:891)
+	at org.jdesktop.beansbinding.BeanProperty.setProperty(BeanProperty.java:909)
+	at org.jdesktop.beansbinding.BeanProperty.setValue(BeanProperty.java:580)
+	at org.jdesktop.beansbinding.Binding.refreshUnmanaged(Binding.java:1229)
+	at org.jdesktop.beansbinding.Binding.refresh(Binding.java:1207)
+	at org.jdesktop.beansbinding.Binding.refreshAndNotify(Binding.java:1143)
+	at org.jdesktop.beansbinding.AutoBinding.bindImpl(AutoBinding.java:197)
+	at org.jdesktop.beansbinding.Binding.bindUnmanaged(Binding.java:959)
+	at org.jdesktop.beansbinding.Binding.bind(Binding.java:944)
+	at org.jdesktop.beansbinding.BindingGroup.bind(BindingGroup.java:143)
+	at org.jdesktop.swingx.demos.monthview.MonthViewDemo$MonthViewDemoControl.<init>(MonthViewDemo.java:412) <===
+	at org.jdesktop.swingx.demos.monthview.MonthViewDemo.getControlPane(MonthViewDemo.java:181)
+	at io.github.homebeaver.swingset.demo.DemoAction.actionPerformed(DemoAction.java:402)
+	at io.github.homebeaver.swingset.demo.DemoJXTasks$1.actionPerformed(DemoJXTasks.java:91)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at org.jdesktop.swingx.JXHyperlink.fireActionPerformed(JXHyperlink.java:264)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2313)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:405)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6617)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3342)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6382)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2264)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4993)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2322)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4825)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4934)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4563)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4504)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2308)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2773)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4825)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:772)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:715)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:391)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:95)
+	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:745)
+	at java.desktop/java.awt.EventQueue$5.run(EventQueue.java:743)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:391)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+Caused by: java.lang.IllegalAccessException: class org.jdesktop.beansbinding.BeanProperty cannot access a member of class org.jdesktop.swingx.demos.monthview.MonthViewDemo$MonthViewDemoControl with modifiers "public"
+	at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:385)
+	at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:687)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:559)
+	at org.jdesktop.beansbinding.BeanProperty.invokeMethod(BeanProperty.java:782)
+	... 50 more
+           
+ */
             // PENDING JW: removed the color selection stuff for now
             // future will be to use highlighters anyway - revisit then
         }
@@ -516,7 +581,8 @@ public class MonthViewDemo extends AbstractDemo {
         
     }
 
-    public static class DayOfWeekConverter extends Converter<Date, Integer> {
+    // TODO move it to package org.jdesktop.swingx.binding
+    private static class DayOfWeekConverter extends Converter<Date, Integer> {
 
         Calendar calendar;
         
