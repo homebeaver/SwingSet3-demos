@@ -47,9 +47,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-/*
+/**
  * The LayoutControlPanel contains controls for setting an AbstractButton's horizontal and vertical text position 
- * and horizontal and vertical alignment for ButtonDemo
+ * and horizontal and vertical alignment for ButtonDemo.
  * 
  * It uses DirectionPanel
  */

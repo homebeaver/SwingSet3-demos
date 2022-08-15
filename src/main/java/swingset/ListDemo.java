@@ -28,12 +28,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 
 /**
  * List Demo. This demo shows that it is not
@@ -92,6 +91,7 @@ public class ListDemo extends AbstractDemo {
 
     /**
      * ListDemo Constructor
+     * @param frame controller Frame
      */
     public ListDemo(Frame frame) {
     	super(new BorderLayout());
@@ -206,7 +206,7 @@ public class ListDemo extends AbstractDemo {
         list.setDragEnabled(dragEnabled);
     }
 
-    public JPanel createControlPanel() {
+    private JPanel createControlPanel() {
         JPanel controlPanel = new JPanel() {
             Insets insets = new Insets(0, 4, 10, 10);
             public Insets getInsets() {
@@ -260,7 +260,7 @@ public class ListDemo extends AbstractDemo {
         }
     };
 
-    public void addPrefix(String prefix, boolean selected) {
+    private void addPrefix(String prefix, boolean selected) {
         if(prefixAction == null) {
             prefixAction = new UpdatePrefixListAction(listModel);
         }
@@ -274,7 +274,7 @@ public class ListDemo extends AbstractDemo {
         cb.addFocusListener(listFocusListener);
     }
 
-    public void addSuffix(String suffix, boolean selected) {
+    private void addSuffix(String suffix, boolean selected) {
         if(suffixAction == null) {
             suffixAction = new UpdateSuffixListAction(listModel);
         }
