@@ -43,9 +43,13 @@ public final class HighlighterInfo {
     private final String description;
     private final Highlighter highlighter;
     
+    /**
+     * ctor 
+     * @param description description String
+     * @param highlighter Highlighter to wrap
+     */
     public HighlighterInfo(String description, Highlighter highlighter) {
-        this.description = Contract.asNotNull(description,
-                "description cannot be null");
+        this.description = Contract.asNotNull(description, "description cannot be null");
         this.highlighter = highlighter == null ? EMPTY : highlighter;
     }
     

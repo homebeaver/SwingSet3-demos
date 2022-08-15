@@ -31,9 +31,13 @@ public final class HighlightPredicateInfo {
     private final String description;
     private final HighlightPredicate predicate;
     
+    /**
+     * ctor
+     * @param description description String
+     * @param predicate HighlightPredicate
+     */
     public HighlightPredicateInfo(String description, HighlightPredicate predicate) {
-        this.description = Contract.asNotNull(description,
-                "description cannot be null");
+        this.description = Contract.asNotNull(description, "description cannot be null");
         this.predicate = predicate;
     }
     
