@@ -33,10 +33,17 @@ import org.jdesktop.swingx.plaf.basic.DemoCalendarRenderingHandler.DemoCalendarA
  */
 public class MonthViewExtDemoUtils {
 
+	/**
+	 * HighlightPredicate to highlighte DayOfWeek
+	 */
     public static class DayOfWeekHighlightPredicate implements HighlightPredicate {
 
         private int dayOfWeek;
 
+        /**
+         * ctor
+         * @param dayOfWeek to highlighte
+         */
         public DayOfWeekHighlightPredicate(int dayOfWeek) {
             this.dayOfWeek = dayOfWeek;
         }

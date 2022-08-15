@@ -333,7 +333,7 @@ public class MonthViewExtDemo extends AbstractDemo {
     /**
      * Creates and returns a RenderingHandler which supports adding Highlighters.
      *  
-     * @return
+     * @return CalendarRenderingHandler
      */
     private CalendarRenderingHandler createRenderingHandler() {
         // <snip> Custom CalendarRenderingHandler
@@ -386,6 +386,9 @@ public class MonthViewExtDemo extends AbstractDemo {
     }
     
     //--------------------- MonthViewDemoControl
+    // must not be private! 
+    // private leads to: java.lang.IllegalAccessException: 
+    // class org.jdesktop.beansbinding.BeanProperty cannot access a member of class org.jdesktop.swingx.demos.monthviewext.MonthViewExtDemo$MonthViewDemoControl with modifiers "public"
     public class MonthViewDemoControl extends AbstractBean {
         
         private boolean calendarVisible;
