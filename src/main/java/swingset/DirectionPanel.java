@@ -152,7 +152,7 @@ public class DirectionPanel extends JPanel {
     }
 
 
-    public class DirectionButton extends JRadioButton {
+    private class DirectionButton extends JRadioButton {
 
         /**
          * A layout direction button
