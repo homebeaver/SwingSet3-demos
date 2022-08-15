@@ -262,8 +262,11 @@ public class TreeTableDemo extends AbstractDemo {
 
     
     // <snip> Input-/FocusEvent notification 
-    // update Highlighter's predicate to highlight the tree row
-    // which contains the component under the current mouse position
+    /**
+     * update Highlighter's predicate to highlight the tree row
+     * which contains the component under the current mouse position
+     * @param component Component
+     */
     protected void updateHighlighter(Component component) {
         mouseOverHighlighter.setHighlightPredicate(HighlightPredicate.NEVER);
         if (component != null) {
@@ -350,6 +353,11 @@ public class TreeTableDemo extends AbstractDemo {
      * col 1: name of the component
      * col 2: location of the component (Point)
      * col 3: size 
+     */
+    /**
+     * 
+     * @param root Component
+     * @return TreeTableModel
      */
     public static TreeTableModel getTreeTableModel(Component root) {
     	LOG.info("Component root:"+root);

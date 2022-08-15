@@ -41,6 +41,12 @@ public class TreeDemoIconValues {
         private Map<Object, Icon> iconCache;
         private Icon fallbackIcon;
         
+        /**
+         * 
+         * @param baseClass Class
+         * @param sv StringValue
+         * @param fallbackName fallbackName
+         */
         public LazyLoadingIconValue(Class<?> baseClass, StringValue sv, String fallbackName) {
            this.baseClass = baseClass;
            iconCache = new HashMap<Object, Icon>(); 
@@ -79,7 +85,11 @@ public class TreeDemoIconValues {
             return icon;
         }
         
-
+        /**
+         * 
+         * @param name String
+         * @return Icon
+         */
         protected Icon loadFromResource(String name) {
             URL url = baseClass.getResource("resources/images/" + name );
             if (url == null) return null;
@@ -107,6 +117,10 @@ public class TreeDemoIconValues {
 
         private Map<Object, Icon> iconCache;
 
+        /**
+         * ctor
+         * @param delegate IconValue
+         */
         public FilteredIconValue(IconValue delegate) {
             iconCache = new HashMap<Object, Icon>();
             this.delegate = delegate;
