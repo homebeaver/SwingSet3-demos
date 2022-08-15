@@ -204,8 +204,8 @@ dialogLink.focusPainted=false
     		LOG.info("TipOfTheDay.foreground/background:"+UIManager.get("TipOfTheDay.foreground")
 			+" / "+UIManager.get("TipOfTheDay.background"));
     		// try to set colors
-        	UIManager.put("TipOfTheDay.foreground", Color.RED); // no effect
-        	UIManager.put("TipOfTheDay.background", Color.YELLOW); // OK
+//        	UIManager.put("TipOfTheDay.foreground", Color.RED); // no effect, jetzt doch, aber nur Tip, nicht der Text
+//        	UIManager.put("TipOfTheDay.background", Color.YELLOW); // OK
     		
         	// set tipFont and font @see https://github.com/homebeaver/SwingSet/issues/27#issuecomment-1205836748
         	UIManager.put("TipOfTheDay.tipFont", new Font(Font.SANS_SERIF, Font.PLAIN, 24));
