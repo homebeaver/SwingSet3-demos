@@ -11,7 +11,6 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +46,8 @@ import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.ShapePainter;
-import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jdesktop.swingx.prompt.BuddySupport.Position;
+import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jdesktop.swingx.prompt.PromptSupport.FocusBehavior;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.util.PaintUtils;
@@ -114,11 +113,17 @@ public class PromptSupportDemo extends AbstractDemo {
     JSplitPane splitPane = null;
     JXPanel right;
 
+	private static final int INITIAL_AMOUNT = 100000;
+	private static final float INITIAL_RATE = 7.5f; //7.5%
+	private static final int INITIAL_PERIODS = 30; // Years
+
     //Values for the fields with initials
-    private double xamount = 100000;
-    private double xrate = 7.5;  //7.5%
-    private int xnumPeriods = 30;
+    private double xamount = INITIAL_AMOUNT;
+    private double xrate = INITIAL_RATE;
+    private int xnumPeriods = INITIAL_PERIODS;
     
+	private String localcurrencysymbol = "€";
+	
     //Fields for data entry
 	private JTextField textField;
     private JXFormattedTextField amountXField;
@@ -168,9 +173,10 @@ public class PromptSupportDemo extends AbstractDemo {
         amountXField = new JXFormattedTextField(amountFormat);
         amountXField.setValue(Double.valueOf(xamount));
         amountXField.setColumns(10);
+        amountXField.setHorizontalAlignment(SwingConstants.RIGHT);
         amountXField.setFocusBehavior(PromptSupport.FocusBehavior.HIGHLIGHT_PROMPT);
         amountXField.setPrompt("Amount");
-        amountXField.addBuddy(new JLabel("€"), Position.RIGHT);
+        amountXField.addBuddy(new JLabel(localcurrencysymbol), Position.RIGHT);
         amountXField.setPromptForeground(Color.BLUE);
         amountXField.setPromptBackground(Color.ORANGE);
         amountXField.setPromptFontStyle(Font.BOLD+Font.ITALIC);
@@ -186,6 +192,7 @@ public class PromptSupportDemo extends AbstractDemo {
         rateXField = new JXFormattedTextField(percentFormat);
         rateXField.setValue(Double.valueOf(xrate));
         rateXField.setColumns(10);
+        rateXField.setHorizontalAlignment(SwingConstants.RIGHT);
         rateXField.setFocusBehavior(PromptSupport.FocusBehavior.HIGHLIGHT_PROMPT);
         rateXField.setPrompt("Rate");
         rateXField.addBuddy(new JLabel("%"), Position.RIGHT);
@@ -204,6 +211,7 @@ public class PromptSupportDemo extends AbstractDemo {
         numPeriodsXField = new JXFormattedTextField();
         numPeriodsXField.setValue(Integer.valueOf(xnumPeriods));
         numPeriodsXField.setColumns(10);
+        numPeriodsXField.setHorizontalAlignment(SwingConstants.RIGHT);
         numPeriodsXField.setFocusBehavior(PromptSupport.FocusBehavior.HIGHLIGHT_PROMPT);
         numPeriodsXField.setPrompt("Years");
         numPeriodsXField.setPromptForeground(Color.BLUE);
@@ -220,6 +228,7 @@ public class PromptSupportDemo extends AbstractDemo {
         paymentXField = new JXFormattedTextField(paymentFormat);
         paymentXField.setValue(Double.valueOf(payment));
         paymentXField.setColumns(10);
+        paymentXField.setHorizontalAlignment(SwingConstants.RIGHT);
         paymentXField.setEditable(false); // read only
         paymentXField.setForeground(payment<0 ? Color.red : Color.black);
 
@@ -432,9 +441,9 @@ public class PromptSupportDemo extends AbstractDemo {
     private NumberFormat paymentFormat;
 
     //Values for the fields with initials
-    private double amount = 100000;
-    private double rate = 7.5;  //7.5%
-    private int numPeriods = 30;
+    private double amount = INITIAL_AMOUNT;
+    private double rate = INITIAL_RATE;
+    private int numPeriods = INITIAL_PERIODS;
 
     //Labels to identify the fields
     private JLabel amountLabel;
@@ -541,6 +550,10 @@ public class PromptSupportDemo extends AbstractDemo {
         percentFormat.setMinimumFractionDigits(3);
 
         paymentFormat = NumberFormat.getCurrencyInstance();
+        if(paymentFormat instanceof java.text.DecimalFormat df) {
+        	localcurrencysymbol = df.getCurrency().getSymbol();
+        	LOG.info("localcurrencysymbol="+localcurrencysymbol);
+        }
     }
 
     /**
