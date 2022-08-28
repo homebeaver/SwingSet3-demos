@@ -12,6 +12,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -219,10 +220,50 @@ public class PromptSupportDemo extends AbstractDemo {
         numPeriodsXField.setPromptFontStyle(Font.BOLD+Font.ITALIC);
         numPeriodsXField.addPropertyChangeListener(pce -> {
         	LOG.info("numPeriodsXField PropertyChangeEvent:"+pce);
-            xnumPeriods = ((Number)numPeriodsXField.getValue()).intValue();
-        	Double d = Double.valueOf(computePayment(xamount, xrate, xnumPeriods));
-            paymentXField.setValue(d);
-            paymentXField.setForeground(d<0 ? Color.red : Color.black);
+        	
+        	/* String javax.swing.text.JTextComponent.getText()
+        	 * Returns the text contained in this TextComponent.
+        	 * If the underlying document is null, will give a NullPointerException.
+        	 * Note that text is not a bound property, so no PropertyChangeEvent is fired when it changes. 
+        	 * To listen for changes to the text, use DocumentListener.
+        	 */
+        	String s = numPeriodsXField.getText();
+        	
+        	/* Object javax.swing.JFormattedTextField.getValue()
+        	 * Returns the last valid value. 
+        	 * Based on the editing policy oft he AbstractFormatter this may not return the current value. 
+        	 * The currently edited value can be obtained by invoking commitEdit followed by getValue.
+        	 */
+        	Object o = numPeriodsXField.getValue();
+        	LOG.info("numPeriodsXField Value:"+o + ", Text String:"+s + (s.isEmpty() ? "(empty) " : ", ") 
+        			+ "formatter:"+numPeriodsXField.getFormatter());
+        	
+        	if(s.isEmpty()) {
+        		paymentXField.setValue(0);
+        	} else {
+        		try {
+					Object num = numPeriodsXField.getFormatter().stringToValue(s);
+					LOG.info("numPeriodsXField.stringToValue:"+num + " : "+num.getClass().getSimpleName());
+					xnumPeriods = (Integer)num;
+				} catch (ParseException e) {
+					int eo = e.getErrorOffset();
+					LOG.warning(e.getMessage() + ", ErrorOffset="+eo);
+//					e.printStackTrace();
+					if(eo==0) {
+						xnumPeriods = Integer.valueOf(1);
+						numPeriodsXField.setValue(xnumPeriods);
+						try {
+							numPeriodsXField.getFormatter().valueToString(xnumPeriods);
+						} catch (ParseException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+            	Double d = Double.valueOf(computePayment(xamount, xrate, xnumPeriods));
+                paymentXField.setValue(d);
+                paymentXField.setForeground(d<0 ? Color.red : Color.black);
+        	}
         });
 
         paymentXField = new JXFormattedTextField(paymentFormat);
