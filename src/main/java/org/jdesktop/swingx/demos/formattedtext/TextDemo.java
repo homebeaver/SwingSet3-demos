@@ -46,7 +46,7 @@ import javax.swing.JTextField;
  * An application that uses a basic text field with an action listener.
  */
 @SuppressWarnings("serial")
-public class TextDemo extends JPanel implements ActionListener {
+public class TextDemo extends JPanel {
 	
     public static void main(String[] args) {
         //Schedule a job for the event dispatch thread:
@@ -83,7 +83,14 @@ public class TextDemo extends JPanel implements ActionListener {
         super(new GridBagLayout());
 
         textField = new JTextField(20);
-        textField.addActionListener(this);
+        textField.addActionListener(ae -> {
+            String text = textField.getText();
+            textArea.append(text + newline);
+            textField.selectAll();
+
+            //Make sure the new text is visible, even if there was a selection in the text area.
+            textArea.setCaretPosition(textArea.getDocument().getLength());        	
+        });
 
         textArea = new JTextArea(5, 20);
         textArea.setEditable(false);
@@ -100,16 +107,6 @@ public class TextDemo extends JPanel implements ActionListener {
         c.weightx = 1.0;
         c.weighty = 1.0;
         add(scrollPane, c);
-    }
-
-    public void actionPerformed(ActionEvent evt) {
-        String text = textField.getText();
-        textArea.append(text + newline);
-        textField.selectAll();
-
-        //Make sure the new text is visible, even if there
-        //was a selection in the text area.
-        textArea.setCaretPosition(textArea.getDocument().getLength());
     }
 
 }

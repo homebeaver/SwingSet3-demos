@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +28,9 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Painter;
 import javax.swing.SwingConstants;
@@ -40,6 +44,7 @@ import org.jdesktop.swingx.JXFormattedTextField;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTextArea;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jdesktop.swingx.binding.DisplayInfo;
@@ -125,6 +130,7 @@ public class PromptSupportDemo extends AbstractDemo {
     
 	private String localcurrencysymbol = "€";
 	
+    protected JXTextArea jxTextArea;
     //Fields for data entry
 	private JTextField textField;
     private JXFormattedTextField amountXField;
@@ -165,6 +171,43 @@ public class PromptSupportDemo extends AbstractDemo {
     	
         JXTitledSeparator sep = new JXTitledSeparator();
         sep.setTitle("PromptSupport example:");
+        sep.setHorizontalAlignment(SwingConstants.CENTER);
+        right.add(sep);
+
+        // similar to TextDemo:
+        textField = new JTextField(20); // 20 columns
+        jxTextArea = new JXTextArea(5, 20);
+        jxTextArea.setEditable(false);
+        
+    	JPanel panel = new JPanel(new GridBagLayout());
+    	
+    	textField.addActionListener(ae -> {
+            String text = textField.getText();
+            jxTextArea.append(text + newline);
+            textField.selectAll();
+
+            //Make sure the new text is visible, even if there was a selection in the text area.
+            jxTextArea.setCaretPosition(jxTextArea.getDocument().getLength());        	
+        });
+
+        JScrollPane scrollPane = new JScrollPane(jxTextArea);
+
+        //Add Components to this panel.
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridwidth = GridBagConstraints.REMAINDER;
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(textField, c);
+
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        panel.add(scrollPane, c);
+        right.add(panel);
+// ----------------
+        
+        sep = new JXTitledSeparator();
+        sep.setTitle("JXFormattedTextField example:");
         sep.setHorizontalAlignment(SwingConstants.CENTER);
         right.add(sep);
         
@@ -284,10 +327,10 @@ public class PromptSupportDemo extends AbstractDemo {
         labelAndFieldPane.add(numPeriodsXField);
         labelAndFieldPane.add(new JLabel(""));
         labelAndFieldPane.add(paymentXField);
-        labelAndFieldPane.add(new JLabel("JTextField"));
-        
-        textField = new JTextField(20); // 20 columns
-        labelAndFieldPane.add(textField);
+//        labelAndFieldPane.add(new JLabel("JTextField"));
+//        
+//        textField = new JTextField(20); // 20 columns
+//        labelAndFieldPane.add(textField);
         
         right.add(labelAndFieldPane, BorderLayout.CENTER);
 
@@ -472,6 +515,43 @@ public class PromptSupportDemo extends AbstractDemo {
         return fontStyles;
     }
 
+    // ---------------- from TextDemo
+    // contains example from https://docs.oracle.com/javase/tutorial/uiswing/components/textfield.html
+    protected JTextField jTextField;
+    protected JTextArea jTextArea;
+    private final static String newline = "\n";
+
+    private JComponent createTextDemo() {
+    	JPanel panel = new JPanel(new GridBagLayout());
+    	
+    	jTextField = new JTextField(20);
+    	jTextField.addActionListener(ae -> {
+            String text = jTextField.getText();
+            jTextArea.append(text + newline);
+            jTextField.selectAll();
+
+            //Make sure the new text is visible, even if there was a selection in the text area.
+            jTextArea.setCaretPosition(jTextArea.getDocument().getLength());        	
+        });
+
+        jTextArea = new JTextArea(5, 20);
+        jTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(jTextArea);
+
+        //Add Components to this panel.
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridwidth = GridBagConstraints.REMAINDER;
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(jTextField, c);
+
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        panel.add(scrollPane, c);
+    	return panel;
+    }
+    
     // ---------------- from FormattedTextFieldDemo
     // contains example from https://docs.oracle.com/javase/tutorial/uiswing/components/formattedtextfield.html
     JXPanel left;
@@ -509,9 +589,16 @@ public class PromptSupportDemo extends AbstractDemo {
     	left.setName("left");
     	
         JXTitledSeparator sep = new JXTitledSeparator();
+        sep.setTitle("TextDemo example:");
+        sep.setHorizontalAlignment(SwingConstants.CENTER);
+        left.add(sep);
+        
+        left.add(createTextDemo());
+
+        sep = new JXTitledSeparator();
         sep.setTitle("JFormattedTextField example:");
         sep.setHorizontalAlignment(SwingConstants.CENTER);
-        left.add(sep, BorderLayout.NORTH);
+        left.add(sep);
 
         setUpFormats();
         double payment = computePayment(amount, rate, numPeriods);
