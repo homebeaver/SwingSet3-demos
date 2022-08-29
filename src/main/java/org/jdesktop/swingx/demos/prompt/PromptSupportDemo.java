@@ -52,6 +52,7 @@ import org.jdesktop.swingx.combobox.EnumComboBoxModel;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.ShapePainter;
+import org.jdesktop.swingx.prompt.BuddySupport;
 import org.jdesktop.swingx.prompt.BuddySupport.Position;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jdesktop.swingx.prompt.PromptSupport.FocusBehavior;
@@ -176,6 +177,7 @@ public class PromptSupportDemo extends AbstractDemo {
 
         // similar to TextDemo:
         textField = new JTextField(20); // 20 columns
+        BuddySupport.addRight(new JLabel("add to Area"), textField);
         jxTextArea = new JXTextArea(5, 20);
         jxTextArea.setEditable(false);
         
