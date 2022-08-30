@@ -23,7 +23,7 @@ Use it to try out different components and features.
 
 The jar was
 - Created-By: Apache Maven 3.8.1
-- Build-Jdk: 17
+- Build with Jdk: 17
 
 ## TO MODIFY/BUILD
  
