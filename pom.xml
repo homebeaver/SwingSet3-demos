@@ -20,8 +20,8 @@
   </scm>
   
   <name>swingset3 demos</name>
-  <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 + SwingX (swingset3)</description>
-  <version>1.7.0</version>
+  <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 + swingset3</description>
+  <version>1.7.1-SNAPSHOT</version>
   
   <inceptionYear>2005</inceptionYear>
 
