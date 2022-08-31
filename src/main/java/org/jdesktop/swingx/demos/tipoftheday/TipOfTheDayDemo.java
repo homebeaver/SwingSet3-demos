@@ -6,8 +6,6 @@ package org.jdesktop.swingx.demos.tipoftheday;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Font;
-import java.awt.Color;
 import java.awt.Frame;
 import java.util.logging.Logger;
 
@@ -34,9 +32,9 @@ import org.jdesktop.swingx.plaf.basic.BasicTipOfTheDayUI;
 import org.jdesktop.swingx.tips.DefaultTip;
 import org.jdesktop.swingx.tips.DefaultTipOfTheDayModel;
 import org.jdesktop.swingx.tips.TipOfTheDayModel;
-import org.pushingpixels.trident.Timeline;
-import org.pushingpixels.trident.Timeline.TimelineState;
-import org.pushingpixels.trident.callback.TimelineCallback;
+import org.pushingpixels.trident.api.Timeline;
+import org.pushingpixels.trident.api.Timeline.TimelineState;
+import org.pushingpixels.trident.api.callback.TimelineCallback;
 
 import swingset.AbstractDemo;
 
@@ -94,8 +92,25 @@ public class TipOfTheDayDemo extends AbstractDemo {
     }
 
     // Animation
-    Timeline timeline0;
     Timeline timeline;
+	// implement two methods of interface TimelineCallback
+    class MyTimelineCallback implements TimelineCallback {
+		@Override
+		public void onTimelineStateChanged(TimelineState oldState, TimelineState newState, 
+				float durationFraction,	float timelinePosition) {
+	        LOG.info("oldState "+ oldState + " -> " + newState + " , durationFraction="+durationFraction + " , timelinePosition="+timelinePosition);
+	        if(oldState==TimelineState.PLAYING_REVERSE && newState==TimelineState.DONE) {
+	        	totd.nextTip();
+	        	timeline.play(); // fade in
+	        }
+		}
+
+		@Override
+		public void onTimelinePulse(float durationFraction, float timelinePosition) {
+			//LOG.info("pulseno "+ "?" + ": " + durationFraction + " => "+timelinePosition);
+	        // no onTimelinePulse callback on last pulse at 1.0f !!!
+		}
+    }
 	// controller:
     private JButton fadeIn;
     private JButton nextTip;
@@ -108,37 +123,17 @@ public class TipOfTheDayDemo extends AbstractDemo {
         alphaSlider.setValue((int)(newValue*255+0.5));
     }
     public void createAnimation(long duration, float to) {
-    	timeline0 = new Timeline(this);
-    	timeline0.addPropertyToInterpolate("alphaProp", 0.0f, to);
-        timeline0.setDuration(duration);
-    	LOG.info("Animation Duration at init = " + timeline0.getDuration());
-    	timeline0.play(); // fade in
+    	Timeline.builder(this)
+			.addPropertyToInterpolate("alphaProp", 0.0f, to)
+			.setDuration(duration)
+			.play(); // fade in
     	
-    	timeline = new Timeline(this);
-        timeline.addPropertyToInterpolate("alphaProp", 0.0f, 1.0f);
-        timeline.setDuration(duration);
+    	timeline = Timeline.builder(this)
+			.addPropertyToInterpolate("alphaProp", 0.0f, 1.0f)
+			.setDuration(duration)
+			.addCallback(new MyTimelineCallback())
+			.build();
     	LOG.info("Animation Duration = " + timeline.getDuration());
-    	
-    	// implement interface TimelineCallback -- 2 methods
-    	timeline.addCallback(new TimelineCallback() {
-
-			@Override
-			public void onTimelineStateChanged(TimelineState oldState, TimelineState newState, 
-					float durationFraction,	float timelinePosition) {
-		        LOG.info("oldState "+ oldState + " -> " + newState + " , durationFraction="+durationFraction + " , timelinePosition="+timelinePosition);
-		        if(oldState==TimelineState.PLAYING_REVERSE && newState==TimelineState.DONE) {
-		        	totd.nextTip();
-		        	timeline.play(); // fade in
-		        }
-			}
-
-			@Override
-			public void onTimelinePulse(float durationFraction, float timelinePosition) {
-				//LOG.info("pulseno "+ "?" + ": " + durationFraction + " => "+timelinePosition);
-		        // no onTimelinePulse callback on last pulse at 1.0f !!!
-			}
-    		
-    	});
     }
 
     /**
@@ -171,7 +166,7 @@ public class TipOfTheDayDemo extends AbstractDemo {
         
         createAnimation(1500, 1.0f); // 1,5sec , stop at 100% 
         // während des fade in ist der font schlecht gerendert
-        // ??? TODO Zum Ende "rastet" es ein und der font ist OK, das passiert nicht bei XPanel !!!
+        // ??? TODO Zum Ende "rastet" es ein und der font ist OK, das passiert auch bei XPanel !!!
     }
 
     @Override

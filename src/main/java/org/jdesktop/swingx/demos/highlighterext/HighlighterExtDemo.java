@@ -47,8 +47,8 @@ import org.jdesktop.swingx.treetable.TreeTableModelAdapter;
 import org.jdesktop.swingx.util.PaintUtils;
 import org.jdesktop.swingxset.util.RelativePainterHighlighter;
 import org.jdesktop.swingxset.util.RelativePainterHighlighter.NumberRelativizer;
-import org.pushingpixels.trident.Timeline; // Konflikt mit org.xml.sax.*
-import org.pushingpixels.trident.ease.Spline;
+import org.pushingpixels.trident.api.Timeline;
+import org.pushingpixels.trident.api.ease.Spline;
 
 import swingset.AbstractDemo;
 
@@ -223,7 +223,7 @@ public class HighlighterExtDemo extends AbstractDemo {
         private boolean spreadColumns;
         private RelativePainterHighlighter valueBasedHighlighter;
         
-        private Timeline raceTimeline; // aus lib trident-1.3.jar
+        private Timeline raceTimeline; // aus lib trident jar
         private Timeline fadeInTimeline;
         private MattePainter matte;
         private Color base = PaintUtils.setSaturation(Color.MAGENTA, .7f);
@@ -257,22 +257,24 @@ public class HighlighterExtDemo extends AbstractDemo {
 
         // PENDING JW: how-to find the resource of this action for injection?
 //        @Action
-        public void race() {
-            if (raceTimeline == null) {
-                raceTimeline = new Timeline(this);
-                raceTimeline.addPropertyToInterpolate("currentMerit", 0, 100);
-            }
-            raceTimeline.replay();
-        }
+		public void race() {
+			if (raceTimeline == null) {
+				raceTimeline = Timeline.builder(this)
+					.addPropertyToInterpolate("currentMerit", 0, 100)
+					.build();
+			}
+			raceTimeline.replay();
+		}
         
 //        @Action
         public void fadeIn() {
             if (fadeInTimeline == null) {
-                fadeInTimeline = new Timeline(this);
-                fadeInTimeline.addPropertyToInterpolate("background", 
-                        PaintUtils.setAlpha(base, 0), PaintUtils.setAlpha(base, 125));
-                fadeInTimeline.setDuration(2000);
-                fadeInTimeline.setEase(new Spline(0.7f));
+                fadeInTimeline = Timeline.builder(this)
+                		.addPropertyToInterpolate("background", 
+                			PaintUtils.setAlpha(base, 0), PaintUtils.setAlpha(base, 125))
+                		.setDuration(2000)
+                		.setEase(new Spline(0.7f))
+                		.build();
             }
             fadeInTimeline.replay();
         }

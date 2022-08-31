@@ -28,7 +28,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.icon.ChevronsIcon;
-import org.pushingpixels.trident.Timeline;
+import org.pushingpixels.trident.api.Timeline;
 
 import swingset.AbstractDemo;
 import swingset.StaticUtilities;
@@ -85,7 +85,6 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
 	private boolean opaque = false;
 	
     // Animation
-    Timeline timeline0;
     Timeline timeline;
     public void setAlphaProp(float newValue) {
 //        LOG.info("timeline pulse " + xpanel.getAlpha() + " -> " + newValue);
@@ -93,15 +92,15 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
         alphaSlider.setValue((int)(newValue*255+0.5));
     }
     public void createAnimation(long duration, float to) {
-    	timeline0 = new Timeline(this);
-    	timeline0.addPropertyToInterpolate("alphaProp", 0.0f, to);
-        timeline0.setDuration(duration);
-    	LOG.info("Animation Duration at init = " + timeline0.getDuration());
-    	timeline0.play(); // fade in
+    	Timeline.builder(this)
+    		.addPropertyToInterpolate("alphaProp", 0.0f, to)
+    		.setDuration(duration)
+    		.play(); // fade in
     	
-    	timeline = new Timeline(this);
-        timeline.addPropertyToInterpolate("alphaProp", 0.0f, 1.0f);
-        timeline.setDuration(duration);
+    	timeline = Timeline.builder(this)
+			.addPropertyToInterpolate("alphaProp", 0.0f, 1.0f)
+			.setDuration(duration)
+			.build();
     	LOG.info("Animation Duration = " + timeline.getDuration());
     }
 	
