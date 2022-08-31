@@ -32,8 +32,6 @@ package org.jdesktop.swingx.demos.formattedtext;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -42,9 +40,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
- * TextDemo.java requires no other files. 
  * An application that uses a basic text field with an action listener.
+ * <p>
+ * TextDemo.java requires no other files. 
  */
+//see https://docs.oracle.com/javase/tutorial/uiswing/components/textfield.html
 @SuppressWarnings("serial")
 public class TextDemo extends JPanel {
 	
