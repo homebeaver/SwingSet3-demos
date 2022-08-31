@@ -205,9 +205,9 @@
 	<dependencies>
 	
 		<dependency>
-		  <groupId>io.github.homebeaver</groupId>
-		  <artifactId>trident</artifactId>
-		  <version>4.0.0-SNAPSHOT</version>
+		  <groupId>org.pushing-pixels</groupId>
+		  <artifactId>radiance-trident</artifactId>
+		  <version>4.0.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
