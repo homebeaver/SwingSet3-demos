@@ -377,7 +377,14 @@ abstract class SvgBaseTranscoder {
             Line2D l2df = (Line2D) shape;
             printWriterManager.print("shape" + suffix + " = "
                     + languageRenderer.getObjectCreation("Line2D.Float"));
-            printWriterManager.format("(%ff,%ff,%ff,%ff)", (float) l2df.getX1(), (float) l2df.getY1(),
+            /*
+public PrintWriter format​(Locale l,
+                          String format,
+                          Object... args) EUGen BUG 406 lokal korrigiert
+public void format(Locale l, String format, Object... args) {                          
+                          
+             */
+            printWriterManager.format((Locale)null, "(%ff,%ff,%ff,%ff)", (float) l2df.getX1(), (float) l2df.getY1(),
                     (float) l2df.getX2(), (float) l2df.getY2());
             printWriterManager.println(languageRenderer.getStatementEnd());
             return;
