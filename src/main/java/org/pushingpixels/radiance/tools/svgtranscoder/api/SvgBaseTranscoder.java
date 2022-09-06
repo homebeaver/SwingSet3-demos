@@ -382,7 +382,7 @@ public PrintWriter format​(Locale l,
                           String format,
                           Object... args) EUGen BUG 406 lokal korrigiert
 public void format(Locale l, String format, Object... args) {                          
-                          
+Kirill bringt den patch in 6.0.1 - ich nutze 5.0.0 - daher hier der patch:                          
              */
             printWriterManager.format((Locale)null, "(%ff,%ff,%ff,%ff)", (float) l2df.getX1(), (float) l2df.getY1(),
                     (float) l2df.getX2(), (float) l2df.getY2());
