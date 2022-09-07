@@ -89,7 +89,9 @@ public class RotatingIconDemo extends AbstractDemo {
 		textArea.setEditable(false);
     	add(new JScrollPane(textArea));
     	
-    	String iconName = "arrow";
+//    	String iconName = "arrow";
+    	String iconName = "arrow_circle";
+//    	String iconName = "chevron";
 
         JPanel north = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
         add(north, BorderLayout.NORTH);
@@ -106,9 +108,11 @@ public class RotatingIconDemo extends AbstractDemo {
     	add(createButton(iconName, SizingConstants.EAST), BorderLayout.EAST);
     	add(createButton(iconName, SizingConstants.WEST), BorderLayout.WEST);
     	
-        InputStream in = getClass().getResourceAsStream("resources/arrow-up.svg");
+//        InputStream in = getClass().getResourceAsStream("resources/arrow-up.svg");
+        InputStream in = getClass().getResourceAsStream("resources/arrow-up-circle.svg");
+//        InputStream in = getClass().getResourceAsStream("resources/chevron-up.svg");
         try {
-        	LOG.info("read content.txt");
+        	LOG.info("read svg file");
             textArea.read(new InputStreamReader(in), null);
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,7 +121,9 @@ public class RotatingIconDemo extends AbstractDemo {
     }
 
     private JComponent createButton(String iconName, int direction) {
-    	IconRarrow icon = (IconRarrow)IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+//    	IconRarrow icon = (IconRarrow)IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+    	IconRarrow_circle icon = (IconRarrow_circle)IconRarrow_circle.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+//    	IconRchevron icon = (IconRchevron)IconRchevron.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
     	icon.setDirection(direction);
     	String orientation = "?";
 		switch (direction) {

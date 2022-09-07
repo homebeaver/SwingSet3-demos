@@ -19,9 +19,9 @@ import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
  * This class has been automatically generated using <a
  * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
  * 
- * EUGen : kopie von IconRarrow_up
+ * EUGen : kopie von IconRarrow_up_circle
  */
-public class IconRarrow implements RadianceIcon {
+public class IconRarrow_circle implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
@@ -30,10 +30,10 @@ public class IconRarrow implements RadianceIcon {
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
-//    private int direction = SwingConstants.NORTH; // == Orientation.UP
+    private int direction = SwingConstants.NORTH; // == Orientation.UP
     private double theta = 0; //Math.PI*(direction-0)/4;
     public void setDirection(int direction) {
-//    	this.direction = direction;
+    	this.direction = direction;
         theta = direction>=0 && direction<=5 ? Math.PI*(direction-1)/4 : Math.PI*(direction-9)/4;
     }    
     // @param theta the angle of rotation in radians
@@ -54,7 +54,7 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
-shape = new Line2D.Float(12.000000f,19.000000f,12.000000f,5.000000f);
+shape = new Ellipse2D.Double(2.0, 2.0, 20.0, 20.0);
 g.setPaint(paint);
 g.setStroke(stroke);
 g.draw(shape);
@@ -70,10 +70,21 @@ if (generalPath == null) {
 } else {
    generalPath.reset();
 }
-generalPath.moveTo(5.0f, 12.0f);
-generalPath.lineTo(12.0f, 5.0f);
-generalPath.lineTo(19.0f, 12.0f);
+generalPath.moveTo(16.0f, 12.0f);
+generalPath.lineTo(12.0f, 8.0f);
+generalPath.lineTo(8.0f, 12.0f);
 shape = generalPath;
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_2
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(12.000000f,16.000000f,12.000000f,8.000000f);
 g.setPaint(paint);
 g.setStroke(stroke);
 g.draw(shape);
@@ -114,7 +125,7 @@ g.setTransform(transformsStack.pop());
      * @return The X of the bounding box of the original SVG image.
      */
     public static double getOrigX() {
-        return 3.9023690223693848;
+        return 1.0;
     }
 
     /**
@@ -123,7 +134,7 @@ g.setTransform(transformsStack.pop());
      * @return The Y of the bounding box of the original SVG image.
      */
     public static double getOrigY() {
-        return 3.9023690223693848;
+        return 1.0;
     }
 
 	/**
@@ -132,7 +143,7 @@ g.setTransform(transformsStack.pop());
 	 * @return The width of the bounding box of the original SVG image.
 	 */
 	public static double getOrigWidth() {
-		return 16.195262908935547;
+		return 22.0;
 	}
 
 	/**
@@ -141,7 +152,7 @@ g.setTransform(transformsStack.pop());
 	 * @return The height of the bounding box of the original SVG image.
 	 */
 	public static double getOrigHeight() {
-		return 16.097631454467773;
+		return 22.0;
 	}
 
 	/** The current width of this icon. */
@@ -154,7 +165,7 @@ g.setTransform(transformsStack.pop());
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private IconRarrow() {
+	private IconRarrow_circle() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -196,7 +207,7 @@ g.setTransform(transformsStack.pop());
             g2d.rotate(theta, x+width/2, y+height/2);
         }
 		g2d.translate(x, y);
-
+		
         double coef1 = (double) this.width / getOrigWidth();
         double coef2 = (double) this.height / getOrigHeight();
         double coef = Math.min(coef1, coef2);
@@ -226,7 +237,7 @@ g.setTransform(transformsStack.pop());
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       IconRarrow base = new IconRarrow();
+       IconRarrow_circle base = new IconRarrow_circle();
        base.width = width;
        base.height = height;
        return base;
@@ -240,7 +251,7 @@ g.setTransform(transformsStack.pop());
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       IconRarrow base = new IconRarrow();
+       IconRarrow_circle base = new IconRarrow_circle();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -252,7 +263,7 @@ g.setTransform(transformsStack.pop());
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return IconRarrow::new;
+        return IconRarrow_circle::new;
     }
 }
 
