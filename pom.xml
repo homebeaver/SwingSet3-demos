@@ -299,6 +299,20 @@
 		    <artifactId>postgresql</artifactId>
 		    <version>42.4.1</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-all -->
+		<dependency>
+		    <groupId>org.apache.xmlgraphics</groupId>
+		    <artifactId>batik-all</artifactId>
+		    <version>1.14</version>
+		    <type>pom</type>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>xml-apis</groupId>
+		    		<artifactId>xml-apis</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
 		
 	</dependencies>
 </project>
