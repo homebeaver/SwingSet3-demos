@@ -23,6 +23,7 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.icon.SizingConstants;
 
 /**
  * JSlider Demo
@@ -159,13 +160,40 @@ public class SliderDemo extends AbstractDemo {
         s.setSnapToTicks( true );
 
         Integer i11 = Integer.valueOf(11);
-//        Dictionary<Integer, JLabel> dict = s.getLabelTable();
-//        dict.put(i11, new JLabel(i11.toString(), JLabel.CENTER));
         s.getLabelTable().put(i11, new JLabel(i11.toString(), JLabel.CENTER));
         s.setLabelTable( s.getLabelTable() );
-
+        //Sets the localized accessible name of this object. 
+        //Changing the name willcause a PropertyChangeEvent to be fired for the ACCESSIBLE_NAME_PROPERTY property.
         s.getAccessibleContext().setAccessibleName(getBundleString("minorticks"));
         s.getAccessibleContext().setAccessibleDescription(getBundleString("minorticksdescription"));
+
+        s.addChangeListener(listener);
+
+        p.add(Box.createRigidArea(VGAP5));
+        p.add(s);
+        p.add(Box.createRigidArea(VGAP5));
+        hp.add(p);
+        hp.add(Box.createRigidArea(VGAP10));
+
+        // SvgViewer: die ticks zwischen 56 und 88 fehlen! kann ich hier nicht nachvollziehen
+        p = new JPanel();
+        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+        p.setBorder(new TitledBorder(getBundleString("ticks")));
+        int initialSize = SizingConstants.BUTTON_ICON;
+        // ctor JSlider(int min, int max, int value):
+        s = new JSlider(SizingConstants.SMALL_ICON, SizingConstants.XXL, initialSize);
+//        s.putClientProperty("JSlider.isFilled", Boolean.TRUE );
+        s.setSnapToTicks(true);
+        s.setPaintLabels(true);
+        s.setPaintTicks(true);
+        s.setMajorTickSpacing(32);
+        s.setMinorTickSpacing(8);
+        s.setValue(initialSize); // initialSize im ctor Slider steht auf 48!?
+        // das letzte Label 128 fehlt, weil 16 + 3*32 = 112 und das nächste Label 144 wäre,
+        // das kann man manuell nachtragen, aber offenbar nicht in Radiance
+        Integer i = Integer.valueOf(128);
+        s.getLabelTable().put(i, new JLabel(i.toString(), JLabel.CENTER));
+        s.setLabelTable( s.getLabelTable() );
 
         s.addChangeListener(listener);
 
