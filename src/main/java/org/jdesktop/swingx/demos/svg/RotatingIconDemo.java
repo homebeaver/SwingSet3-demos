@@ -1,6 +1,7 @@
 package org.jdesktop.swingx.demos.svg;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.icon.SizingConstants;
+import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
 
 import swingset.AbstractDemo;
 
@@ -39,10 +41,11 @@ import swingset.AbstractDemo;
  * - der Generator kann (noch) kein rotate generieren
  * - daher das file umbenannt IconRarrow_up.java in IconRarrow.java und rotate manuell reinkodiert
  * - auch in Radiance interface RadianceIcon ist rotate und direction nicht vorgesehen
- * - TODO feature bei kirill vorschlagen 
+ * - feature 407 bei kirill vorschlagen 
  */
 public class RotatingIconDemo extends AbstractDemo {
 
+	private static final long serialVersionUID = -1196350478441930803L;
 	private static final Logger LOG = Logger.getLogger(RotatingIconDemo.class.getName());
 	private static final String DESCRIPTION = "Demonstrates how one icon class is used to render different icons.";
 
@@ -90,8 +93,9 @@ public class RotatingIconDemo extends AbstractDemo {
     	add(new JScrollPane(textArea));
     	
 //    	String iconName = "arrow";
-    	String iconName = "arrow_circle";
+//    	String iconName = "arrow_circle";
 //    	String iconName = "chevron";
+    	String iconName = "chevrons";
 
         JPanel north = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
         add(north, BorderLayout.NORTH);
@@ -109,8 +113,9 @@ public class RotatingIconDemo extends AbstractDemo {
     	add(createButton(iconName, SizingConstants.WEST), BorderLayout.WEST);
     	
 //        InputStream in = getClass().getResourceAsStream("resources/arrow-up.svg");
-        InputStream in = getClass().getResourceAsStream("resources/arrow-up-circle.svg");
+//        InputStream in = getClass().getResourceAsStream("resources/arrow-up-circle.svg");
 //        InputStream in = getClass().getResourceAsStream("resources/chevron-up.svg");
+    	InputStream in = getClass().getResourceAsStream("resources/chevrons-up.svg");
         try {
         	LOG.info("read svg file");
             textArea.read(new InputStreamReader(in), null);
@@ -122,9 +127,11 @@ public class RotatingIconDemo extends AbstractDemo {
 
     private JComponent createButton(String iconName, int direction) {
 //    	IconRarrow icon = (IconRarrow)IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
-    	IconRarrow_circle icon = (IconRarrow_circle)IconRarrow_circle.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+//    	RadianceIcon icon = IconRarrow_circle.of(SizingConstants.LAUNCHER_ICON, SizingConstants.LAUNCHER_ICON);
 //    	IconRchevron icon = (IconRchevron)IconRchevron.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
-    	icon.setDirection(direction);
+    	RadianceIcon icon = IconRchevrons.of(SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON);
+    	icon.setRotation(direction);
+//    	LOG.info("direction="+direction +"  >>>---------------icon.getRotation():"+icon.getRotation());
     	String orientation = "?";
 		switch (direction) {
 		case SwingConstants.NORTH: // 1
@@ -132,24 +139,30 @@ public class RotatingIconDemo extends AbstractDemo {
             break;
 		case SwingConstants.NORTH_EAST:
 			orientation = "NE";
+	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.EAST:
 			orientation = "E";
+	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH_EAST:
 			orientation = "SE";
+	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH: // 5
 			orientation = "S";
             break;
         case SwingConstants.SOUTH_WEST:
 			orientation = "SW";
+	    	icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.WEST:
 			orientation = "W";
+	    	icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.NORTH_WEST:
 			orientation = "NW";
+	    	icon.setColorFilter(color -> Color.blue);
             break;
 		default: { /* no xform */ }
 		}
