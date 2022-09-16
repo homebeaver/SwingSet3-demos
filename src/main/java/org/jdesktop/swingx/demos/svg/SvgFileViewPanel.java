@@ -56,14 +56,53 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Panel that hosts SVG-based gallery buttons.
  *
  * @author Kirill Grouchnikov
  */
+/*
+
+JCommandButtonPanel that hosts command buttons. 
+
+... it is highly recommended to use the CommandPanelContentModel 
+and CommandPanelPresentationModel instances used to project the command button panel on screen for any dynamic manipulation of the state. 
+
+Under the default CommandPanelPresentationModel.LayoutKind.ROW_FILL, (
+the buttons are laid out in rows, never exceeding the available horizontal space. 
+A vertical scroll bar will kick in once there is not enough vertical space to show all the buttons.
+The schematic below shows a row-fill command button panel: 
+
+ +-----------------------------+-+
+ |                             |o|
+ | +----+ +----+ +----+ +----+ |o|
+ | | 01 | | 02 | | 03 | | 04 | |o|
+ | +----+ +----+ +----+ +----+ |o|
+ |                             | |
+ | +----+ +----+ +----+ +----+ | |
+ | | 05 | | 06 | | 07 | | 07 | | |
+ | +----+ +----+ +----+ +----+ | |
+ |                             | |
+ | +----+ +----+ +----+ +----+ | |
+ | | 09 | | 10 | | 11 | | 12 | | |
+ | +----+ +----+ +----+ +----+ | |
+ |                             | |
+ | +----+ +----+ +----+ +----+ | |
+ | | 13 | | 14 | | 15 | | 16 | | |
+ +-----------------------------+-+
+ 
+
+Each row hosts four buttons, and the vertical scroll bar allows scrolling thecontent up and down.
+
+ */
 public class SvgFileViewPanel extends JCommandButtonPanel {
-    /**
+
+	private static final long serialVersionUID = 8670131153997675690L;
+	private static final Logger LOG = Logger.getLogger(SvgFileViewPanel.class.getName());
+
+	/**
      * Callback into the underlying breadcrumb bar.
      */
     private BreadcrumbBarCallBack<File> callback;
@@ -100,6 +139,7 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
      * @param leafs Information on the files to show in the panel.
      */
     public void setFolder(final java.util.List<StringValuePair<File>> leafs) {
+    	LOG.info("List<StringValuePair<File>> leafs:"+leafs);
         this.getProjection().getContentModel().removeAllCommandGroups();
 
         List<Command> commands = new ArrayList<>();
@@ -107,6 +147,8 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
         final Map<String, Command> newCommands = new HashMap<>();
         for (StringValuePair<File> leaf : leafs) {
             String name = leaf.getKey();
+            // key : filename , value : File
+            LOG.info("leaf.Key="+name + ", Value/File:"+leaf.getValue());
             if (!name.endsWith(".svg") && !name.endsWith(".svgz")) {
                 continue;
             }
@@ -115,6 +157,7 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
                     .setText(name.replace('-', ' '))
                     .setIconFactory(EmptyRadianceIcon.factory())
                     .setAction(commandActionEvent -> {
+                    	// transcode svg tp java
                         try {
                             RadianceIcon icon = commandActionEvent.getCommand().getIconFactory().createNewIcon();
                             if (!(icon instanceof SvgBatikRadianceIcon)) {
@@ -182,8 +225,7 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
                 for (final StringValuePair<InputStream> pair : pairs) {
                     final String name = pair.getKey();
                     InputStream svgStream = pair.getValue();
-                    int iconDimension = getProjection().getPresentationModel()
-                            .getCommandIconDimension();
+                    int iconDimension = getProjection().getPresentationModel().getCommandIconDimension();
                     Dimension svgDim = new Dimension(iconDimension, iconDimension);
 
                     double scale = RadianceCommonCortex.getScaleFactor(SvgFileViewPanel.this);

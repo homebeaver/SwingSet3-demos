@@ -31,27 +31,49 @@
 package org.jdesktop.swingx.demos.svg;
 
  
-//import org.pushingpixels.radiance.demo.component.svg.logo.RadianceLogo;
+import java.awt.BorderLayout;
+import java.io.File;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileSystemView;
+
+import org.jdesktop.swingx.icon.SizingConstants;
 import org.pushingpixels.radiance.component.api.bcb.BreadcrumbItem;
 import org.pushingpixels.radiance.component.api.bcb.core.BreadcrumbFileSelector;
 import org.pushingpixels.radiance.component.api.common.StringValuePair;
 import org.pushingpixels.radiance.theming.api.ComponentState;
 import org.pushingpixels.radiance.theming.api.RadianceThemingCortex;
 import org.pushingpixels.radiance.theming.api.RadianceThemingSlices;
-import org.pushingpixels.radiance.theming.api.skin.BusinessSkin;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
-import java.awt.*;
-import java.io.File;
-import java.util.List;
+import org.pushingpixels.radiance.theming.api.RadianceThemingSlices.AnimationFacet;
+import org.pushingpixels.radiance.theming.api.colorscheme.RadianceColorScheme;
+import org.pushingpixels.radiance.theming.api.skin.BusinessBlueSteelSkin;
 
 /**
  * SVG viewer application.
  *
  * @author Kirill Grouchnikov
  */
+/*
+
+NORTH:	bar : BreadcrumbFileSelector
+CENTER:	svgFileViewPanel in JScrollPane
+SOUTH:	horizontal iconSizeSlider (BUG? : die ticks zwischen 56 und 88 fehlen!)
+
+
+ */
 public class SvgViewer extends JFrame {
+	
+	private static final long serialVersionUID = -5771045444795357908L;
+	private static final Logger LOG = Logger.getLogger(SvgViewer.class.getName());
+
     /**
      * Breadcrumb bar for navigating the local hard disk.
      */
@@ -77,13 +99,16 @@ public class SvgViewer extends JFrame {
      */
     public SvgViewer() {
         super("SVG File Viewer");
-//        this.setIconImage(RadianceLogo.getLogoImage(this,
-//                RadianceThemingCortex.GlobalScope.getCurrentSkin().getColorScheme(
-//                        RadianceThemingSlices.DecorationAreaType.PRIMARY_TITLE_PANE,
-//                        RadianceThemingSlices.ColorSchemeAssociationKind.FILL,
-//                        ComponentState.ENABLED)));
+        RadianceColorScheme scheme = RadianceThemingCortex.GlobalScope.getCurrentSkin().getColorScheme(
+                RadianceThemingSlices.DecorationAreaType.PRIMARY_TITLE_PANE,
+                RadianceThemingSlices.ColorSchemeAssociationKind.FILL,
+                ComponentState.ENABLED);
+        LOG.info("RadianceLogo.getLogoImage with RadianceColorScheme:"+scheme);
+        this.setIconImage(RadianceLogo.getLogoImage(this, scheme));
 
         this.bar = new BreadcrumbFileSelector();
+        //BreadcrumbFileSelector extends JBreadcrumbBar<File>
+        LOG.info("breadcrumb bar file selector BreadcrumbFileSelector:"+bar);
 
         this.bar.getModel()
                 .addPathListener(event -> SwingUtilities.invokeLater(() -> {
@@ -120,21 +145,32 @@ public class SvgViewer extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(bar, BorderLayout.NORTH);
 
-        int initialSize = 32;
+        int initialSize = SizingConstants.BUTTON_ICON;
         this.svgFileViewPanel = new SvgFileViewPanel(bar.getCallback(), initialSize);
         JScrollPane jsp = new JScrollPane(this.svgFileViewPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         this.add(jsp, BorderLayout.CENTER);
 
-        this.iconSizeSlider = new JSlider();
-        this.iconSizeSlider.setMinimum(16);
-        this.iconSizeSlider.setMaximum(128);
+//        this.iconSizeSlider = new JSlider(); // horizontal slider
+//        this.iconSizeSlider.setMinimum(16);
+//        this.iconSizeSlider.setMaximum(128);
+        // es sieht tatsächlich anders aus, wenn initialSize im ctor mitgegeben wird:
+        this.iconSizeSlider = new JSlider(SizingConstants.SMALL_ICON, SizingConstants.XXL, initialSize);
+        // die ticks zwischen 56 und 88 fehlen!
         this.iconSizeSlider.setSnapToTicks(true);
         this.iconSizeSlider.setPaintLabels(true);
         this.iconSizeSlider.setPaintTicks(true);
         this.iconSizeSlider.setMajorTickSpacing(32);
         this.iconSizeSlider.setMinorTickSpacing(8);
-        this.iconSizeSlider.setValue(initialSize);
+        this.iconSizeSlider.setValue(initialSize); // initialSize im ctor Slider steht auf 48!?
+        // das letzte Label 128 fehlt, weil 16 + 3*32 = 112 und das nächste Label 144 wäre,
+        // das kann man manuell nachtragen
+        Integer i = Integer.valueOf(128);
+        this.iconSizeSlider.getLabelTable().put(i, new JLabel(i.toString(), JLabel.CENTER));
+        this.iconSizeSlider.setLabelTable( this.iconSizeSlider.getLabelTable() );
+//        this.iconSizeSlider.getAccessibleContext().setAccessibleName("Minor Ticks");
+//        this.iconSizeSlider.getAccessibleContext().setAccessibleDescription(getBundleString("minorticksdescription"));
+
         this.currIconSize = initialSize;
         this.iconSizeSlider.addChangeListener(changeEvent -> {
             if (!iconSizeSlider.getModel().getValueIsAdjusting()) {
@@ -156,11 +192,16 @@ public class SvgViewer extends JFrame {
      */
     public static void main(String... args) {
         JFrame.setDefaultLookAndFeelDecorated(true);
-        RadianceThemingCortex.GlobalScope.allowAnimations(
-                RadianceThemingSlices.AnimationFacet.GHOSTING_ICON_ROLLOVER);
+        AnimationFacet facet = RadianceThemingSlices.AnimationFacet.GHOSTING_ICON_ROLLOVER;
+        LOG.info("setDefaultLookAndFeelDecorated to true, Allows animations of GHOSTING_ICON_ROLLOVER facet:"+facet);
+        RadianceThemingCortex.GlobalScope.allowAnimations(facet);
 
         SwingUtilities.invokeLater(() -> {
-            RadianceThemingCortex.GlobalScope.setSkin(new BusinessSkin());
+        	LOG.info("use Radiance BusinessSkin then create SvgViewer instance ...");
+        	// Alternativen
+//            RadianceThemingCortex.GlobalScope.setSkin(new BusinessSkin());
+            RadianceThemingCortex.GlobalScope.setSkin(new BusinessBlueSteelSkin()); // 
+//            RadianceThemingCortex.GlobalScope.setSkin(new AutumnSkin()); // orangelastig
             SvgViewer test = new SvgViewer();
             test.setSize(640, 480);
             test.setLocationRelativeTo(null);
