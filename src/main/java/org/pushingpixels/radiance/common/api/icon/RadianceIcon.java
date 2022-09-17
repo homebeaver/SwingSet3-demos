@@ -42,7 +42,7 @@ import java.awt.image.BufferedImage;
  * @author Kirill Grouchnikov
  * @author EUG https://github.com/homebeaver (rotation)
  */
-public interface RadianceIcon extends Icon, SwingConstants  {
+public interface RadianceIcon extends Icon, SwingConstants {
 	
 	/**
 	 * A hint to rotate the icon when painting
@@ -58,17 +58,15 @@ public interface RadianceIcon extends Icon, SwingConstants  {
 	 * A hint to rotate the icon to a direction.
 	 * <p> The icon is aligned to {@code NORTH} per default, 
 	 * so rotate direction {@code NORTH_EAST} means rotating 45° right
-	 * and {@code WEST} means rotating 90° left.
+	 * and {@code WEST} means rotating 90° left or 270° right.
 	 * 
 	 * @param direction Compass-direction, use {@code SwingConstants} {@code NORTH}, {@code NORTH_EAST} etc
 	 * 
 	 * @see #setRotation(double)
 	 */
 	default void setRotation(int direction) {
-        if(direction>=NORTH && direction<=SOUTH) {
-        	this.setRotation(Math.PI*(direction-1)/4); // rotation to right, includes NORTH (no rotation)
-        } else if(direction>=SOUTH_WEST && direction<=NORTH_WEST) {
-        	this.setRotation(Math.PI*(direction-9)/4); // rotation to left
+        if(direction>=NORTH && direction<=NORTH_WEST) {
+        	this.setRotation(Math.toRadians(45d*(direction-1)));
         } else {
             setRotation(0d); // no rotation for invalid directions
         }
