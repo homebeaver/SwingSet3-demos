@@ -1,4 +1,3 @@
-// package org.pushingpixels.radiance.demo.common;
 package org.jdesktop.swingx.demos.svg;
 
 import java.awt.*;
@@ -19,7 +18,7 @@ import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
  * This class has been automatically generated using <a
  * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
  */
-public class radiance_menu implements RadianceIcon {
+public class IconRfeather implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
@@ -27,6 +26,14 @@ public class radiance_menu implements RadianceIcon {
     private Shape clip = null;
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
+
+    private double theta = 0;
+    public void setRotation(double theta) {
+    	this.theta = theta;
+    }    
+    public double getRotation() {
+		return theta;
+	}
 
     
 
@@ -39,45 +46,48 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, -0.0f, -0.0f));
 // _0
 g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
 transformsStack.push(g.getTransform());
-g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 2.0f, 2.0f));
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
 if (generalPath == null) {
    generalPath = new GeneralPath();
 } else {
    generalPath.reset();
 }
-generalPath.moveTo(10.0f, 0.0f);
-generalPath.lineTo(20.0f, 10.0f);
-generalPath.lineTo(10.0f, 20.0f);
-generalPath.lineTo(0.0f, 10.0f);
-generalPath.lineTo(10.0f, 0.0f);
-generalPath.closePath();
-generalPath.moveTo(5.70703f, 7.12131f);
-generalPath.lineTo(2.82861f, 10.0f);
-generalPath.lineTo(5.70703f, 12.8787f);
-generalPath.lineTo(7.17188f, 11.4141f);
-generalPath.lineTo(8.58594f, 12.8282f);
-generalPath.lineTo(7.12109f, 14.2928f);
-generalPath.lineTo(10.0f, 17.1716f);
-generalPath.lineTo(12.8789f, 14.2928f);
-generalPath.lineTo(11.4141f, 12.8282f);
-generalPath.lineTo(12.8281f, 11.4141f);
-generalPath.lineTo(14.293f, 12.8787f);
-generalPath.lineTo(17.1714f, 10.0f);
-generalPath.lineTo(14.293f, 7.12131f);
-generalPath.lineTo(10.0f, 11.4141f);
-generalPath.lineTo(5.70703f, 7.12131f);
-generalPath.closePath();
-generalPath.moveTo(7.12158f, 5.70715f);
-generalPath.lineTo(10.0f, 8.58591f);
-generalPath.lineTo(12.8789f, 5.70718f);
-generalPath.lineTo(10.0f, 2.82843f);
-generalPath.lineTo(7.12158f, 5.70715f);
+generalPath.moveTo(20.24f, 12.24f);
+generalPath.curveTo(22.566587f, 9.892509f, 22.558119f, 6.1060038f, 20.221058f, 3.7689419f);
+generalPath.curveTo(17.883997f, 1.4318801f, 14.09749f, 1.4234133f, 11.75f, 3.75f);
+generalPath.lineTo(5.0f, 10.5f);
+generalPath.lineTo(5.0f, 19.0f);
+generalPath.lineTo(13.5f, 19.0f);
 generalPath.closePath();
 shape = generalPath;
-paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 g.setPaint(paint);
-g.fill(shape);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_1
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(16.000000f,8.000000f,2.000000f,22.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_2
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(17.000000f,15.000000f,9.000000f,15.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
 g.setTransform(transformsStack.pop());
 g.setTransform(transformsStack.pop());
 g.setTransform(transformsStack.pop());
@@ -115,7 +125,7 @@ g.setTransform(transformsStack.pop());
      * @return The X of the bounding box of the original SVG image.
      */
     public static double getOrigX() {
-        return 2.0;
+        return 0.9023689031600952;
     }
 
     /**
@@ -124,7 +134,7 @@ g.setTransform(transformsStack.pop());
      * @return The Y of the bounding box of the original SVG image.
      */
     public static double getOrigY() {
-        return 2.0;
+        return 0.3256063461303711;
     }
 
 	/**
@@ -133,7 +143,7 @@ g.setTransform(transformsStack.pop());
 	 * @return The width of the bounding box of the original SVG image.
 	 */
 	public static double getOrigWidth() {
-		return 20.0;
+		return 22.762025833129883;
 	}
 
 	/**
@@ -142,7 +152,7 @@ g.setTransform(transformsStack.pop());
 	 * @return The height of the bounding box of the original SVG image.
 	 */
 	public static double getOrigHeight() {
-		return 20.0;
+		return 22.772024154663086;
 	}
 
 	/** The current width of this icon. */
@@ -155,7 +165,7 @@ g.setTransform(transformsStack.pop());
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private radiance_menu() {
+	private IconRfeather() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -193,6 +203,9 @@ g.setTransform(transformsStack.pop());
 				RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        if(getRotation()!=0) {
+            g2d.rotate(getRotation(), x+width/2, y+height/2);
+        }
 		g2d.translate(x, y);
 
         double coef1 = (double) this.width / getOrigWidth();
@@ -224,7 +237,7 @@ g.setTransform(transformsStack.pop());
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       radiance_menu base = new radiance_menu();
+       IconRfeather base = new IconRfeather();
        base.width = width;
        base.height = height;
        return base;
@@ -238,7 +251,7 @@ g.setTransform(transformsStack.pop());
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       radiance_menu base = new radiance_menu();
+       IconRfeather base = new IconRfeather();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -250,7 +263,7 @@ g.setTransform(transformsStack.pop());
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return radiance_menu::new;
+        return IconRfeather::new;
     }
 }
 

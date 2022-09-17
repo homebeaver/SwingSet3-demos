@@ -39,8 +39,8 @@ import java.awt.image.BufferedImage;
 
 public class RadianceLogo {
     public static RadianceIcon getLogoIcon(RadianceColorScheme scheme) {
-        // Step 1 - create a colorized version of the transcoded Radiance logo
-        RadianceIcon base = radiance_menu.factory().createNewIcon();
+        // Step 1 - create a colorized version of feather logo
+        RadianceIcon base = IconRfeather.factory().createNewIcon();
         base.setColorFilter(color -> scheme.getForegroundColor());
         // Step 2 - configure the colorized version to be 16x16
         base.setDimension(new Dimension(16, 16));
