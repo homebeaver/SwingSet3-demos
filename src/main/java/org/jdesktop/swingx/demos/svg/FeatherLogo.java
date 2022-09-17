@@ -37,7 +37,7 @@ import org.pushingpixels.radiance.theming.api.colorscheme.RadianceColorScheme;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class RadianceLogo {
+public class FeatherLogo {
     public static RadianceIcon getLogoIcon(RadianceColorScheme scheme) {
         // Step 1 - create a colorized version of feather logo
         RadianceIcon base = IconRfeather.factory().createNewIcon();

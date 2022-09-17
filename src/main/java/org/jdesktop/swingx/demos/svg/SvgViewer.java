@@ -104,11 +104,19 @@ public class SvgViewer extends JFrame {
                 RadianceThemingSlices.ColorSchemeAssociationKind.FILL,
                 ComponentState.ENABLED);
         LOG.info("RadianceLogo.getLogoImage with RadianceColorScheme:"+scheme);
-        this.setIconImage(RadianceLogo.getLogoImage(this, scheme));
+        this.setIconImage(FeatherLogo.getLogoImage(this, scheme));
 
         this.bar = new BreadcrumbFileSelector();
         //BreadcrumbFileSelector extends JBreadcrumbBar<File>
-        LOG.info("breadcrumb bar file selector BreadcrumbFileSelector:"+bar);
+//        LOG.info("breadcrumb bar file selector BreadcrumbFileSelector:"+bar);
+        
+        String dir = this.getClass().getPackageName().replace('.', '/')+'/';
+        LOG.info(">>>>>>>>dir:"+dir);
+        File path = new File("target/classes/"+dir); //+"resources/");
+        if (!path.exists()) {
+        	LOG.info(">>>>>>>>path NOT exists:"+path);
+        }
+        bar.setPath(path);
 
         this.bar.getModel()
                 .addPathListener(event -> SwingUtilities.invokeLater(() -> {
