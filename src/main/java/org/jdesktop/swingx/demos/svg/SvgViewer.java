@@ -111,11 +111,12 @@ public class SvgViewer extends JFrame {
 //        LOG.info("breadcrumb bar file selector BreadcrumbFileSelector:"+bar);
         
         String dir = this.getClass().getPackageName().replace('.', '/')+'/';
-        LOG.info(">>>>>>>>dir:"+dir);
+//        LOG.info(">>>>>>>>dir:"+dir);
         File path = new File("target/classes/"+dir); //+"resources/");
         if (!path.exists()) {
         	LOG.info(">>>>>>>>path NOT exists:"+path);
         }
+        LOG.info("AbsolutePath="+path.getAbsolutePath());
         bar.setPath(path);
 
         this.bar.getModel()
@@ -164,7 +165,7 @@ public class SvgViewer extends JFrame {
 //        this.iconSizeSlider.setMaximum(128);
         // es sieht tatsächlich anders aus, wenn initialSize im ctor mitgegeben wird:
         this.iconSizeSlider = new JSlider(SizingConstants.SMALL_ICON, SizingConstants.XXL, initialSize);
-        // die ticks zwischen 56 und 88 fehlen!
+        // die ticks zwischen 56 und 88 fehlen! TODO https://github.com/kirill-grouchnikov/radiance/issues/410
         this.iconSizeSlider.setSnapToTicks(true);
         this.iconSizeSlider.setPaintLabels(true);
         this.iconSizeSlider.setPaintTicks(true);

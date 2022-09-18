@@ -97,11 +97,11 @@ The schematic below shows a row-fill command button panel:
 Each row hosts four buttons, and the vertical scroll bar allows scrolling thecontent up and down.
 
  */
+@SuppressWarnings("serial")
 public class SvgFileViewPanel extends JCommandButtonPanel {
 
-	private static final long serialVersionUID = 8670131153997675690L;
 	private static final Logger LOG = Logger.getLogger(SvgFileViewPanel.class.getName());
-
+	private static final String TRANSCODER_TEMPLATE = "SvgTranscoderTemplateRadiance.templ";
 	/**
      * Callback into the underlying breadcrumb bar.
      */
@@ -144,11 +144,18 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
 
         List<Command> commands = new ArrayList<>();
 
+        /*
+
+newCommands key : icon name , value : transcode-command / transcode svg tp java
+
+die icons zum "icon name"s werden in mainWorker.process gebildet
+
+         */
         final Map<String, Command> newCommands = new HashMap<>();
         for (StringValuePair<File> leaf : leafs) {
             String name = leaf.getKey();
             // key : filename , value : File
-            LOG.info("leaf.Key="+name + ", Value/File:"+leaf.getValue());
+//            LOG.info("leaf.Key="+name + ", Value/File:"+leaf.getValue());
             if (!name.endsWith(".svg") && !name.endsWith(".svgz")) {
                 continue;
             }
@@ -157,7 +164,7 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
                     .setText(name.replace('-', ' '))
                     .setIconFactory(EmptyRadianceIcon.factory())
                     .setAction(commandActionEvent -> {
-                    	// transcode svg tp java
+                    	// transcode svg to java
                         try {
                             RadianceIcon icon = commandActionEvent.getCommand().getIconFactory().createNewIcon();
                             if (!(icon instanceof SvgBatikRadianceIcon)) {
@@ -173,7 +180,7 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
 
                             String javaClassFilename = System.getProperty("java.io.tmpdir")
                                     + File.separator + svgClassName + ".java";
-
+                            LOG.info("transcode to "+javaClassFilename);
                             PrintWriter pw = new PrintWriter(javaClassFilename);
 
                             SvgStreamTranscoder transcoder = new SvgStreamTranscoder(
@@ -182,8 +189,7 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
 
                             transcoder.setPrintWriter(pw);
                             transcoder.transcode(this.getClass().getResourceAsStream(
-                                    "/org/pushingpixels/radiance/tools/svgtranscoder/api/java" +
-                                            "/SvgTranscoderTemplateRadiance.templ"));
+                                    "/org/pushingpixels/radiance/tools/svgtranscoder/api/java/" + TRANSCODER_TEMPLATE));
                             JOptionPane.showMessageDialog(
                                     SwingUtilities.getWindowAncestor(SvgFileViewPanel.this),
                                     "Finished with '" + javaClassFilename + "'");
@@ -215,7 +221,7 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
                     }
                     InputStream stream = callback.getLeafContent(leafPair.getValue());
                     StringValuePair<InputStream> pair = new StringValuePair<>(name, stream);
-                    publish(pair);
+                    publish(pair); // Sends data chunks to the process method. 
                 }
                 return null;
             }
@@ -233,7 +239,9 @@ public class SvgFileViewPanel extends JCommandButtonPanel {
                             ? SvgBatikRadianceIcon.getSvgIcon(svgStream, scale, svgDim)
                             : SvgBatikRadianceIcon.getSvgzIcon(svgStream, scale, svgDim);
 
-                    newCommands.get(name).setIconFactory(() -> svgIcon);
+                    LOG.info(name+" Size="+svgIcon.getViewportSize());
+                    // die IconFactory hat nur eine Methode, daher kann sie so aufgerufen werden:
+                    newCommands.get(name).setIconFactory(() -> svgIcon); // RadianceIcon createNewIcon()
                 }
             }
         };
