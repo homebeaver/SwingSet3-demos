@@ -67,6 +67,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.processing.Processor;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.tools.FileObject;
@@ -98,6 +99,7 @@ import org.pushingpixels.radiance.tools.svgtranscoder.api.java.JavaLanguageRende
  * Panel that hosts SVG-based gallery buttons.
  *
  * @author Kirill Grouchnikov
+ * @author EUG https://github.com/homebeaver (transcodeToJava+dynCompile + show the Class)
  */
 /*
 
@@ -525,11 +527,20 @@ die icons zum "icon name"s werden in mainWorker.process gebildet
                             }
                             SvgBatikRadianceIcon svgIcon = (SvgBatikRadianceIcon) icon;
                             Class<?> compiledIcon = transcodeToJava(name, svgIcon);
-                            Method method = compiledIcon.getMethod("factory", null);
+                            Method method = compiledIcon.getMethod("factory");
                             RadianceIcon.Factory f = (RadianceIcon.Factory) method.invoke(null);
                             RadianceIcon ri = f.createNewIcon();
                             LOG.info("compiled RadianceIcon.Factory:"+ri);
                             LOG.info("compiled RadianceIcon IconHeight:"+ri.getIconHeight());
+                            ri.setDimension(getIconDimension());
+                            ri.setRotation(SwingConstants.NORTH_EAST);
+                            // Das kolorieren von bunten svg's macht sie monochrom TODO
+                            // Radience bietet keine Möglichkeit bunte icons zu erkennen!!!
+                            // evtl. svg nach "color:" scannen - geht nicht bei Duke.svg
+//                            ri.setColorFilter(color -> Color.RED);
+                            Command c = newCommands.get(name);
+                            c.setIconFactory(() -> ri); // RadianceIcon createNewIcon()
+                            c.setAction(null); // prevent to compile twice
                         } catch (Throwable exc) {
                             exc.printStackTrace();
                         }
@@ -568,8 +579,7 @@ die icons zum "icon name"s werden in mainWorker.process gebildet
                 for (final StringValuePair<InputStream> pair : pairs) {
                     final String name = pair.getKey();
                     InputStream svgStream = pair.getValue();
-                    int iconDimension = getProjection().getPresentationModel().getCommandIconDimension();
-                    Dimension svgDim = new Dimension(iconDimension, iconDimension);
+                    Dimension svgDim = getIconDimension();
 
                     double scale = RadianceCommonCortex.getScaleFactor(SvgFileViewPanel.this);
                     final SvgBatikRadianceIcon svgIcon = name.endsWith(".svg")
@@ -591,7 +601,12 @@ die icons zum "icon name"s werden in mainWorker.process gebildet
      * @param dimension New dimension for the icons.
      */
     public void setIconDimension(int dimension) {
+        this.getProjection().getPresentationModel().getCommandIconDimension();
         this.getProjection().getPresentationModel().setCommandIconDimension(dimension);
+    }
+    public Dimension getIconDimension() {
+        int iconDimension = getProjection().getPresentationModel().getCommandIconDimension();
+        return new Dimension(iconDimension, iconDimension);
     }
 
     /**
