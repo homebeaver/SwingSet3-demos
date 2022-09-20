@@ -29,19 +29,12 @@ import swingset.AbstractDemo;
 /**
  * Demonstrates how one icon class is used to render different icons.
  * <p>
- * The Class <code>IconRarrow</code> was generated from arrow-up.svg file with Radiance SVG transcoder.
+ * The Class <code>IconRfeather</code> was generated from feather.svg file with Radiance SVG transcoder.
  * In CENTER you see the original svg file.
- * The icons around are rendered by rotating.
+ * The icons around are rendered by rotating resp. point/axis reflection (mirroring)
  * 
  * @author homeb
  *
- */
-/*
- * - Quelle: arrow-up.svg file
- * - der Generator kann (noch) kein rotate generieren
- * - daher das file umbenannt IconRarrow_up.java in IconRarrow.java und rotate manuell reinkodiert
- * - auch in Radiance interface RadianceIcon ist rotate und direction nicht vorgesehen
- * - feature 407 bei kirill vorschlagen 
  */
 @SuppressWarnings("serial")
 public class MirroringIconDemo extends AbstractDemo {
@@ -94,7 +87,8 @@ public class MirroringIconDemo extends AbstractDemo {
         center.add(new JScrollPane(textArea));
     	add(center);
     	
-    	String iconName = "feather";
+//    	String iconName = "feather";
+    	String iconName = "align_left";	
     	
     	// point reflection:
         center.add(createButton(iconName, -1, true, true), BorderLayout.NORTH);
@@ -114,7 +108,8 @@ public class MirroringIconDemo extends AbstractDemo {
     	add(createButton(iconName, -1, false, true), BorderLayout.EAST);
     	add(createButton(iconName, -1), BorderLayout.WEST);
     	
-        InputStream in = getClass().getResourceAsStream("resources/feather.svg");
+//        InputStream in = getClass().getResourceAsStream("resources/feather.svg");
+        InputStream in = getClass().getResourceAsStream("resources/align-left.svg");
         try {
         	LOG.info("read svg file");
             textArea.read(new InputStreamReader(in), null);
@@ -136,10 +131,11 @@ public class MirroringIconDemo extends AbstractDemo {
      * @return
      */
     private JComponent createButton(String iconName, int direction, boolean horizontal, boolean vertical) {
-    	IconRfeather icon = (IconRfeather)IconRfeather.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+//    	IconRfeather icon = (IconRfeather)IconRfeather.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+    	RadianceIcon icon = IconRalign_left.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
-    	LOG.info("rotation direction="+direction +"  >>>---------------icon.isReflection():"+icon.isReflection());
+//    	LOG.info("rotation direction="+direction +"  >>>---------------icon.isReflection():"+icon.isReflection());
     	String orientation = icon.isReflection() ? "R" : "?";
 		switch (direction) {
 		case SwingConstants.NORTH: // 1
