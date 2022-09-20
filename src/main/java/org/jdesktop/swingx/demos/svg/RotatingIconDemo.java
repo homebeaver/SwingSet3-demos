@@ -92,9 +92,9 @@ public class RotatingIconDemo extends AbstractDemo {
 		textArea.setEditable(false);
     	add(new JScrollPane(textArea));
     	
-//    	String iconName = "arrow";
+    	String iconName = "arrow";
 //    	String iconName = "arrow_circle";
-    	String iconName = "chevron";
+//    	String iconName = "chevron";
 //    	String iconName = "chevrons";
 
         JPanel north = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
@@ -112,9 +112,9 @@ public class RotatingIconDemo extends AbstractDemo {
     	add(createButton(iconName, SizingConstants.EAST), BorderLayout.EAST);
     	add(createButton(iconName, SizingConstants.WEST), BorderLayout.WEST);
     	
-//        InputStream in = getClass().getResourceAsStream("resources/arrow-up.svg");
+        InputStream in = getClass().getResourceAsStream("resources/arrow-up.svg");
 //        InputStream in = getClass().getResourceAsStream("resources/arrow-up-circle.svg");
-        InputStream in = getClass().getResourceAsStream("resources/chevron-up.svg");
+//        InputStream in = getClass().getResourceAsStream("resources/chevron-up.svg");
 //    	InputStream in = getClass().getResourceAsStream("resources/chevrons-up.svg");
         try {
         	LOG.info("read svg file");
@@ -126,9 +126,9 @@ public class RotatingIconDemo extends AbstractDemo {
     }
 
     private JComponent createButton(String iconName, int direction) {
-//    	IconRarrow icon = (IconRarrow)IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+    	RadianceIcon icon = IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
 //    	RadianceIcon icon = IconRarrow_circle.of(SizingConstants.LAUNCHER_ICON, SizingConstants.LAUNCHER_ICON);
-    	RadianceIcon icon = IconRchevron.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+//    	RadianceIcon icon = IconRchevron.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
 //    	RadianceIcon icon = IconRchevrons.of(SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON);
     	icon.setRotation(direction);
 //    	LOG.info("direction="+direction +"  >>>---------------icon.getRotation():"+icon.getRotation());

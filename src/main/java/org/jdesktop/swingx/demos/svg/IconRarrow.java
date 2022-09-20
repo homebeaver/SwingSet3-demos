@@ -8,18 +8,15 @@ import java.lang.ref.WeakReference;
 import java.util.Base64;
 import java.util.Stack;
 import javax.imageio.ImageIO;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.UIResource;
 
 import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
 import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
 
-/*
+/**
  * This class has been automatically generated using <a
  * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
- * 
- * EUGen : kopie von IconRarrow_up
  */
 public class IconRarrow implements RadianceIcon {
     private Shape shape = null;
@@ -30,16 +27,15 @@ public class IconRarrow implements RadianceIcon {
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
-//    private int direction = SwingConstants.NORTH; // == Orientation.UP
-    private double theta = 0; //Math.PI*(direction-0)/4;
-    public void setDirection(int direction) {
-//    	this.direction = direction;
-        theta = direction>=0 && direction<=5 ? Math.PI*(direction-1)/4 : Math.PI*(direction-9)/4;
-    }    
-    // @param theta the angle of rotation in radians
-    public void setDirection(double theta) {
+    private double theta = 0;
+    public void setRotation(double theta) {
     	this.theta = theta;
     }    
+    public double getRotation() {
+		return theta;
+	}
+
+    
 
 	private void _paint0(Graphics2D g,float origAlpha) {
 transformsStack.push(g.getTransform());
@@ -192,8 +188,8 @@ g.setTransform(transformsStack.pop());
 				RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        if(theta!=0) {
-            g2d.rotate(theta, x+width/2, y+height/2);
+        if(getRotation()!=0) {
+            g2d.rotate(getRotation(), x+width/2, y+height/2);
         }
 		g2d.translate(x, y);
 
