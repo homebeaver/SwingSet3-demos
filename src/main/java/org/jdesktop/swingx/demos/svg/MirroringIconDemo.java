@@ -122,6 +122,12 @@ public class MirroringIconDemo extends AbstractDemo {
     private JComponent createButton(String iconName, int direction) {
     	return createButton(iconName, direction, false, false);
     }
+    private String reflectionType(boolean horizontal, boolean vertical) {
+    	if(horizontal && vertical) return "point reflection";
+    	if(horizontal) return "horizontal mirroring (X axis)";
+    	if(vertical) return "vertical mirroring (Y axis)";
+    	return "nix";
+    }
     /**
      * 
      * @param iconName
@@ -136,13 +142,13 @@ public class MirroringIconDemo extends AbstractDemo {
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
 //    	LOG.info("rotation direction="+direction +"  >>>---------------icon.isReflection():"+icon.isReflection());
-    	String orientation = icon.isReflection() ? "R" : "?";
+    	String orientation = icon.isReflection() ? reflectionType(horizontal, vertical) : "?";
 		switch (direction) {
 		case SwingConstants.NORTH: // 1
-			orientation = "N";
+			//orientation = "N";
             break;
 		case SwingConstants.NORTH_EAST:
-			orientation = "NE";
+			orientation = "45° rotation (NE)";
 	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.EAST:
@@ -150,14 +156,14 @@ public class MirroringIconDemo extends AbstractDemo {
 	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH_EAST:
-			orientation = "SE";
+			orientation = "135° rotation";
 	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH: // 5
 			orientation = "S";
             break;
         case SwingConstants.SOUTH_WEST:
-			orientation = "SW";
+			orientation = "rotation to SW";
 	    	icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.WEST:
@@ -165,12 +171,14 @@ public class MirroringIconDemo extends AbstractDemo {
 	    	icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.NORTH_WEST:
-			orientation = "NW";
+			orientation = "rotation to NW";
 	    	icon.setColorFilter(color -> Color.blue);
             break;
 		default: { /* no xform */ }
 		}
-    	return new JButton(iconName+" "+orientation, icon);
+		String text = "?".equals(orientation) ? iconName : orientation;
+//    	return new JButton(iconName+" "+orientation, icon);
+    	return new JButton(text, icon);
     }
     
     @Override
