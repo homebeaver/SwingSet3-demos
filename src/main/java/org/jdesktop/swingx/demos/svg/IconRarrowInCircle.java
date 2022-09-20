@@ -18,7 +18,7 @@ import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
  * This class has been automatically generated using <a
  * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
  */
-public class IconRarrow_down_circle implements RadianceIcon {
+public class IconRarrowInCircle implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
@@ -26,6 +26,25 @@ public class IconRarrow_down_circle implements RadianceIcon {
     private Shape clip = null;
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
+
+	// EUG https://github.com/homebeaver (rotation + point/axis reflection)
+    private int rsfx = 1, rsfy = 1;
+    public void setReflection(boolean horizontal, boolean vertical) {
+    	this.rsfx = vertical ? -1 : 1;
+    	this.rsfy = horizontal ? -1 : 1;
+    }    
+    public boolean isReflection() {
+		return rsfx==-1 || rsfy==-1;
+	}
+	
+    private double theta = 0;
+    public void setRotation(double theta) {
+    	this.theta = theta;
+    }    
+    public double getRotation() {
+		return theta;
+	}
+	// EUG -- END
 
     
 
@@ -58,9 +77,9 @@ if (generalPath == null) {
 } else {
    generalPath.reset();
 }
-generalPath.moveTo(8.0f, 12.0f);
-generalPath.lineTo(12.0f, 16.0f);
-generalPath.lineTo(16.0f, 12.0f);
+generalPath.moveTo(16.0f, 12.0f);
+generalPath.lineTo(12.0f, 8.0f);
+generalPath.lineTo(8.0f, 12.0f);
 shape = generalPath;
 g.setPaint(paint);
 g.setStroke(stroke);
@@ -72,7 +91,7 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_2
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
-shape = new Line2D.Float(12.000000f,8.000000f,12.000000f,16.000000f);
+shape = new Line2D.Float(12.000000f,16.000000f,12.000000f,8.000000f);
 g.setPaint(paint);
 g.setStroke(stroke);
 g.draw(shape);
@@ -153,7 +172,7 @@ g.setTransform(transformsStack.pop());
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private IconRarrow_down_circle() {
+	private IconRarrowInCircle() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -191,6 +210,14 @@ g.setTransform(transformsStack.pop());
 				RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        if(getRotation()!=0) {
+            g2d.rotate(getRotation(), x+width/2, y+height/2);
+        }
+        if(isReflection()) {
+        	g2d.translate(x+width/2, y+height/2);
+        	g2d.scale(this.rsfx, this.rsfy);
+        	g2d.translate(-x-width/2, -y-height/2);
+        }
 		g2d.translate(x, y);
 
         double coef1 = (double) this.width / getOrigWidth();
@@ -222,7 +249,7 @@ g.setTransform(transformsStack.pop());
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       IconRarrow_down_circle base = new IconRarrow_down_circle();
+       IconRarrowInCircle base = new IconRarrowInCircle();
        base.width = width;
        base.height = height;
        return base;
@@ -236,7 +263,7 @@ g.setTransform(transformsStack.pop());
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       IconRarrow_down_circle base = new IconRarrow_down_circle();
+       IconRarrowInCircle base = new IconRarrowInCircle();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -248,7 +275,7 @@ g.setTransform(transformsStack.pop());
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return IconRarrow_down_circle::new;
+        return IconRarrowInCircle::new;
     }
 }
 

@@ -41,7 +41,8 @@ import swingset.AbstractDemo;
  * - der Generator kann (noch) kein rotate generieren
  * - daher das file umbenannt IconRarrow_up.java in IconRarrow.java und rotate manuell reinkodiert
  * - auch in Radiance interface RadianceIcon ist rotate und direction nicht vorgesehen
- * - feature 407 bei kirill vorschlagen 
+ * - feature 407 bei kirill vorgeschlagen 
+ * - kirill will den PR nicht haben, also mache ich einen branch
  */
 public class RotatingIconDemo extends AbstractDemo {
 
@@ -92,8 +93,8 @@ public class RotatingIconDemo extends AbstractDemo {
 		textArea.setEditable(false);
     	add(new JScrollPane(textArea));
     	
-    	String iconName = "arrow";
-//    	String iconName = "arrow_circle";
+//    	String iconName = "arrow";
+    	String iconName = "arrowInCircle";
 //    	String iconName = "chevron";
 //    	String iconName = "chevrons";
 
@@ -112,13 +113,13 @@ public class RotatingIconDemo extends AbstractDemo {
     	add(createButton(iconName, SizingConstants.EAST), BorderLayout.EAST);
     	add(createButton(iconName, SizingConstants.WEST), BorderLayout.WEST);
     	
-        InputStream in = getClass().getResourceAsStream("resources/arrow-up.svg");
-//        InputStream in = getClass().getResourceAsStream("resources/arrow-up-circle.svg");
+//        InputStream in = getClass().getResourceAsStream("resources/arrow-up.svg");
+        InputStream in = getClass().getResourceAsStream("resources/"+iconName+".svg");
 //        InputStream in = getClass().getResourceAsStream("resources/chevron-up.svg");
 //    	InputStream in = getClass().getResourceAsStream("resources/chevrons-up.svg");
         try {
         	LOG.info("read svg file");
-            textArea.read(new InputStreamReader(in), null);
+            textArea.read(new InputStreamReader(in), null); // NPE if no resources
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,8 +127,8 @@ public class RotatingIconDemo extends AbstractDemo {
     }
 
     private JComponent createButton(String iconName, int direction) {
-    	RadianceIcon icon = IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
-//    	RadianceIcon icon = IconRarrow_circle.of(SizingConstants.LAUNCHER_ICON, SizingConstants.LAUNCHER_ICON);
+//    	RadianceIcon icon = IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+    	RadianceIcon icon = IconRarrowInCircle.of(SizingConstants.LAUNCHER_ICON, SizingConstants.LAUNCHER_ICON);
 //    	RadianceIcon icon = IconRchevron.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
 //    	RadianceIcon icon = IconRchevrons.of(SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON);
     	icon.setRotation(direction);
@@ -135,38 +136,39 @@ public class RotatingIconDemo extends AbstractDemo {
     	String orientation = "?";
 		switch (direction) {
 		case SwingConstants.NORTH: // 1
-			orientation = "N";
+			//orientation = "N";
             break;
 		case SwingConstants.NORTH_EAST:
-			orientation = "NE";
+			orientation = "45° rotation (NE)";
 	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.EAST:
-			orientation = "E";
+			orientation = "90° (E)";
 	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH_EAST:
-			orientation = "SE";
+			orientation = "135° rotation (SE)";
 	    	icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH: // 5
-			orientation = "S";
+			orientation = "180° rotation (S)";
             break;
         case SwingConstants.SOUTH_WEST:
-			orientation = "SW";
+			orientation = "rotation to SW";
 	    	icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.WEST:
-			orientation = "W";
+			orientation = "to W";
 	    	icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.NORTH_WEST:
-			orientation = "NW";
+			orientation = "rotation to NW";
 	    	icon.setColorFilter(color -> Color.blue);
             break;
 		default: { /* no xform */ }
 		}
-    	return new JButton(iconName+" "+orientation, icon);
+		String text = "?".equals(orientation) ? iconName : orientation;
+    	return new JButton(text, icon);
     }
     
     @Override
