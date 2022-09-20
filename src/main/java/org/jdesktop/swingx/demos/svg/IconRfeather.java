@@ -27,6 +27,20 @@ public class IconRfeather implements RadianceIcon {
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
+//    private int mirroring = -1;
+    //relative scaling factors used for point/axis reflection
+    private int rsfx = 1, rsfy = 1;
+//    public void setMirroring(int direction) {
+//    	this.mirroring = direction;
+//    }    
+    public void setReflection(boolean horizontal, boolean vertical) {
+    	this.rsfx = vertical ? -1 : 1;
+    	this.rsfy = horizontal ? -1 : 1;
+    }    
+    public boolean isReflection() {
+		return rsfx==-1 || rsfy==-1;
+	}
+
     private double theta = 0;
     public void setRotation(double theta) {
     	this.theta = theta;
@@ -205,6 +219,43 @@ g.setTransform(transformsStack.pop());
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         if(getRotation()!=0) {
             g2d.rotate(getRotation(), x+width/2, y+height/2);
+        }
+        if(isReflection()) {
+//        	g2d.drawImage(image, x + width, y, -width, height, null); // will flip it horizontally
+/*
+      [ x']   [  m00  m01  m02  ] [ x ]   [ m00x + m01y + m02 ]
+      [ y'] = [  m10  m11  m12  ] [ y ] = [ m10x + m11y + m12 ]
+      [ 1 ]   [   0    0    1   ] [ 1 ]   [         1         ]
+
+public AffineTransform(float m00,
+                       float m10,
+                       float m01,
+                       float m11,
+                       float m02,
+                       float m12)
+
+//        	g2d.scale(-1f, -1f); // Punktspiegelung inversion, point reflection: horizontales und vertikales Spiegeln
+        	//axis of reflection
+//        	g2d.scale(-1f, 1f);	// vertikal
+//        	g2d.scale(1, -1);	// horizontal
+
+zu g2d.scale:
+Concatenates the current Graphics2D Transform with a scaling transformation
+Subsequent rendering is resized according to the specified scaling factors relative to the previous scaling.
+This is equivalent to calling transform(S), where S is an AffineTransform represented by the following matrix: 
+          [   sx   0    0   ]
+          [   0    sy   0   ]
+          [   0    0    1   ]
+
+
+ */
+        	g2d.translate(x+width/2, y+height/2);
+//        	g2d.scale(-1f, -1f); // Punktspiegelung inversion, point reflection: horizontales und vertikales Spiegeln
+        	//axis of reflection
+//        	g2d.scale(-1f, 1f);	// vertikal
+//        	g2d.scale(1, -1);	// horizontal
+        	g2d.scale(this.rsfx, this.rsfy);
+        	g2d.translate(-x-width/2, -y-height/2);
         }
 		g2d.translate(x, y);
 
