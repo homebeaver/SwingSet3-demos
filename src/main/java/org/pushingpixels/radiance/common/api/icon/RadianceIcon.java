@@ -40,9 +40,27 @@ import java.awt.image.BufferedImage;
  * resizing and color filtering.
  * 
  * @author Kirill Grouchnikov
- * @author EUG https://github.com/homebeaver (rotation)
+ * @author EUG https://github.com/homebeaver (rotation + point/axis reflection)
  */
 public interface RadianceIcon extends Icon, SwingConstants {
+	
+	/**
+	 * A hint for point/axis reflection (mirroring) the icon when painting.
+	 * <p>
+	 * <code>setReflection(true, true)</code> means point reflection
+	 * 
+	 * @param horizontal will mirror the icon horizontal (X axis)
+	 * @param vertical will mirror the icon vertical (Y axis)
+	 * 
+	 */
+	// a default is necessary for icons generated before this feature was active
+	default void setReflection(boolean horizontal, boolean vertical) {}
+	default void setReflection(boolean pointReflection) {
+		setReflection(pointReflection, pointReflection);
+	}
+	default boolean isReflection() {
+		return false;
+	}
 	
 	/**
 	 * A hint to rotate the icon when painting
