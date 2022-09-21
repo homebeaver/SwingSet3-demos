@@ -1,61 +1,22 @@
 package org.jdesktop.swingx.demos.svg;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.GeneralPath;
+import java.awt.*;
+import java.awt.geom.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.lang.ref.WeakReference;
+import java.util.Base64;
 import java.util.Stack;
-
+import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.UIResource;
 
 import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
-import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource; 
+import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
 
 /**
- * This class has been automatically generated using <a href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
- */ 
-/*
-
-generiert aus activity.svg
-
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="24"
-  height="24"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="2"
-  stroke-linecap="round"
-  stroke-linejoin="round"
->
-  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-</svg> 
-
-mit org.pushingpixels.radiance.tools.svgtranscoder.api.SvgBatchConverter
-
-sourceFolder=src/main/resources/org/jdesktop/swingx/demos/svg/resources
-outputPackageName=xyz
-templateFile=java/SvgTranscoderTemplateRadiance.templ 
-outputLanguage=java
-
-Da ich die letzten zwei parameter weggelassen habe, musste ich manuell nachbessern:
-- wg. [Optional] outputFolder= ... kopieren der javasrc hierhin
-- wg. outputPackageName=xyz ... package org.jdesktop.swingx.demos.svg
-- wg. [Optional] outputClassNamePrefix= Klasse benennen in IconRactivity
-- organize imports
-- formattieren TODO
-
+ * This class has been automatically generated using <a
+ * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
  */
 public class IconRactivity implements RadianceIcon {
     private Shape shape = null;
@@ -65,6 +26,25 @@ public class IconRactivity implements RadianceIcon {
     private Shape clip = null;
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
+
+	// EUG https://github.com/homebeaver (rotation + point/axis reflection)
+    private int rsfx = 1, rsfy = 1;
+    public void setReflection(boolean horizontal, boolean vertical) {
+    	this.rsfx = vertical ? -1 : 1;
+    	this.rsfy = horizontal ? -1 : 1;
+    }    
+    public boolean isReflection() {
+		return rsfx==-1 || rsfy==-1;
+	}
+	
+    private double theta = 0;
+    public void setRotation(double theta) {
+    	this.theta = theta;
+    }    
+    public double getRotation() {
+		return theta;
+	}
+	// EUG -- END
 
     
 
@@ -211,6 +191,14 @@ g.setTransform(transformsStack.pop());
 				RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        if(getRotation()!=0) {
+            g2d.rotate(getRotation(), x+width/2, y+height/2);
+        }
+        if(isReflection()) {
+        	g2d.translate(x+width/2, y+height/2);
+        	g2d.scale(this.rsfx, this.rsfy);
+        	g2d.translate(-x-width/2, -y-height/2);
+        }
 		g2d.translate(x, y);
 
         double coef1 = (double) this.width / getOrigWidth();
@@ -242,7 +230,7 @@ g.setTransform(transformsStack.pop());
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-    	IconRactivity base = new IconRactivity();
+       IconRactivity base = new IconRactivity();
        base.width = width;
        base.height = height;
        return base;
@@ -256,7 +244,7 @@ g.setTransform(transformsStack.pop());
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-    	IconRactivity base = new IconRactivity();
+       IconRactivity base = new IconRactivity();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -269,5 +257,6 @@ g.setTransform(transformsStack.pop());
      */
     public static Factory factory() {
         return IconRactivity::new;
-    } 
+    }
 }
+

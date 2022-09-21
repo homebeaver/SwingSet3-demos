@@ -27,6 +27,25 @@ public class IconRalert_circle implements RadianceIcon {
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
+	// EUG https://github.com/homebeaver (rotation + point/axis reflection)
+    private int rsfx = 1, rsfy = 1;
+    public void setReflection(boolean horizontal, boolean vertical) {
+    	this.rsfx = vertical ? -1 : 1;
+    	this.rsfy = horizontal ? -1 : 1;
+    }    
+    public boolean isReflection() {
+		return rsfx==-1 || rsfy==-1;
+	}
+	
+    private double theta = 0;
+    public void setRotation(double theta) {
+    	this.theta = theta;
+    }    
+    public double getRotation() {
+		return theta;
+	}
+	// EUG -- END
+
     
 
 	private void _paint0(Graphics2D g,float origAlpha) {
@@ -53,11 +72,6 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_1
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
-// BUG: The constructor Line2D.Float(int, float, int, float, int, float, int, float) is undefined
-// es gibt public Line2D.Float(float x1, float y1, float x2, float y2)
-// und public Float(Point2D p1, Point2D p2)
-// Ursache ist Locale DE
-//shape = new Line2D.Float(12,000000f,8,000000f,12,000000f,12,000000f);
 shape = new Line2D.Float(12.000000f,8.000000f,12.000000f,12.000000f);
 g.setPaint(paint);
 g.setStroke(stroke);
@@ -69,7 +83,7 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_2
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
-shape = new Line2D.Float(12.000000f,16.00000f,12.000000f,16.000000f);
+shape = new Line2D.Float(12.000000f,16.000000f,12.000000f,16.000000f);
 g.setPaint(paint);
 g.setStroke(stroke);
 g.draw(shape);
@@ -188,6 +202,14 @@ g.setTransform(transformsStack.pop());
 				RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        if(getRotation()!=0) {
+            g2d.rotate(getRotation(), x+width/2, y+height/2);
+        }
+        if(isReflection()) {
+        	g2d.translate(x+width/2, y+height/2);
+        	g2d.scale(this.rsfx, this.rsfy);
+        	g2d.translate(-x-width/2, -y-height/2);
+        }
 		g2d.translate(x, y);
 
         double coef1 = (double) this.width / getOrigWidth();

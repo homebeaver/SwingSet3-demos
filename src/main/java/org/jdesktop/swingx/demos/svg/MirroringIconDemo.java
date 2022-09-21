@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -40,7 +42,7 @@ import swingset.AbstractDemo;
 public class MirroringIconDemo extends AbstractDemo {
 
 	private static final Logger LOG = Logger.getLogger(MirroringIconDemo.class.getName());
-	private static final String DESCRIPTION = "Demonstrates how one icon class is used to render different icons.";
+	private static final String DESCRIPTION = "Demonstrates mirroring, rotating and coloring an icon while rendering.";
 
     /**
      * main method allows us to run as a standalone demo.
@@ -65,6 +67,7 @@ public class MirroringIconDemo extends AbstractDemo {
     	});
     }
 
+    // holds the svg code the icon is created from:
     private JTextArea textArea;
 
     /**
@@ -87,8 +90,15 @@ public class MirroringIconDemo extends AbstractDemo {
         center.add(new JScrollPane(textArea));
     	add(center);
     	
+//    	String iconName = "activity"; // no svg resource
+//    	String iconName = "airplay"; // no svg resource
+    	// ...
+//    	String iconName = "archive"; // no svg resource (Kiste mit Deckel)
+    	String iconName = "award"; // no svg resource
+//    	String iconName = "arrow";
+//    	String iconName = "arrowInCircle";
+//    	String iconName = "align_left";	
 //    	String iconName = "feather";
-    	String iconName = "align_left";	
     	
     	// point reflection:
         center.add(createButton(iconName, -1, true, true), BorderLayout.NORTH);
@@ -102,23 +112,58 @@ public class MirroringIconDemo extends AbstractDemo {
         JPanel south = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
         add(south, BorderLayout.SOUTH);
     	south.add(createButton(iconName, SizingConstants.SOUTH_WEST));
+    	// horizontal mirroring:
     	south.add(createButton(iconName, -1, true, false));
     	south.add(createButton(iconName, SizingConstants.SOUTH_EAST));
 
+    	// vertical mirroring: 
     	add(createButton(iconName, -1, false, true), BorderLayout.EAST);
     	add(createButton(iconName, -1), BorderLayout.WEST);
     	
-//        InputStream in = getClass().getResourceAsStream("resources/feather.svg");
-        InputStream in = getClass().getResourceAsStream("resources/align-left.svg");
         try {
+            InputStream in = getClass().getResourceAsStream(getSvgResourceName(iconName));
         	LOG.info("read svg file");
-            textArea.read(new InputStreamReader(in), null);
+            textArea.read(new InputStreamReader(in), null); // NPE if no resources
+        } catch (NullPointerException e) {
+            textArea.setText("no svg source fuond for "+iconName);
         } catch (IOException e) {
             e.printStackTrace();
         }
         
     }
 
+    private String getSvgResourceName(String iconName) {
+    	return "resources/" + iconName.replace('_', '-') + ".svg";
+    }
+    
+    Class<?> iconClass = null;
+    private RadianceIcon getRadianceIcon(String iconName, int width, int height) {
+    	String packageName = "org.jdesktop.swingx.demos.svg";
+    	String className = packageName+"."+"IconR"+iconName;
+    	if(iconClass==null) {
+    		LOG.info("load class "+className);
+			try {
+				iconClass = Class.forName(className);  // throws ClassNotFoundException
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+    	}
+    	RadianceIcon icon = null;
+    	try {
+//			Method factory = iconClass.getMethod("factory");
+//			RadianceIcon.Factory f = (RadianceIcon.Factory) factory.invoke(null);
+			Method method = iconClass.getMethod("of", int.class, int.class);
+			Object o = method.invoke(null, width, height);
+			icon = (RadianceIcon)o;
+		} catch (NoSuchMethodException | SecurityException 
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return icon;
+    }
     private JComponent createButton(String iconName, int direction) {
     	return createButton(iconName, direction, false, false);
     }
@@ -137,8 +182,7 @@ public class MirroringIconDemo extends AbstractDemo {
      * @return
      */
     private JComponent createButton(String iconName, int direction, boolean horizontal, boolean vertical) {
-//    	IconRfeather icon = (IconRfeather)IconRfeather.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
-    	RadianceIcon icon = IconRalign_left.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+    	RadianceIcon icon = getRadianceIcon(iconName, SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
 //    	LOG.info("rotation direction="+direction +"  >>>---------------icon.isReflection():"+icon.isReflection());
@@ -177,7 +221,6 @@ public class MirroringIconDemo extends AbstractDemo {
 		default: { /* no xform */ }
 		}
 		String text = "?".equals(orientation) ? iconName : orientation;
-//    	return new JButton(iconName+" "+orientation, icon);
     	return new JButton(text, icon);
     }
     
