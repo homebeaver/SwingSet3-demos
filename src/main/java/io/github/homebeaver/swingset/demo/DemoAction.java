@@ -325,12 +325,13 @@ public class DemoAction extends AbstractActionExt {
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.monthviewext.MonthViewExtDemo", "JXMonthView (extended)", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xbutton.XButtonDemo", "JXButton", 3, Category.CONTROLS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlabel.XLabelDemo", "XLabel", 3, Category.CONTROLS));
-        	// category DECORATORS 5/3: multithumbslider hierhin, da Slider auch in DECORATORS
+        	// category DECORATORS 6/3: multithumbslider hierhin, da Slider auch in DECORATORS
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.autocomplete.AutoCompleteDemo", "AutoComplete", 3, Category.DECORATORS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.busylabel.BusyLabelDemo", "BusyLabel", 3, Category.DECORATORS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.titledseparator.TitledSeparatorDemo", "JXTitledSeparator", 3, Category.DECORATORS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.painter.PainterDemo", "Painter", 3, Category.DECORATORS));        	
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.multithumbslider.MultiThumbSliderDemo", "MultiThumbSlider", 3, Category.DECORATORS));
+        	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.svg.MirroringIconDemo", "MirroringIcon", 3, Category.DECORATORS));
         	// category DATA 4/4:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.xlist.XListDemo", "XList", 3, Category.DATA));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.table.XTableDemo", "XTable", 3, Category.DATA));
