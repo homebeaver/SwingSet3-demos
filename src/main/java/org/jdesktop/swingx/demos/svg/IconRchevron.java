@@ -27,6 +27,16 @@ public class IconRchevron implements RadianceIcon {
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
+	// EUG https://github.com/homebeaver (rotation + point/axis reflection)
+    private int rsfx = 1, rsfy = 1;
+    public void setReflection(boolean horizontal, boolean vertical) {
+    	this.rsfx = vertical ? -1 : 1;
+    	this.rsfy = horizontal ? -1 : 1;
+    }    
+    public boolean isReflection() {
+		return rsfx==-1 || rsfy==-1;
+	}
+	
     private double theta = 0;
     public void setRotation(double theta) {
     	this.theta = theta;
@@ -34,6 +44,7 @@ public class IconRchevron implements RadianceIcon {
     public double getRotation() {
 		return theta;
 	}
+	// EUG -- END
 
     
 
@@ -179,6 +190,11 @@ g.setTransform(transformsStack.pop());
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         if(getRotation()!=0) {
             g2d.rotate(getRotation(), x+width/2, y+height/2);
+        }
+        if(isReflection()) {
+        	g2d.translate(x+width/2, y+height/2);
+        	g2d.scale(this.rsfx, this.rsfy);
+        	g2d.translate(-x-width/2, -y-height/2);
         }
 		g2d.translate(x, y);
 
