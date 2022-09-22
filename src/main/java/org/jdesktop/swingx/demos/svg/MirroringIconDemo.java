@@ -2,6 +2,7 @@ package org.jdesktop.swingx.demos.svg;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.IOException;
@@ -11,17 +12,24 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.MutableComboBoxModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
+import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
@@ -70,6 +78,77 @@ public class MirroringIconDemo extends AbstractDemo {
     // holds the svg code the icon is created from:
     private JTextArea textArea;
 
+    // controller:
+    private JXComboBox<String> iconChooserCombo;
+
+    JPanel center;
+    JPanel north;
+    JPanel south;
+    JComponent original = null;
+    JComponent original2 = null; // duplicate
+    JComponent pointReflection = null;
+    JComponent horizontalMirroring = null;
+    JComponent verticalMirroring = null;
+    JComponent neRotation = null;
+    JComponent nwRotation = null;
+    JComponent seRotation = null;
+    JComponent swRotation = null;
+    private void initComponents(String iconName) {
+    	LOG.info("iconName="+iconName);
+    	
+    	original = createButton(original, iconName, SizingConstants.NORTH);
+    	nwRotation = createButton(nwRotation, iconName, SizingConstants.NORTH_WEST);
+    	neRotation = createButton(neRotation, iconName, SizingConstants.NORTH_EAST);
+    	if(north==null) {
+            north = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
+            north.add(nwRotation);
+            north.add(original);
+            north.add(neRotation);
+            add(north, BorderLayout.NORTH);
+    	}
+        
+    	pointReflection = createButton(pointReflection, iconName, -1, true, true);
+    	if(center==null) {
+            center = new JXPanel(new BorderLayout());
+            center.add(new JScrollPane(textArea));
+        	add(center);
+        	// point reflection under original:
+            center.add(pointReflection, BorderLayout.NORTH);
+    	}
+
+    	horizontalMirroring = createButton(horizontalMirroring, iconName, -1, true, false);
+    	swRotation = createButton(swRotation, iconName, SizingConstants.NORTH_WEST);
+    	seRotation = createButton(seRotation, iconName, SizingConstants.NORTH_EAST);
+    	if(south==null) {
+            south = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
+            south.add(swRotation);
+            // horizontal mirroring opposite of original
+            south.add(horizontalMirroring);
+            south.add(seRotation);
+            add(south, BorderLayout.SOUTH);
+    	}
+
+    	// vertical mirroring:
+    	boolean addToEastAndWest = verticalMirroring==null ? true : false;
+    	original2 = createButton(original2, iconName, SizingConstants.NORTH);
+    	verticalMirroring = createButton(verticalMirroring, iconName, -1, true, false);
+    	if(addToEastAndWest) {
+    		// add original duplicate to WEST and verticalMirroring in opposite of it
+        	add(original2, BorderLayout.WEST);
+        	add(verticalMirroring, BorderLayout.EAST);
+    	}
+    	
+        try {
+            InputStream in = getClass().getResourceAsStream(getSvgResourceName(iconName));
+        	LOG.info("read svg file");
+            textArea.read(new InputStreamReader(in), null); // NPE if no resources
+        } catch (NullPointerException e) {
+            textArea.setText("no svg source fuond for "+iconName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
     /**
      * Constructor
      * @param frame controller Frame frame.title will be set
@@ -86,50 +165,52 @@ public class MirroringIconDemo extends AbstractDemo {
 		textArea.setRows(5);
 		textArea.setWrapStyleWord(true);
 		textArea.setEditable(false);
-        JPanel center = new JXPanel(new BorderLayout());
-        center.add(new JScrollPane(textArea));
-    	add(center);
-    	
-//    	String iconName = "activity"; // no svg resource
-//    	String iconName = "airplay"; // no svg resource
-    	// ...
-//    	String iconName = "archive"; // no svg resource (Kiste mit Deckel)
-    	String iconName = "award"; // no svg resource
-//    	String iconName = "arrow";
-//    	String iconName = "arrowInCircle";
-//    	String iconName = "align_left";	
-//    	String iconName = "feather";
-    	
-    	// point reflection:
-        center.add(createButton(iconName, -1, true, true), BorderLayout.NORTH);
-
-        JPanel north = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
-        add(north, BorderLayout.NORTH);
-        north.add(createButton(iconName, SizingConstants.NORTH_WEST));
-        north.add(createButton(iconName, SizingConstants.NORTH)); // original
-        north.add(createButton(iconName, SizingConstants.NORTH_EAST));
-        
-        JPanel south = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
-        add(south, BorderLayout.SOUTH);
-    	south.add(createButton(iconName, SizingConstants.SOUTH_WEST));
-    	// horizontal mirroring:
-    	south.add(createButton(iconName, -1, true, false));
-    	south.add(createButton(iconName, SizingConstants.SOUTH_EAST));
-
-    	// vertical mirroring: 
-    	add(createButton(iconName, -1, false, true), BorderLayout.EAST);
-    	add(createButton(iconName, -1), BorderLayout.WEST);
-    	
-        try {
-            InputStream in = getClass().getResourceAsStream(getSvgResourceName(iconName));
-        	LOG.info("read svg file");
-            textArea.read(new InputStreamReader(in), null); // NPE if no resources
-        } catch (NullPointerException e) {
-            textArea.setText("no svg source fuond for "+iconName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
+		
+		initComponents("feather");
+//        center = new JXPanel(new BorderLayout());
+//        center.add(new JScrollPane(textArea));
+//    	add(center);
+//    	
+////    	String iconName = "activity"; // no svg resource
+////    	String iconName = "airplay"; // no svg resource
+//    	// ...
+////    	String iconName = "archive"; // no svg resource (Kiste mit Deckel)
+//    	String iconName = "award"; // no svg resource
+////    	String iconName = "arrow";
+////    	String iconName = "arrowInCircle";
+////    	String iconName = "align_left";	
+////    	String iconName = "feather";
+//    	
+//    	// point reflection:
+//        center.add(createButton(iconName, -1, true, true), BorderLayout.NORTH);
+//
+//        JPanel north = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
+//        add(north, BorderLayout.NORTH);
+//        north.add(createButton(iconName, SizingConstants.NORTH_WEST));
+//        north.add(createButton(iconName, SizingConstants.NORTH)); // original
+//        north.add(createButton(iconName, SizingConstants.NORTH_EAST));
+//        
+//        JPanel south = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
+//        add(south, BorderLayout.SOUTH);
+//    	south.add(createButton(iconName, SizingConstants.SOUTH_WEST));
+//    	// horizontal mirroring:
+//    	south.add(createButton(iconName, -1, true, false));
+//    	south.add(createButton(iconName, SizingConstants.SOUTH_EAST));
+//
+//    	// vertical mirroring: 
+//    	add(createButton(iconName, -1, false, true), BorderLayout.EAST);
+//    	add(createButton(iconName, -1), BorderLayout.WEST);
+//    	
+//        try {
+//            InputStream in = getClass().getResourceAsStream(getSvgResourceName(iconName));
+//        	LOG.info("read svg file");
+//            textArea.read(new InputStreamReader(in), null); // NPE if no resources
+//        } catch (NullPointerException e) {
+//            textArea.setText("no svg source fuond for "+iconName);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        
     }
 
     private String getSvgResourceName(String iconName) {
@@ -140,15 +221,18 @@ public class MirroringIconDemo extends AbstractDemo {
     private RadianceIcon getRadianceIcon(String iconName, int width, int height) {
     	String packageName = "org.jdesktop.swingx.demos.svg";
     	String className = packageName+"."+"IconR"+iconName;
-    	if(iconClass==null) {
+    	if(iconClass==null || !className.equals(iconClass.getName())) {
     		LOG.info("load class "+className);
 			try {
 				iconClass = Class.forName(className);  // throws ClassNotFoundException
+//				LOG.info("+++++++++++ "+iconClass.getName());
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			}
+//    	} else {
+//    		LOG.warning(">>>>>>>>>>> nicht geladen "+iconName + " ist "+iconClass.getName());
     	}
     	RadianceIcon icon = null;
     	try {
@@ -164,8 +248,8 @@ public class MirroringIconDemo extends AbstractDemo {
 		}
     	return icon;
     }
-    private JComponent createButton(String iconName, int direction) {
-    	return createButton(iconName, direction, false, false);
+    private JComponent createButton(JComponent comp, String iconName, int direction) {
+    	return createButton(comp, iconName, direction, false, false);
     }
     private String reflectionType(boolean horizontal, boolean vertical) {
     	if(horizontal && vertical) return "point reflection";
@@ -181,7 +265,7 @@ public class MirroringIconDemo extends AbstractDemo {
      * @param vertical point/axis reflection (mirroring) 
      * @return
      */
-    private JComponent createButton(String iconName, int direction, boolean horizontal, boolean vertical) {
+    private JComponent createButton(JComponent comp, String iconName, int direction, boolean horizontal, boolean vertical) {
     	RadianceIcon icon = getRadianceIcon(iconName, SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
@@ -221,13 +305,55 @@ public class MirroringIconDemo extends AbstractDemo {
 		default: { /* no xform */ }
 		}
 		String text = "?".equals(orientation) ? iconName : orientation;
-    	return new JButton(text, icon);
+		if(comp==null) return new JButton(text, icon);
+		if(comp instanceof JButton jb) {
+			jb.setIcon(icon);
+			jb.setText(text);
+		}
+    	return comp;
     }
     
-    @Override
+	@Override
 	public JXPanel getControlPane() {
-		return emptyControlPane();
+		JXPanel controls = new JXPanel() {
+			public Dimension getMaximumSize() {
+				return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
+			}
+		};
+		controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+		controls.add(Box.createRigidArea(VGAP15));
+
+		JXLabel l = new JXLabel("select another icon");
+		l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+		controls.add(l);
+		iconChooserCombo = new JXComboBox<String>();
+		iconChooserCombo.setName("fontChooserCombo");
+		iconChooserCombo.setModel(createCBM());
+		iconChooserCombo.addActionListener(ae -> {
+			String item = (String) iconChooserCombo.getSelectedItem();
+			LOG.info("Combo.SelectedItem=" + item);
+			initComponents(item);
+		});
+		iconChooserCombo.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
+		controls.add(iconChooserCombo);
+		l.setLabelFor(iconChooserCombo);
+		controls.add(Box.createRigidArea(VGAP30));
+
+		return controls;
 	}
 
+    private ComboBoxModel<String> createCBM() {
+        MutableComboBoxModel<String> model = new DefaultComboBoxModel<String>();
+        model.addElement("activity"); // no svg resource
+        model.addElement("airplay");
+        // ...
+        model.addElement("archive");
+        model.addElement("award");
+        // with svg resource:
+        model.addElement("arrow");
+        model.addElement("arrowInCircle");
+        model.addElement("feather");
+        return model;
+    }
 
 }
