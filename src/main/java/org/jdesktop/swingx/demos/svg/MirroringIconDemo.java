@@ -183,8 +183,7 @@ public class MirroringIconDemo extends AbstractDemo {
     }
     Class<?> iconClass = null;
     private RadianceIcon getRadianceIcon(String iconName, int width, int height) {
-    	String packageName = "org.jdesktop.swingx.demos.svg"; // TODO nicht const
-    	String className = packageName+"."+upperCasePrefix(iconName)+iconName;
+    	String className = getClass().getPackageName()+"."+upperCasePrefix(iconName)+iconName;
     	if(iconClass==null || !className.equals(iconClass.getName())) {
     		LOG.info("load class "+className);
 			try {
