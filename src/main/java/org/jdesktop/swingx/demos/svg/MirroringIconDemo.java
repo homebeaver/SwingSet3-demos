@@ -170,14 +170,21 @@ public class MirroringIconDemo extends AbstractDemo {
 		initComponents("feather");
     }
 
+    // Heuristic: gilt nicht allgemein!!!
+    private boolean canApplyColorFilter(String iconName) {
+    	return Character.isLowerCase(iconName.charAt(0));
+    }
+    private String upperCasePrefix(String iconName) {
+    	return Character.isLowerCase(iconName.charAt(0)) ? "IconR" : "";
+    }
+    
     private String getSvgResourceName(String iconName) {
     	return "resources/" + iconName.replace('_', '-') + ".svg";
     }
-    
     Class<?> iconClass = null;
     private RadianceIcon getRadianceIcon(String iconName, int width, int height) {
-    	String packageName = "org.jdesktop.swingx.demos.svg";
-    	String className = packageName+"."+"IconR"+iconName;
+    	String packageName = "org.jdesktop.swingx.demos.svg"; // TODO nicht const
+    	String className = packageName+"."+upperCasePrefix(iconName)+iconName;
     	if(iconClass==null || !className.equals(iconClass.getName())) {
     		LOG.info("load class "+className);
 			try {
@@ -223,7 +230,9 @@ public class MirroringIconDemo extends AbstractDemo {
     	RadianceIcon icon = getRadianceIcon(iconName, SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
-//    	LOG.info("rotation direction="+direction +"  >>>---------------icon.isReflection():"+icon.isReflection());
+//    	LOG.info(iconName+ " rotation direction="+direction 
+//    			+" canApplyColorFilter="+canApplyColorFilter(iconName)
+//    			+"  >>>---------------icon.isReflection():"+icon.isReflection());
     	String orientation = icon.isReflection() ? reflectionType(horizontal, vertical) : "?";
 		switch (direction) {
 		case SwingConstants.NORTH: // 1
@@ -231,30 +240,30 @@ public class MirroringIconDemo extends AbstractDemo {
             break;
 		case SwingConstants.NORTH_EAST:
 			orientation = "45° rotation (NE)";
-	    	icon.setColorFilter(color -> Color.red);
+	    	if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.EAST:
 			orientation = "E";
-	    	icon.setColorFilter(color -> Color.red);
+			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH_EAST:
 			orientation = "135° rotation";
-	    	icon.setColorFilter(color -> Color.red);
+			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH: // 5
 			orientation = "S";
             break;
         case SwingConstants.SOUTH_WEST:
 			orientation = "rotation to SW";
-	    	icon.setColorFilter(color -> Color.blue);
+			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.WEST:
 			orientation = "W";
-	    	icon.setColorFilter(color -> Color.blue);
+			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.NORTH_WEST:
 			orientation = "rotation to NW";
-	    	icon.setColorFilter(color -> Color.blue);
+			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.blue);
             break;
 		default: { /* no xform */ }
 		}
@@ -300,6 +309,7 @@ public class MirroringIconDemo extends AbstractDemo {
         MutableComboBoxModel<String> model = new DefaultComboBoxModel<String>();
         model.addElement("activity"); // no svg resource
         model.addElement("airplay");
+        model.addElement("alert_circle");
         // ...
         model.addElement("archive");
         model.addElement("award");
@@ -309,6 +319,9 @@ public class MirroringIconDemo extends AbstractDemo {
         model.addElement("chevron");
         model.addElement("chevrons");
         model.addElement("feather");
+        // colored svgs:
+        model.addElement("Duke"); // setColorFilter nicht anwenden
+        model.addElement("Duke_waving");
         return model;
     }
 
