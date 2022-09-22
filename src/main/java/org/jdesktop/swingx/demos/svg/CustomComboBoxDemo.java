@@ -31,25 +31,34 @@
 package org.jdesktop.swingx.demos.svg;
 //package components;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
 
-import org.jdesktop.swingx.demos.formattedtext.FormattedTextDemo;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
 
 /*
- * CustomComboBoxDemo.java uses the following files:
+ * original CustomComboBoxDemo.java uses the following files:
  *   images/Bird.gif
  *   images/Cat.gif
  *   images/Dog.gif
  *   images/Rabbit.gif
  *   images/Pig.gif
+ * this works with Radiance Icons
  */
 //see https://docs.oracle.com/javase/tutorial/uiswing/components/combobox.html
 @SuppressWarnings("serial")
@@ -57,11 +66,38 @@ public class CustomComboBoxDemo extends JPanel {
 	
 	private static final Logger LOG = Logger.getLogger(CustomComboBoxDemo.class.getName());
 	
-	// ImageIcon implements Icon
+    public static void main(String[] args) {
+        //Schedule a job for the event dispatch thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
+    }
+    
+    /**
+     * Create the GUI and show it.  
+     * For thread safety, this method should be invoked from the event dispatch thread.
+     */
+    private static void createAndShowGUI() {
+        //Create and set up the window.
+        JFrame frame = new JFrame("CustomComboBoxDemo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Create and set up the content pane.
+        JComponent newContentPane = new CustomComboBoxDemo();
+        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(newContentPane);
+
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+    }
+
 	// interface RadianceIcon extends Icon
-    ImageIcon[] images;
     RadianceIcon[] icons;
-    String[] petStrings = {"activity", "airplay", "alert_circle", "archive", "award"};
+    String[] iconNames = {"activity", "airplay", "alert_circle", "archive", "award"};
 
     /*
      * Despite its use of EmptyBorder, this panel makes a fine content
@@ -74,57 +110,32 @@ public class CustomComboBoxDemo extends JPanel {
     public CustomComboBoxDemo() {
         super(new BorderLayout());
 
-        //Load the pet images and create an array of indexes.
-        images = new ImageIcon[petStrings.length];
-        icons = new RadianceIcon[petStrings.length];
-        Integer[] intArray = new Integer[petStrings.length];
-        for (int i = 0; i < petStrings.length; i++) {
-            intArray[i] = new Integer(i);
-            images[i] = createImageIcon("images/" + petStrings[i] + ".gif");
-            icons[i] = createRadianceIcon(petStrings[i]);
-            if (images[i] != null) {
-                images[i].setDescription(petStrings[i]);
-            }
+        //Load the icons and create an array of indexes.
+        icons = new RadianceIcon[iconNames.length];
+        Integer[] intArray = new Integer[iconNames.length];
+        for (int i = 0; i < iconNames.length; i++) {
+            intArray[i] = Integer.valueOf(i);
+            icons[i] = createRadianceIcon(iconNames[i]);
         }
 
         //Create the combo box.
-        JComboBox petList = new JComboBox(intArray);
+        JComboBox<Integer> petList = new JComboBox<Integer>(intArray); // intArray == items ??? TODO
         ComboBoxRenderer renderer= new ComboBoxRenderer();
-        renderer.setPreferredSize(new Dimension(200, 130));
+        renderer.setPreferredSize(new Dimension(200, SizingConstants.SMALL_ICON*2));
         petList.setRenderer(renderer);
-        petList.setMaximumRowCount(3);
+        petList.setMaximumRowCount(3); // rows the JComboBox displays
 
         //Lay out the demo.
         add(petList, BorderLayout.PAGE_START);
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
     }
 
-    /** Returns an ImageIcon, or null if the path was invalid. */
-    protected static ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = CustomComboBoxDemo.class.getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL);
-        } else {
-            System.err.println("Couldn't find file: " + path);
-                return null;
-        }
-    }
     private static String upperCasePrefix(String iconName) {
     	return Character.isLowerCase(iconName.charAt(0)) ? "IconR" : "";
     }
     protected static RadianceIcon createRadianceIcon(String iconName) {
     	String className = CustomComboBoxDemo.class.getPackageName()+"."+upperCasePrefix(iconName)+iconName;
     	Class<?> iconClass = null;
-//    	if(iconClass==null || !className.equals(iconClass.getName())) {
-//    		LOG.info("load class "+className);
-//			try {
-//				iconClass = Class.forName(className);  // throws ClassNotFoundException
-//			} catch (ClassNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//				return null;
-//			}
-//    	}
     	LOG.info("load class "+className);
     	try {
     		iconClass = Class.forName(className);  // throws ClassNotFoundException
@@ -146,38 +157,7 @@ public class CustomComboBoxDemo extends JPanel {
     	return icon;   	
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("CustomComboBoxDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        JComponent newContentPane = new CustomComboBoxDemo();
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-
-    class ComboBoxRenderer extends JLabel
-                           implements ListCellRenderer {
+    class ComboBoxRenderer extends JLabel implements ListCellRenderer<Integer> {
         private Font uhOhFont;
 
         public ComboBoxRenderer() {
@@ -187,13 +167,12 @@ public class CustomComboBoxDemo extends JPanel {
         }
 
         /*
-         * This method finds the image and text corresponding
-         * to the selected value and returns the label, set up
-         * to display the text and image.
+         * This method finds the icon and text corresponding to the selected value and 
+         * returns the label (with icon), set up to display the text and image.
          */
         public Component getListCellRendererComponent(
-                                           JList list,
-                                           Object value,
+                                           JList<? extends Integer> list,
+                                           Integer value,
                                            int index,
                                            boolean isSelected,
                                            boolean cellHasFocus) {
@@ -210,17 +189,14 @@ public class CustomComboBoxDemo extends JPanel {
             }
 
             //Set the icon and text.  If icon was null, say so.
-//            ImageIcon icon = images[selectedIndex];
             RadianceIcon icon = icons[selectedIndex];
-            String pet = petStrings[selectedIndex];
-//            setIcon(icon); // Label.setIcon
-            setIcon(icon);
+            String iconName = iconNames[selectedIndex];
+            setIcon(icon); // Label.setIcon
             if (icon != null) {
-                setText(pet);
+                setText(iconName);
                 setFont(list.getFont());
             } else {
-                setUhOhText(pet + " (no image available)",
-                            list.getFont());
+                setUhOhText(iconName + " (no image available)", list.getFont());
             }
 
             return this;
