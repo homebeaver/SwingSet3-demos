@@ -227,7 +227,7 @@ public class MirroringIconDemo extends AbstractDemo {
      * @return
      */
     private JComponent createButton(JComponent comp, String iconName, int direction, boolean horizontal, boolean vertical) {
-    	RadianceIcon icon = getRadianceIcon(iconName, SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+    	RadianceIcon icon = getRadianceIcon(iconName, SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON);
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
 //    	LOG.info(iconName+ " rotation direction="+direction 
@@ -320,7 +320,10 @@ public class MirroringIconDemo extends AbstractDemo {
         model.addElement("chevrons");
         model.addElement("feather");
         // colored svgs:
-        model.addElement("Duke"); // setColorFilter nicht anwenden
+        model.addElement("Yellow_Light_Icon"); // setColorFilter nicht anwenden
+        model.addElement("Red_Light_Icon"); // ohen svg
+        model.addElement("Green_Light_Icon");
+        model.addElement("Duke"); // nicht aus feather, mit svg
         model.addElement("Duke_waving");
         return model;
     }

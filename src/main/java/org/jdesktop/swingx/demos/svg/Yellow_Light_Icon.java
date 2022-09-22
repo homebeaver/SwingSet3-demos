@@ -18,7 +18,7 @@ import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
  * This class has been automatically generated using <a
  * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
  */
-public class IconRYellow_Light_Icon implements RadianceIcon {
+public class Yellow_Light_Icon implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
@@ -27,6 +27,16 @@ public class IconRYellow_Light_Icon implements RadianceIcon {
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
+	// EUG https://github.com/homebeaver (rotation + point/axis reflection)
+    private int rsfx = 1, rsfy = 1;
+    public void setReflection(boolean horizontal, boolean vertical) {
+    	this.rsfx = vertical ? -1 : 1;
+    	this.rsfy = horizontal ? -1 : 1;
+    }    
+    public boolean isReflection() {
+		return rsfx==-1 || rsfy==-1;
+	}
+	
     private double theta = 0;
     public void setRotation(double theta) {
     	this.theta = theta;
@@ -34,6 +44,7 @@ public class IconRYellow_Light_Icon implements RadianceIcon {
     public double getRotation() {
 		return theta;
 	}
+	// EUG -- END
 
     
 
@@ -211,7 +222,7 @@ g.setTransform(transformsStack.pop());
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private IconRYellow_Light_Icon() {
+	private Yellow_Light_Icon() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -252,6 +263,11 @@ g.setTransform(transformsStack.pop());
         if(getRotation()!=0) {
             g2d.rotate(getRotation(), x+width/2, y+height/2);
         }
+        if(isReflection()) {
+        	g2d.translate(x+width/2, y+height/2);
+        	g2d.scale(this.rsfx, this.rsfy);
+        	g2d.translate(-x-width/2, -y-height/2);
+        }
 		g2d.translate(x, y);
 
         double coef1 = (double) this.width / getOrigWidth();
@@ -283,7 +299,7 @@ g.setTransform(transformsStack.pop());
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       IconRYellow_Light_Icon base = new IconRYellow_Light_Icon();
+       Yellow_Light_Icon base = new Yellow_Light_Icon();
        base.width = width;
        base.height = height;
        return base;
@@ -297,7 +313,7 @@ g.setTransform(transformsStack.pop());
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       IconRYellow_Light_Icon base = new IconRYellow_Light_Icon();
+       Yellow_Light_Icon base = new Yellow_Light_Icon();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -309,7 +325,7 @@ g.setTransform(transformsStack.pop());
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return IconRYellow_Light_Icon::new;
+        return Yellow_Light_Icon::new;
     }
 }
 
