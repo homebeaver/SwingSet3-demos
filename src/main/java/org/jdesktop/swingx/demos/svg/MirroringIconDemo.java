@@ -300,7 +300,10 @@ public class MirroringIconDemo extends AbstractDemo {
 		iconChooserCombo.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
 		controls.add(iconChooserCombo);
 		l.setLabelFor(iconChooserCombo);
-		controls.add(Box.createRigidArea(VGAP30));
+//		controls.add(Box.createRigidArea(VGAP30));
+
+        // Fill up the remaining space
+		controls.add(new JPanel(new BorderLayout()));
 
 		return controls;
 	}
