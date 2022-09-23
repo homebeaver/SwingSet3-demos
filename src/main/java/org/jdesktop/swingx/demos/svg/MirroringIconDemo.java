@@ -2,7 +2,9 @@ package org.jdesktop.swingx.demos.svg;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.IOException;
@@ -17,10 +19,14 @@ import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListCellRenderer;
 import javax.swing.MutableComboBoxModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -31,6 +37,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
 
@@ -79,7 +86,7 @@ public class MirroringIconDemo extends AbstractDemo {
     private JTextArea textArea;
 
     // controller:
-    private JXComboBox<String> iconChooserCombo;
+    private JComboBox<DisplayInfo<RadianceIcon>> iconChooserCombo;
 
     JPanel center;
     JPanel north;
@@ -288,18 +295,24 @@ public class MirroringIconDemo extends AbstractDemo {
 		JXLabel l = new JXLabel("select another icon:");
 		l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
 		controls.add(l);
-		iconChooserCombo = new JXComboBox<String>();
-		iconChooserCombo.setName("fontChooserCombo");
+
+        // Create the combo chooser box:
+		iconChooserCombo = new JComboBox<DisplayInfo<RadianceIcon>>();
+		iconChooserCombo.setName("iconChooserCombo");
 		iconChooserCombo.setModel(createCBM());
+        ComboBoxRenderer renderer = new ComboBoxRenderer();
+        renderer.setPreferredSize(new Dimension(200, SizingConstants.SMALL_ICON*3));
+        iconChooserCombo.setRenderer(renderer);
+        iconChooserCombo.setMaximumRowCount(7); // rows the JComboBox displays
 		iconChooserCombo.addActionListener(ae -> {
-			String item = (String) iconChooserCombo.getSelectedItem();
-			LOG.info("Combo.SelectedItem=" + item);
-			initComponents(item);
+			@SuppressWarnings("unchecked")
+			DisplayInfo<RadianceIcon> item = (DisplayInfo<RadianceIcon>)iconChooserCombo.getSelectedItem();
+			LOG.info("Combo.SelectedItem=" + item.getDescription());
+			initComponents(item.getDescription());
 		});
 		iconChooserCombo.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
 		controls.add(iconChooserCombo);
 		l.setLabelFor(iconChooserCombo);
-//		controls.add(Box.createRigidArea(VGAP30));
 
         // Fill up the remaining space
 		controls.add(new JPanel(new BorderLayout()));
@@ -307,27 +320,83 @@ public class MirroringIconDemo extends AbstractDemo {
 		return controls;
 	}
 
-    private ComboBoxModel<String> createCBM() {
-        MutableComboBoxModel<String> model = new DefaultComboBoxModel<String>();
-        model.addElement("activity"); // no svg resource
-        model.addElement("airplay");
-        model.addElement("alert_circle");
-        // ...
-        model.addElement("archive");
-        model.addElement("award");
-        // with svg resource:
-        model.addElement("arrow");
-        model.addElement("arrowInCircle");
-        model.addElement("chevron");
-        model.addElement("chevrons");
-        model.addElement("feather");
-        // colored svgs:
-        model.addElement("Yellow_Light_Icon"); // setColorFilter nicht anwenden
-        model.addElement("Red_Light_Icon"); // ohen svg
-        model.addElement("Green_Light_Icon");
-        model.addElement("Duke"); // nicht aus feather, mit svg
-        model.addElement("Duke_waving");
+    private ComboBoxModel<DisplayInfo<RadianceIcon>> createCBM() {
+        MutableComboBoxModel<DisplayInfo<RadianceIcon>> model = new DefaultComboBoxModel<DisplayInfo<RadianceIcon>>();
+        for (int i = 0; i < iconNames.length; i++) {
+//            model.addElement(new DisplayInfo<RadianceIcon>(iconNames[i], createRadianceIcon(iconNames[i])));
+            model.addElement(new DisplayInfo<RadianceIcon>(iconNames[i], 
+            		getRadianceIcon(iconNames[i], SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON)));
+        }
         return model;
+    }
+    private static final String[] iconNames = {"activity", "airplay", "alert_circle"
+    		// ...
+    		, "archive", "award"
+    		// with svg resource:
+    		, "arrow", "arrowInCircle", "chevron", "chevrons", "feather"
+    		// colored svgs (do not apply setColorFilter!):
+    		, "Yellow_Light_Icon"
+    		// without svg resource:
+    		, "Red_Light_Icon", "Green_Light_Icon"
+    		// not feather:
+    		, "Duke" // with svg resource
+    		, "Duke_waving" // without svg resource
+    		};
+
+    class ComboBoxRenderer extends JLabel implements ListCellRenderer<DisplayInfo<RadianceIcon>> {
+        private Font uhOhFont;
+
+        public ComboBoxRenderer() {
+            setOpaque(true);
+            setHorizontalAlignment(CENTER);
+            setVerticalAlignment(CENTER);
+        }
+
+        /*
+         * Return a label that has been configured to display the specified combo item.
+         */
+		public Component getListCellRendererComponent(JList<? extends DisplayInfo<RadianceIcon>> list,
+				DisplayInfo<RadianceIcon> comboItem, 
+				int index, 
+				boolean isSelected, 
+				boolean cellHasFocus) {
+			
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+
+			// Set the icon and its description text. If icon was null, say so.
+			RadianceIcon icon = comboItem.getValue(); // icons[selectedIndex];
+			String iconName = comboItem.getDescription(); // iconNames[selectedIndex];
+			setIcon(icon); // Label.setIcon
+			/*
+			   wenn ausreichend Platz ist (renderer.setPreferredSize), dann
+			   kann man den text unterhalb des icons positionieren:
+			 */
+			this.setVerticalTextPosition(BOTTOM); // default is CENTER. 
+			this.setHorizontalTextPosition(CENTER); // LEADING, ... TRAILING is default
+			if (icon != null) {
+				setText(iconName);
+				setFont(list.getFont());
+			} else {
+				setUhOhText(iconName + " (no image available)", list.getFont());
+			}
+
+			return this;
+		}
+
+        //Set the font and text when no image was found.
+        protected void setUhOhText(String uhOhText, Font normalFont) {
+            if (uhOhFont == null) { //lazily create this font
+                uhOhFont = normalFont.deriveFont(Font.ITALIC);
+            }
+            setFont(uhOhFont);
+            setText(uhOhText);
+        }
     }
 
 }
