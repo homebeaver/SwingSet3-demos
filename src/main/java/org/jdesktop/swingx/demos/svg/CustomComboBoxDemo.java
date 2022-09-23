@@ -40,6 +40,8 @@ import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -47,7 +49,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+import javax.swing.MutableComboBoxModel;
 
+import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
 
@@ -95,8 +99,6 @@ public class CustomComboBoxDemo extends JPanel {
         frame.setVisible(true);
     }
 
-	// interface RadianceIcon extends Icon
-    RadianceIcon[] icons;
     String[] iconNames = {"activity", "airplay", "alert_circle", "archive", "award"};
 
     /*
@@ -110,26 +112,27 @@ public class CustomComboBoxDemo extends JPanel {
     public CustomComboBoxDemo() {
         super(new BorderLayout());
 
-        //Load the icons and create an array of indexes.
-        icons = new RadianceIcon[iconNames.length];
-        Integer[] intArray = new Integer[iconNames.length];
-        for (int i = 0; i < iconNames.length; i++) {
-            intArray[i] = Integer.valueOf(i);
-            icons[i] = createRadianceIcon(iconNames[i]);
-        }
-
         //Create the combo box.
-        JComboBox<Integer> petList = new JComboBox<Integer>(intArray); // intArray == items ??? TODO
+        JComboBox<DisplayInfo<RadianceIcon>> iconCombo = new JComboBox<DisplayInfo<RadianceIcon>>();
+        iconCombo.setModel(createCBM());
         ComboBoxRenderer renderer= new ComboBoxRenderer();
-        renderer.setPreferredSize(new Dimension(200, SizingConstants.SMALL_ICON*2));
-        petList.setRenderer(renderer);
-        petList.setMaximumRowCount(3); // rows the JComboBox displays
+        renderer.setPreferredSize(new Dimension(200, SizingConstants.SMALL_ICON*3));
+        iconCombo.setRenderer(renderer);
+        iconCombo.setMaximumRowCount(3); // rows the JComboBox displays
 
         //Lay out the demo.
-        add(petList, BorderLayout.PAGE_START);
+        add(iconCombo, BorderLayout.PAGE_START);
         setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
     }
 
+    private ComboBoxModel<DisplayInfo<RadianceIcon>> createCBM() {
+        MutableComboBoxModel<DisplayInfo<RadianceIcon>> model = new DefaultComboBoxModel<DisplayInfo<RadianceIcon>>();
+        for (int i = 0; i < iconNames.length; i++) {
+            model.addElement(new DisplayInfo<RadianceIcon>(iconNames[i], createRadianceIcon(iconNames[i])));
+        }
+        return model;
+    }
+    
     private static String upperCasePrefix(String iconName) {
     	return Character.isLowerCase(iconName.charAt(0)) ? "IconR" : "";
     }
@@ -157,7 +160,7 @@ public class CustomComboBoxDemo extends JPanel {
     	return icon;   	
     }
 
-    class ComboBoxRenderer extends JLabel implements ListCellRenderer<Integer> {
+    class ComboBoxRenderer extends JLabel implements ListCellRenderer<DisplayInfo<RadianceIcon>> {
         private Font uhOhFont;
 
         public ComboBoxRenderer() {
@@ -167,40 +170,41 @@ public class CustomComboBoxDemo extends JPanel {
         }
 
         /*
-         * This method finds the icon and text corresponding to the selected value and 
-         * returns the label (with icon), set up to display the text and image.
+         * Return a label that has been configured to display the specified combo item.
          */
-        public Component getListCellRendererComponent(
-                                           JList<? extends Integer> list,
-                                           Integer value,
-                                           int index,
-                                           boolean isSelected,
-                                           boolean cellHasFocus) {
-            //Get the selected index. (The index param isn't
-            //always valid, so just use the value.)
-            int selectedIndex = ((Integer)value).intValue();
+		public Component getListCellRendererComponent(JList<? extends DisplayInfo<RadianceIcon>> list,
+				DisplayInfo<RadianceIcon> comboItem, 
+				int index, 
+				boolean isSelected, 
+				boolean cellHasFocus) {
+			
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
 
-            if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
-            } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
-            }
+			// Set the icon and its description text. If icon was null, say so.
+			RadianceIcon icon = comboItem.getValue(); // icons[selectedIndex];
+			String iconName = comboItem.getDescription(); // iconNames[selectedIndex];
+			setIcon(icon); // Label.setIcon
+			/*
+			   wenn ausreichend Platz ist (renderer.setPreferredSize), dann
+			   kann man den text unterhalb des icons positionieren:
+			 */
+			this.setVerticalTextPosition(BOTTOM); // default is CENTER. 
+			this.setHorizontalTextPosition(CENTER); // LEADING, ... TRAILING is default
+			if (icon != null) {
+				setText(iconName);
+				setFont(list.getFont());
+			} else {
+				setUhOhText(iconName + " (no image available)", list.getFont());
+			}
 
-            //Set the icon and text.  If icon was null, say so.
-            RadianceIcon icon = icons[selectedIndex];
-            String iconName = iconNames[selectedIndex];
-            setIcon(icon); // Label.setIcon
-            if (icon != null) {
-                setText(iconName);
-                setFont(list.getFont());
-            } else {
-                setUhOhText(iconName + " (no image available)", list.getFont());
-            }
-
-            return this;
-        }
+			return this;
+		}
 
         //Set the font and text when no image was found.
         protected void setUhOhText(String uhOhText, Font normalFont) {
