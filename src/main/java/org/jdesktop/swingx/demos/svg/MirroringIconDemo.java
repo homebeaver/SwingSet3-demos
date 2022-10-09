@@ -124,8 +124,8 @@ public class MirroringIconDemo extends AbstractDemo {
     	}
 
     	horizontalMirroring = createButton(horizontalMirroring, iconName, -1, true, false);
-    	swRotation = createButton(swRotation, iconName, SizingConstants.NORTH_WEST);
-    	seRotation = createButton(seRotation, iconName, SizingConstants.NORTH_EAST);
+    	swRotation = createButton(swRotation, iconName, SizingConstants.SOUTH_WEST);
+    	seRotation = createButton(seRotation, iconName, SizingConstants.SOUTH_EAST);
     	if(south==null) {
             south = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
             south.add(swRotation);
@@ -138,7 +138,7 @@ public class MirroringIconDemo extends AbstractDemo {
     	// vertical mirroring:
     	boolean addToEastAndWest = verticalMirroring==null ? true : false;
     	original2 = createButton(original2, iconName, SizingConstants.NORTH);
-    	verticalMirroring = createButton(verticalMirroring, iconName, -1, true, false);
+    	verticalMirroring = createButton(verticalMirroring, iconName, -1, false, true);
     	if(addToEastAndWest) {
     		// add original duplicate to WEST and verticalMirroring in opposite of it
         	add(original2, BorderLayout.WEST);
@@ -236,10 +236,9 @@ public class MirroringIconDemo extends AbstractDemo {
     	RadianceIcon icon = getRadianceIcon(iconName, SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON);
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
-//    	LOG.info(iconName+ " rotation direction="+direction 
-//    			+" canApplyColorFilter="+canApplyColorFilter(iconName)
-//    			+"  >>>---------------icon.isReflection():"+icon.isReflection());
     	String orientation = icon.isReflection() ? reflectionType(horizontal, vertical) : "?";
+    	LOG.info(iconName+ " rotation direction="+direction + 
+    		" /Reflection horizontal="+horizontal + " vertical="+vertical +" String orientation="+orientation);
 		switch (direction) {
 		case SwingConstants.NORTH: // 1
 			//orientation = "N";
