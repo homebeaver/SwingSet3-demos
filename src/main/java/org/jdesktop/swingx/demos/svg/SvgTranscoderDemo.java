@@ -115,7 +115,7 @@ public class SvgTranscoderDemo extends AbstractDemo {
 //    	JPanel buttonPanel = new JPanel(new BoxLayout());
         JPanel panel = new JXPanel(new GridLayout(0, 6, 1, 1)); // zero meaning any number of rows
         add(panel, BorderLayout.NORTH);
-        RadianceIcon duke = IconRDuke.factory().createNewIcon();
+        RadianceIcon duke = Duke.factory().createNewIcon();
         duke.setDimension(new Dimension(SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON));
     	panel.add(new JButton("Duke", duke));
     	Icon activity = //new IconTactivity();
@@ -132,15 +132,25 @@ public class SvgTranscoderDemo extends AbstractDemo {
     	panel.add(new JButton("anchor", IconRanchor.factory().createNewIcon()));
     	panel.add(new JButton("aperture", IconRaperture.factory().createNewIcon()));
     	panel.add(new JButton("archive", IconRarchive.factory().createNewIcon()));
-    	panel.add(new JButton("arrow_down", IconRarrow_down.factory().createNewIcon()));
-    	panel.add(new JButton("arrow_down_circle", IconRarrow_down_circle.factory().createNewIcon()));
-    	panel.add(new JButton("arrow_down_left", IconRarrow_down_left.factory().createNewIcon()));
-    	panel.add(new JButton("arrow_down_right", IconRarrow_down_right.factory().createNewIcon()));
-    	panel.add(new JButton("arrow_left", IconRarrow_left.factory().createNewIcon()));
-    	panel.add(new JButton("arrow_right", IconRarrow_right.factory().createNewIcon()));
+//    	panel.add(new JButton("arrow_down", IconRarrow_down.factory().createNewIcon()));
+//    	panel.add(new JButton("arrow_down_circle", IconRarrow_down_circle.factory().createNewIcon()));
+//    	panel.add(new JButton("arrow_down_left", IconRarrow_down_left.factory().createNewIcon()));
+//    	panel.add(new JButton("arrow_down_right", IconRarrow_down_right.factory().createNewIcon()));
+//    	panel.add(new JButton("arrow_left", IconRarrow_left.factory().createNewIcon()));
+//    	panel.add(new JButton("arrow_right", IconRarrow_right.factory().createNewIcon()));
+    	panel.add(new JButton("arrow N", IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	RadianceIcon ne = IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+    	ne.setRotation(SizingConstants.NORTH_EAST);
+    	panel.add(new JButton("arrow NE", ne));
+//    	IconRarrowXXX east = (IconRarrowXXX)IconRarrowXXX.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+//    	east.setDirection(SizingConstants.EAST);
+//    	panel.add(new JButton("arrow E", east));
+//    	IconRarrowXXX se = (IconRarrowXXX)IconRarrowXXX.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+//    	se.setDirection(SizingConstants.SOUTH_EAST);
+//    	panel.add(new JButton("arrow SE", se));
     	panel.add(new JButton("XS award",  IconRaward.of(SizingConstants.XS, SizingConstants.XS)));
 
-        RadianceIcon duke_waving = IconRDuke_waving.factory().createNewIcon();
+        RadianceIcon duke_waving = Duke_waving.factory().createNewIcon();
         duke_waving.setDimension(new Dimension(SizingConstants.LAUNCHER_ICON, SizingConstants.LAUNCHER_ICON));
     	add(new JButton("Duke_waving", duke_waving), BorderLayout.SOUTH);
 
