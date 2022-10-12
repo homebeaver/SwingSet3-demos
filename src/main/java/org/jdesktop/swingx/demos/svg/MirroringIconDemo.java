@@ -340,6 +340,17 @@ public class MirroringIconDemo extends AbstractDemo {
     		// not feather:
     		, "Duke" // with svg resource
     		, "Duke_waving" // without svg resource
+    		, "FlagBR" // Flag of Brazil
+    		, "FlagCH"
+    		, "FlagCS"
+    		, "FlagDE"
+    		, "FlagES"
+    		, "FlagFR"
+    		, "FlagIT"
+    		, "FlagNL"
+    		, "FlagPL"
+    		, "FlagSE"
+    		, "FlagUK"
     		};
 
     class ComboBoxRenderer extends JLabel implements ListCellRenderer<DisplayInfo<RadianceIcon>> {
