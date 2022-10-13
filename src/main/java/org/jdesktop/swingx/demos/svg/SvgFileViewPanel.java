@@ -132,7 +132,7 @@ The schematic below shows a row-fill command button panel:
  +-----------------------------+-+
  
 
-Each row hosts four buttons, and the vertical scroll bar allows scrolling thecontent up and down.
+Each row hosts four buttons, and the vertical scroll bar allows scrolling the content up and down.
 
  */
 @SuppressWarnings("serial")
@@ -516,7 +516,7 @@ die icons zum "icon name"s werden in mainWorker.process gebildet
             }
 
             Command svgCommand = Command.builder()
-                    .setText(name.replace('-', ' '))
+                    .setText(name)
                     .setIconFactory(EmptyRadianceIcon.factory())
                     .setAction(commandActionEvent -> {
                     	// transcode svg to java and compile it
@@ -586,7 +586,6 @@ die icons zum "icon name"s werden in mainWorker.process gebildet
                             ? SvgBatikRadianceIcon.getSvgIcon(svgStream, scale, svgDim)
                             : SvgBatikRadianceIcon.getSvgzIcon(svgStream, scale, svgDim);
 
-                    LOG.info(name+" Size="+svgIcon.getViewportSize());
                     // die IconFactory hat nur eine Methode, daher kann sie so aufgerufen werden:
                     newCommands.get(name).setIconFactory(() -> svgIcon); // RadianceIcon createNewIcon()
                 }
@@ -601,7 +600,6 @@ die icons zum "icon name"s werden in mainWorker.process gebildet
      * @param dimension New dimension for the icons.
      */
     public void setIconDimension(int dimension) {
-        this.getProjection().getPresentationModel().getCommandIconDimension();
         this.getProjection().getPresentationModel().setCommandIconDimension(dimension);
     }
     public Dimension getIconDimension() {

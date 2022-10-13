@@ -186,6 +186,7 @@ public class SvgViewer extends JFrame {
                 int newValue = iconSizeSlider.getValue();
                 if (newValue != currIconSize) {
                     currIconSize = newValue;
+                    LOG.info("currIconSize newValue="+newValue);
                     SwingUtilities
                             .invokeLater(() -> svgFileViewPanel.setIconDimension(currIconSize));
                 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005-2021 Radiance Kirill Grouchnikov. All Rights Reserved.
+ * Copyright (c) 2005-2022 Radiance Kirill Grouchnikov. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -177,10 +177,10 @@ public class CommandButtonLayoutManagerBig implements CommandButtonLayoutManager
                 this.titlePart1 = title;
                 this.titlePart2 = null;
             } else {
-                int currMaxLength = fm.stringWidth(this.commandButton.getText());
                 int actionIconWidth = ComponentUtilities.hasPopupAction(this.commandButton) ? 0
                         : 2 * ComponentUtilities.getHLayoutGap(commandButton)
                         + (fm.getAscent() + fm.getDescent()) / 2;
+                int currMaxLength = fm.stringWidth(this.commandButton.getText()) + actionIconWidth;
 
                 StringBuilder currLeading = new StringBuilder();
                 while (tokenizer.hasMoreTokens()) {
@@ -278,8 +278,10 @@ public class CommandButtonLayoutManagerBig implements CommandButtonLayoutManager
             y += (iconHeight + layoutVGap);
         }
 
-        // separator?
-        // horizontal separator is always after the icon
+        // Separator is present if it's a split button. In that case, the separator is always
+        // after the main icon, since the popup icon is displayed alongside the second line of
+        // text and it's not possible to create separate action / popup rectangles for
+        // ACTION_AND_POPUP_MAIN_ACTION mode
         if (hasIcon && buttonKind.hasAction() && buttonKind.hasPopup()) {
             result.separatorOrientation =
                     CommandButtonLayoutManager.CommandButtonSeparatorOrientation.HORIZONTAL;
@@ -337,7 +339,7 @@ public class CommandButtonLayoutManagerBig implements CommandButtonLayoutManager
             line2LayoutInfo.textRect.width = lastTextLineWidth;
             line2LayoutInfo.textRect.height = labelHeight;
 
-            result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
+            result.textLayoutInfoList = new ArrayList<>();
             result.textLayoutInfoList.add(line1LayoutInfo);
             result.textLayoutInfoList.add(line2LayoutInfo);
         }
@@ -381,8 +383,7 @@ public class CommandButtonLayoutManagerBig implements CommandButtonLayoutManager
                 // 1. break after icon if button has icon
                 // 2. no break (all popup) if button has no icon
                 if (hasIcon) {
-                    int yBorderBetweenActionAndPopupAreas = result.iconRect.y + result.iconRect.height
-                            + layoutVGap;
+                    int yBorderBetweenActionAndPopupAreas = result.separatorArea.y;
 
                     result.actionClickArea.x = 0;
                     result.actionClickArea.y = 0;
@@ -393,16 +394,16 @@ public class CommandButtonLayoutManagerBig implements CommandButtonLayoutManager
                     result.popupClickArea.y = yBorderBetweenActionAndPopupAreas;
                     result.popupClickArea.width = width;
                     result.popupClickArea.height = height - yBorderBetweenActionAndPopupAreas;
-
-                    result.isTextInActionArea = false;
                 } else {
                     result.popupClickArea.x = 0;
                     result.popupClickArea.y = 0;
                     result.popupClickArea.width = width;
                     result.popupClickArea.height = height;
-
-                    result.isTextInActionArea = false;
                 }
+                // Texts are always in the popup area, since the popup icon is displayed alongside
+                // the second line of text and it's not possible to create separate action / popup
+                // rectangles for ACTION_AND_POPUP_MAIN_ACTION mode
+                result.isTextInActionArea = false;
         }
 
         return result;
