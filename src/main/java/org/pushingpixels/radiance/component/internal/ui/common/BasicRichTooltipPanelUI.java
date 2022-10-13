@@ -194,7 +194,9 @@ public abstract class BasicRichTooltipPanelUI extends RichTooltipPanelUI {
             int width = ins.left + 2 * gap + descTextWidth + ins.right;
             RichTooltip tooltipInfo = richTooltipPanel.getTooltipInfo();
             FontRenderContext frc = new FontRenderContext(new AffineTransform(), true, false);
-            if (tooltipInfo.getMainIcon() != null) {
+            if(tooltipInfo==null) {
+            	LOG.warning("!!!!!!!!!!!!!!! tooltipInfo==null");
+            } else if (tooltipInfo.getMainIcon() != null) {
                 width += tooltipInfo.getMainIcon().getIconWidth();
             }
 
@@ -314,7 +316,7 @@ public abstract class BasicRichTooltipPanelUI extends RichTooltipPanelUI {
         public void layoutContainer(Container parent) {
             if(parent.getWidth()==1 && parent.getHeight()==1) { 
             	// see https://github.com/kirill-grouchnikov/radiance/issues/413
-            	LOG.warning("parent Container is 1x1 \n"+parent);
+            	LOG.warning("parent Container is 1x1:"+parent);
                 return;
             }
         	
