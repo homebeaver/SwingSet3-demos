@@ -445,7 +445,7 @@ public class ColorSliderUI extends RadianceSliderUI implements TransitionAwareUI
 		return new QuaquaTrackListener();
 	}
 
-	/**
+	/*
 	 * Track mouse movements.
 	 * 
 	 * This inner class is marked &quot;public&quot; due to a compiler bug. This

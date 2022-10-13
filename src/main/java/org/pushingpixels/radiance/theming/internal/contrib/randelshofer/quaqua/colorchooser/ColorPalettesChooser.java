@@ -77,7 +77,7 @@ public class ColorPalettesChooser extends RadianceColorChooserPanel implements U
         updatePaletteList();
     }
     
-    /**
+    /*
      * @return Vector<PaletteListModel>.
      */
     protected Vector loadPalettes() {

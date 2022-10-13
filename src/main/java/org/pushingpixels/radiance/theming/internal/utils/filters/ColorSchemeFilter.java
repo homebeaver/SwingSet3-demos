@@ -46,7 +46,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 
-/**
+/*
  * @author Romain Guy <romain.guy@mac.com>
  * @author Kirill Grouchnikov
  */

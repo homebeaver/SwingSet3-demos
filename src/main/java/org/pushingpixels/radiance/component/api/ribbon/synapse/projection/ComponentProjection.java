@@ -35,7 +35,7 @@ import org.pushingpixels.radiance.component.api.ribbon.synapse.model.ComponentPr
 
 import javax.swing.*;
 
-/**
+/*
  * Base class for projections that create non-Radiance components, such as {@link JCheckBox} from
  * {@link RibbonCheckBoxProjection}.
  *
