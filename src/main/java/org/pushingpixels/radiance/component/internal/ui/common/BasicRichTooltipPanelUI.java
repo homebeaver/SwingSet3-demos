@@ -46,6 +46,7 @@ import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * Basic UI for rich tooltip panel {@link JRichTooltipPanel}.
@@ -53,6 +54,9 @@ import java.util.ArrayList;
  * @author Kirill Grouchnikov
  */
 public abstract class BasicRichTooltipPanelUI extends RichTooltipPanelUI {
+	
+	private static final Logger LOG = Logger.getLogger(BasicRichTooltipPanelUI.class.getName());
+
     /**
      * The associated tooltip panel.
      */
@@ -308,6 +312,12 @@ public abstract class BasicRichTooltipPanelUI extends RichTooltipPanelUI {
 
         @Override
         public void layoutContainer(Container parent) {
+            if(parent.getWidth()==1 && parent.getHeight()==1) { 
+            	// see https://github.com/kirill-grouchnikov/radiance/issues/413
+            	LOG.warning("parent Container is 1x1 \n"+parent);
+                return;
+            }
+        	
             removeExistingComponents();
 
             Font font = RadianceThemingCortex.GlobalScope.getFontPolicy().getFontSet().
