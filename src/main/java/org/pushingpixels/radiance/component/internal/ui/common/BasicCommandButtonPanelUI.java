@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005-2021 Radiance Kirill Grouchnikov. All Rights Reserved.
+ * Copyright (c) 2005-2022 Radiance Kirill Grouchnikov. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -47,7 +47,7 @@ import java.awt.*;
  */
 public abstract class BasicCommandButtonPanelUI extends CommandButtonPanelUI {
     /**
-     * Client property to mark the the command button panel to not draw the background fill
+     * Client property to mark the command button panel to not draw the background fill
      */
     public static final String SKIP_BACKGROUND_FILL =
             "radiance.component.internal.commandButtonPanel.ui.skipBackgroundFill";
