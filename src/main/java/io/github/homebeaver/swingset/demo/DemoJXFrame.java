@@ -43,6 +43,18 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.SwingXUtilities;
 import org.jdesktop.swingx.action.AbstractActionExt;
+import org.jdesktop.swingx.demos.svg.FlagBR;
+import org.jdesktop.swingx.demos.svg.FlagCH;
+import org.jdesktop.swingx.demos.svg.FlagCS;
+import org.jdesktop.swingx.demos.svg.FlagDE;
+import org.jdesktop.swingx.demos.svg.FlagES;
+import org.jdesktop.swingx.demos.svg.FlagFR;
+import org.jdesktop.swingx.demos.svg.FlagIT;
+import org.jdesktop.swingx.demos.svg.FlagNL;
+import org.jdesktop.swingx.demos.svg.FlagPL;
+import org.jdesktop.swingx.demos.svg.FlagSE;
+import org.jdesktop.swingx.demos.svg.FlagUK;
+import org.jdesktop.swingx.icon.SizingConstants;
 
 import swingset.StaticUtilities;
 
@@ -382,20 +394,20 @@ aus super:
     protected JMenu createLanguageMenu(Window target) {
     	Locale defaultLocale = JComponent.getDefaultLocale();
     	List<DisplayLocale> locales = new ArrayList<DisplayLocale>();
-    	locales.add(new DisplayLocale(Locale.ENGLISH));
-    	locales.add(new DisplayLocale("cs"));
-    	locales.add(new DisplayLocale("es"));
-    	locales.add(new DisplayLocale(Locale.FRENCH));
-    	locales.add(new DisplayLocale(Locale.GERMAN));
-    	locales.add(new DisplayLocale(new Locale("de", "CH")));
-    	locales.add(new DisplayLocale(new Locale("fr", "CH")));
-    	locales.add(new DisplayLocale(new Locale("it", "CH")));
-    	locales.add(new DisplayLocale(new Locale("rm", "CH")));
-    	locales.add(new DisplayLocale(Locale.ITALIAN));
-    	locales.add(new DisplayLocale("nl"));
-    	locales.add(new DisplayLocale("pl"));
-    	locales.add(new DisplayLocale(new Locale("pt", "BR")));
-    	locales.add(new DisplayLocale("sv"));
+    	locales.add(new DisplayLocale(Locale.ENGLISH, FlagUK.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale("cs", FlagCS.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale("es", FlagES.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale(Locale.FRENCH, FlagFR.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale(Locale.GERMAN, FlagDE.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale(new Locale("de", "CH"), FlagDE.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale(new Locale("fr", "CH"), FlagFR.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale(new Locale("it", "CH"), FlagIT.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale(new Locale("rm", "CH"), FlagCH.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale(Locale.ITALIAN, FlagIT.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale("nl", FlagNL.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale("pl", FlagPL.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale(new Locale("pt", "BR"), FlagBR.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
+    	locales.add(new DisplayLocale("sv", FlagSE.of(SizingConstants.ACTION_ICON, SizingConstants.SMALL_ICON)));
     	
         JMenu menu = new JMenu("Languages");
         ButtonGroup langMenuGroup = new ButtonGroup(); // wg. mi.setSelected
@@ -404,6 +416,7 @@ aus super:
         	SetLanguageAction action = new SetLanguageAction(dl, target);
         	JMenuItem mi = (JRadioButtonMenuItem) menu.add(new JRadioButtonMenuItem(action));
         	mi.setText(dl.toString());
+        	mi.setIcon(dl.getIcon());
         	if(defaultLocale!=null && defaultLocale.toString().startsWith(dl.getLocale().toString())) mi.setSelected(true);
         	langMenuGroup.add(mi);
         });
