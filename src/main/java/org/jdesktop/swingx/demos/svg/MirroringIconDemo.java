@@ -328,11 +328,12 @@ public class MirroringIconDemo extends AbstractDemo {
         }
         return model;
     }
-    private static final String[] iconNames = {"activity", "airplay", "alert_circle"
+    private static final String[] iconNames = {"activity", "airplay"
     		// ...
     		, "archive", "award"
     		// with svg resource:
     		, "arrow", "arrowInCircle", "chevron", "chevrons", "feather"
+    		, "info" // rotating 180° or horizontal mirroring results to "alert-circle"
     		// colored svgs (do not apply setColorFilter!):
     		, "Yellow_Light_Icon"
     		// without svg resource:

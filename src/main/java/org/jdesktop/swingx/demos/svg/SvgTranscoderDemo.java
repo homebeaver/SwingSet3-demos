@@ -123,7 +123,7 @@ public class SvgTranscoderDemo extends AbstractDemo {
     	JButton activityButton = new JButton("activity", activity);
     	panel.add(activityButton);
     	panel.add(new JButton("airplay", IconRairplay.factory().createNewIcon()));
-    	panel.add(new JButton("alert_circle", IconRalert_circle.factory().createNewIcon()));
+//    	panel.add(new JButton("alert_circle", IconRalert_circle.factory().createNewIcon()));
     	panel.add(new JButton("alert_octagon", IconRalert_octagon.factory().createNewIcon()));
     	panel.add(new JButton("alert_triangle", IconRalert_triangle.factory().createNewIcon()));
     	panel.add(new JButton("align_center", IconRalign_center.factory().createNewIcon()));
