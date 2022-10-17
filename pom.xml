@@ -21,7 +21,7 @@
   
   <name>swingset3 demos</name>
   <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 + swingset3</description>
-  <version>1.7.2</version>
+  <version>1.7.3</version>
   
   <inceptionYear>2005</inceptionYear>
 
@@ -300,7 +300,33 @@
 		    <version>42.4.1</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-all -->
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-bridge -->
+		<dependency>
+		    <groupId>org.apache.xmlgraphics</groupId>
+		    <artifactId>batik-bridge</artifactId>
+		    <version>1.15</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>xml-apis</groupId>
+		    		<artifactId>xml-apis</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-swing -->
+		<dependency>
+		    <groupId>org.apache.xmlgraphics</groupId>
+		    <artifactId>batik-swing</artifactId>
+		    <version>1.15</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder -->
+		<dependency>
+		    <groupId>org.apache.xmlgraphics</groupId>
+		    <artifactId>batik-transcoder</artifactId>
+		    <version>1.15</version>
+		</dependency>
+		
+<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-all
+ vulnerabilities : 4 threats discovered , one high severity
 		<dependency>
 		    <groupId>org.apache.xmlgraphics</groupId>
 		    <artifactId>batik-all</artifactId>
@@ -313,6 +339,6 @@
 		    	</exclusion>
 		    </exclusions>
 		</dependency>
-		
+ -->		
 	</dependencies>
 </project>
