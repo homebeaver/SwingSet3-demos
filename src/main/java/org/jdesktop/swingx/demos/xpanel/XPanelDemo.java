@@ -28,6 +28,8 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.icon.ChevronsIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.SizingConstants;
 import org.pushingpixels.trident.api.Timeline;
 
 import swingset.AbstractDemo;
@@ -160,9 +162,7 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
         fadeIn = new JButton();
         fadeIn.setName("fadeIn");
         fadeIn.setText(getBundleString("fadeIn.text"));
-        ChevronsIcon fadeInIcon = new ChevronsIcon(ChevronsIcon.SMALL_ICON);
-        fadeInIcon.setDirection(ChevronsIcon.NORTH);
-        fadeIn.setIcon(fadeInIcon);
+        fadeIn.setIcon(ChevronsIcon.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
         fadeIn.addActionListener( ae -> {
         	setAlphaProp(0f);
         	timeline.play(); // fade in
@@ -177,7 +177,9 @@ public class XPanelDemo extends AbstractDemo implements ChangeListener {
         fadeOut = new JButton();
         fadeOut.setName("fadeOut");
         fadeOut.setText(getBundleString("fadeOut.text"));
-        fadeOut.setIcon(new ChevronsIcon(ChevronsIcon.SMALL_ICON));
+        RadianceIcon chevrons = ChevronsIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+        chevrons.setRotation(RadianceIcon.SOUTH);
+        fadeOut.setIcon(chevrons);
         fadeOut.addActionListener( ae -> {
         	setAlphaProp(1f);
         	timeline.playReverse(); // fade out

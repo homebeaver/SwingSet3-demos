@@ -22,7 +22,7 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.action.AbstractActionExt;
 import org.jdesktop.swingx.icon.PauseIcon;
 import org.jdesktop.swingx.icon.PlayIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.StopIcon;
 
 import swingset.AbstractDemo;
@@ -92,9 +92,20 @@ public class DemoAction extends AbstractActionExt {
 	 */
 	// swingSetVersion,color => smallIcon
 	public static Icon getSmallIcon(int ssv, Color color) {
-		if(ssv==2) return new StopIcon(SizingConstants.SMALL_ICON, color);
-		if(ssv==3) return new PlayIcon(SizingConstants.SMALL_ICON, color);
-		return new PauseIcon(SizingConstants.SMALL_ICON, color);		
+		RadianceIcon icon;
+		if(ssv==2) {
+			icon = StopIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+			icon.setColorFilter(iconColor -> color);
+			return icon;
+		}
+		if(ssv==3) {
+			icon = PlayIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+			icon.setColorFilter(iconColor -> color);
+			return icon;
+		}
+		icon = PauseIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+		icon.setColorFilter(iconColor -> color);
+		return icon;
 	}
 	/**
 	 * get SmallIcon for swingSetVersion,category
@@ -104,9 +115,19 @@ public class DemoAction extends AbstractActionExt {
 	 */
 	// swingSetVersion,category => smallIcon
 	public static Icon getSmallIcon(int ssv, Category category) {
-		if(ssv==2) return new StopIcon(SizingConstants.SMALL_ICON, categoryToColor.get(category));
-		if(ssv==3) return new PlayIcon(SizingConstants.SMALL_ICON, categoryToColor.get(category));
-		return new PauseIcon(SizingConstants.SMALL_ICON);		
+		RadianceIcon icon;
+		if(ssv==2) {
+			icon = StopIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+			icon.setColorFilter(iconColor -> categoryToColor.get(category));
+			return icon;
+		}
+		if(ssv==3) {
+			icon = PlayIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+			icon.setColorFilter(iconColor -> categoryToColor.get(category));
+			return icon;
+		}
+		icon = PauseIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+		return icon;
 	}
 
 	Class<?> democlass = null;

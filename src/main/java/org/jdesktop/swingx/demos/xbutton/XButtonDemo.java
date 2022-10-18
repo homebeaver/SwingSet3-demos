@@ -26,10 +26,12 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.icon.CircleIcon;
 import org.jdesktop.swingx.icon.ColumnControlIcon;
 import org.jdesktop.swingx.icon.PainterIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
+import org.jdesktop.swingx.icon.TrafficLightGreenIcon;
+import org.jdesktop.swingx.icon.TrafficLightRedIcon;
 import org.jdesktop.swingx.image.FastBlurFilter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.util.PaintUtils;
@@ -239,11 +241,13 @@ public class XButtonDemo extends AbstractDemo {
         JPanel iconPanel = new JXPanel(new GridLayout(1, 4, 1, 1));
         add(iconPanel, BorderLayout.SOUTH);
         
-        CircleIcon red = new CircleIcon(SizingConstants.ACTION_ICON, CircleIcon.RED);
+    	RadianceIcon red = TrafficLightRedIcon.of(RadianceIcon.ACTION_ICON, RadianceIcon.ACTION_ICON);
+    	red.setRotation(RadianceIcon.NORTH_WEST); // das Licht fällt von NE
         JButton rButton = new JButton("M red Circle", red);
         LOG.info("cButton.getForeground() ="+rButton.getForeground());
         iconPanel.add(rButton);
-        CircleIcon green = new CircleIcon(SizingConstants.S, CircleIcon.GREEN);
+    	RadianceIcon green = TrafficLightGreenIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+    	green.setRotation(SwingConstants.NORTH_WEST); // das Licht fällt von NE
         JButton gButton = new JButton("S green Circle", green);
         iconPanel.add(gButton);
         
@@ -252,7 +256,7 @@ public class XButtonDemo extends AbstractDemo {
         iconPanel.add(ccButton);
         
         // size from green: XS 10 px
-        PainterIcon pi = new PainterIcon(SizingConstants.XS, SizingConstants.XS);
+        PainterIcon pi = new PainterIcon(RadianceIcon.XS, RadianceIcon.XS);
         pi.setPainter(orangeBgPainter);
         JXButton piButton = new JXButton("PainterIcon", pi);
         iconPanel.add(piButton);        

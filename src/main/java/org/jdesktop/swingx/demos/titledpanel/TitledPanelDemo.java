@@ -43,6 +43,7 @@ import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.binding.LabelHandler;
 import org.jdesktop.swingx.icon.ArrowIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.painter.CheckerboardPainter;
 import org.jdesktop.swingx.painter.MattePainter;
@@ -514,8 +515,14 @@ public class TitledPanelDemo extends AbstractDemo {
         Color inactiveColor = Color.LIGHT_GRAY; //UIManager.getColor("Label.disabledText");
         Dimension buttonDim = new Dimension(buttonSize, buttonSize);
 
-        button.setIcon(new ArrowIcon(direction, arrowSize, arrowColor));
-        button.setDisabledIcon(new ArrowIcon(direction, arrowSize, inactiveColor));
+    	RadianceIcon activArrow = ArrowIcon.of(arrowSize, arrowSize);
+    	activArrow.setRotation(direction);
+    	activArrow.setColorFilter(color -> arrowColor);
+    	button.setIcon(activArrow);
+    	RadianceIcon inactivArrow = ArrowIcon.of(arrowSize, arrowSize);
+    	inactivArrow.setRotation(direction);
+    	inactivArrow.setColorFilter(color -> inactiveColor);
+    	button.setDisabledIcon(inactivArrow);
         button.setPreferredSize(buttonDim);
         button.setFocusable(false);
     }

@@ -4,7 +4,6 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package swingset;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -40,6 +39,10 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.icon.CircleIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.TrafficLightGreenIcon;
+import org.jdesktop.swingx.icon.TrafficLightRedIcon;
+import org.jdesktop.swingx.icon.TrafficLightYellowIcon;
 
 /**
  * JButton, JRadioButton, (JToggleButton), JCheckBox Demos
@@ -243,10 +246,10 @@ public class ButtonDemo extends AbstractDemo {
         currentControls = buttons; // currentControls is global para for createControls!
     }
 
-    CircleIcon outoforder = new CircleIcon(CircleIcon.ACTION_ICON, null);
-    CircleIcon red = new CircleIcon(CircleIcon.ACTION_ICON, Color.RED);
-    CircleIcon yellow = new CircleIcon(CircleIcon.ACTION_ICON, Color.YELLOW);
-    CircleIcon green = new CircleIcon(CircleIcon.ACTION_ICON, Color.GREEN);
+	RadianceIcon outoforder = CircleIcon.of(RadianceIcon.ACTION_ICON, RadianceIcon.ACTION_ICON);
+	RadianceIcon red = TrafficLightRedIcon.of(RadianceIcon.ACTION_ICON, RadianceIcon.ACTION_ICON);
+	RadianceIcon yellow = TrafficLightYellowIcon.of(RadianceIcon.ACTION_ICON, RadianceIcon.ACTION_ICON);
+	RadianceIcon green = TrafficLightGreenIcon.of(RadianceIcon.ACTION_ICON, RadianceIcon.ACTION_ICON);
     private void createTrafficLightButtons(JComponent pane) {
         pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
         pane.setBorder(new TitledBorder(null, "Traffic Light Buttons", TitledBorder.LEFT, TitledBorder.TOP));

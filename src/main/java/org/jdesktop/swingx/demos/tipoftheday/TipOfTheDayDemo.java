@@ -28,6 +28,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTipOfTheDay;
 import org.jdesktop.swingx.icon.ChevronsIcon;
 import org.jdesktop.swingx.icon.PlayIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.plaf.basic.BasicTipOfTheDayUI;
 import org.jdesktop.swingx.tips.DefaultTip;
 import org.jdesktop.swingx.tips.DefaultTipOfTheDayModel;
@@ -161,7 +162,7 @@ public class TipOfTheDayDemo extends AbstractDemo {
         // Do not use props:
         nextTipLink.setVerticalAlignment(SwingConstants.TOP);
         nextTipLink.setHorizontalAlignment(SwingConstants.CENTER);
-        nextTipLink.setIcon(new PlayIcon());
+        nextTipLink.setIcon(PlayIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON));
         nextTipLink.setFocusPainted(false);
         
         createAnimation(1500, 1.0f); // 1,5sec , stop at 100% 
@@ -221,8 +222,8 @@ dialogLink.focusPainted=false
     	nextTip.setName("fadeOut");
     	nextTip.setText("fade out and show next tip");
     	nextTip.setHorizontalTextPosition(SwingConstants.LEFT);
-        ChevronsIcon fadeOutIcon = new ChevronsIcon(ChevronsIcon.SMALL_ICON);
-        fadeOutIcon.setDirection(ChevronsIcon.WEST);
+    	RadianceIcon fadeOutIcon = ChevronsIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+    	fadeOutIcon.setRotation(RadianceIcon.WEST);
         nextTip.setIcon(fadeOutIcon);
     	nextTip.addActionListener( ae -> {
         	setAlphaProp(1f);
@@ -240,8 +241,8 @@ dialogLink.focusPainted=false
         fadeIn = new JButton();
         fadeIn.setName("fadeIn");
         fadeIn.setText("fade in");
-        ChevronsIcon fadeInIcon = new ChevronsIcon(ChevronsIcon.SMALL_ICON);
-        fadeInIcon.setDirection(ChevronsIcon.EAST);
+    	RadianceIcon fadeInIcon = ChevronsIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+    	fadeInIcon.setRotation(RadianceIcon.EAST);
         fadeIn.setIcon(fadeInIcon);
         fadeIn.addActionListener( ae -> {
         	setAlphaProp(0f);
