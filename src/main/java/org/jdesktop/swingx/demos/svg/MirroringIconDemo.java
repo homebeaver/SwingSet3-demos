@@ -41,7 +41,6 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.icon.RadianceIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
 
 import swingset.AbstractDemo;
 
@@ -105,9 +104,9 @@ public class MirroringIconDemo extends AbstractDemo {
     private void initComponents(String iconName) {
     	LOG.info("iconName="+iconName);
     	
-    	original = createButton(original, iconName, SizingConstants.NORTH);
-    	nwRotation = createButton(nwRotation, iconName, SizingConstants.NORTH_WEST);
-    	neRotation = createButton(neRotation, iconName, SizingConstants.NORTH_EAST);
+    	original = createButton(original, iconName, SwingConstants.NORTH);
+    	nwRotation = createButton(nwRotation, iconName, SwingConstants.NORTH_WEST);
+    	neRotation = createButton(neRotation, iconName, SwingConstants.NORTH_EAST);
     	if(north==null) {
             north = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
             north.add(nwRotation);
@@ -126,8 +125,8 @@ public class MirroringIconDemo extends AbstractDemo {
     	}
 
     	horizontalMirroring = createButton(horizontalMirroring, iconName, -1, true, false);
-    	swRotation = createButton(swRotation, iconName, SizingConstants.SOUTH_WEST);
-    	seRotation = createButton(seRotation, iconName, SizingConstants.SOUTH_EAST);
+    	swRotation = createButton(swRotation, iconName, SwingConstants.SOUTH_WEST);
+    	seRotation = createButton(seRotation, iconName, SwingConstants.SOUTH_EAST);
     	if(south==null) {
             south = new JXPanel(new GridLayout(0, 3, 1, 1)); // zero meaning any number of rows
             south.add(swRotation);
@@ -139,7 +138,7 @@ public class MirroringIconDemo extends AbstractDemo {
 
     	// vertical mirroring:
     	boolean addToEastAndWest = verticalMirroring==null ? true : false;
-    	original2 = createButton(original2, iconName, SizingConstants.NORTH);
+    	original2 = createButton(original2, iconName, SwingConstants.NORTH);
     	verticalMirroring = createButton(verticalMirroring, iconName, -1, false, true);
     	if(addToEastAndWest) {
     		// add original duplicate to WEST and verticalMirroring in opposite of it
@@ -147,12 +146,15 @@ public class MirroringIconDemo extends AbstractDemo {
         	add(verticalMirroring, BorderLayout.EAST);
     	}
     	
+    	String svgResource = getSvgResourceName(iconName);
         try {
-            InputStream in = getClass().getResourceAsStream(getSvgResourceName(iconName));
-        	LOG.info("read svg file");
+            InputStream in = getClass().getResourceAsStream(svgResource);
+        	LOG.info("read svg file "+svgResource);
             textArea.read(new InputStreamReader(in), null); // NPE if no resources
         } catch (NullPointerException e) {
-            textArea.setText("no svg source fuond for "+iconName);
+        	String msg = getBundleString("textArea.msg.text", "no svg source fuond for ")+" "+iconName;
+        	LOG.info(msg + " / "+svgResource);
+            textArea.setText(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -214,27 +216,30 @@ public class MirroringIconDemo extends AbstractDemo {
 //			RadianceIcon.Factory f = (RadianceIcon.Factory) factory.invoke(null);
 			Method method = iconClass.getMethod("of", int.class, int.class);
 			Object o = method.invoke(null, width, height);
-			icon = (RadianceIcon)o;
+			icon = (RadianceIcon)o; // ClassCastException
 		} catch (NoSuchMethodException | SecurityException 
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+			return null;
 		}
     	return icon;
+    }
+    private String reflectionType(boolean horizontal, boolean vertical) {
+    	if(horizontal && vertical) return getBundleString("reflectionType.point", "point reflection");
+    	if(horizontal) return getBundleString("reflectionType.X", "horizontal mirroring (X axis)");
+    	if(vertical) return getBundleString("reflectionType.y", "vertical mirroring (Y axis)");
+    	return "nix";
     }
     private JComponent createButton(JComponent comp, String iconName, int direction) {
     	return createButton(comp, iconName, direction, false, false);
     }
-    private String reflectionType(boolean horizontal, boolean vertical) {
-    	if(horizontal && vertical) return "point reflection";
-    	if(horizontal) return "horizontal mirroring (X axis)";
-    	if(vertical) return "vertical mirroring (Y axis)";
-    	return "nix";
-    }
     /**
      * 
      * @param iconName
-     * @param direction rotation
+     * @param direction rotation direction, SwingConstants.NORTH == no rotation, NORTH_EAST == 45°
      * @param horizontal point/axis reflection (mirroring) 
      * @param vertical point/axis reflection (mirroring) 
      * @return
@@ -244,14 +249,14 @@ public class MirroringIconDemo extends AbstractDemo {
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
     	String orientation = icon.isReflection() ? reflectionType(horizontal, vertical) : "?";
-    	LOG.info(iconName+ " rotation direction="+direction + 
+    	LOG.fine(iconName+ " rotation direction="+direction + 
     		" /Reflection horizontal="+horizontal + " vertical="+vertical +" String orientation="+orientation);
 		switch (direction) {
 		case SwingConstants.NORTH: // 1
 			//orientation = "N";
             break;
 		case SwingConstants.NORTH_EAST:
-			orientation = "45° rotation (NE)";
+			orientation = getBundleString("orientation.NE", "45° rotation (NE)");
 	    	if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.EAST:
@@ -259,14 +264,14 @@ public class MirroringIconDemo extends AbstractDemo {
 			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH_EAST:
-			orientation = "135° rotation";
+			orientation = getBundleString("orientation.SE", "135° rotation");
 			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH: // 5
 			orientation = "S";
             break;
         case SwingConstants.SOUTH_WEST:
-			orientation = "rotation to SW";
+			orientation = getBundleString("orientation.SW", "rotation to SW");
 			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.WEST:
@@ -274,7 +279,7 @@ public class MirroringIconDemo extends AbstractDemo {
 			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.blue);
             break;
         case SwingConstants.NORTH_WEST:
-			orientation = "rotation to NW";
+			orientation = getBundleString("orientation.NW", "rotation to NW");
 			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.blue);
             break;
 		default: { /* no xform */ }
@@ -298,16 +303,23 @@ public class MirroringIconDemo extends AbstractDemo {
 		controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 		controls.add(Box.createRigidArea(VGAP15));
 
-		JXLabel l = new JXLabel("select another icon:");
-		l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
-		controls.add(l);
+		/*
+        JLabel strictComboBoxLabel = new JLabel();
+        strictComboBoxLabel.setName("strictComboBoxLabel");
+
+		 */
+		JXLabel selectLabel = new JXLabel("select another icon:");
+		selectLabel.setName("selectLabel");
+		selectLabel.setText(getBundleString("selectLabel.text"));
+		selectLabel.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+		controls.add(selectLabel);
 
         // Create the combo chooser box:
 		iconChooserCombo = new JComboBox<DisplayInfo<RadianceIcon>>();
 		iconChooserCombo.setName("iconChooserCombo");
 		iconChooserCombo.setModel(createCBM());
         ComboBoxRenderer renderer = new ComboBoxRenderer();
-        renderer.setPreferredSize(new Dimension(200, SizingConstants.SMALL_ICON*3));
+        renderer.setPreferredSize(new Dimension(200, RadianceIcon.SMALL_ICON*3));
         iconChooserCombo.setRenderer(renderer);
         iconChooserCombo.setMaximumRowCount(7); // rows the JComboBox displays
 		iconChooserCombo.addActionListener(ae -> {
@@ -318,7 +330,7 @@ public class MirroringIconDemo extends AbstractDemo {
 		});
 		iconChooserCombo.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
 		controls.add(iconChooserCombo);
-		l.setLabelFor(iconChooserCombo);
+		selectLabel.setLabelFor(iconChooserCombo);
 
         // Fill up the remaining space
 		controls.add(new JPanel(new BorderLayout()));
@@ -329,8 +341,12 @@ public class MirroringIconDemo extends AbstractDemo {
     private ComboBoxModel<DisplayInfo<RadianceIcon>> createCBM() {
         MutableComboBoxModel<DisplayInfo<RadianceIcon>> model = new DefaultComboBoxModel<DisplayInfo<RadianceIcon>>();
         for (int i = 0; i < iconNames.length; i++) {
-            model.addElement(new DisplayInfo<RadianceIcon>(iconNames[i], 
-            		getRadianceIcon(iconNames[i], RadianceIcon.SMALL_ICON)));
+        	RadianceIcon ri = getRadianceIcon(iconNames[i], RadianceIcon.SMALL_ICON);
+        	if(ri==null) {
+        		LOG.warning("no icon class for "+iconNames[i]);
+        	} else {
+                model.addElement(new DisplayInfo<RadianceIcon>(iconNames[i], ri));
+        	}
         }
         return model;
     }
@@ -340,18 +356,18 @@ public class MirroringIconDemo extends AbstractDemo {
             put("chevron",              "org.jdesktop.swingx.icon.ChevronIcon");
             put("chevrons",             "org.jdesktop.swingx.icon.ChevronsIcon");
             put("Red Traffic Light",    "org.jdesktop.swingx.icon.TrafficLightRedIcon");
-            put("Yellow Traffic Light", "org.jdesktop.swingx.icon.TrafficLightYellowIcon");
+            put("Yellow-Light-Icon", "org.jdesktop.swingx.icon.TrafficLightYellowIcon");
             put("Green Traffic Light",  "org.jdesktop.swingx.icon.TrafficLightGreenIcon");
         }
     };
     private static final String[] iconNames = {"activity", "airplay"
 //    		// ...
-//    		, "archive", "award"
+    		, "align_left" // vertical mirroring results to "align_right" / intentionally cast error
 //    		// with svg resource:
     		, "arrow", "arrowInCircle", "chevron", "chevrons", "feather"
-//    		, "info" // rotating 180° or horizontal mirroring results to "alert-circle"
+    		, "info" // (no class) rotating 180° or horizontal mirroring results to "alert-circle"
     		// colored svgs (do not apply setColorFilter! without svg resource):
-    		, "Red Traffic Light", "Yellow Traffic Light", "Green Traffic Light"
+    		, "Red Traffic Light", "Yellow-Light-Icon", "Green Traffic Light"
     		// not feather:
     		, "Duke" // with svg resource
     		, "Duke_waving" // without svg resource

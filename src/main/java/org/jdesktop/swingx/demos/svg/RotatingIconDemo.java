@@ -22,7 +22,8 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.icon.SizingConstants;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.ArrowIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 
 import swingset.AbstractDemo;
 
@@ -127,8 +128,8 @@ public class RotatingIconDemo extends AbstractDemo {
     }
 
     private JComponent createButton(String iconName, int direction) {
-//    	RadianceIcon icon = IconRarrow.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
-    	RadianceIcon icon = IconRarrowInCircle.of(SizingConstants.LAUNCHER_ICON, SizingConstants.LAUNCHER_ICON);
+    	RadianceIcon icon = ArrowIcon.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
+//    	RadianceIcon icon = IconRarrowInCircle.of(SizingConstants.LAUNCHER_ICON, SizingConstants.LAUNCHER_ICON);
 //    	RadianceIcon icon = IconRchevron.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
 //    	RadianceIcon icon = IconRchevrons.of(SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON);
     	icon.setRotation(direction);
