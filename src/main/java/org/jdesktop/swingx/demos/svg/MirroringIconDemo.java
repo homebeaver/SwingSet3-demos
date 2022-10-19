@@ -121,7 +121,7 @@ public class MirroringIconDemo extends AbstractDemo {
             center.add(new JScrollPane(textArea));
         	add(center);
         	// point reflection under original:
-            center.add(pointReflection, BorderLayout.NORTH);
+//            center.add(pointReflection, BorderLayout.NORTH);
     	}
 
     	horizontalMirroring = createButton(horizontalMirroring, iconName, -1, true, false);
@@ -230,7 +230,7 @@ public class MirroringIconDemo extends AbstractDemo {
     private String reflectionType(boolean horizontal, boolean vertical) {
     	if(horizontal && vertical) return getBundleString("reflectionType.point", "point reflection");
     	if(horizontal) return getBundleString("reflectionType.X", "horizontal mirroring (X axis)");
-    	if(vertical) return getBundleString("reflectionType.y", "vertical mirroring (Y axis)");
+    	if(vertical) return getBundleString("reflectionType.Y", "vertical mirroring (Y axis)");
     	return "nix";
     }
     private JComponent createButton(JComponent comp, String iconName, int direction) {
@@ -264,9 +264,10 @@ public class MirroringIconDemo extends AbstractDemo {
 			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
 			break;
 		case SwingConstants.SOUTH_EAST:
-			orientation = getBundleString("orientation.SE", "135° rotation");
-			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
-			break;
+//			orientation = getBundleString("orientation.SE", "135° rotation");
+//			if(canApplyColorFilter(iconName)) icon.setColorFilter(color -> Color.red);
+//			break;
+			return pointReflection;
 		case SwingConstants.SOUTH: // 5
 			orientation = "S";
             break;
