@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.Box;
@@ -38,8 +40,8 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.binding.DisplayInfo;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
 
 import swingset.AbstractDemo;
 
@@ -189,8 +191,13 @@ public class MirroringIconDemo extends AbstractDemo {
     	return "resources/" + iconName.replace('_', '-') + ".svg";
     }
     Class<?> iconClass = null;
-    private RadianceIcon getRadianceIcon(String iconName, int width, int height) {
-    	String className = getClass().getPackageName()+"."+upperCasePrefix(iconName)+iconName;
+    private RadianceIcon getRadianceIcon(String iconName, int size) {
+    	int width=size;
+    	int height=size;
+    	String className = nameToClassname.get(iconName);
+    	if(className==null) {
+        	className = getClass().getPackageName()+"."+upperCasePrefix(iconName)+iconName;
+    	}
     	if(iconClass==null || !className.equals(iconClass.getName())) {
     		LOG.info("load class "+className);
 			try {
@@ -233,7 +240,7 @@ public class MirroringIconDemo extends AbstractDemo {
      * @return
      */
     private JComponent createButton(JComponent comp, String iconName, int direction, boolean horizontal, boolean vertical) {
-    	RadianceIcon icon = getRadianceIcon(iconName, SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON);
+    	RadianceIcon icon = getRadianceIcon(iconName, RadianceIcon.BUTTON_ICON);
     	icon.setRotation(direction);
     	icon.setReflection(horizontal, vertical);
     	String orientation = icon.isReflection() ? reflectionType(horizontal, vertical) : "?";
@@ -322,22 +329,29 @@ public class MirroringIconDemo extends AbstractDemo {
     private ComboBoxModel<DisplayInfo<RadianceIcon>> createCBM() {
         MutableComboBoxModel<DisplayInfo<RadianceIcon>> model = new DefaultComboBoxModel<DisplayInfo<RadianceIcon>>();
         for (int i = 0; i < iconNames.length; i++) {
-//            model.addElement(new DisplayInfo<RadianceIcon>(iconNames[i], createRadianceIcon(iconNames[i])));
             model.addElement(new DisplayInfo<RadianceIcon>(iconNames[i], 
-            		getRadianceIcon(iconNames[i], SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON)));
+            		getRadianceIcon(iconNames[i], RadianceIcon.SMALL_ICON)));
         }
         return model;
     }
+    private static final Map<String, String> nameToClassname = new HashMap<>(){
+        {
+            put("arrow",                "org.jdesktop.swingx.icon.ArrowIcon");
+            put("chevron",              "org.jdesktop.swingx.icon.ChevronIcon");
+            put("chevrons",             "org.jdesktop.swingx.icon.ChevronsIcon");
+            put("Red Traffic Light",    "org.jdesktop.swingx.icon.TrafficLightRedIcon");
+            put("Yellow Traffic Light", "org.jdesktop.swingx.icon.TrafficLightYellowIcon");
+            put("Green Traffic Light",  "org.jdesktop.swingx.icon.TrafficLightGreenIcon");
+        }
+    };
     private static final String[] iconNames = {"activity", "airplay"
-    		// ...
-    		, "archive", "award"
-    		// with svg resource:
+//    		// ...
+//    		, "archive", "award"
+//    		// with svg resource:
     		, "arrow", "arrowInCircle", "chevron", "chevrons", "feather"
-    		, "info" // rotating 180° or horizontal mirroring results to "alert-circle"
-    		// colored svgs (do not apply setColorFilter!):
-    		, "Yellow_Light_Icon"
-    		// without svg resource:
-    		, "Red_Light_Icon", "Green_Light_Icon"
+//    		, "info" // rotating 180° or horizontal mirroring results to "alert-circle"
+    		// colored svgs (do not apply setColorFilter! without svg resource):
+    		, "Red Traffic Light", "Yellow Traffic Light", "Green Traffic Light"
     		// not feather:
     		, "Duke" // with svg resource
     		, "Duke_waving" // without svg resource

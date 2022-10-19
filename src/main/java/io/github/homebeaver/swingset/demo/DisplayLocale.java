@@ -2,7 +2,7 @@ package io.github.homebeaver.swingset.demo;
 
 import java.util.Locale;
 
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 
 /**
  * wrapper for class Locale

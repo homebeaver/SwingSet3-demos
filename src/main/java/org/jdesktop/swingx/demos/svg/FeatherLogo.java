@@ -30,12 +30,13 @@
 // original: package org.pushingpixels.radiance.demo.component.svg.logo;
 package org.jdesktop.swingx.demos.svg;
 
-import org.pushingpixels.radiance.common.api.RadianceCommonCortex;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
-import org.pushingpixels.radiance.theming.api.colorscheme.RadianceColorScheme;
-
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.image.RadianceCC;
+import org.pushingpixels.radiance.theming.api.colorscheme.RadianceColorScheme;
 
 public class FeatherLogo {
     public static RadianceIcon getLogoIcon(RadianceColorScheme scheme) {
@@ -49,6 +50,6 @@ public class FeatherLogo {
     }
 
     public static BufferedImage getLogoImage(Component comp, RadianceColorScheme scheme) {
-        return getLogoIcon(scheme).toImage(RadianceCommonCortex.getScaleFactor(comp));
+        return getLogoIcon(scheme).toImage(RadianceCC.getScaleFactor(comp));
     }
 }
