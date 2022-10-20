@@ -52,8 +52,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.MutableComboBoxModel;
 
 import org.jdesktop.swingx.binding.DisplayInfo;
-import org.jdesktop.swingx.icon.SizingConstants;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 
 /*
  * original CustomComboBoxDemo.java uses the following files:
@@ -99,7 +98,7 @@ public class CustomComboBoxDemo extends JPanel {
         frame.setVisible(true);
     }
 
-    String[] iconNames = {"activity", "airplay", "alert_circle", "archive", "award"};
+    String[] iconNames = {"activity", "airplay", "IconRarrowInCircle", "feather"};
 
     /*
      * Despite its use of EmptyBorder, this panel makes a fine content
@@ -116,7 +115,7 @@ public class CustomComboBoxDemo extends JPanel {
         JComboBox<DisplayInfo<RadianceIcon>> iconCombo = new JComboBox<DisplayInfo<RadianceIcon>>();
         iconCombo.setModel(createCBM());
         ComboBoxRenderer renderer= new ComboBoxRenderer();
-        renderer.setPreferredSize(new Dimension(200, SizingConstants.SMALL_ICON*3));
+        renderer.setPreferredSize(new Dimension(200, RadianceIcon.SMALL_ICON*3));
         iconCombo.setRenderer(renderer);
         iconCombo.setMaximumRowCount(3); // rows the JComboBox displays
 
@@ -150,7 +149,7 @@ public class CustomComboBoxDemo extends JPanel {
     	RadianceIcon icon = null;
     	try {
 			Method method = iconClass.getMethod("of", int.class, int.class);
-			Object o = method.invoke(null, SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON);
+			Object o = method.invoke(null, RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
 			icon = (RadianceIcon)o;
 		} catch (NoSuchMethodException | SecurityException 
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
