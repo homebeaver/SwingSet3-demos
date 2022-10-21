@@ -31,7 +31,7 @@ package org.pushingpixels.radiance.component.internal.theming.common;
 
 import org.pushingpixels.radiance.common.api.AsynchronousLoading;
 import org.pushingpixels.radiance.common.api.RadianceCommonCortex;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.pushingpixels.radiance.theming.internal.animation.IconGlowTracker;
 import org.pushingpixels.radiance.theming.internal.utils.RadianceColorUtilities;
 import org.pushingpixels.radiance.theming.internal.utils.RadianceCoreUtilities;

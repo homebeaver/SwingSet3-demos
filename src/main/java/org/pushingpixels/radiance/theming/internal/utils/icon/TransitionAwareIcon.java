@@ -30,7 +30,7 @@
 package org.pushingpixels.radiance.theming.internal.utils.icon;
 
 import org.pushingpixels.radiance.common.api.RadianceCommonCortex;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.pushingpixels.radiance.theming.api.ComponentState;
 import org.pushingpixels.radiance.theming.api.RadianceThemingSlices.ColorSchemeAssociationKind;
 import org.pushingpixels.radiance.theming.api.RadianceThemingSlices.ComponentStateFacet;

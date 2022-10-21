@@ -52,7 +52,7 @@ import org.pushingpixels.radiance.component.internal.utils.KeyTipRenderingUtilit
 import org.pushingpixels.radiance.common.api.AsynchronousLoadListener;
 import org.pushingpixels.radiance.common.api.AsynchronousLoading;
 import org.pushingpixels.radiance.common.api.RadianceCommonCortex;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.pushingpixels.radiance.component.internal.ui.ribbon.*;
 import org.pushingpixels.radiance.theming.internal.utils.RadianceCoreUtilities;
 import org.pushingpixels.radiance.theming.internal.utils.RadiancePopupContainer;

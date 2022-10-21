@@ -31,7 +31,7 @@ package org.pushingpixels.radiance.component.internal.ui.common;
 
 import org.pushingpixels.radiance.component.api.common.RichTooltip;
 import org.pushingpixels.radiance.component.internal.utils.ComponentUtilities;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.pushingpixels.radiance.theming.api.RadianceThemingCortex;
 import org.pushingpixels.radiance.theming.internal.utils.border.RadianceBorder;
 

@@ -29,11 +29,7 @@
  */
 package org.pushingpixels.radiance.common.api.icon;
 
-import org.pushingpixels.radiance.common.api.RadianceCommonCortex;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import javax.swing.Icon;
 
 /**
  * Extension of the core {@link Icon} interface that adds more capabilities like
@@ -42,88 +38,6 @@ import java.awt.image.BufferedImage;
  * @author Kirill Grouchnikov
  * @author EUG https://github.com/homebeaver (rotation + point/axis reflection)
  */
-public interface RadianceIcon extends Icon, SwingConstants {
+public interface RadianceIcon extends org.jdesktop.swingx.icon.RadianceIcon {
 	
-	/**
-	 * A hint for point/axis reflection (mirroring) the icon when painting.
-	 * <p>
-	 * <code>setReflection(true, true)</code> means point reflection
-	 * 
-	 * @param horizontal will mirror the icon horizontal (X axis)
-	 * @param vertical will mirror the icon vertical (Y axis)
-	 * 
-	 */
-	// a default is necessary for icons generated before this feature was active
-	default void setReflection(boolean horizontal, boolean vertical) {}
-	default void setReflection(boolean pointReflection) {
-		setReflection(pointReflection, pointReflection);
-	}
-	default boolean isReflection() {
-		return false;
-	}
-	
-	/**
-	 * A hint to rotate the icon when painting
-	 * 
-	 * @param theta the angle of rotation in radians, zero means no rotation
-	 */
-	// a default is necessary for icons generated before this feature was active
-	default void setRotation(double theta) {}
-	default double getRotation() {
-		return 0d; // no rotation
-	}
-	/**
-	 * A hint to rotate the icon to a direction.
-	 * <p> The icon is aligned to {@code NORTH} per default, 
-	 * so rotate direction {@code NORTH_EAST} means rotating 45° right
-	 * and {@code WEST} means rotating 90° left or 270° right.
-	 * 
-	 * @param direction Compass-direction, use {@code SwingConstants} {@code NORTH}, {@code NORTH_EAST} etc
-	 * 
-	 * @see #setRotation(double)
-	 */
-	default void setRotation(int direction) {
-        if(direction>=NORTH && direction<=NORTH_WEST) {
-        	this.setRotation(Math.toRadians(45d*(direction-1)));
-        } else {
-            setRotation(0d); // no rotation for invalid directions
-        }
-	}
-
-	/**
-	 * Changes the dimension of <code>this</code> icon.
-	 * 
-	 * @param newDimension
-	 *            New dimension for <code>this</code> icon.
-	 */
-	void setDimension(Dimension newDimension);
-
-	default BufferedImage toImage(double scale) {
-		BufferedImage result = RadianceCommonCortex.getBlankScaledImage(scale,
-				this.getIconWidth(), this.getIconHeight());
-		this.paintIcon(null, result.getGraphics(), 0, 0);
-		return result;
-	}
-
-	boolean supportsColorFilter();
-
-	void setColorFilter(ColorFilter colorFilter);
-
-    /**
-     * Interface for creating Radiance icons.
-     *
-     * @author Kirill Grouchnikov
-     */
-    interface Factory {
-        /**
-         * Returns a new instance of the icon managed by this factory.
-         *
-         * @return A new instance of the icon managed by this factory.
-         */
-		RadianceIcon createNewIcon();
-    }
-
-    interface ColorFilter {
-    	Color filter(Color color);
-	}
 }

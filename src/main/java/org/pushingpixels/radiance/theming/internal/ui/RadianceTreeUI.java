@@ -35,8 +35,8 @@ import org.pushingpixels.trident.api.Timeline.TimelineState;
 import org.pushingpixels.trident.api.swing.EventDispatchThreadTimelineCallbackAdapter;
 
 import org.pushingpixels.radiance.common.api.RadianceCommonCortex;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
-import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIconUIResource;
 import org.pushingpixels.radiance.theming.api.ComponentState;
 import org.pushingpixels.radiance.theming.api.RadianceThemingSlices;
 import org.pushingpixels.radiance.theming.api.RadianceThemingWidget;

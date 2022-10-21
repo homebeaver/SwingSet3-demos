@@ -29,7 +29,7 @@
  */
 package org.pushingpixels.radiance.common.api;
 
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 
 import java.util.EventListener;
 import java.util.concurrent.ExecutorService;

@@ -29,7 +29,7 @@
  */
 package org.pushingpixels.radiance.component.api.common;
 
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.pushingpixels.radiance.component.api.common.model.*;
 import org.pushingpixels.radiance.component.api.common.popup.JCommandPopupMenu;
 import org.pushingpixels.radiance.component.api.common.popup.JPopupPanel;

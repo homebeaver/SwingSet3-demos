@@ -11,8 +11,8 @@ import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.UIResource;
 
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
-import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIconUIResource;
 
 /**
  * This class has been automatically generated using <a

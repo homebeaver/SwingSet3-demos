@@ -30,7 +30,7 @@
 package org.pushingpixels.radiance.component.internal.ui.common;
 
 import org.pushingpixels.radiance.component.api.common.JCommandButton;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 
 public class CommandButtonLayoutManagerFitToIcon extends CommandButtonLayoutManagerBig {
 	public CommandButtonLayoutManagerFitToIcon(JCommandButton commandButton) {

@@ -34,7 +34,7 @@ import org.pushingpixels.radiance.component.api.common.CommandButtonPresentation
 import org.pushingpixels.radiance.component.api.common.JCommandButton;
 import org.pushingpixels.radiance.component.internal.utils.ComponentUtilities;
 import org.pushingpixels.radiance.common.api.RadianceCommonCortex;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.pushingpixels.radiance.theming.internal.utils.RadianceMetricsUtilities;
 
 import javax.swing.*;

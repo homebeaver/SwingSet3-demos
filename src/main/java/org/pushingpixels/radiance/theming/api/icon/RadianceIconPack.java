@@ -29,7 +29,7 @@
  */
 package org.pushingpixels.radiance.theming.api.icon;
 
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.pushingpixels.radiance.theming.api.RadianceThemingCortex;
 import org.pushingpixels.radiance.theming.api.colorscheme.RadianceColorScheme;
 

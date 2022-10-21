@@ -29,7 +29,7 @@
  */
 package org.pushingpixels.radiance.theming.internal.contrib.randelshofer.quaqua.colorchooser;
 
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.pushingpixels.radiance.theming.api.RadianceThemingSlices;
 import org.pushingpixels.radiance.theming.api.colorscheme.RadianceColorScheme;
 import org.pushingpixels.radiance.theming.internal.utils.RadianceCoreUtilities;
