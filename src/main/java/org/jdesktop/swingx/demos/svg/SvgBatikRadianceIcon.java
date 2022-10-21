@@ -53,6 +53,7 @@ import java.util.zip.GZIPInputStream;
  *
  * @author Kirill Grouchnikov
  */
+// copied from org.pushingpixels.radiance.demo.component.svg.SvgBatikRadianceIcon
 public class SvgBatikRadianceIcon extends SvgBatikIcon implements
         RadianceIcon, AsynchronousLoading {
     /**

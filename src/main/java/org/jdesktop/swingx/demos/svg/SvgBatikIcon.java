@@ -61,6 +61,7 @@ import java.util.concurrent.Executors;
  * @author Cameron McCormack
  * @author Kirill Grouchnikov
  */
+// copied from org.pushingpixels.radiance.demo.component.svg.SvgBatikIcon
 abstract class SvgBatikIcon extends UserAgentAdapter implements Icon {
     /**
      * Contains all precomputed images.
