@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005-2021 Radiance Kirill Grouchnikov. All Rights Reserved.
+ * Copyright (c) 2005-2022 Radiance Kirill Grouchnikov. All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -165,8 +165,7 @@ public class RadianceDefaultIconPack implements RadianceIconPack {
     public RadianceIcon getLockIcon(int preferredSize,
             RadianceColorScheme preferredIconColorScheme) {
         RadianceIcon result = ic_lock_outline_black_24px.uiResourceOf(preferredSize, preferredSize);
-        result.setColorFilter(preferredIconColorScheme.getColorFilter(
-                preferredIconColorScheme.isDark() ? 0.6f : -0.1f, 1.0f));
+        result.setColorFilter(color -> preferredIconColorScheme.getDarkColor());
         return result;
     }
 
@@ -254,7 +253,7 @@ public class RadianceDefaultIconPack implements RadianceIconPack {
     @Override
     public RadianceIcon getColorChooserColorPalettesIcon(int preferredSize,
             RadianceColorScheme preferredIconColorScheme) {
-        RadianceIcon result = ic_palette_black_24px.of(preferredSize, preferredSize);
+        RadianceIcon result = ic_palette_black_24px.uiResourceOf(preferredSize, preferredSize);
         result.setColorFilter(color -> preferredIconColorScheme.getForegroundColor());
         return result;
     }
@@ -262,7 +261,7 @@ public class RadianceDefaultIconPack implements RadianceIconPack {
     @Override
     public RadianceIcon getColorChooserColorSlidersIcon(int preferredSize,
             RadianceColorScheme preferredIconColorScheme) {
-        RadianceIcon result = ic_menu_black_24px.of(preferredSize, preferredSize);
+        RadianceIcon result = ic_menu_black_24px.uiResourceOf(preferredSize, preferredSize);
         result.setColorFilter(color -> preferredIconColorScheme.getForegroundColor());
         return result;
     }
@@ -270,7 +269,7 @@ public class RadianceDefaultIconPack implements RadianceIconPack {
     @Override
     public RadianceIcon getColorChooserColorSwatchesIcon(int preferredSize,
             RadianceColorScheme preferredIconColorScheme) {
-        RadianceIcon result = ic_grid_on_black_24px.of(preferredSize, preferredSize);
+        RadianceIcon result = ic_grid_on_black_24px.uiResourceOf(preferredSize, preferredSize);
         result.setColorFilter(color -> preferredIconColorScheme.getForegroundColor());
         return result;
     }
@@ -278,7 +277,7 @@ public class RadianceDefaultIconPack implements RadianceIconPack {
     @Override
     public RadianceIcon getColorChooserColorWheelIcon(int preferredSize,
             RadianceColorScheme preferredIconColorScheme) {
-        RadianceIcon result = ic_album_black_24px.of(preferredSize, preferredSize);
+        RadianceIcon result = ic_album_black_24px.uiResourceOf(preferredSize, preferredSize);
         result.setColorFilter(color -> preferredIconColorScheme.getForegroundColor());
         return result;
     }
@@ -286,7 +285,7 @@ public class RadianceDefaultIconPack implements RadianceIconPack {
     @Override
     public RadianceIcon getColorChooserCrayonsIcon(int preferredSize,
             RadianceColorScheme preferredIconColorScheme) {
-        RadianceIcon result = ic_mode_edit_black_24px.of(preferredSize, preferredSize);
+        RadianceIcon result = ic_mode_edit_black_24px.uiResourceOf(preferredSize, preferredSize);
         result.setColorFilter(color -> preferredIconColorScheme.getForegroundColor());
         return result;
     }
@@ -294,7 +293,7 @@ public class RadianceDefaultIconPack implements RadianceIconPack {
     @Override
     public RadianceIcon getColorChooserImagePalettesIcon(int preferredSize,
             RadianceColorScheme preferredIconColorScheme) {
-        RadianceIcon result = ic_brightness_high_black_24px.of(preferredSize, preferredSize);
+        RadianceIcon result = ic_brightness_high_black_24px.uiResourceOf(preferredSize, preferredSize);
         result.setColorFilter(color -> preferredIconColorScheme.getForegroundColor());
         return result;
     }
