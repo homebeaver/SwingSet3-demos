@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/SwingSet3-demos/src/main/java/org/pushingpixels/radiance/tools/svgtranscoder/api/SvgBatchConverter.java"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="1"/>
+    </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.pushingpixels.radiance.tools.svgtranscoder.api.SvgBatchConverter"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="SwingSet3-demos"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="sourceFolder=src/main/resources/org/jdesktop/feather&#13;&#10;outputPackageName=org.jdesktop.swingx.demos.svg&#13;&#10;templateFile=java/SvgTranscoderTemplateRadiance.templ &#13;&#10;outputLanguage=java&#13;&#10;outputClassNamePrefix=FeatheR"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="SwingSet3-demos"/>
+    <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+</launchConfiguration>
