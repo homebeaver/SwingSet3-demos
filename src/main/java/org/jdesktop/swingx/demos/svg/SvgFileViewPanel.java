@@ -79,8 +79,8 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import org.pushingpixels.radiance.common.api.RadianceCommonCortex;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.image.RadianceCC;
 import org.pushingpixels.radiance.component.api.bcb.BreadcrumbBarCallBack;
 import org.pushingpixels.radiance.component.api.common.CommandButtonPresentationState;
 import org.pushingpixels.radiance.component.api.common.JCommandButtonPanel;
@@ -581,7 +581,7 @@ die icons zum "icon name"s werden in mainWorker.process gebildet
                     InputStream svgStream = pair.getValue();
                     Dimension svgDim = getIconDimension();
 
-                    double scale = RadianceCommonCortex.getScaleFactor(SvgFileViewPanel.this);
+                    double scale = RadianceCC.getScaleFactor(SvgFileViewPanel.this);
                     final SvgBatikRadianceIcon svgIcon = name.endsWith(".svg")
                             ? SvgBatikRadianceIcon.getSvgIcon(svgStream, scale, svgDim)
                             : SvgBatikRadianceIcon.getSvgzIcon(svgStream, scale, svgDim);

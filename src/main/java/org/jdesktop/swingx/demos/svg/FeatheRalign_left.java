@@ -1,4 +1,4 @@
-TOKEN_PACKAGE
+package org.jdesktop.swingx.demos.svg;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -12,7 +12,7 @@ import org.jdesktop.swingx.icon.RadianceIconUIResource;
  * This class has been automatically generated using 
  * <a href="https://jdesktop.wordpress.com/2022/09/25/svg-icons/">Radiance SVG converter</a>.
  */
-public class TOKEN_CLASSNAME implements RadianceIcon {
+public class FeatheRalign_left implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
@@ -39,9 +39,65 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
 	}
 	// EUG -- END
 
-    TOKEN_RASTER_CODE
+    
 
-	TOKEN_PAINTING_CODE
+	private void _paint0(Graphics2D g,float origAlpha) {
+transformsStack.push(g.getTransform());
+// 
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, -0.0f, -0.0f));
+// _0
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_0
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(17.000000f,10.000000f,3.000000f,10.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_1
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(21.000000f,6.000000f,3.000000f,6.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_2
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(21.000000f,14.000000f,3.000000f,14.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_3
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(17.000000f,18.000000f,3.000000f,18.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setTransform(transformsStack.pop());
+g.setTransform(transformsStack.pop());
+
+}
+
+
 
 	private void innerPaint(Graphics2D g) {
         float origAlpha = 1.0f;
@@ -54,7 +110,8 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
             }
         }
         
-	    TOKEN_PAINTING_INVOCATIONS
+	    _paint0(g, origAlpha);
+
 
 	    shape = null;
 	    generalPath = null;
@@ -69,7 +126,7 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
      * @return The X of the bounding box of the original SVG image.
      */
     public static double getOrigX() {
-        return TOKEN_ORIG_X;
+        return 2.0;
     }
 
     /**
@@ -78,7 +135,7 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
      * @return The Y of the bounding box of the original SVG image.
      */
     public static double getOrigY() {
-        return TOKEN_ORIG_Y;
+        return 5.0;
     }
 
 	/**
@@ -87,7 +144,7 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
 	 * @return The width of the bounding box of the original SVG image.
 	 */
 	public static double getOrigWidth() {
-		return TOKEN_ORIG_WIDTH;
+		return 20.0;
 	}
 
 	/**
@@ -96,7 +153,7 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
 	 * @return The height of the bounding box of the original SVG image.
 	 */
 	public static double getOrigHeight() {
-		return TOKEN_ORIG_HEIGHT;
+		return 14.0;
 	}
 
 	/** The current width of this icon. */
@@ -109,7 +166,7 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private TOKEN_CLASSNAME() {
+	private FeatheRalign_left() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -132,12 +189,12 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
 
     @Override
     public boolean supportsColorFilter() {
-        return TOKEN_SUPPORTS_COLOR_FILTER;
+        return true;
     }
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
-        TOKEN_SET_COLOR_FILTER
+        this.colorFilter = colorFilter;
     }
 
     @Override
@@ -186,7 +243,7 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       TOKEN_CLASSNAME base = new TOKEN_CLASSNAME();
+       FeatheRalign_left base = new FeatheRalign_left();
        base.width = width;
        base.height = height;
        return base;
@@ -200,7 +257,7 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       TOKEN_CLASSNAME base = new TOKEN_CLASSNAME();
+       FeatheRalign_left base = new FeatheRalign_left();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -212,6 +269,7 @@ public class TOKEN_CLASSNAME implements RadianceIcon {
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return TOKEN_CLASSNAME::new;
+        return FeatheRalign_left::new;
     }
 }
+

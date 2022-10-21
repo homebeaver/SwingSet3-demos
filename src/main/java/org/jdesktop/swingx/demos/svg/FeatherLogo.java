@@ -41,7 +41,7 @@ import org.pushingpixels.radiance.theming.api.colorscheme.RadianceColorScheme;
 public class FeatherLogo {
     public static RadianceIcon getLogoIcon(RadianceColorScheme scheme) {
         // Step 1 - create a colorized version of feather logo
-        RadianceIcon base = IconRfeather.factory().createNewIcon();
+        RadianceIcon base = FeatheRfeather.factory().createNewIcon();
         base.setColorFilter(color -> scheme.getForegroundColor());
         // Step 2 - configure the colorized version to be 16x16
         base.setDimension(new Dimension(16, 16));

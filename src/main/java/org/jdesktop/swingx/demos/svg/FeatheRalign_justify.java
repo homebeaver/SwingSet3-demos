@@ -2,28 +2,21 @@ package org.jdesktop.swingx.demos.svg;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.lang.ref.WeakReference;
-import java.util.Base64;
 import java.util.Stack;
-import javax.imageio.ImageIO;
-import javax.swing.SwingUtilities;
 import javax.swing.plaf.UIResource;
 
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
-import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIconUIResource;
 
 /**
- * This class has been automatically generated using <a
- * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
+ * This class has been automatically generated using 
+ * <a href="https://jdesktop.wordpress.com/2022/09/25/svg-icons/">Radiance SVG converter</a>.
  */
-public class IconRat_sign implements RadianceIcon {
+public class FeatheRalign_justify implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
     private Stroke stroke = null;
-    private Shape clip = null;
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
@@ -61,7 +54,7 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
-shape = new Ellipse2D.Double(8.0, 8.0, 8.0, 8.0);
+shape = new Line2D.Float(21.000000f,10.000000f,3.000000f,10.000000f);
 g.setPaint(paint);
 g.setStroke(stroke);
 g.draw(shape);
@@ -72,21 +65,29 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_1
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
-if (generalPath == null) {
-   generalPath = new GeneralPath();
-} else {
-   generalPath.reset();
-}
-generalPath.moveTo(16.0f, 8.0f);
-generalPath.lineTo(16.0f, 13.0f);
-generalPath.curveTo(16.007387f, 14.651617f, 17.348366f, 15.986613f, 19.0f, 15.986613f);
-generalPath.curveTo(20.651634f, 15.986613f, 21.992613f, 14.651617f, 22.0f, 13.0f);
-generalPath.lineTo(22.0f, 12.0f);
-generalPath.curveTo(21.999706f, 7.352905f, 18.798134f, 3.3184144f, 14.272638f, 2.2622979f);
-generalPath.curveTo(9.747142f, 1.2061813f, 5.0904813f, 3.4067924f, 3.0332558f, 7.573724f);
-generalPath.curveTo(0.9760303f, 11.740656f, 2.0604508f, 16.775654f, 5.650628f, 19.726269f);
-generalPath.curveTo(9.240806f, 22.676882f, 14.390499f, 22.765434f, 18.08f, 19.94f);
-shape = generalPath;
+shape = new Line2D.Float(21.000000f,6.000000f,3.000000f,6.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_2
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(21.000000f,14.000000f,3.000000f,14.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_3
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(21.000000f,18.000000f,3.000000f,18.000000f);
 g.setPaint(paint);
 g.setStroke(stroke);
 g.draw(shape);
@@ -98,7 +99,6 @@ g.setTransform(transformsStack.pop());
 
 
 
-    @SuppressWarnings("unused")
 	private void innerPaint(Graphics2D g) {
         float origAlpha = 1.0f;
         Composite origComposite = g.getComposite();
@@ -117,7 +117,6 @@ g.setTransform(transformsStack.pop());
 	    generalPath = null;
 	    paint = null;
 	    stroke = null;
-	    clip = null;
         transformsStack.clear();
 	}
 
@@ -127,7 +126,7 @@ g.setTransform(transformsStack.pop());
      * @return The X of the bounding box of the original SVG image.
      */
     public static double getOrigX() {
-        return 0.0;
+        return 2.0;
     }
 
     /**
@@ -136,7 +135,7 @@ g.setTransform(transformsStack.pop());
      * @return The Y of the bounding box of the original SVG image.
      */
     public static double getOrigY() {
-        return 0.12673641741275787;
+        return 5.0;
     }
 
 	/**
@@ -145,7 +144,7 @@ g.setTransform(transformsStack.pop());
 	 * @return The width of the bounding box of the original SVG image.
 	 */
 	public static double getOrigWidth() {
-		return 23.0;
+		return 20.0;
 	}
 
 	/**
@@ -154,7 +153,7 @@ g.setTransform(transformsStack.pop());
 	 * @return The height of the bounding box of the original SVG image.
 	 */
 	public static double getOrigHeight() {
-		return 23.715177536010742;
+		return 14.0;
 	}
 
 	/** The current width of this icon. */
@@ -167,7 +166,7 @@ g.setTransform(transformsStack.pop());
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private IconRat_sign() {
+	private FeatheRalign_justify() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -244,7 +243,7 @@ g.setTransform(transformsStack.pop());
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       IconRat_sign base = new IconRat_sign();
+       FeatheRalign_justify base = new FeatheRalign_justify();
        base.width = width;
        base.height = height;
        return base;
@@ -258,7 +257,7 @@ g.setTransform(transformsStack.pop());
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       IconRat_sign base = new IconRat_sign();
+       FeatheRalign_justify base = new FeatheRalign_justify();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -270,7 +269,7 @@ g.setTransform(transformsStack.pop());
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return IconRat_sign::new;
+        return FeatheRalign_justify::new;
     }
 }
 

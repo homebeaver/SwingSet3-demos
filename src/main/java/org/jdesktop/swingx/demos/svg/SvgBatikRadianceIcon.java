@@ -35,7 +35,7 @@ import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
 import org.pushingpixels.radiance.common.api.AsynchronousLoadListener;
 import org.pushingpixels.radiance.common.api.AsynchronousLoading;
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 
 import javax.swing.event.EventListenerList;
 import java.awt.*;

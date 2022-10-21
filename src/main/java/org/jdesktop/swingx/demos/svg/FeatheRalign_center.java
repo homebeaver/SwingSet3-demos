@@ -2,28 +2,21 @@ package org.jdesktop.swingx.demos.svg;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.lang.ref.WeakReference;
-import java.util.Base64;
 import java.util.Stack;
-import javax.imageio.ImageIO;
-import javax.swing.SwingUtilities;
 import javax.swing.plaf.UIResource;
 
-import org.pushingpixels.radiance.common.api.icon.RadianceIcon;
-import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.RadianceIconUIResource;
 
 /**
- * This class has been automatically generated using <a
- * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
+ * This class has been automatically generated using 
+ * <a href="https://jdesktop.wordpress.com/2022/09/25/svg-icons/">Radiance SVG converter</a>.
  */
-public class IconRalign_justify implements RadianceIcon {
+public class FeatheRalign_center implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
     private Stroke stroke = null;
-    private Shape clip = null;
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
@@ -61,7 +54,7 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
-shape = new Line2D.Float(21.000000f,10.000000f,3.000000f,10.000000f);
+shape = new Line2D.Float(18.000000f,10.000000f,6.000000f,10.000000f);
 g.setPaint(paint);
 g.setStroke(stroke);
 g.draw(shape);
@@ -94,7 +87,7 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_3
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
-shape = new Line2D.Float(21.000000f,18.000000f,3.000000f,18.000000f);
+shape = new Line2D.Float(18.000000f,18.000000f,6.000000f,18.000000f);
 g.setPaint(paint);
 g.setStroke(stroke);
 g.draw(shape);
@@ -106,7 +99,6 @@ g.setTransform(transformsStack.pop());
 
 
 
-    @SuppressWarnings("unused")
 	private void innerPaint(Graphics2D g) {
         float origAlpha = 1.0f;
         Composite origComposite = g.getComposite();
@@ -125,7 +117,6 @@ g.setTransform(transformsStack.pop());
 	    generalPath = null;
 	    paint = null;
 	    stroke = null;
-	    clip = null;
         transformsStack.clear();
 	}
 
@@ -175,7 +166,7 @@ g.setTransform(transformsStack.pop());
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private IconRalign_justify() {
+	private FeatheRalign_center() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -252,7 +243,7 @@ g.setTransform(transformsStack.pop());
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       IconRalign_justify base = new IconRalign_justify();
+       FeatheRalign_center base = new FeatheRalign_center();
        base.width = width;
        base.height = height;
        return base;
@@ -266,7 +257,7 @@ g.setTransform(transformsStack.pop());
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       IconRalign_justify base = new IconRalign_justify();
+       FeatheRalign_center base = new FeatheRalign_center();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -278,7 +269,7 @@ g.setTransform(transformsStack.pop());
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return IconRalign_justify::new;
+        return FeatheRalign_center::new;
     }
 }
 

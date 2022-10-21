@@ -120,36 +120,21 @@ public class SvgTranscoderDemo extends AbstractDemo {
         duke.setDimension(new Dimension(SizingConstants.BUTTON_ICON, SizingConstants.BUTTON_ICON));
     	panel.add(new JButton("Duke", duke));
     	Icon activity = //new IconTactivity();
-    			IconRactivity.factory().createNewIcon();
+    			FeatheRactivity.factory().createNewIcon();
     	JButton activityButton = new JButton("activity", activity);
     	panel.add(activityButton);
-    	panel.add(new JButton("airplay", IconRairplay.factory().createNewIcon()));
-//    	panel.add(new JButton("alert_circle", IconRalert_circle.factory().createNewIcon()));
-    	panel.add(new JButton("alert_octagon", IconRalert_octagon.factory().createNewIcon()));
-    	panel.add(new JButton("alert_triangle", IconRalert_triangle.factory().createNewIcon()));
-    	panel.add(new JButton("align_center", IconRalign_center.factory().createNewIcon()));
-    	panel.add(new JButton("align_justify", IconRalign_justify.factory().createNewIcon()));
-    	panel.add(new JButton("align_left", IconRalign_left.factory().createNewIcon()));
-    	panel.add(new JButton("anchor", IconRanchor.factory().createNewIcon()));
-    	panel.add(new JButton("aperture", IconRaperture.factory().createNewIcon()));
-//    	panel.add(new JButton("archive", IconRarchive.factory().createNewIcon()));
-//    	panel.add(new JButton("arrow_down", IconRarrow_down.factory().createNewIcon()));
-//    	panel.add(new JButton("arrow_down_circle", IconRarrow_down_circle.factory().createNewIcon()));
-//    	panel.add(new JButton("arrow_down_left", IconRarrow_down_left.factory().createNewIcon()));
-//    	panel.add(new JButton("arrow_down_right", IconRarrow_down_right.factory().createNewIcon()));
-//    	panel.add(new JButton("arrow_left", IconRarrow_left.factory().createNewIcon()));
-//    	panel.add(new JButton("arrow_right", IconRarrow_right.factory().createNewIcon()));
+    	panel.add(new JButton("airplay", FeatheRairplay.factory().createNewIcon()));
+    	panel.add(new JButton("alert_octagon", FeatheRalert_octagon.factory().createNewIcon()));
+    	panel.add(new JButton("alert_triangle", FeatheRalert_triangle.factory().createNewIcon()));
+    	panel.add(new JButton("align_center", FeatheRalign_center.factory().createNewIcon()));
+    	panel.add(new JButton("align_justify", FeatheRalign_justify.factory().createNewIcon()));
+    	panel.add(new JButton("align_left", FeatheRalign_left.factory().createNewIcon()));
+    	panel.add(new JButton("anchor", FeatheRanchor.factory().createNewIcon()));
+    	panel.add(new JButton("aperture", FeatheRaperture.factory().createNewIcon()));
     	panel.add(new JButton("arrow N", ArrowIcon.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON)));
     	RadianceIcon ne = ArrowIcon.of(RadianceIcon.ACTION_ICON, RadianceIcon.ACTION_ICON);
     	ne.setRotation(RadianceIcon.NORTH_EAST);
     	panel.add(new JButton("arrow NE", ne));
-//    	IconRarrowXXX east = (IconRarrowXXX)IconRarrowXXX.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
-//    	east.setDirection(SizingConstants.EAST);
-//    	panel.add(new JButton("arrow E", east));
-//    	IconRarrowXXX se = (IconRarrowXXX)IconRarrowXXX.of(SizingConstants.ACTION_ICON, SizingConstants.ACTION_ICON);
-//    	se.setDirection(SizingConstants.SOUTH_EAST);
-//    	panel.add(new JButton("arrow SE", se));
-//    	panel.add(new JButton("XS award",  IconRaward.of(SizingConstants.XS, SizingConstants.XS)));
 
         RadianceIcon duke_waving = Duke_waving.factory().createNewIcon();
         duke_waving.setDimension(new Dimension(SizingConstants.LAUNCHER_ICON, SizingConstants.LAUNCHER_ICON));
@@ -177,9 +162,8 @@ public class SvgTranscoderDemo extends AbstractDemo {
         st.transcode(in);
         
         String svgName = "at_sign"; // ohne fileType
-        String baseName = "IconR"+svgName;
+        String baseName = "FeatheR"+svgName;
         String className = "org.jdesktop.swingx.demos.svg."+baseName;
-//        Class<?> test = dynCompile(getClass().getResourceAsStream("resources/IconRat_sign.java"));
         Class<?> test = dynCompile(getClass().getResourceAsStream("resources/"+baseName+".java"), className);
     	LOG.info("Hurra und jetzt ...");
 		try {
@@ -220,8 +204,6 @@ compiler.run(null, null, null, sourceFile.getPath());
 
  */
     private Class<?> dynCompile(InputStream inSrc, String className) {
-//        InputStream inSrc = getClass().getResourceAsStream("resources/IconRaward.java");
-//        inSrc.readAllBytes(); // byte[]
     	JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     	// https://dzone.com/articles/how-to-compile-a-class-at-runtime-with-java-8-and
     	if (compiler == null)

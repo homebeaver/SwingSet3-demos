@@ -2,28 +2,21 @@ package org.jdesktop.swingx.demos.svg;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.lang.ref.WeakReference;
-import java.util.Base64;
 import java.util.Stack;
-import javax.imageio.ImageIO;
-import javax.swing.SwingUtilities;
 import javax.swing.plaf.UIResource;
 
 import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.RadianceIconUIResource;
 
 /**
- * This class has been automatically generated using <a
- * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
+ * This class has been automatically generated using 
+ * <a href="https://jdesktop.wordpress.com/2022/09/25/svg-icons/">Radiance SVG converter</a>.
  */
-public class IconRactivity implements RadianceIcon {
+public class FeatheRanchor implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
     private Stroke stroke = null;
-    private Shape clip = null;
     private RadianceIcon.ColorFilter colorFilter = null;
     private Stack<AffineTransform> transformsStack = new Stack<>();
 
@@ -61,17 +54,38 @@ g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
 // _0_0
 paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
 stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Ellipse2D.Double(9.0, 2.0, 6.0, 6.0);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_1
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
+shape = new Line2D.Float(12.000000f,22.000000f,12.000000f,8.000000f);
+g.setPaint(paint);
+g.setStroke(stroke);
+g.draw(shape);
+g.setTransform(transformsStack.pop());
+g.setComposite(AlphaComposite.getInstance(3, 1.0f * origAlpha));
+transformsStack.push(g.getTransform());
+g.transform(new AffineTransform(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+// _0_2
+paint = (colorFilter != null) ? colorFilter.filter(new Color(0, 0, 0, 255)) : new Color(0, 0, 0, 255);
+stroke = new BasicStroke(2.0f,1,1,4.0f,null,0.0f);
 if (generalPath == null) {
    generalPath = new GeneralPath();
 } else {
    generalPath.reset();
 }
-generalPath.moveTo(22.0f, 12.0f);
-generalPath.lineTo(18.0f, 12.0f);
-generalPath.lineTo(15.0f, 21.0f);
-generalPath.lineTo(9.0f, 3.0f);
-generalPath.lineTo(6.0f, 12.0f);
+generalPath.moveTo(5.0f, 12.0f);
 generalPath.lineTo(2.0f, 12.0f);
+generalPath.curveTo(2.024621f, 17.50539f, 6.494554f, 21.955378f, 12.0f, 21.955378f);
+generalPath.curveTo(17.505445f, 21.955378f, 21.97538f, 17.50539f, 22.0f, 12.0f);
+generalPath.lineTo(19.0f, 12.0f);
 shape = generalPath;
 g.setPaint(paint);
 g.setStroke(stroke);
@@ -84,7 +98,6 @@ g.setTransform(transformsStack.pop());
 
 
 
-    @SuppressWarnings("unused")
 	private void innerPaint(Graphics2D g) {
         float origAlpha = 1.0f;
         Composite origComposite = g.getComposite();
@@ -103,7 +116,6 @@ g.setTransform(transformsStack.pop());
 	    generalPath = null;
 	    paint = null;
 	    stroke = null;
-	    clip = null;
         transformsStack.clear();
 	}
 
@@ -113,7 +125,7 @@ g.setTransform(transformsStack.pop());
      * @return The X of the bounding box of the original SVG image.
      */
     public static double getOrigX() {
-        return 1.0;
+        return 0.9988204836845398;
     }
 
     /**
@@ -122,7 +134,7 @@ g.setTransform(transformsStack.pop());
      * @return The Y of the bounding box of the original SVG image.
      */
     public static double getOrigY() {
-        return 2.0;
+        return 1.0;
     }
 
 	/**
@@ -131,7 +143,7 @@ g.setTransform(transformsStack.pop());
 	 * @return The width of the bounding box of the original SVG image.
 	 */
 	public static double getOrigWidth() {
-		return 22.0;
+		return 22.00235939025879;
 	}
 
 	/**
@@ -140,7 +152,7 @@ g.setTransform(transformsStack.pop());
 	 * @return The height of the bounding box of the original SVG image.
 	 */
 	public static double getOrigHeight() {
-		return 20.0;
+		return 22.0;
 	}
 
 	/** The current width of this icon. */
@@ -153,7 +165,7 @@ g.setTransform(transformsStack.pop());
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private IconRactivity() {
+	private FeatheRanchor() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -230,7 +242,7 @@ g.setTransform(transformsStack.pop());
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       IconRactivity base = new IconRactivity();
+       FeatheRanchor base = new FeatheRanchor();
        base.width = width;
        base.height = height;
        return base;
@@ -244,7 +256,7 @@ g.setTransform(transformsStack.pop());
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       IconRactivity base = new IconRactivity();
+       FeatheRanchor base = new FeatheRanchor();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -256,7 +268,7 @@ g.setTransform(transformsStack.pop());
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return IconRactivity::new;
+        return FeatheRanchor::new;
     }
 }
 

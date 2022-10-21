@@ -186,7 +186,7 @@ public class MirroringIconDemo extends AbstractDemo {
     	return Character.isLowerCase(iconName.charAt(0));
     }
     private String upperCasePrefix(String iconName) {
-    	return Character.isLowerCase(iconName.charAt(0)) ? "IconR" : "";
+    	return Character.isLowerCase(iconName.charAt(0)) ? "FeatheR" : "";
     }
     
     private String getSvgResourceName(String iconName) {
