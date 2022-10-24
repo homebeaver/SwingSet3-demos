@@ -22,7 +22,7 @@ public class RealTest {
 		result = Parser.eval(f_x).getValue();
 		assertTrue(result == 7.0);
 
-		final Point xo = new Point("x", new Double(2));
+		final Point xo = new Point("x", Double.valueOf(2));
 
 		f_x = "5*(x +3)";
 
@@ -44,7 +44,7 @@ public class RealTest {
 
 		final String f_xs = " 2*(-(((z*3)*sqrt(x^(2)))+3))";
 
-		final Point zo = new Point("z", new Double(1));
+		final Point zo = new Point("z", Double.valueOf(1));
 
 		result = Parser.eval(f_xs, xo, zo).getValue();
 		assertTrue(result == -18.0);
@@ -52,7 +52,7 @@ public class RealTest {
 		result = Parser.eval(f_xs, zo, xo).getValue();
 		assertTrue(result == -18.0);
 
-		final Point x2 = new Point("x", new Double(0));
+		final Point x2 = new Point("x", Double.valueOf(0));
 		f_x = "cos(x)";
 		ParserManager.getInstance().setDeegre(true);
 		result = Parser.eval(f_x, x2).getValue();
@@ -75,7 +75,7 @@ public class RealTest {
 		result = Parser.eval(f_x, null, null);
 		assertTrue(result == 7.0);
 
-		final Double x0 = new Double("2");
+		final Double x0 = Double.valueOf("2");
 
 		final Double[] values = { x0 };
 		f_x = "5*(x +3)";
@@ -85,7 +85,7 @@ public class RealTest {
 
 		final String f_xs = " 2*(-(((z*3)*sqrt(x^(2)))+3))";
 
-		final Double z0 = new Double("1");
+		final Double z0 = Double.valueOf("1");
 
 		final Double[] values2 = { x0, z0 };
 		final String[] vars = { "x", "z" };
@@ -104,7 +104,7 @@ public class RealTest {
 		ParserResult result = Parser.eval(f_x);
 		assertTrue(result.getValue() == 28.0);
 
-		final Point xo = new Point("x", new Double(2));
+		final Point xo = new Point("x", Double.valueOf(2));
 
 		f_x = "2.35*e^(-3)*x";
 
@@ -116,7 +116,7 @@ public class RealTest {
 		result = Parser.eval(f_x, xo);
 		assertTrue(result.getValue() == 0.9092974268256817);
 
-		final Point yo = new Point("y", new Double(1));
+		final Point yo = new Point("y", Double.valueOf(1));
 
 		final String f_xs = "x+5*y+(3 -y)";
 
@@ -141,7 +141,7 @@ public class RealTest {
 		assertTrue(result.getValue() == 0.2339992213289606);
 
 		f_xs = " 2*(-(((z*3)*sqrt(x^(2)))+3))";
-		final Point zo = new Point("z", new Double(1));
+		final Point zo = new Point("z", Double.valueOf(1));
 
 		result = Parser.eval(f_xs, zo, xo);
 
