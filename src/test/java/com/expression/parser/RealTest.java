@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.expression.parser.exception.CalculatorException;
 import com.expression.parser.util.ParserResult;
 import com.expression.parser.util.Point;
 
@@ -26,36 +27,74 @@ public class RealTest {
 
 		f_x = "5*(x +3)";
 
-		result = Parser.eval(f_x, xo).getValue();
+		try {
+			result = Parser.eval(f_x, xo).getValue();
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result == 25.0);
 
 		f_x = "5*(2*(sqrt((x+2)^2)) +3)";
 
-		result = Parser.eval(f_x, xo).getValue();
+		try {
+			result = Parser.eval(f_x, xo).getValue();
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result == 55.0);
 
 		f_x = "5*(2*(sqrt((x+2)^2)/2) +3)";
 
-		result = Parser.eval(f_x, xo).getValue();
+		try {
+			result = Parser.eval(f_x, xo).getValue();
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result == 35.0);
 
 		f_x = "cosh(6+(2/0))";
-		System.out.println("result:" + Parser.eval(f_x, xo).getValue());
+		try {
+			result = Parser.eval(f_x, xo).getValue();
+//			System.out.println("result:" + Parser.eval(f_x, xo).getValue());
+			System.out.println(f_x + " result:" + result);
+			assertTrue(result == Double.POSITIVE_INFINITY);
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		final String f_xs = " 2*(-(((z*3)*sqrt(x^(2)))+3))";
 
 		final Point zo = new Point("z", Double.valueOf(1));
 
-		result = Parser.eval(f_xs, xo, zo).getValue();
+		try {
+			result = Parser.eval(f_xs, xo, zo).getValue();
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result == -18.0);
 
-		result = Parser.eval(f_xs, zo, xo).getValue();
+		try {
+			result = Parser.eval(f_xs, zo, xo).getValue();
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result == -18.0);
 
 		final Point x2 = new Point("x", Double.valueOf(0));
 		f_x = "cos(x)";
 		ParserManager.getInstance().setDeegre(true);
-		result = Parser.eval(f_x, x2).getValue();
+		try {
+			result = Parser.eval(f_x, x2).getValue();
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result == 1.0);
 		ParserManager.getInstance().setDeegre(false);
 
@@ -108,19 +147,34 @@ public class RealTest {
 
 		f_x = "2.35*e^(-3)*x";
 
-		result = Parser.eval(f_x, xo);
+		try {
+			result = Parser.eval(f_x, xo);
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result.getValue() == 0.2339992213289606);
 
 		f_x = "sin(x)";
 
-		result = Parser.eval(f_x, xo);
+		try {
+			result = Parser.eval(f_x, xo);
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result.getValue() == 0.9092974268256817);
 
 		final Point yo = new Point("y", Double.valueOf(1));
 
 		final String f_xs = "x+5*y+(3 -y)";
 
-		result = Parser.eval(f_xs, xo, yo);
+		try {
+			result = Parser.eval(f_xs, xo, yo);
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertTrue(result.getValue() == 9.0);
 		System.out.println("End test three");
 	}
@@ -132,20 +186,36 @@ public class RealTest {
 		final Point xo = new Point("x", "1+1");
 		final Point yo = new Point("y", "0+2*0+1*5-5 +1^4");
 
-		ParserResult result = Parser.eval(f_xs, xo, yo);
-		assertTrue(result.getValue() == 9.0);
+		ParserResult result;
+		try {
+			result = Parser.eval(f_xs, xo, yo);
+			assertTrue(result.getValue() == 9.0);
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		final String f_x = "2.35*e^(-3)*x";
 
-		result = Parser.eval(f_x, xo);
-		assertTrue(result.getValue() == 0.2339992213289606);
+		try {
+			result = Parser.eval(f_x, xo);
+			assertTrue(result.getValue() == 0.2339992213289606);
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		f_xs = " 2*(-(((z*3)*sqrt(x^(2)))+3))";
 		final Point zo = new Point("z", Double.valueOf(1));
 
-		result = Parser.eval(f_xs, zo, xo);
+		try {
+			result = Parser.eval(f_xs, zo, xo);
+			assertTrue(result.getValue() == -18.0);
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		assertTrue(result.getValue() == -18.0);
 		System.out.println("End test four");
 
 	}

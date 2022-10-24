@@ -88,8 +88,9 @@ public class Parser {
 	 *
 	 *
 	 * @return the parser result: complex or real value
+	 * @throws CalculatorException 
 	 */
-	public static ParserResult eval(final String function, final Point... values) {
+	public static ParserResult eval(final String function, final Point... values) throws CalculatorException {
 
 		final ParserResult result = new ParserResult();
 		FunctionX f_x = null;
@@ -106,8 +107,8 @@ public class Parser {
 				try {
 					result.setComplexValue(complexFunction.getValue(valuesList, varsList));
 				} catch (final CalculatorException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					throw e;
 				}
 
 			} else {
@@ -141,8 +142,8 @@ public class Parser {
 				}
 
 				catch (final CalculatorException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+					throw e;
 				}
 			}
 		}

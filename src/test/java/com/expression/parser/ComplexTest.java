@@ -2,6 +2,7 @@ package com.expression.parser;
 
 import org.junit.Test;
 
+import com.expression.parser.exception.CalculatorException;
 import com.expression.parser.function.Complex;
 import com.expression.parser.util.ParserResult;
 import com.expression.parser.util.Point;
@@ -128,30 +129,56 @@ public class ComplexTest {
 
 		String f_x = " e^(1*x*acos((3/2-2j)^(pi)))";
 
-		ParserResult result = Parser.eval(f_x, xo);
-		System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		ParserResult result;
+		try {
+			result = Parser.eval(f_x, xo);
+			System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		final Point yo = new Point("y", new Complex(2, 1));
 
 		f_x = " e^(1*x*y*acos((3/2)^(pi)))";
 
-		result = Parser.eval(f_x, xo, yo);
-		System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		try {
+			result = Parser.eval(f_x, xo, yo);
+			System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		f_x = " e^(1*x*y*sin((3/2)^(pi)))";
 
-		result = Parser.eval(f_x, xo, yo);
-		System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		try {
+			result = Parser.eval(f_x, xo, yo);
+			System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		f_x = "x+j";
 
-		result = Parser.eval(f_x, xo, yo);
-		System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		try {
+			result = Parser.eval(f_x, xo, yo);
+			System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		f_x = "x-y";
 
-		result = Parser.eval(f_x, xo, yo);
-		System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		try {
+			result = Parser.eval(f_x, xo, yo);
+			System.out.println("real:" + result.getComplexValue().getR() + " imag:" + result.getComplexValue().getI());
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -161,22 +188,38 @@ public class ComplexTest {
 		String f_x = "1+j +x";
 		final Point xo = new Point("x", "2 +j");
 
-		ParserResult result = Parser.eval(f_x, xo);
-		System.out.println("String Expressions-->real:" + result.getComplexValue().getR() + " imag:"
-				+ result.getComplexValue().getI());
+		ParserResult result;
+		try {
+			result = Parser.eval(f_x, xo);
+			System.out.println("String Expressions-->real:" + result.getComplexValue().getR() + " imag:"
+					+ result.getComplexValue().getI());
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		f_x = "1+j +x+y";
 		final Point yo = new Point("y", "2*1+1");
 
-		result = Parser.eval(f_x, xo, yo);
-		System.out.println("String Expressions-->real:" + result.getComplexValue().getR() + " imag:"
-				+ result.getComplexValue().getI());
+		try {
+			result = Parser.eval(f_x, xo, yo);
+			System.out.println("String Expressions-->real:" + result.getComplexValue().getR() + " imag:"
+					+ result.getComplexValue().getI());
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		f_x = "1 +x + y";
 
-		result = Parser.eval(f_x, xo, yo);
-		System.out.println("String Expressions-->real:" + result.getComplexValue().getR() + " imag:"
-				+ result.getComplexValue().getI());
+		try {
+			result = Parser.eval(f_x, xo, yo);
+			System.out.println("String Expressions-->real:" + result.getComplexValue().getR() + " imag:"
+					+ result.getComplexValue().getI());
+		} catch (CalculatorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 }
