@@ -3,30 +3,23 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 */ 
 package org.jdesktop.swingx.demos.graph;
 
-import static org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.text.NumberFormat;
 import java.util.logging.Logger;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXGraph;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.binding.NumberConverter;
 
 import swingset.AbstractDemo;
 
@@ -51,8 +44,10 @@ public class GraphDemo extends AbstractDemo {
 	private static final Logger LOG = Logger.getLogger(GraphDemo.class.getName());
 	private static final String DESCRIPTION = "Demonstrates JXGraph, a graphing display.";
 
-	private SimpleLinePlot plot;
-    private JFormattedTextField formula;
+	JXGraph graph;
+	private LinePlot plot;
+    private JTextField formula;
+    private JLabel evalMessage = new JLabel("initial formula");
 
     /**
      * main method allows us to run as a standalone demo.
@@ -85,7 +80,7 @@ public class GraphDemo extends AbstractDemo {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         createGraphDemo();
-        bind();
+//        bind();
     }
 
     @Override
@@ -100,29 +95,48 @@ public class GraphDemo extends AbstractDemo {
         JLabel label = new JLabel("y = ");
         controlPanel.add(label);
 
-        formula = new JFormattedTextField(NumberFormat.getNumberInstance());
+        formula = new JTextField(30);
         formula.setName("formula");
-        formula.setColumns(3); // TODO get from prop
-        formula.setValue(1.0);
+        formula.setText("1/2*(x ^2-6)"); // initial formula
+        formula.addActionListener(actionEvent -> {
+//        	LOG.info(">>>>>"+formula.getText());
+        	LinePlot newPlot = new LinePlot(formula.getText());
+        	double f0 = newPlot.compute(0);
+        	if(f0==Double.NaN) {
+        		LOG.warning("CalculatorException: "+newPlot.getEvalMessage());
+        		evalMessage.setText(newPlot.getEvalMessage());
+        	} else {
+        		evalMessage.setText(newPlot.getEvalMessage());
+        		LOG.info(newPlot.getFunction() + " , f(0)="+f0);
+        		plot = newPlot;
+        		graph.removeAllPlots();
+        		graph.addPlots(Color.RED, plot);
+        	}
+        });
         controlPanel.add(formula);
 
-        label = new JLabel("x");
-        controlPanel.add(label);
+        controlPanel.add(evalMessage);
         add(controlPanel, BorderLayout.NORTH);
 
         Point2D origin = new Point2D.Double(0.0d, 0.0d);
-        Rectangle2D view = new Rectangle2D.Double(-10.0d, -10.0d, 20.0d, 20.0d);
-        JXGraph graph = new JXGraph(origin, view, 5, 5, 5, 5);
-        plot = new SimpleLinePlot();
+        Rectangle2D view = new Rectangle2D.Double(-10.0d, -10.0d, 30.0d, 30.0d);
+        graph = new JXGraph(origin, view, 5, 5, 5, 5);
+//        plot = new SimpleLinePlot(); // XXX EUG replaced by:
+        plot = new LinePlot(formula.getText());
+        LOG.info("compute(0)="+plot.compute(0));
         graph.addPlots(Color.RED, plot);
         add(graph);
     }
 
-    private void bind() {
-        Binding b = Bindings.createAutoBinding(READ,
-                formula, BeanProperty.create("value"),
-                plot, BeanProperty.create("coefficient"));
-        b.setConverter(new NumberConverter());
-        b.bind();
-    }
+    /*
+ändert sich formula value , also durch formula.setValue(xxx);
+dann ändert das auch plot coefficient , also plot.setCoefficient(xxx)
+     */
+//    private void bind() {
+//        Binding b = Bindings.createAutoBinding(READ,
+//                formula, BeanProperty.create("value"),
+//                plot, BeanProperty.create("coefficient"));
+//        b.setConverter(new NumberConverter());
+//        b.bind();
+//    }
 }
