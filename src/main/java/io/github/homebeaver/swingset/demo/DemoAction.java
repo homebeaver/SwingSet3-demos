@@ -21,7 +21,7 @@ import javax.swing.JToolBar;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.action.AbstractActionExt;
 import org.jdesktop.swingx.icon.PauseIcon;
-import org.jdesktop.swingx.icon.PlayIcon;
+import org.jdesktop.swingx.icon.PlayIconSolid;
 import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.StopIcon;
 
@@ -99,7 +99,7 @@ public class DemoAction extends AbstractActionExt {
 			return icon;
 		}
 		if(ssv==3) {
-			icon = PlayIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+			icon = PlayIconSolid.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
 			icon.setColorFilter(iconColor -> color);
 			return icon;
 		}
@@ -122,7 +122,7 @@ public class DemoAction extends AbstractActionExt {
 			return icon;
 		}
 		if(ssv==3) {
-			icon = PlayIcon.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+			icon = PlayIconSolid.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
 			icon.setColorFilter(iconColor -> categoryToColor.get(category));
 			return icon;
 		}
