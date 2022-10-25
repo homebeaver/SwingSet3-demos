@@ -4,9 +4,12 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package swingset;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -26,6 +29,7 @@ import javax.swing.border.BevelBorder;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.icon.RadianceIcon;
 
 /**
  * JOptionPaneDemo
@@ -33,8 +37,42 @@ import org.jdesktop.swingx.JXPanel;
  * @author Jeff Dinkins
  * @author EUG https://github.com/homebeaver (reorg)
  */
+/*
+
+class JOptionPane extends JComponent
+- there are some Message types. 
+  Used by the UI to determine what icon to display, and possibly what behavior to give based on the type.
+  Used in protected Icon javax.swing.plaf.basic.BasicOptionPaneUI#getIconForType(int messageType)
+ 0:ERROR_MESSAGE : "OptionPane.errorIcon"
+ 1:INFORMATION_MESSAGE : "OptionPane.informationIcon"
+ 2:WARNING_MESSAGE : "OptionPane.warningIcon"
+ 3:QUESTION_MESSAGE : "OptionPane.questionIcon"
+ -1:PLAIN_MESSAGE : No icon is used.
+
+
+ */
 public class OptionPaneDemo extends AbstractDemo {
 
+	private static final boolean USEOPTIONPANEICONS = false;
+	private static final String OPTIONPANEICON[] = new String[] 
+		{ "OptionPane.errorIcon"       // for JOptionPane.ERROR_MESSAGE , red octagon with exclamation mark
+		, "OptionPane.informationIcon" // ... , blue circle with i
+		, "OptionPane.warningIcon"     // ... , yellow triangle with exclamation mark
+		, "OptionPane.questionIcon"    // ... , green square with question mark
+		};
+	private static final String ALTFEATHERICON[] = new String[] 
+		{ "org.jdesktop.swingx.demos.svg.FeatheRalert_octagon"
+		, "org.jdesktop.swingx.demos.svg.FeatheRhelp_circle"
+		, "org.jdesktop.swingx.demos.svg.FeatheRalert_triangle"
+		, "org.jdesktop.swingx.demos.svg.FeatheRinfo"
+		};
+	private static final Color COLOROFICON[] = new Color[] 
+		{ Color.RED
+		, Color.BLUE
+		, Color.ORANGE
+		, Color.GREEN
+		};
+	
 	/**
 	 * this is used in DemoAction to build the demo toolbar
 	 */
@@ -106,7 +144,6 @@ public class OptionPaneDemo extends AbstractDemo {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
         buttonPanel.add(Box.createRigidArea(VGAP30));
-//        buttonPanel.add(Box.createRigidArea(VGAP30));
 
         buttonPanel.add(createInputDialogButton());      buttonPanel.add(Box.createRigidArea(VGAP15));
         buttonPanel.add(createWarningDialogButton());    buttonPanel.add(Box.createRigidArea(VGAP15));
@@ -121,23 +158,52 @@ public class OptionPaneDemo extends AbstractDemo {
         return boxPane;
     }
 
+    private Icon getIcon(int messageType) {
+    	if(USEOPTIONPANEICONS) return UIManager.getIcon(OPTIONPANEICON[messageType]);
+        // alternative icon in ControlPane, 
+    	// in presentation pane JOptionPane.showMessageDialog is used... TODO
+    	Class<?> iconClass = null;
+		try {
+			iconClass = Class.forName(ALTFEATHERICON[messageType]);  // throws ClassNotFoundException
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return UIManager.getIcon(OPTIONPANEICON[messageType]);
+		}
+    	RadianceIcon icon = null;
+    	try {
+			Method method = iconClass.getMethod("of", int.class, int.class);
+			Object o = method.invoke(null, RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON);
+			icon = (RadianceIcon)o; // ClassCastException
+		} catch (NoSuchMethodException | SecurityException 
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+			return UIManager.getIcon(OPTIONPANEICON[messageType]);
+		}
+    	icon.setColorFilter(color -> COLOROFICON[messageType]);
+	    return icon;
+    }
+    
     private JButton createWarningDialogButton() {
         @SuppressWarnings("serial")
 		Action a = new AbstractAction(getBundleString("warningbutton")) {
+        	@Override	
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(
                 	OptionPaneDemo.this,
                     getBundleString("warningtext"),
                     getBundleString("warningtitle"),
                     JOptionPane.WARNING_MESSAGE
+//                    ,
+//                    getIcon(JOptionPane.WARNING_MESSAGE)
                 );
             }
         };
         // see protected Icon BasicOptionPaneUI.getIconForType(int messageType)
-        //Icon errorIcon = UIManager.getIcon("OptionPane.errorIcon"); // messageType == 0
-        Icon icon = UIManager.getIcon("OptionPane.warningIcon"); // messageType == 2
-//		System.err.println("icon:"+icon.getIconHeight()); // 32
-        a.putValue(Action.LARGE_ICON_KEY, icon);
+        // Icon errorIcon = UIManager.getIcon(OPTIONPANEICON[JOptionPane.ERROR_MESSAGE]);
+        // RadianceIcon ricon = FeatheRalert_octagon.of(RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON);
+        a.putValue(Action.LARGE_ICON_KEY, getIcon(JOptionPane.WARNING_MESSAGE));
         return createButton(a);
     }
 
@@ -153,8 +219,7 @@ public class OptionPaneDemo extends AbstractDemo {
                 );
             }
         };
-        Icon icon = UIManager.getIcon("OptionPane.informationIcon"); // messageType == 1
-        a.putValue(Action.LARGE_ICON_KEY, icon);
+        a.putValue(Action.LARGE_ICON_KEY, getIcon(JOptionPane.INFORMATION_MESSAGE));
         return createButton(a);
     }
 
@@ -170,8 +235,7 @@ public class OptionPaneDemo extends AbstractDemo {
                 }
             }
         };
-        Icon icon = UIManager.getIcon("OptionPane.questionIcon"); // messageType == 3
-        a.putValue(Action.LARGE_ICON_KEY, icon);
+        a.putValue(Action.LARGE_ICON_KEY, getIcon(JOptionPane.QUESTION_MESSAGE));
         return createButton(a);
     }
 
@@ -186,8 +250,7 @@ public class OptionPaneDemo extends AbstractDemo {
                 }
             }
         };
-        Icon icon = UIManager.getIcon("OptionPane.questionIcon"); // messageType == 3
-        a.putValue(Action.LARGE_ICON_KEY, icon);
+        a.putValue(Action.LARGE_ICON_KEY, getIcon(JOptionPane.QUESTION_MESSAGE));
         return createButton(a);
     }
 
@@ -248,8 +311,7 @@ public class OptionPaneDemo extends AbstractDemo {
 
             }
         };
-        Icon icon = UIManager.getIcon("OptionPane.informationIcon"); // messageType == 1
-        a.putValue(Action.LARGE_ICON_KEY, icon);
+        a.putValue(Action.LARGE_ICON_KEY, getIcon(JOptionPane.INFORMATION_MESSAGE));
         return createButton(a);
     }
 
