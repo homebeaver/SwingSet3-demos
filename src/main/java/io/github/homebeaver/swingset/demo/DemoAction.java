@@ -20,6 +20,7 @@ import javax.swing.JToolBar;
 
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.action.AbstractActionExt;
+import org.jdesktop.swingx.demos.errorpane.ErrorPaneDemo;
 import org.jdesktop.swingx.icon.PauseIcon;
 import org.jdesktop.swingx.icon.PlayIconSolid;
 import org.jdesktop.swingx.icon.RadianceIcon;
@@ -311,7 +312,7 @@ public class DemoAction extends AbstractActionExt {
         	ss2Actions.add(new DemoAction(FileChooserDemo.class, "FileChooser", 2, Category.CHOOSERS, StaticUtilities.createImageIcon(FileChooserDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(HtmlDemo.class, "Html", 2, Category.TEXT, StaticUtilities.createImageIcon(HtmlDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(ListDemo.class, "List", 2, Category.DATA, StaticUtilities.createImageIcon(ListDemo.ICON_PATH)));
-        	ss2Actions.add(new DemoAction(OptionPaneDemo.class, "OptionPane", 2, Category.CONTROLS, StaticUtilities.createImageIcon(OptionPaneDemo.ICON_PATH)));
+        	ss2Actions.add(new DemoAction(ErrorPaneDemo.class, "Error+OptionPane", 3, Category.CONTROLS, StaticUtilities.createImageIcon(ErrorPaneDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(ProgressBarDemo.class, "ProgressBar", 2, Category.DECORATORS, StaticUtilities.createImageIcon(ProgressBarDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(ScrollPaneDemo.class, "ScrollPane", 2, Category.DECORATORS, StaticUtilities.createImageIcon(ScrollPaneDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(SliderDemo.class, "Slider", 2, Category.DECORATORS, StaticUtilities.createImageIcon(SliderDemo.ICON_PATH)));
