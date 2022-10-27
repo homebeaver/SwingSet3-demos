@@ -63,6 +63,7 @@ class JOptionPane extends JComponent
   UIManager.getString("OptionPane.inputDialogTitle")   // nls : "Eingabe" / Input
 
  */
+@Deprecated
 public class OptionPaneDemo extends AbstractDemo {
 
 	/**
