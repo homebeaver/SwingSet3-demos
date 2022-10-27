@@ -6,6 +6,7 @@ package org.jdesktop.swingx.demos.errorpane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,8 +15,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -25,16 +29,20 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.error.ErrorInfo;
-import org.jdesktop.swingx.icon.DefaultIcons;
+import org.jdesktop.swingx.icon.CircleIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.TrafficLightGreenIcon;
+import org.jdesktop.swingx.icon.TrafficLightRedIcon;
+import org.jdesktop.swingx.icon.TrafficLightYellowIcon;
 
 import swingset.AbstractDemo;
 
 /**
- * A demo for the {@code JXErrorPane}.
+ * A demo for the {@code JXErrorPane} and swing {@code JOptionPane}.
  *
  * @author Karl George Schaefer
  * @author joshy (original JXErrorPaneDemo)
- * @author EUG (reorg)
+ * @author EUG (reorg+OptionPaneDemo)
  */
 //@DemoProperties(
 //    value = "JXErrorPane Demo",
@@ -49,6 +57,8 @@ import swingset.AbstractDemo;
 //)
 public class ErrorPaneDemo extends AbstractDemo {
 	
+	public static final String ICON_PATH = "toolbar/JOptionPane.gif";
+	
 	private static final long serialVersionUID = 553318600929011235L;
 	private static final Logger LOG = Logger.getLogger(ErrorPaneDemo.class.getName());
 	private static final String DESCRIPTION = "Demonstrates JXErrorPane, a control for displaying errors";
@@ -56,6 +66,13 @@ public class ErrorPaneDemo extends AbstractDemo {
 	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = false;
 	private static final String CONTROLLER_ICON_POSITION = BorderLayout.WEST; // also good: NORTH
 
+	private static final String OPTIONPANE_TITLETEXT = "OptionPane.titleText";
+	private static final String OPTIONPANE_MESSAGE   = "OptionPane.messageDialogTitle";
+	private static final String OPTIONPANE_INPUT     = "OptionPane.inputDialogTitle";
+	private String getUIString(Object key) {
+		return UIManager.getString(key, getLocale());
+	}
+	
     /**
      * main method allows us to run as a standalone demo.
      * @param args params
@@ -122,11 +139,17 @@ public class ErrorPaneDemo extends AbstractDemo {
         };
         bp.setLayout(new BoxLayout(bp, BoxLayout.Y_AXIS));
 
-        bp.add(Box.createRigidArea(VGAP30));
+        bp.add(Box.createRigidArea(VGAP5));
 
-        bp.add(createBasicButton());	bp.add(Box.createRigidArea(VGAP15));
-        bp.add(createOwnerButton());	bp.add(Box.createRigidArea(VGAP15));
-        bp.add(createNestedButton());	bp.add(Box.createVerticalGlue());
+        bp.add(createErrorMessageButton());     bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createBasicErrorButton());	bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createInputDialogButton());      bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createWarningDialogButton());    bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createOwnerWarnButton());	bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createNestedWarnButton());	bp.add(Box.createVerticalGlue());
+        bp.add(createMessageDialogButton());    bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createComponentDialogButton());  bp.add(Box.createRigidArea(VGAP15));
+        bp.add(createConfirmDialogButton());    bp.add(Box.createVerticalGlue());
 
         demo.add(Box.createHorizontalGlue());
         demo.add(bp);
@@ -135,16 +158,251 @@ public class ErrorPaneDemo extends AbstractDemo {
         return demo;
     }
 
-    private JButton createBasicButton() {
-        /*
-         * get the default error icon, see BasicErrorPaneUI.getDefaultErrorIcon() or getDefaultWarningIcon()
-         * JXErrorPane.errorIcon or OptionPane.errorIcon
-         */
-        Icon icon = UIManager.getIcon("JXErrorPane.errorIcon");
-        if(icon==null) {
-            LOG.warning("JXErrorPane.errorIcon is null, use default UI OptionPane.errorIcon.");
-            icon = DefaultIcons.getIcon(DefaultIcons.ERROR);
-        }
+    private JButton createErrorMessageButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.ERROR_MESSAGE, RadianceIcon.BUTTON_ICON);
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("errorbutton"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+            JOptionPane.showMessageDialog
+        	( ErrorPaneDemo.this                 // parentComponent
+        	, getBundleString("errormessage")      // Object message 
+        	, getUIString(OPTIONPANE_MESSAGE)      // String title, nls : "Meldung" / Message
+        	, JOptionPane.ERROR_MESSAGE
+        	, getMessageTypeIcon(JOptionPane.ERROR_MESSAGE, RadianceIcon.BUTTON_ICON)
+            );
+		});
+		return b;
+    }
+
+    private JButton createInputDialogButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON);
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("inputbutton"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+            String result = (String)JOptionPane.showInputDialog
+                	( ErrorPaneDemo.this
+                	, getBundleString("inputquestion")      // Object message                	
+                	, getUIString(OPTIONPANE_INPUT)         // String title, nls : "Eingabe" / Input
+                	, JOptionPane.QUESTION_MESSAGE
+                	, getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON) // the Icon to display
+                	, null, null                            // selectionValues, initialSelectionValue
+                	);
+                if ((result != null) && (result.length() > 0)) {
+                    JOptionPane.showMessageDialog
+                    	( ErrorPaneDemo.this                                // parentComponent
+                    	, result + ": " + getBundleString("inputresponse")  // Object message 
+                    	, getUIString(OPTIONPANE_MESSAGE)                   // String title, nls : "Meldung" / Message
+                    	, JOptionPane.INFORMATION_MESSAGE
+                    	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                        );
+                }
+		});
+    	return b;
+    }
+
+    private JButton createWarningDialogButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.WARNING_MESSAGE, RadianceIcon.BUTTON_ICON);
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("warningbutton"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+            JOptionPane.showMessageDialog
+        	( ErrorPaneDemo.this
+        	, getBundleString("warningtext")
+        	, getBundleString("warningtitle")
+        	, JOptionPane.WARNING_MESSAGE
+        	, getMessageTypeIcon(JOptionPane.WARNING_MESSAGE, RadianceIcon.BUTTON_ICON)
+        	);
+		});
+    	return b;
+    }
+
+    private String getImgSrc() {
+        URL img = getClass().getResource("resources/images/bottle.gif");
+        if(img==null) LOG.warning("Ressource bottle.gif not found");
+        String imagesrc = "<img src=\"" + img + "\" width=\"284\" height=\"100\">";
+        return imagesrc;
+    }
+    // Message in a Bottle:
+    private JButton createMessageDialogButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON);
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("messagebutton"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+            JOptionPane.showMessageDialog
+        	( ErrorPaneDemo.this
+            , "<html>" + getImgSrc() + "<br><center>" + getBundleString("messagetext") + "</center><br></html>"
+            , getUIString(OPTIONPANE_MESSAGE)
+            , JOptionPane.INFORMATION_MESSAGE
+            , getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+        );
+		});
+    	return b;
+    }
+
+    private JButton createComponentDialogButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON);
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("componentbutton"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+            // In a ComponentDialog, you can show as many message components and
+            // as many options as you want:
+
+            // Messages
+            Object[]      message = new Object[4];
+            message[0] = getBundleString("componentmessage");
+            message[1] = new JTextField(getBundleString("componenttextfield"));
+
+            JComboBox<String> cb = new JComboBox<String> ();
+            cb.addItem(getBundleString("component_cb1"));
+            cb.addItem(getBundleString("component_cb2"));
+            cb.addItem(getBundleString("component_cb3"));
+            message[2] = cb;
+
+            message[3] = getBundleString("componentmessage2");
+
+            // Options from nls props:
+            String[] options = {
+                getBundleString("component_op1"),
+                getBundleString("component_op2"),
+                getBundleString("component_op3"),
+                getBundleString("component_op4"),
+                getBundleString("component_op5")
+            };
+            int result = JOptionPane.showOptionDialog(
+            	ErrorPaneDemo.this,                         // the parent that the dialog blocks
+                message,                                    // the dialog message array
+                getBundleString("componenttitle"),          // the title of the dialog window
+                JOptionPane.DEFAULT_OPTION,                 // option type
+                JOptionPane.INFORMATION_MESSAGE,            // message type
+                getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON),   
+                                                            // optional icon, use null to use the default icon
+                options,                                    // options string array, will be made into buttons
+                options[3]                                  // option that should be made into a default button
+            );
+            switch(result) {
+               case 0: // yes
+                 JOptionPane.showMessageDialog
+                 	( ErrorPaneDemo.this                   // parentComponent
+                 	, getBundleString("component_r1")      // Object message 
+                 	, getUIString(OPTIONPANE_MESSAGE)      // String title, nls : "Meldung" / Message
+                 	, JOptionPane.INFORMATION_MESSAGE
+                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                    );
+                 break;
+               case 1: // no
+                 JOptionPane.showMessageDialog
+                 	( ErrorPaneDemo.this
+                 	, getBundleString("component_r2")
+                 	, getUIString(OPTIONPANE_MESSAGE)
+                 	, JOptionPane.INFORMATION_MESSAGE
+                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                    );
+                 break;
+               case 2: // maybe
+                   JOptionPane.showMessageDialog
+	                 	( ErrorPaneDemo.this
+	                 	, getBundleString("component_r3")
+	                 	, getUIString(OPTIONPANE_MESSAGE)
+	                 	, JOptionPane.INFORMATION_MESSAGE
+	                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+	                    );
+                 break;
+               case 3: // probably
+                   JOptionPane.showMessageDialog
+	                 	( ErrorPaneDemo.this
+	                 	, getBundleString("component_r4")
+	                 	, getUIString(OPTIONPANE_MESSAGE)
+	                 	, JOptionPane.INFORMATION_MESSAGE
+	                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+	                    );
+                 break;
+               default:
+                 break;
+            }
+		});
+    	return b;
+    }
+
+    private JButton createConfirmDialogButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON);
+		JLabel iconLabel = new JLabel(icon);
+		JLabel clickMe = new JLabel(getBundleString("confirmbutton"), SwingConstants.CENTER);
+		JButton b = new JButton();
+        b.setLayout(new BorderLayout());
+        b.add(iconLabel, CONTROLLER_ICON_POSITION);
+        b.add(clickMe, BorderLayout.CENTER);
+		b.addActionListener(event -> {
+            int result = JOptionPane.showConfirmDialog
+            		( ErrorPaneDemo.this
+            		, getBundleString("confirmquestion")
+            		, getUIString(OPTIONPANE_TITLETEXT)
+            		, JOptionPane.YES_NO_CANCEL_OPTION
+            		, JOptionPane.QUESTION_MESSAGE
+            		, getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON)
+            		);
+            if(result == JOptionPane.YES_OPTION) {
+                JOptionPane.showMessageDialog
+                 	( ErrorPaneDemo.this
+                 	, getBundleString("confirmyes")
+                 	, getUIString(OPTIONPANE_MESSAGE)
+                 	, JOptionPane.INFORMATION_MESSAGE
+                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                    );
+            } else if(result == JOptionPane.NO_OPTION) {
+                JOptionPane.showMessageDialog
+                 	( ErrorPaneDemo.this
+                 	, getBundleString("confirmno")
+                 	, getUIString(OPTIONPANE_MESSAGE)
+                 	, JOptionPane.INFORMATION_MESSAGE
+                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                    );
+            }
+		});
+    	return b;
+    }
+
+    private Icon getMessageTypeIcon(int messageType, int size) {
+    	RadianceIcon icon = CircleIcon.of(size, size); // out of order ==> no color
+    	switch(messageType) {
+		case JOptionPane.ERROR_MESSAGE:
+			icon = TrafficLightRedIcon.of(size, size);
+			break;
+		case JOptionPane.INFORMATION_MESSAGE:
+			break;
+		case JOptionPane.WARNING_MESSAGE:
+			icon = TrafficLightYellowIcon.of(size, size);
+			break;
+		case JOptionPane.QUESTION_MESSAGE:
+			icon = TrafficLightGreenIcon.of(size, size);
+			break;
+		default:
+			break;
+		}
+    	return icon;
+    }
+
+    private JButton createBasicErrorButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.ERROR_MESSAGE, RadianceIcon.BUTTON_ICON);
 		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("generateBasicDialog.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -157,8 +415,9 @@ public class ErrorPaneDemo extends AbstractDemo {
     	return b;
     }
 
-    private JButton createOwnerButton() {
-		JLabel iconLabel = new JLabel(DefaultIcons.getIcon(DefaultIcons.WARNING));
+    private JButton createOwnerWarnButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.WARNING_MESSAGE, RadianceIcon.BUTTON_ICON);
+		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("generateDialogWithOwner.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
         b.setLayout(new BorderLayout());
@@ -170,8 +429,9 @@ public class ErrorPaneDemo extends AbstractDemo {
     	return b;
     }
 
-    private JButton createNestedButton() {
-		JLabel iconLabel = new JLabel(DefaultIcons.getIcon(DefaultIcons.WARNING));
+    private JButton createNestedWarnButton() {
+        Icon icon = getMessageTypeIcon(JOptionPane.WARNING_MESSAGE, RadianceIcon.BUTTON_ICON);
+		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("generateNestedExceptions.Action.text"), SwingConstants.CENTER);
 		JButton b = new JButton();
         b.setLayout(new BorderLayout());
@@ -194,8 +454,9 @@ public class ErrorPaneDemo extends AbstractDemo {
  *      JXErrorPane.showDialog(null, pane);    	
  */
     	
-        JXErrorPane.showDialog(new Exception());
+        JXErrorPane.showDialog(new Exception("any text"));
 //        JXErrorPane.showFrame(new Exception());
+//        JXErrorPane.showInternalFrame(new Exception());
     }
 
     private void generateDialogWithOwner() {
