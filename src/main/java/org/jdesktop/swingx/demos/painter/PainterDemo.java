@@ -339,12 +339,19 @@ public class PainterDemo extends AbstractDemo {
         
         BindingGroup group = new BindingGroup();       
         BeanProperty<JXTree, String> sv = BeanProperty.create("selectedElement_UNWRAP_NODE");
-        //BeanProperty<Object, String> tv = BeanProperty.create("backgroundPainter");
+        BeanProperty<JXPanel, String> tv = BeanProperty.create("backgroundPainter");
+        //Binding<SS, SV, TS, TV>: 
+        // <SS> type of source object, 
+        // <SV> type of value that the source property represents,
+        // TS, TV dto for target
         Binding b1 = Bindings.createAutoBinding(UpdateStrategy.READ, // strategy: keep target in sync with source
         		painterDemos, sv, // SS:JXTree, Property<SS,SV>
-        		backgroundPainter, BeanProperty.create("backgroundPainter") // TS, Property<TS,TV>
+        		backgroundPainter, tv // JXPanel, Property<TS,TV>
         		);
-        b1.setConverter(painterConverter);
+        // Converter<SV, TV> converter
+        // use painterConverter or painterConverter2
+        Converter<DisplayInfo<Painter<Object>>, Painter<Object>> painterConverter2 = new DisplayInfoConverter<Painter<Object>>();
+        b1.setConverter(painterConverter2);
         group.addBinding(b1);
         
         Binding b2 = Bindings.createAutoBinding(UpdateStrategy.READ, // strategy: keep target in sync with source
@@ -936,7 +943,7 @@ public class PainterDemo extends AbstractDemo {
             StringValue effectInfo = DisplayValues.DISPLAY_INFO_DESCRIPTION;
             
             // effects
-            effectBox.setRenderer(new DefaultListRenderer(effectInfo));
+            effectBox.setRenderer(new DefaultListRenderer<>(effectInfo));
             effectBox.setModel(createAreaEffectsList());
             styleBox.setModel(new EnumComboBoxModel<Style>(Style.class));
             
@@ -944,7 +951,7 @@ public class PainterDemo extends AbstractDemo {
             interpolationBox.setModel(new EnumComboBoxModel<Interpolation>(Interpolation.class));
             ComboBoxModel<DisplayInfo<BufferedImageOp>> comboBoxModel = createFilterList();
             filterBox.setModel(comboBoxModel);
-            filterBox.setRenderer(new DefaultListRenderer(effectInfo));
+            filterBox.setRenderer(new DefaultListRenderer<>(effectInfo));
             
             // layout data
             horizontalAlignmentBox.setModel(new EnumComboBoxModel<HorizontalAlignment>(HorizontalAlignment.class));            
