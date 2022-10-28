@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import javax.swing.JLabel;
+import javax.swing.Painter;
 
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.SearchPredicate;
-import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.renderer.PainterAware;
 import org.jdesktop.swingx.renderer.WrappingIconPanel;
 
