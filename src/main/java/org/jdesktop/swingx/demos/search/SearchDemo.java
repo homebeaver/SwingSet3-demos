@@ -478,7 +478,6 @@ public class SearchDemo extends AbstractDemo {
         }
         
 
-        @SuppressWarnings("unchecked")
         private void updateXMatchMarkers() {
             // <snip> Customize Search 
             // toggle text marker painter between plain and animated

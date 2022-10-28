@@ -114,21 +114,22 @@ public class Contributors {
      * @throws IOException 
      * 
      */
-    private void initData() throws IOException {
+    @SuppressWarnings("serial")
+	private void initData() throws IOException {
         contributors = new ArrayList<Contributor>();
         // fill the list from the resources
         readDataSource(contributors);
         LOG.info("contributors size="+contributors.size());
-        // wrap a listModel around
+        // wrap a listModel around , no serialVersionUID: Same-version serialization only
         listModel = new AbstractListModel<Object>() {
-            
+            @Override
             public Object getElementAt(int index) {
                 if (index == 0) {
                     return null; // "-- Contributors --";
                 }
                 return contributors.get(index - 1);
             }
-            
+            @Override
             public int getSize() {
                 return contributors.size() + 1;
             }
