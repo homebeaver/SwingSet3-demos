@@ -154,7 +154,8 @@ public class SearchDemo extends AbstractDemo {
         this.getActionMap().put("SearchAction", new SearchAction(this));
     }
 
-    class SearchAction extends AbstractActionExt {
+    @SuppressWarnings("serial")
+	class SearchAction extends AbstractActionExt {
 		Component invoker;
         protected SearchAction(Component comp) {
             super("SearchAction"); // the name for the action
@@ -235,7 +236,8 @@ public class SearchDemo extends AbstractDemo {
     private void installCustomSearch() {
         // <snip> Customize Search 
         // create custom find action
-        Action find = new AbstractActionExt() {
+        @SuppressWarnings("serial")
+		Action find = new AbstractActionExt() {
             
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -330,7 +332,8 @@ public class SearchDemo extends AbstractDemo {
         // Note: the content of each cell is always of type Contributor
         // its string representation as-seen is defined here in the StringValue
         // default: show contributor's first and last name
-        StringValue nameValue = new StringValue() {
+        @SuppressWarnings("serial")
+		StringValue nameValue = new StringValue() {
 
             public String getString(Object value) {
                 if (value instanceof Contributor) {
@@ -344,7 +347,8 @@ public class SearchDemo extends AbstractDemo {
         stringValues.put("name", nameValue);
 
         // show the joined date
-        StringValue dateValue = new StringValue() {
+        @SuppressWarnings("serial")
+		StringValue dateValue = new StringValue() {
 
             @Override
             public String getString(Object value) {
@@ -359,7 +363,8 @@ public class SearchDemo extends AbstractDemo {
         stringValues.put("date", dateValue);
         
         // show the merits
-        StringValue meritValue = new StringValue() {
+        @SuppressWarnings("serial")
+		StringValue meritValue = new StringValue() {
 
             @Override
             public String getString(Object value) {
@@ -373,7 +378,8 @@ public class SearchDemo extends AbstractDemo {
         stringValues.put("merits", meritValue);
 
         // show the email
-        StringValue emailValue = new StringValue() {
+        @SuppressWarnings("serial")
+		StringValue emailValue = new StringValue() {
 
             @Override
             public String getString(Object value) {
