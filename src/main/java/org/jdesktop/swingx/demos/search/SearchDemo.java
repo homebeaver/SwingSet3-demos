@@ -35,6 +35,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.jdesktop.beans.AbstractBean;
 import org.jdesktop.swingx.JXFindBar;
+import org.jdesktop.swingx.JXFindPanel;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXList;
@@ -84,7 +85,7 @@ public class SearchDemo extends AbstractDemo {
 	private static final long serialVersionUID = 3818043478721123293L;
     private static final Logger LOG = Logger.getLogger(SearchDemo.class.getName());
 	private static final String DESCRIPTION = "Demonstrates base searching functionality plus custom configuration.";
-
+	private static final String SEARCHFIELD_PROMPT = "Enter a search text here";
     /**
      * main method allows us to run as a standalone demo.
      * @param args params
@@ -118,6 +119,8 @@ public class SearchDemo extends AbstractDemo {
     private JXList<Object> list;
     private JXTable table;
     
+//    private JXSearchField searchField;
+    private JXFindPanel findPanel;
     private JXFindBar searchPanel;
     private Map<String, StringValue> stringValues;
     private SearchControl searchControl;
@@ -276,9 +279,10 @@ public class SearchDemo extends AbstractDemo {
      * Looks for a Searchable in the potential searchable provider and
      * sets it as the current searchable of the search panel.
      * 
-     * @param searchableProvider a component which 
+     * @param searchableProvider a component (JXTable, ... ) which 
+     * @return the Searchable for searchableProvider
      */
-    protected void updateSearchPanel(Object searchableProvider) {
+    protected Searchable updateSearchPanel(Object searchableProvider) {
         final Searchable s = getSearchable(searchableProvider);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -286,6 +290,7 @@ public class SearchDemo extends AbstractDemo {
                 KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent(searchPanel);
             }
         });
+        return s;
     }
 
 
@@ -294,13 +299,14 @@ public class SearchDemo extends AbstractDemo {
      * and updates the searchPanel accordingly.
      * 
      * @param tabbed JTabbedPane
+     * @return the searchable
      */
-    protected void updateSearchable(JTabbedPane tabbed) {
+    protected Searchable updateSearchable(JTabbedPane tabbed) {
         Component comp = tabbed.getSelectedComponent();
         if (comp instanceof JScrollPane) {
             comp = (JComponent) ((JScrollPane) comp).getViewport().getView();
         }
-        updateSearchPanel(comp);
+        return updateSearchPanel(comp);
     }
 
 
@@ -436,7 +442,6 @@ public class SearchDemo extends AbstractDemo {
         private HashMap<String, ColorHighlighter> colorCellMarkers;
         
         public SearchControl() {
-//            initMatchMarkers(); :
             createMatchingTextMarkers();
             createColorCellMarkers();
             installMatchMarkers(colorCellMarkers);
@@ -559,6 +564,30 @@ public class SearchDemo extends AbstractDemo {
         addTab(tabbedPane, list, "listTabTitle", true);
         addTab(tabbedPane, tree, "treeTabTitle", true);
         addTab(tabbedPane, treeTable, "treeTableTabTitle", true);
+        
+        // findPanel with searchField
+        findPanel = new DemoFindPanel(updateSearchable(tabbedPane));
+//        searchField = new JXSearchField(SEARCHFIELD_PROMPT);
+//        // In REGULAR search mode, an action event is fired, 
+//        // when the user presses enter or clicks the find button.
+//        searchField.setSearchMode(JXSearchField.SearchMode.REGULAR);
+//        searchField.addActionListener(actionEvent -> {
+//			LOG.info("actionEvent["+actionEvent.getClass().getSimpleName()+"]:"+actionEvent.getActionCommand()
+//			+", ModifiersExText("+actionEvent.getModifiers()+")="+InputEvent.getModifiersExText(actionEvent.getModifiers())
+//			+(actionEvent.getModifiers()==0 ? " ENTER" : " find button pushed")
+//			);
+//			String searchString = actionEvent.getActionCommand();
+//			// TODO search
+//			Searchable s = updateSearchable(tabbedPane);
+//			if(searchString.isEmpty()) {
+//				// nothing to do
+//			} else {
+//				int matchIdx = s.search(searchString);
+//				LOG.info("\""+searchString+"\" in Searchable:"+s + " results to "+matchIdx);
+//			}
+//		});
+        add(findPanel, BorderLayout.SOUTH);
+        
         return tabbedPane;
     }
 
