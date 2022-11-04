@@ -28,6 +28,10 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.demos.svg.TangoROptionPane_error;
+import org.jdesktop.swingx.demos.svg.TangoROptionPane_information;
+import org.jdesktop.swingx.demos.svg.TangoROptionPane_question;
+import org.jdesktop.swingx.demos.svg.TangoROptionPane_warning;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.icon.CircleIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
@@ -146,12 +150,11 @@ public class ErrorPaneDemo extends AbstractDemo {
         bp.add(createInputDialogButton());      bp.add(Box.createRigidArea(VGAP15));
         bp.add(createWarningDialogButton());    bp.add(Box.createRigidArea(VGAP15));
         bp.add(createOwnerWarnButton());	bp.add(Box.createRigidArea(VGAP15));
-        bp.add(createNestedWarnButton());	bp.add(Box.createVerticalGlue());
+        bp.add(createNestedWarnButton());	bp.add(Box.createRigidArea(VGAP15));
         bp.add(createMessageDialogButton());    bp.add(Box.createRigidArea(VGAP15));
         bp.add(createComponentDialogButton());  bp.add(Box.createRigidArea(VGAP15));
         bp.add(createConfirmDialogButton());    bp.add(Box.createVerticalGlue());
 
-        demo.add(Box.createHorizontalGlue());
         demo.add(bp);
         demo.add(Box.createHorizontalGlue());
         
@@ -159,7 +162,9 @@ public class ErrorPaneDemo extends AbstractDemo {
     }
 
     private JButton createErrorMessageButton() {
-        Icon icon = getMessageTypeIcon(JOptionPane.ERROR_MESSAGE, RadianceIcon.BUTTON_ICON);
+        Icon icon = UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+        		TangoROptionPane_error.of(RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON) : 
+        		getMessageTypeIcon(JOptionPane.ERROR_MESSAGE, RadianceIcon.BUTTON_ICON);
 		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("errorbutton"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -169,17 +174,20 @@ public class ErrorPaneDemo extends AbstractDemo {
 		b.addActionListener(event -> {
             JOptionPane.showMessageDialog
         	( ErrorPaneDemo.this                 // parentComponent
-        	, getBundleString("errormessage")      // Object message 
-        	, getUIString(OPTIONPANE_MESSAGE)      // String title, nls : "Meldung" / Message
+        	, getBundleString("errormessage")    // Object message 
+        	, getUIString(OPTIONPANE_MESSAGE)    // String title, nls : "Meldung" / Message
         	, JOptionPane.ERROR_MESSAGE
-        	, getMessageTypeIcon(JOptionPane.ERROR_MESSAGE, RadianceIcon.BUTTON_ICON)
+        	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+        			null : getMessageTypeIcon(JOptionPane.ERROR_MESSAGE, RadianceIcon.BUTTON_ICON)
             );
 		});
 		return b;
     }
 
     private JButton createInputDialogButton() {
-        Icon icon = getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON);
+        Icon icon = UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+        		TangoROptionPane_question.of(RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON) : 
+        		getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON);
 		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("inputbutton"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -192,7 +200,9 @@ public class ErrorPaneDemo extends AbstractDemo {
                 	, getBundleString("inputquestion")      // Object message                	
                 	, getUIString(OPTIONPANE_INPUT)         // String title, nls : "Eingabe" / Input
                 	, JOptionPane.QUESTION_MESSAGE
-                	, getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON) // the Icon to display
+                	// the Icon to display:
+                	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+                			null : getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON)
                 	, null, null                            // selectionValues, initialSelectionValue
                 	);
                 if ((result != null) && (result.length() > 0)) {
@@ -201,7 +211,8 @@ public class ErrorPaneDemo extends AbstractDemo {
                     	, result + ": " + getBundleString("inputresponse")  // Object message 
                     	, getUIString(OPTIONPANE_MESSAGE)                   // String title, nls : "Meldung" / Message
                     	, JOptionPane.INFORMATION_MESSAGE
-                    	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                    	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+                    			null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
                         );
                 }
 		});
@@ -209,7 +220,9 @@ public class ErrorPaneDemo extends AbstractDemo {
     }
 
     private JButton createWarningDialogButton() {
-        Icon icon = getMessageTypeIcon(JOptionPane.WARNING_MESSAGE, RadianceIcon.BUTTON_ICON);
+        Icon icon = UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+        		TangoROptionPane_warning.of(RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON) : 
+        		getMessageTypeIcon(JOptionPane.WARNING_MESSAGE, RadianceIcon.BUTTON_ICON);
 		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("warningbutton"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -222,7 +235,8 @@ public class ErrorPaneDemo extends AbstractDemo {
         	, getBundleString("warningtext")
         	, getBundleString("warningtitle")
         	, JOptionPane.WARNING_MESSAGE
-        	, getMessageTypeIcon(JOptionPane.WARNING_MESSAGE, RadianceIcon.BUTTON_ICON)
+        	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+        			null : getMessageTypeIcon(JOptionPane.WARNING_MESSAGE, RadianceIcon.BUTTON_ICON)
         	);
 		});
     	return b;
@@ -236,7 +250,9 @@ public class ErrorPaneDemo extends AbstractDemo {
     }
     // Message in a Bottle:
     private JButton createMessageDialogButton() {
-        Icon icon = getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON);
+        Icon icon = UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+        		TangoROptionPane_information.of(RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON) : 
+        		getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON);
 		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("messagebutton"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -249,14 +265,17 @@ public class ErrorPaneDemo extends AbstractDemo {
             , "<html>" + getImgSrc() + "<br><center>" + getBundleString("messagetext") + "</center><br></html>"
             , getUIString(OPTIONPANE_MESSAGE)
             , JOptionPane.INFORMATION_MESSAGE
-            , getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+            , UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+            		null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
         );
 		});
     	return b;
     }
 
     private JButton createComponentDialogButton() {
-        Icon icon = getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON);
+        Icon icon = UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+        		TangoROptionPane_information.of(RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON) : 
+        		getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON);
 		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("componentbutton"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -294,7 +313,8 @@ public class ErrorPaneDemo extends AbstractDemo {
                 getBundleString("componenttitle"),          // the title of the dialog window
                 JOptionPane.DEFAULT_OPTION,                 // option type
                 JOptionPane.INFORMATION_MESSAGE,            // message type
-                getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON),   
+                UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+                		null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON),   
                                                             // optional icon, use null to use the default icon
                 options,                                    // options string array, will be made into buttons
                 options[3]                                  // option that should be made into a default button
@@ -306,7 +326,8 @@ public class ErrorPaneDemo extends AbstractDemo {
                  	, getBundleString("component_r1")      // Object message 
                  	, getUIString(OPTIONPANE_MESSAGE)      // String title, nls : "Meldung" / Message
                  	, JOptionPane.INFORMATION_MESSAGE
-                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                 	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+                 			null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
                     );
                  break;
                case 1: // no
@@ -315,7 +336,8 @@ public class ErrorPaneDemo extends AbstractDemo {
                  	, getBundleString("component_r2")
                  	, getUIString(OPTIONPANE_MESSAGE)
                  	, JOptionPane.INFORMATION_MESSAGE
-                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                 	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+                 			null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
                     );
                  break;
                case 2: // maybe
@@ -324,7 +346,8 @@ public class ErrorPaneDemo extends AbstractDemo {
 	                 	, getBundleString("component_r3")
 	                 	, getUIString(OPTIONPANE_MESSAGE)
 	                 	, JOptionPane.INFORMATION_MESSAGE
-	                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+	                 	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+	                 			null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
 	                    );
                  break;
                case 3: // probably
@@ -333,7 +356,8 @@ public class ErrorPaneDemo extends AbstractDemo {
 	                 	, getBundleString("component_r4")
 	                 	, getUIString(OPTIONPANE_MESSAGE)
 	                 	, JOptionPane.INFORMATION_MESSAGE
-	                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+	                 	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+	                 			null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
 	                    );
                  break;
                default:
@@ -344,7 +368,9 @@ public class ErrorPaneDemo extends AbstractDemo {
     }
 
     private JButton createConfirmDialogButton() {
-        Icon icon = getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON);
+        Icon icon = UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+        		TangoROptionPane_question.of(RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON) : 
+        		getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON);
 		JLabel iconLabel = new JLabel(icon);
 		JLabel clickMe = new JLabel(getBundleString("confirmbutton"), SwingConstants.CENTER);
 		JButton b = new JButton();
@@ -358,7 +384,8 @@ public class ErrorPaneDemo extends AbstractDemo {
             		, getUIString(OPTIONPANE_TITLETEXT)
             		, JOptionPane.YES_NO_CANCEL_OPTION
             		, JOptionPane.QUESTION_MESSAGE
-            		, getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON)
+            		, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+            				null : getMessageTypeIcon(JOptionPane.QUESTION_MESSAGE, RadianceIcon.BUTTON_ICON)
             		);
             if(result == JOptionPane.YES_OPTION) {
                 JOptionPane.showMessageDialog
@@ -366,7 +393,8 @@ public class ErrorPaneDemo extends AbstractDemo {
                  	, getBundleString("confirmyes")
                  	, getUIString(OPTIONPANE_MESSAGE)
                  	, JOptionPane.INFORMATION_MESSAGE
-                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                 	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+                 			null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
                     );
             } else if(result == JOptionPane.NO_OPTION) {
                 JOptionPane.showMessageDialog
@@ -374,7 +402,8 @@ public class ErrorPaneDemo extends AbstractDemo {
                  	, getBundleString("confirmno")
                  	, getUIString(OPTIONPANE_MESSAGE)
                  	, JOptionPane.INFORMATION_MESSAGE
-                 	, getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
+                 	, UIManager.getLookAndFeel().getClass().getName().contains("Nimbus") ?
+                 			null : getMessageTypeIcon(JOptionPane.INFORMATION_MESSAGE, RadianceIcon.BUTTON_ICON)
                     );
             }
 		});
