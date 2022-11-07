@@ -18,16 +18,25 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellRenderer;
@@ -120,8 +129,9 @@ public class SearchDemo extends AbstractDemo {
     private JXTable table;
     
 //    private JXSearchField searchField;
+    private JPanel jxFindContainer;
     private JXFindPanel findPanel;
-    private JXFindBar searchPanel;
+    private JXFindBar findBar;
     private Map<String, StringValue> stringValues;
     private SearchControl searchControl;
 
@@ -175,6 +185,19 @@ public class SearchDemo extends AbstractDemo {
     private JCheckBox extendedMarkerBox;
     private JCheckBox painterBox;
 
+    // aus DemoModule
+    Border loweredBorder = new CompoundBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED), new EmptyBorder(5,5,5,5));
+    private JXPanel createVerticalPanel(boolean threeD) {
+        JXPanel p = new JXPanel();
+        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+        p.setAlignmentY(Component.TOP_ALIGNMENT);
+        p.setAlignmentX(Component.LEFT_ALIGNMENT);
+        if(threeD) {
+            p.setBorder(loweredBorder);
+        }
+        return p;
+    }
+
     @Override
 	public JXPanel getControlPane() {
         JXPanel controller = new JXPanel(new BorderLayout());
@@ -199,6 +222,44 @@ public class SearchDemo extends AbstractDemo {
         boxen.add(painterBox);
         controller.add(boxen, BorderLayout.NORTH);
         
+        JPanel leftColumn = createVerticalPanel(false);
+        controller.add(leftColumn);
+        JLabel searchControlLabel = new JLabel(getBundleString("searchControlLabel.text"));
+        leftColumn.add(searchControlLabel);
+        ButtonGroup group = new ButtonGroup(); // JXFindBar XOR JXFindPanel 
+
+        JRadioButton jxFindBar = new JRadioButton();
+        jxFindBar.setText(getBundleString("jxFindBar.labelAndMnemonic", jxFindBar));
+        jxFindBar.setToolTipText(getBundleString("jxFindBar.tooltip"));
+        jxFindBar.addItemListener(e -> {
+        	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == jxFindBar
+        	if(rb.isSelected()) {
+                LOG.config("item event JRadioButton="+rb);
+                SearchDemo.this.jxFindContainer.removeAll();
+                SearchDemo.this.jxFindContainer.add(findBar);
+                SearchDemo.this.updateUI();
+        	}
+        });
+        group.add(jxFindBar);
+        jxFindBar.setSelected(true);
+        leftColumn.add(jxFindBar);
+
+        JRadioButton jxFindPanel = new JRadioButton();
+        jxFindPanel.setActionCommand("jxFindPanel");
+        jxFindPanel.setText(getBundleString("jxFindPanel.labelAndMnemonic", jxFindPanel));
+        jxFindPanel.setToolTipText(getBundleString("jxFindPanel.tooltip"));
+        jxFindPanel.addItemListener(e -> {
+        	JRadioButton rb = (JRadioButton) e.getSource(); // rb == e.getSource() == jxFindPanel
+        	if(rb.isSelected()) {
+                LOG.info("item event JRadioButton="+rb);
+                SearchDemo.this.jxFindContainer.removeAll();
+                SearchDemo.this.jxFindContainer.add(findPanel);
+                SearchDemo.this.updateUI();
+        	}
+        });
+        group.add(jxFindPanel);
+        leftColumn.add(jxFindPanel);
+
         JButton openFindDialog = new JButton("find dialog or SHIFT_DOWN+F5");
         
         openFindDialog.addActionListener( actionEvent -> {
@@ -286,8 +347,8 @@ public class SearchDemo extends AbstractDemo {
         final Searchable s = getSearchable(searchableProvider);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                searchPanel.setSearchable(s);
-                KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent(searchPanel);
+                findBar.setSearchable(s);
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent(findBar);
             }
         });
         return s;
@@ -546,8 +607,11 @@ public class SearchDemo extends AbstractDemo {
     private JTabbedPane initComponents() {
         setLayout(new BorderLayout());
         
-        searchPanel = SearchFactory.getInstance().createFindBar();
-        add(searchPanel, BorderLayout.NORTH);
+        jxFindContainer = new JPanel();
+        add(jxFindContainer, BorderLayout.NORTH);
+
+        findBar = SearchFactory.getInstance().createFindBar();
+        jxFindContainer.add(findBar);
         
         table = new JXTable();
         table.setName("searchTable");
@@ -586,7 +650,7 @@ public class SearchDemo extends AbstractDemo {
 //				LOG.info("\""+searchString+"\" in Searchable:"+s + " results to "+matchIdx);
 //			}
 //		});
-        add(findPanel, BorderLayout.SOUTH);
+        //add(findPanel, BorderLayout.SOUTH);
         
         return tabbedPane;
     }
