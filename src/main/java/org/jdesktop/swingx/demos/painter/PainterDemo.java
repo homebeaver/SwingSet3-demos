@@ -191,23 +191,19 @@ public class PainterDemo extends AbstractDemo {
      * @param args params
      */
     public static void main(String[] args) {
-    	SwingUtilities.invokeLater(new Runnable() {
-    		static final boolean exitOnClose = true;
-			@Override
-			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new PainterDemo(controller);
-				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
-				frame.setStartPosition(StartPosition.CenterInScreen);
-				//frame.setLocationRelativeTo(controller);
-            	frame.getContentPane().add(demo);
-            	frame.pack();
-            	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
-			}		
+        SwingUtilities.invokeLater( () -> {
+			JXFrame controller = new JXFrame("controller", exitOnClose);
+			AbstractDemo demo = new PainterDemo(controller);
+			JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+			frame.setStartPosition(StartPosition.CenterInScreen);
+			//frame.setLocationRelativeTo(controller);
+        	frame.getContentPane().add(demo);
+        	frame.pack();
+        	frame.setVisible(true);
+			
+			controller.getContentPane().add(demo.getControlPane());
+			controller.pack();
+			controller.setVisible(true);
     	});
     }
 

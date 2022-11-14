@@ -13,7 +13,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -45,19 +44,15 @@ public class HtmlDemo extends AbstractDemo {
      * @param args params
      */
     public static void main(String[] args) {
-    	SwingUtilities.invokeLater(new Runnable() {
-    		static final boolean exitOnClose = true;
-			@Override
-			public void run() {
-				// no controller
-				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
-				AbstractDemo demo = new HtmlDemo(frame);
-				frame.setStartPosition(StartPosition.CenterInScreen);
-				//frame.setLocationRelativeTo(controller);
-            	frame.getContentPane().add(demo);
-            	frame.pack();
-            	frame.setVisible(true);
-			}		
+        SwingUtilities.invokeLater( () -> {
+			// no controller
+			JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+			AbstractDemo demo = new HtmlDemo(frame);
+			frame.setStartPosition(StartPosition.CenterInScreen);
+			//frame.setLocationRelativeTo(controller);
+        	frame.getContentPane().add(demo);
+        	frame.pack();
+        	frame.setVisible(true);
     	});
     }
 

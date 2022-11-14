@@ -51,19 +51,17 @@ public class TitledSeparatorDemo extends AbstractDemo {
      * @param args params
      */
     public static void main(String[] args) {
-    	SwingUtilities.invokeLater(new Runnable() {
-    		static final boolean exitOnClose = true;
-			@Override
-			public void run() {
-				// no controller
-				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
-				AbstractDemo demo = new TitledSeparatorDemo(frame);
-				frame.setStartPosition(StartPosition.CenterInScreen);
-				//frame.setLocationRelativeTo(controller);
-            	frame.getContentPane().add(demo);
-            	frame.pack();
-            	frame.setVisible(true);
-			}		
+    	// invokeLater method can be invoked from any thread
+    	SwingUtilities.invokeLater( () -> {
+    		// ...create UI here...
+			// no controller
+			JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+			AbstractDemo demo = new TitledSeparatorDemo(frame);
+			frame.setStartPosition(StartPosition.CenterInScreen);
+			//frame.setLocationRelativeTo(controller);
+        	frame.getContentPane().add(demo);
+        	frame.pack();
+        	frame.setVisible(true);
     	});
     }
     

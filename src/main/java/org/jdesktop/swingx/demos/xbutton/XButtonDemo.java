@@ -26,10 +26,9 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.icon.ColumnControlIcon;
+import org.jdesktop.swingx.icon.DefaultIcons;
 import org.jdesktop.swingx.icon.PainterIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.icon.TrafficLightGreenIcon;
 import org.jdesktop.swingx.icon.TrafficLightRedIcon;
 import org.jdesktop.swingx.image.FastBlurFilter;
@@ -66,20 +65,16 @@ public class XButtonDemo extends AbstractDemo {
      * @param args params
      */
     public static void main(String[] args) {
-    	SwingUtilities.invokeLater(new Runnable() {
-    		static final boolean exitOnClose = true;
-			@Override
-			public void run() {
-				// no controller
-				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
-				AbstractDemo demo = new XButtonDemo(frame);
-				frame.setStartPosition(StartPosition.CenterInScreen);
-				//frame.setLocationRelativeTo(controller);
-            	frame.getContentPane().add(demo);
-            	frame.pack();
-            	frame.setVisible(true);
-			}		
-    	});
+        SwingUtilities.invokeLater( () -> {
+			// no controller
+			JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+			AbstractDemo demo = new XButtonDemo(frame);
+			frame.setStartPosition(StartPosition.CenterInScreen);
+			//frame.setLocationRelativeTo(controller);
+        	frame.getContentPane().add(demo);
+        	frame.pack();
+        	frame.setVisible(true);
+        });
     }
 
     /**
@@ -251,8 +246,7 @@ public class XButtonDemo extends AbstractDemo {
         JButton gButton = new JButton("S green Circle", green);
         iconPanel.add(gButton);
         
-        ColumnControlIcon ccIcon = new ColumnControlIcon(SizingConstants.LAUNCHER_ICON);
-        JButton ccButton = new JButton("big ColumnControl", ccIcon);
+        JButton ccButton = new JButton(DefaultIcons.ERROR, DefaultIcons.getIcon(DefaultIcons.ERROR));
         iconPanel.add(ccButton);
         
         // size from green: XS 10 px

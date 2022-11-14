@@ -123,7 +123,7 @@ public class LayoutControlPanel extends JPanel implements SwingConstants {
         add(l);
         add(textPosition);
 
-        add(Box.createRigidArea(DemoModule.VGAP20));
+        add(Box.createRigidArea(AbstractDemo.VGAP20));
 
         l = new JLabel(StaticUtilities.getResourceAsString("LayoutControlPanel.contentalignment_label", "contentalignment"));
         add(l);

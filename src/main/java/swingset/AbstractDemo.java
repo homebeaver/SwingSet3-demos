@@ -35,10 +35,10 @@ public abstract class AbstractDemo extends JXPanel {
 
 	private static final long serialVersionUID = -6208597812505361313L;
 	
+	protected static final boolean exitOnClose = true; // used in JXFrame of the demo
+	
 	// The preferred size of the demo
-	/** PREFERRED_WIDTH */
     static int PREFERRED_WIDTH = 680;
-	/** PREFERRED_HEIGHT */
     static int PREFERRED_HEIGHT = 600;
     public static final Dimension PREFERRED_SIZE = new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT);
 

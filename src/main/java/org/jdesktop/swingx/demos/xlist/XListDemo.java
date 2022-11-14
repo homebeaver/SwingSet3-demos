@@ -81,23 +81,20 @@ public class XListDemo extends AbstractDemo {
      * @param args params
      */
     public static void main(String[] args) {
-        UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
-    	SwingUtilities.invokeLater(new Runnable() {
-    		static final boolean exitOnClose = true;
-			@Override
-			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new XListDemo(controller);
-				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
-				frame.setStartPosition(StartPosition.CenterInScreen);
-            	frame.getContentPane().add(demo);
-            	frame.pack();
-            	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
-			}		
+    	// invokeLater method can be invoked from any thread
+    	SwingUtilities.invokeLater( () -> {
+    		// ...create UI here...
+			JXFrame controller = new JXFrame("controller", exitOnClose);
+			AbstractDemo demo = new XListDemo(controller);
+			JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+			frame.setStartPosition(StartPosition.CenterInScreen);
+        	frame.getContentPane().add(demo);
+        	frame.pack();
+        	frame.setVisible(true);
+			
+			controller.getContentPane().add(demo.getControlPane());
+			controller.pack();
+			controller.setVisible(true);
     	});
    }
 

@@ -47,23 +47,19 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-    	SwingUtilities.invokeLater(new Runnable() {
-    		static final boolean exitOnClose = true;
-			@Override
-			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				AbstractDemo demo = new TabbedPaneDemo(controller);
-				JXFrame frame = new JXFrame("demo", exitOnClose);
-				frame.setStartPosition(StartPosition.CenterInScreen);
-				//frame.setLocationRelativeTo(controller);
-            	frame.getContentPane().add(demo);
-            	frame.pack();
-            	frame.setVisible(true);
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
-			}		
+        SwingUtilities.invokeLater( () -> {
+			JXFrame controller = new JXFrame("controller", exitOnClose);
+			AbstractDemo demo = new TabbedPaneDemo(controller);
+			JXFrame frame = new JXFrame("demo", exitOnClose);
+			frame.setStartPosition(StartPosition.CenterInScreen);
+			//frame.setLocationRelativeTo(controller);
+        	frame.getContentPane().add(demo);
+        	frame.pack();
+        	frame.setVisible(true);
+			
+			controller.getContentPane().add(demo.getControlPane());
+			controller.pack();
+			controller.setVisible(true);
     	});
     }
 

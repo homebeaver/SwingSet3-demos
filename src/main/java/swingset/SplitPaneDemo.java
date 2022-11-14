@@ -58,25 +58,21 @@ public class SplitPaneDemo extends AbstractDemo implements ComponentListener {
      * main method allows us to run as a standalone demo.
      */
     public static void main(String[] args) {
-    	SwingUtilities.invokeLater(new Runnable() {
-    		static final boolean exitOnClose = true;
-			@Override
-			public void run() {
-				JXFrame controller = new JXFrame("controller", exitOnClose);
-				controller.setName("controller");
-				AbstractDemo demo = new SplitPaneDemo(controller);
-				JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
-				frame.setStartPosition(StartPosition.CenterInScreen);
-				//frame.setLocationRelativeTo(controller);
-            	frame.getContentPane().add(demo);
-            	frame.pack();
-            	frame.setVisible(true);
-        		LOG.info("frame isResizable="+frame.isResizable()+" size/min "+frame.getSize() + " / "+frame.getMinimumSize());
-				
-				controller.getContentPane().add(demo.getControlPane());
-				controller.pack();
-				controller.setVisible(true);
-			}		
+        SwingUtilities.invokeLater( () -> {
+			JXFrame controller = new JXFrame("controller", exitOnClose);
+			controller.setName("controller");
+			AbstractDemo demo = new SplitPaneDemo(controller);
+			JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
+			frame.setStartPosition(StartPosition.CenterInScreen);
+			//frame.setLocationRelativeTo(controller);
+        	frame.getContentPane().add(demo);
+        	frame.pack();
+        	frame.setVisible(true);
+    		LOG.info("frame isResizable="+frame.isResizable()+" size/min "+frame.getSize() + " / "+frame.getMinimumSize());
+			
+			controller.getContentPane().add(demo.getControlPane());
+			controller.pack();
+			controller.setVisible(true);
     	});
     }
 

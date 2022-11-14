@@ -50,6 +50,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.MutableComboBoxModel;
+import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.icon.RadianceIcon;
@@ -72,10 +73,8 @@ public class CustomComboBoxDemo extends JPanel {
     public static void main(String[] args) {
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
+        SwingUtilities.invokeLater( () -> {
+            createAndShowGUI();
         });
     }
     
