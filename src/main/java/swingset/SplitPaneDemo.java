@@ -129,22 +129,18 @@ public class SplitPaneDemo extends AbstractDemo implements ComponentListener {
         /* Create a radio button to vertically split the split pane. */
         button = new JRadioButton();
         button.setText(getBundleString("vert_split.labelAndMnemonic", button));
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-            }
+        button.addActionListener(ae -> {
+            splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         });
         group.add(button);
         buttonWrapper.add(button);
 
-        // Create a radio button the horizontally split the split pane.
+        // Create a radio button to horizontally split the split pane.
         button = new JRadioButton();
         button.setText(getBundleString("horz_split.labelAndMnemonic", button));
         button.setSelected(true);
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-            }
+        button.addActionListener(ae -> {
+            splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         });
         group.add(button);
         buttonWrapper.add(button);
