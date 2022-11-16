@@ -4,25 +4,29 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package swingset;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.icon.SizingConstants;
 
 /**
@@ -30,7 +34,7 @@ import org.jdesktop.swingx.icon.SizingConstants;
  *
  * @author Dave Kloba
  * @author Jeff Dinkins
- * @author EUG https://github.com/homebeaver (reorg)
+ * @author EUG https://github.com/homebeaver (reorg, select nimbus thumb shape)
  */
 public class SliderDemo extends AbstractDemo {
 
@@ -47,17 +51,25 @@ public class SliderDemo extends AbstractDemo {
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater( () -> {
-			// no controller
+			JXFrame controller = new JXFrame("controller", exitOnClose);
+			AbstractDemo demo = new SliderDemo(controller);
 			JXFrame frame = new JXFrame(DESCRIPTION, exitOnClose);
-			AbstractDemo demo = new SliderDemo(frame);
 			frame.setStartPosition(StartPosition.CenterInScreen);
 			//frame.setLocationRelativeTo(controller);
         	frame.getContentPane().add(demo);
         	frame.pack();
         	frame.setVisible(true);
+			
+			controller.getContentPane().add(demo.getControlPane());
+			controller.pack();
+			controller.setVisible(true);
     	});
     }
 
+    // 5 horizontal Slider: 0..4 , 4 vertical Slider: 5..8
+    JSlider hs1,hs2,hs3,hs4,hs5;
+    JSlider[] slider = new JSlider[9];  
+    
     /**
      * SliderDemo Constructor
      * @param frame controller Frame
@@ -66,9 +78,8 @@ public class SliderDemo extends AbstractDemo {
     	super(new BorderLayout());
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	frame.setTitle(getBundleString("name"));
+    	frame.setTitle(getBundleString("name")); // DESCRIPTION
 
-        JSlider s;
         JPanel hp;
         JPanel vp;
         GridLayout g;
@@ -112,13 +123,13 @@ public class SliderDemo extends AbstractDemo {
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBorder(new TitledBorder(getBundleString("plain")));
-        s = new JSlider(-10, 100, 20);
-        s.getAccessibleContext().setAccessibleName(getBundleString("plain"));
-        s.getAccessibleContext().setAccessibleDescription(getBundleString("a_plain_slider"));
-        s.addChangeListener(listener);
+        slider[0] = new JSlider(-10, 100, 20);
+        slider[0].getAccessibleContext().setAccessibleName(getBundleString("plain"));
+        slider[0].getAccessibleContext().setAccessibleDescription(getBundleString("a_plain_slider"));
+        slider[0].addChangeListener(listener);
 
         p.add(Box.createRigidArea(VGAP5));
-        p.add(s);
+        p.add(slider[0]);
         p.add(Box.createRigidArea(VGAP5));
         hp.add(p);
         hp.add(Box.createRigidArea(VGAP10));
@@ -127,15 +138,15 @@ public class SliderDemo extends AbstractDemo {
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBorder(new TitledBorder(getBundleString("majorticks")));
-        s = new JSlider(100, 1000, 400);
-        s.setPaintTicks(true);
-        s.setMajorTickSpacing(100);
-        s.getAccessibleContext().setAccessibleName(getBundleString("majorticks"));
-        s.getAccessibleContext().setAccessibleDescription(getBundleString("majorticksdescription"));
-        s.addChangeListener(listener);
+        slider[1] = new JSlider(100, 1000, 400);
+        slider[1].setPaintTicks(true);
+        slider[1].setMajorTickSpacing(100);
+        slider[1].getAccessibleContext().setAccessibleName(getBundleString("majorticks"));
+        slider[1].getAccessibleContext().setAccessibleDescription(getBundleString("majorticksdescription"));
+        slider[1].addChangeListener(listener);
 
         p.add(Box.createRigidArea(VGAP5));
-        p.add(s);
+        p.add(slider[1]);
         p.add(Box.createRigidArea(VGAP5));
         hp.add(p);
         hp.add(Box.createRigidArea(VGAP10));
@@ -144,29 +155,28 @@ public class SliderDemo extends AbstractDemo {
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBorder(new TitledBorder(getBundleString("ticks")));
-        s = new JSlider(0, 11, 6);
+        slider[2] = new JSlider(0, 11, 6);
+//        s.putClientProperty("JSlider.isFilled", Boolean.FALSE ); // XXX ?? true in Ocean
 
-        s.putClientProperty("JSlider.isFilled", Boolean.TRUE );
+        slider[2].setPaintTicks(true);
+        slider[2].setMajorTickSpacing(5);
+        slider[2].setMinorTickSpacing(1);
 
-        s.setPaintTicks(true);
-        s.setMajorTickSpacing(5);
-        s.setMinorTickSpacing(1);
-
-        s.setPaintLabels( true );
-        s.setSnapToTicks( true );
+        slider[2].setPaintLabels( true );
+        slider[2].setSnapToTicks( true );
 
         Integer i11 = Integer.valueOf(11);
-        s.getLabelTable().put(i11, new JLabel(i11.toString(), JLabel.CENTER));
-        s.setLabelTable( s.getLabelTable() );
+        slider[2].getLabelTable().put(i11, new JLabel(i11.toString(), JLabel.CENTER));
+        slider[2].setLabelTable( slider[2].getLabelTable() );
         //Sets the localized accessible name of this object. 
         //Changing the name willcause a PropertyChangeEvent to be fired for the ACCESSIBLE_NAME_PROPERTY property.
-        s.getAccessibleContext().setAccessibleName(getBundleString("minorticks"));
-        s.getAccessibleContext().setAccessibleDescription(getBundleString("minorticksdescription"));
+        slider[2].getAccessibleContext().setAccessibleName(getBundleString("minorticks"));
+        slider[2].getAccessibleContext().setAccessibleDescription(getBundleString("minorticksdescription"));
 
-        s.addChangeListener(listener);
+        slider[2].addChangeListener(listener);
 
         p.add(Box.createRigidArea(VGAP5));
-        p.add(s);
+        p.add(slider[2]);
         p.add(Box.createRigidArea(VGAP5));
         hp.add(p);
         hp.add(Box.createRigidArea(VGAP10));
@@ -177,24 +187,24 @@ public class SliderDemo extends AbstractDemo {
         p.setBorder(new TitledBorder(getBundleString("ticks")));
         int initialSize = SizingConstants.BUTTON_ICON;
         // ctor JSlider(int min, int max, int value):
-        s = new JSlider(SizingConstants.SMALL_ICON, SizingConstants.XXL, initialSize);
+        slider[3] = new JSlider(SizingConstants.SMALL_ICON, SizingConstants.XXL, initialSize);
 //        s.putClientProperty("JSlider.isFilled", Boolean.TRUE );
-        s.setSnapToTicks(true);
-        s.setPaintLabels(true);
-        s.setPaintTicks(true);
-        s.setMajorTickSpacing(32);
-        s.setMinorTickSpacing(8);
-        s.setValue(initialSize); // initialSize im ctor Slider steht auf 48!?
+        slider[3].setSnapToTicks(true);
+        slider[3].setPaintLabels(true);
+        slider[3].setPaintTicks(true);
+        slider[3].setMajorTickSpacing(32);
+        slider[3].setMinorTickSpacing(8);
+        slider[3].setValue(initialSize); // initialSize im ctor Slider steht auf 48!?
         // das letzte Label 128 fehlt, weil 16 + 3*32 = 112 und das nächste Label 144 wäre,
         // das kann man manuell nachtragen, aber offenbar nicht in Radiance
         Integer i = Integer.valueOf(128);
-        s.getLabelTable().put(i, new JLabel(i.toString(), JLabel.CENTER));
-        s.setLabelTable( s.getLabelTable() );
+        slider[3].getLabelTable().put(i, new JLabel(i.toString(), JLabel.CENTER));
+        slider[3].setLabelTable( slider[3].getLabelTable() );
 
-        s.addChangeListener(listener);
+        slider[3].addChangeListener(listener);
 
         p.add(Box.createRigidArea(VGAP5));
-        p.add(s);
+        p.add(slider[3]);
         p.add(Box.createRigidArea(VGAP5));
         hp.add(p);
         hp.add(Box.createRigidArea(VGAP10));
@@ -204,17 +214,17 @@ public class SliderDemo extends AbstractDemo {
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBorder(new TitledBorder(getBundleString("disabled")));
         BoundedRangeModel brm = new DefaultBoundedRangeModel(80, 0, 0, 100);
-        s = new JSlider(brm);
-        s.setPaintTicks(true);
-        s.setMajorTickSpacing(20);
-        s.setMinorTickSpacing(5);
-        s.setEnabled(false);
-        s.getAccessibleContext().setAccessibleName(getBundleString("disabled"));
-        s.getAccessibleContext().setAccessibleDescription(getBundleString("disableddescription"));
-        s.addChangeListener(listener);
+        slider[4] = new JSlider(brm);
+        slider[4].setPaintTicks(true);
+        slider[4].setMajorTickSpacing(20);
+        slider[4].setMinorTickSpacing(5);
+        slider[4].setEnabled(false);
+        slider[4].getAccessibleContext().setAccessibleName(getBundleString("disabled"));
+        slider[4].getAccessibleContext().setAccessibleDescription(getBundleString("disableddescription"));
+        slider[4].addChangeListener(listener);
 
         p.add(Box.createRigidArea(VGAP5));
-        p.add(s);
+        p.add(slider[4]);
         p.add(Box.createRigidArea(VGAP5));
         hp.add(p);
 
@@ -224,12 +234,12 @@ public class SliderDemo extends AbstractDemo {
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.setBorder(new TitledBorder(getBundleString("plain")));
-        s = new JSlider(JSlider.VERTICAL, -10, 100, 20);
-        s.getAccessibleContext().setAccessibleName(getBundleString("plain"));
-        s.getAccessibleContext().setAccessibleDescription(getBundleString("a_plain_slider"));
-        s.addChangeListener(listener);
+        slider[5] = new JSlider(JSlider.VERTICAL, -10, 100, 20);
+        slider[5].getAccessibleContext().setAccessibleName(getBundleString("plain"));
+        slider[5].getAccessibleContext().setAccessibleDescription(getBundleString("a_plain_slider"));
+        slider[5].addChangeListener(listener);
         p.add(Box.createRigidArea(HGAP10));
-        p.add(s);
+        p.add(slider[5]);
         p.add(Box.createRigidArea(HGAP10));
         vp.add(p);
         vp.add(Box.createRigidArea(HGAP10));
@@ -238,17 +248,17 @@ public class SliderDemo extends AbstractDemo {
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.setBorder(new TitledBorder(getBundleString("majorticks")));
-        s = new JSlider(JSlider.VERTICAL, 100, 1000, 400);
+        slider[6] = new JSlider(JSlider.VERTICAL, 100, 1000, 400);
 
-        s.putClientProperty( "JSlider.isFilled", Boolean.TRUE );
+        slider[6].putClientProperty( "JSlider.isFilled", Boolean.TRUE );
 
-        s.setPaintTicks(true);
-        s.setMajorTickSpacing(100);
-        s.getAccessibleContext().setAccessibleName(getBundleString("majorticks"));
-        s.getAccessibleContext().setAccessibleDescription(getBundleString("majorticksdescription"));
-        s.addChangeListener(listener);
+        slider[6].setPaintTicks(true);
+        slider[6].setMajorTickSpacing(100);
+        slider[6].getAccessibleContext().setAccessibleName(getBundleString("majorticks"));
+        slider[6].getAccessibleContext().setAccessibleDescription(getBundleString("majorticksdescription"));
+        slider[6].addChangeListener(listener);
         p.add(Box.createRigidArea(HGAP25));
-        p.add(s);
+        p.add(slider[6]);
         p.add(Box.createRigidArea(HGAP25));
         vp.add(p);
         vp.add(Box.createRigidArea(HGAP5));
@@ -257,19 +267,19 @@ public class SliderDemo extends AbstractDemo {
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.setBorder(new TitledBorder(getBundleString("minorticks")));
-        s = new JSlider(JSlider.VERTICAL, 0, 100, 60);
-        s.setPaintTicks(true);
-        s.setMajorTickSpacing(20);
-        s.setMinorTickSpacing(5);
+        slider[7] = new JSlider(JSlider.VERTICAL, 0, 100, 60);
+        slider[7].setPaintTicks(true);
+        slider[7].setMajorTickSpacing(20);
+        slider[7].setMinorTickSpacing(5);
 
-        s.setPaintLabels( true );
+        slider[7].setPaintLabels( true );
 
-        s.getAccessibleContext().setAccessibleName(getBundleString("minorticks"));
-        s.getAccessibleContext().setAccessibleDescription(getBundleString("minorticksdescription"));
+        slider[7].getAccessibleContext().setAccessibleName(getBundleString("minorticks"));
+        slider[7].getAccessibleContext().setAccessibleDescription(getBundleString("minorticksdescription"));
 
-        s.addChangeListener(listener);
+        slider[7].addChangeListener(listener);
         p.add(Box.createRigidArea(HGAP10));
-        p.add(s);
+        p.add(slider[7]);
         p.add(Box.createRigidArea(HGAP10));
         vp.add(p);
         vp.add(Box.createRigidArea(HGAP5));
@@ -278,23 +288,66 @@ public class SliderDemo extends AbstractDemo {
         p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.setBorder(new TitledBorder(getBundleString("disabled")));
-        s = new JSlider(JSlider.VERTICAL, 0, 100, 80);
-        s.setPaintTicks(true);
-        s.setMajorTickSpacing(20);
-        s.setMinorTickSpacing(5);
-        s.setEnabled(false);
-        s.getAccessibleContext().setAccessibleName(getBundleString("disabled"));
-        s.getAccessibleContext().setAccessibleDescription(getBundleString("disableddescription"));
-        s.addChangeListener(listener);
+        slider[8] = new JSlider(JSlider.VERTICAL, 0, 100, 80);
+        slider[8].setPaintTicks(true);
+        slider[8].setMajorTickSpacing(20);
+        slider[8].setMinorTickSpacing(5);
+        slider[8].setEnabled(false);
+        slider[8].getAccessibleContext().setAccessibleName(getBundleString("disabled"));
+        slider[8].getAccessibleContext().setAccessibleDescription(getBundleString("disableddescription"));
+        slider[8].addChangeListener(listener);
         p.add(Box.createRigidArea(HGAP20));
-        p.add(s);
+        p.add(slider[8]);
         p.add(Box.createRigidArea(HGAP20));
         vp.add(p);
     }
 
     @Override
 	public JXPanel getControlPane() {
-		return emptyControlPane();
+
+        @SuppressWarnings("serial")
+		JXPanel controls = new JXPanel() {
+            public Dimension getMaximumSize() {
+                return new Dimension(300, super.getMaximumSize().height);
+            }
+        };
+        
+        ButtonGroup group = new ButtonGroup();
+        JRadioButton button;
+
+        Box buttonWrapper = new Box(BoxLayout.X_AXIS);
+
+        controls.setLayout(new GridLayout(0, 1));
+
+        // Create radio buttons to select the thumb shape
+        final String propertyName = "Slider.paintThumbArrowShape";
+        button = new JRadioButton();
+        button.setText(getBundleString("Circle thumb (default) in Nimbus ", button));
+        button.setEnabled(UIManager.getLookAndFeel().getClass().getName().contains("Nimbus"));
+        button.setSelected(true);
+        button.addActionListener(ae -> {
+        	for(int i=0; i<slider.length; i++) {
+        		slider[i].putClientProperty(propertyName, Boolean.FALSE );
+        	}
+        });
+        group.add(button);
+        buttonWrapper.add(button);
+
+        // Create a radio button the horizontally split the split pane.
+        button = new JRadioButton();
+        button.setText(getBundleString("ARROWSHAPE in Nimbus", button));
+        button.setEnabled(UIManager.getLookAndFeel().getClass().getName().contains("Nimbus"));
+        button.addActionListener(ae -> {
+        	for(int i=0; i<slider.length; i++) {
+        		slider[i].putClientProperty(propertyName, Boolean.TRUE );
+        	}
+        });
+        group.add(button);
+        buttonWrapper.add(button);
+        
+        controls.add(buttonWrapper);
+
+        return controls;
 	}
 
     class SliderListener implements ChangeListener {
