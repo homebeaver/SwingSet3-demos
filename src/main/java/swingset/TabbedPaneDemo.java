@@ -20,12 +20,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
 
 /**
  * JTabbedPane Demo
@@ -33,7 +31,7 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
  * @author Jeff Dinkins
  * @author EUG https://github.com/homebeaver (reorg)
  */
-public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
+public class TabbedPaneDemo extends AbstractDemo {
 
 	/**
 	 * this is used in DemoAction to build the demo toolbar
@@ -92,16 +90,12 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
         spin = new HeadSpin();
         tabbedpane.add(getBundleString("bounce"), spin);
 
-        tabbedpane.getModel().addChangeListener(
-           new ChangeListener() {
-              public void stateChanged(ChangeEvent e) {
-                  SingleSelectionModel model = (SingleSelectionModel) e.getSource();
-                  if(model.getSelectedIndex() == tabbedpane.getTabCount()-1) {
-                      spin.go();
-                  }
-              }
-           }
-        );
+        tabbedpane.getModel().addChangeListener( changeEvent -> {
+            SingleSelectionModel model = (SingleSelectionModel) changeEvent.getSource();
+            if(model.getSelectedIndex() == tabbedpane.getTabCount()-1) {
+                spin.go();
+            }
+        });
 
     }
 
@@ -132,24 +126,20 @@ public class TabbedPaneDemo extends AbstractDemo implements ActionListener {
 
         top.setSelected(true);
 
-        top.addActionListener(this);
-        bottom.addActionListener(this);
-        left.addActionListener(this);
-        right.addActionListener(this);
+        top.addActionListener(actionEvent -> {
+            tabbedpane.setTabPlacement(JTabbedPane.TOP);
+        });
+        bottom.addActionListener(actionEvent -> {
+            tabbedpane.setTabPlacement(JTabbedPane.BOTTOM);
+        });
+        left.addActionListener(actionEvent -> {
+            tabbedpane.setTabPlacement(JTabbedPane.LEFT);
+        });
+        right.addActionListener(actionEvent -> {
+            tabbedpane.setTabPlacement(JTabbedPane.RIGHT);
+        });
 
         return tabControls;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == top) {
-            tabbedpane.setTabPlacement(JTabbedPane.TOP);
-        } else if(e.getSource() == left) {
-            tabbedpane.setTabPlacement(JTabbedPane.LEFT);
-        } else if(e.getSource() == bottom) {
-            tabbedpane.setTabPlacement(JTabbedPane.BOTTOM);
-        } else if(e.getSource() == right) {
-            tabbedpane.setTabPlacement(JTabbedPane.RIGHT);
-        }
     }
 
     class HeadSpin extends JComponent implements ActionListener {
