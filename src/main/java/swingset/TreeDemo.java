@@ -30,6 +30,7 @@ import org.jdesktop.swingx.JXTree;
  * @author Jeff Dinkins (inception)
  * @author EUG https://github.com/homebeaver (reorg)
  */
+@Deprecated
 public class TreeDemo extends AbstractDemo {
 
 	/**

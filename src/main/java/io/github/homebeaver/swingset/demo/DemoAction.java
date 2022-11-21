@@ -21,6 +21,7 @@ import javax.swing.JToolBar;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.action.AbstractActionExt;
 import org.jdesktop.swingx.demos.errorpane.ErrorPaneDemo;
+import org.jdesktop.swingx.demos.tree.XTreeDemo;
 import org.jdesktop.swingx.icon.PauseIcon;
 import org.jdesktop.swingx.icon.PlayIconSolid;
 import org.jdesktop.swingx.icon.RadianceIcon;
@@ -320,7 +321,7 @@ public class DemoAction extends AbstractActionExt {
         	ss2Actions.add(new DemoAction(TabbedPaneDemo.class, "TabbedPane", 2, Category.CONTAINERS, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(TableDemo.class, "Table", 2, Category.DATA, StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(ToolTipDemo.class, "ToolTip", 2, Category.DECORATORS, StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
-        	ss2Actions.add(new DemoAction(TreeDemo.class, "Tree", 2, Category.DATA, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
+        	ss2Actions.add(new DemoAction(XTreeDemo.class, "Tree", 3, Category.DATA, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
     	}
     	return ss2Actions;
     }
