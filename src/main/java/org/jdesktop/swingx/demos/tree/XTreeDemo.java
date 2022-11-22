@@ -6,14 +6,24 @@ package org.jdesktop.swingx.demos.tree;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Insets;
 import java.awt.Window;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 
 import org.jdesktop.swingx.JXButton;
@@ -33,6 +43,8 @@ import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.renderer.WrappingIconPanel;
+import org.jdesktop.swingx.rollover.RolloverProducer;
+import org.jdesktop.swingx.rollover.TreeRolloverProducer;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import swingset.AbstractDemo;
@@ -43,7 +55,7 @@ import swingset.AbstractDemo;
  * PENDING JW: make editable to demonstrate terminate enhancement. 
  *
  * @author Jeanette Winzenburg, Berlin, Created on 18.04.2008
- * @author EUG https://github.com/homebeaver (reorg)
+ * @author EUG https://github.com/homebeaver (reorg, add music tree from SwingSet2)
  */
 //@DemoProperties(
 //        value = "JXTree Demo",
@@ -85,8 +97,21 @@ public class XTreeDemo extends AbstractDemo {
     	});
     }
 
-    private JXTree tree;
-    
+    private JTabbedPane tabbedpane; // contains music tree, index 0 and component tree, index 1
+    private TreeRolloverProducer musicRollover = null;
+    private JXTree componentTree;
+
+    /*
+     * intentionally not defined music tree here.
+     * You can get it from scroll pane with getTree(tabbedpane.getComponentAt(0))
+     */
+    private JXTree getTree(Component c) {
+    	JScrollPane sp = (JScrollPane)c;
+    	LOG.fine(" ---> getViewport:"+sp.getViewport());
+    	JXTree tree = (JXTree)sp.getViewport().getView();
+    	return tree;
+    }
+
     /**
      * XTreeDemo Constructor
      * 
@@ -98,20 +123,114 @@ public class XTreeDemo extends AbstractDemo {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-    	// initComponents:
+        // create tabs
+        tabbedpane = new JTabbedPane();
+        add(tabbedpane, BorderLayout.CENTER);
+
+        tabbedpane.add(getBundleString("music"), createMusicTree());
+        tabbedpane.add(getBundleString("componentTree"), createComponentTree());
+//        tabbedpane.add("a label", new JLabel(" ?????music ????"));
+        tabbedpane.setTabPlacement(JTabbedPane.TOP);
+        tabbedpane.getModel().addChangeListener( changeEvent -> {
+            SingleSelectionModel model = (SingleSelectionModel) changeEvent.getSource();
+        });
+    }
+    
+    private JComponent createMusicTree() {
+    	
+        DefaultMutableTreeNode top = new DefaultMutableTreeNode(getBundleString("music"));
+        DefaultMutableTreeNode catagory = null ;
+        DefaultMutableTreeNode artist = null;
+        DefaultMutableTreeNode record = null;
+
+        // open tree data
+        URL url = getClass().getResource("/swingset/tree.txt");
+        LOG.info("tree data url="+url);
+
+        try {
+            // convert url to buffered string
+            InputStream is = url.openStream();
+            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
+            BufferedReader reader = new BufferedReader(isr);
+
+            // read one line at a time, put into tree
+            String line = reader.readLine();
+            while(line != null) {
+//                System.out.println("reading in: ->" + line + "<-");
+                char linetype = line.charAt(0);
+                switch(linetype) {
+                   case 'C':
+                     catagory = new DefaultMutableTreeNode(line.substring(2));
+                     top.add(catagory);
+                     break;
+                   case 'A':
+                     if(catagory != null) {
+                         catagory.add(artist = new DefaultMutableTreeNode(line.substring(2)));
+                     }
+                     break;
+                   case 'R':
+                     if(artist != null) {
+                         artist.add(record = new DefaultMutableTreeNode(line.substring(2)));
+                     }
+                     break;
+                   case 'S':
+                     if(record != null) {
+                         record.add(new DefaultMutableTreeNode(line.substring(2)));
+                     }
+                     break;
+                   default:
+                     break;
+                }
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+        }
+
+        JXTree tree = new JXTree(top) {
+            public Insets getInsets() {
+                return new Insets(5,5,5,5);
+            }
+            protected RolloverProducer createRolloverProducer() {
+            	musicRollover = (TreeRolloverProducer)super.createRolloverProducer();
+            	return musicRollover;
+            }
+        };
+        tree.setRolloverEnabled(true);
+        
+//        if(tree.getCellRenderer()==null) {
+//        	LOG.info("no CellRenderer for music tree");
+////            tree.setCellRenderer(tree.createDefaultCellRenderer()); // not visible
+//            tree.setCellRenderer(new DefaultXTreeCellRenderer());
+//        } else {
+//        	LOG.info(" CellRenderer for music tree:"+tree.getCellRenderer());
+//        	MusicTreeCellRenderer renderer = new MusicTreeCellRenderer();
+//        	renderer.setBackground(new ColorUIResource(Color.MAGENTA));
+//        	renderer.setBackgroundNonSelectionColor(Color.BLUE);
+//        	tree.setCellRenderer(renderer);
+//        }
+//        tree.setBackground(null); // nicht weiss, ABER beim Umschalten auf Nimbus wieder weiss!!! TODO
+        tree.setEditable(true);
+        return new JScrollPane(tree);
+    }
+
+    private JComponent createComponentTree() {
     	/*
     	 * no param: in JTree there is a dafault DefaultMutableTreeNode JTree with colors, sports, food.
     	 */
-        tree = new JXTree(); 
-        tree.setName("componentTree");
-        tree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-//        tree.setBackground(null); // is white Background:javax.swing.plaf.ColorUIResource[r=255,g=255,b=255]
-        add(new JScrollPane(tree), BorderLayout.CENTER);        
-        LOG.info("done initComponents Background:"+tree.getBackground() + " tree:"+tree);
+        componentTree = new JXTree(); 
+        componentTree.setName("componentTree");
+        componentTree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        JScrollPane scrollpane = new JScrollPane(componentTree);
 
         configureComponents();
         // create and install the component tree model:
         addNotify();
+        
+//        LOG.info("done init ComponentTree \n tree Background:"+componentTree.getBackground() 
+//        + "\n tabbedpane.getAccessibleContext():"+tabbedpane.getAccessibleContext()
+//        + "\n tabbedpane.getUI():"+tabbedpane.getUI()
+//        + "\n tree:"+componentTree);
+        return scrollpane;
     }
 
     // Controller:
@@ -123,26 +242,37 @@ public class XTreeDemo extends AbstractDemo {
 	public JXPanel getControlPane() {
 		JXPanel buttons = new JXPanel();
 
-		loadButton = new JXButton(getBundleString("reloadTreeData"));
+		loadButton = new JXButton(getBundleString("reloadComponentTreeData"));
 		loadButton.setName("loadButton");
-		loadButton.addActionListener(ae -> {
-			//addNotify(); // create and install the component tree model
-			tree.setModel(createTreeModel());
+		loadButton.addActionListener(actionEvent -> {
+			if(componentTree!=null) componentTree.setModel(createTreeModel());
 		});
 		buttons.add(loadButton);
 		
 		// <snip> JXTree convenience api
 		expandButton = new JXButton(getBundleString("expandAll.Action.text"));
 		expandButton.setName("expandButton");
-		expandButton.addActionListener(ae -> {
-			tree.expandAll();
+		expandButton.addActionListener(actionEvent -> {
+			if(tabbedpane.getSelectedIndex()==0) {
+				// JScrollPane with music
+				getTree(tabbedpane.getComponentAt(0)).expandAll();
+			}
+			if(tabbedpane.getSelectedIndex()==1) {
+				componentTree.expandAll();
+			}
 		});
 		buttons.add(expandButton);
 
 		collapseButton = new JXButton(getBundleString("collapseAll.Action.text"));
 		collapseButton.setName("collapseButton");
-		collapseButton.addActionListener(ae -> {
-			tree.collapseAll();
+		collapseButton.addActionListener(actionEvent -> {
+			if(tabbedpane.getSelectedIndex()==0) {
+				// JScrollPane with music
+				getTree(tabbedpane.getComponentAt(0)).collapseAll();
+			}
+			if(tabbedpane.getSelectedIndex()==1) {
+				componentTree.collapseAll();
+			}
 		});
 		buttons.add(collapseButton);
 		// </snip>
@@ -150,7 +280,7 @@ public class XTreeDemo extends AbstractDemo {
 		return buttons;
 	}
 
-//---------------- binding/configure
+//---------------- binding/configure ComponentTree
     
     private void configureComponents() {
         // <snip> JXTree rendering
@@ -196,14 +326,14 @@ public class XTreeDemo extends AbstractDemo {
     	LOG.info("IconValue iv:"+iv);
     	
         // create and set a tree renderer using the custom Icon-/StringValue
-        tree.setCellRenderer(new DefaultTreeRenderer(iv, sv));
+        componentTree.setCellRenderer(new DefaultTreeRenderer(iv, sv));
         // </snip>
         
-        tree.setRowHeight(-1);     
+        componentTree.setRowHeight(-1);     
         // <snip> JXTree rollover
         // enable and register a highlighter
-        tree.setRolloverEnabled(true);
-        tree.addHighlighter(createRolloverIconHighlighter(iv));
+        componentTree.setRolloverEnabled(true);
+        componentTree.addHighlighter(createRolloverIconHighlighter(iv));
         // </snip>
     }
 
@@ -252,17 +382,23 @@ public class XTreeDemo extends AbstractDemo {
     @Override // overrides javax.swing.JComponent.addNotify
     public void addNotify() {
         super.addNotify();
-        TreeModel model = tree.getModel();
-        LOG.info("tree.Model:"+(model==null?"null":model.getRoot()));
+//        LOG.info("-------------this:"+this);
+        if(componentTree==null) {
+        	getTree(tabbedpane.getComponentAt(1));
+        	return;
+        }
+        TreeModel model = componentTree.getModel();
+        LOG.info("tree.Model.Root:"+(model==null?"null":model.getRoot()));
         // der Vergleich mit null ist nicht sinnvoll, denn ein "leeres Modell" liefert nicht null, 
         // sondern DefaultTreeModel mit JTree: colors, sports, food
         if (model == null || "JTree".equals(model.getRoot().toString())) {
-            tree.setModel(createTreeModel());
+            componentTree.setModel(createTreeModel());
         }
     }
 
     private TreeTableModel createTreeModel() {
        Window window = SwingUtilities.getWindowAncestor(this);
+       // use model from TreeTableDemo
        return TreeTableDemo.getTreeTableModel(window != null ? window : this);
     }
 
