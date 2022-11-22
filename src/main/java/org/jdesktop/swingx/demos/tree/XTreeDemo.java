@@ -68,7 +68,7 @@ import swingset.AbstractDemo;
 //)
 public class XTreeDemo extends AbstractDemo {
 
-	public static final String ICON_PATH = "resources/images/XTreeDemo.gif";
+	public static final String ICON_PATH = "toolbar/JTree.gif";
 
 	private static final long serialVersionUID = 7070451442278673301L;
     private static final Logger LOG = Logger.getLogger(XTreeDemo.class.getName());

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,6 +58,7 @@ import org.jdesktop.swingx.demos.svg.FlagUK;
 import org.jdesktop.swingx.icon.SizingConstants;
 
 import swingset.StaticUtilities;
+import swingset.TextAndMnemonicUtils;
 
 /**
  * multi window Frame used for Demos
@@ -438,7 +440,14 @@ aus super:
     		, "swingset.plaf.EmeraldTheme"
     		, "swingset.plaf.RubyTheme"
     		};
-        themeMenu = new JMenu(StaticUtilities.getResourceAsString("ThemesMenu.themes.labelAndMnemonic", "Themes"));
+    	String memuLabel = null; // the text for the menu label
+    	try {
+        	// getTextAndMnemonicString throws MissingResourceException
+    		memuLabel = TextAndMnemonicUtils.getTextAndMnemonicString("ThemesMenu.themes.labelAndMnemonic");
+    	} catch (MissingResourceException e) {
+    		memuLabel = "Themes";
+    	}
+        themeMenu = new JMenu(memuLabel);
         ButtonGroup themeMenuGroup = new ButtonGroup(); // wg. mi.setSelected
         for (String info : themeInfo) {
             JMenuItem mi = (JRadioButtonMenuItem) themeMenu.add(new JRadioButtonMenuItem(info));

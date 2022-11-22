@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractButton;
@@ -35,7 +36,6 @@ import swingset.FileChooserDemo;
 import swingset.HtmlDemo;
 import swingset.InternalFrameDemo;
 import swingset.ListDemo;
-import swingset.OptionPaneDemo;
 import swingset.ProgressBarDemo;
 import swingset.ScrollPaneDemo;
 import swingset.SliderDemo;
@@ -43,8 +43,8 @@ import swingset.SplitPaneDemo;
 import swingset.StaticUtilities;
 import swingset.TabbedPaneDemo;
 import swingset.TableDemo;
+import swingset.TextAndMnemonicUtils;
 import swingset.ToolTipDemo;
-import swingset.TreeDemo;
 
 /**
  * DemoAction extends <code>AbstractActionExt</code> which includes toggle or group states.
@@ -218,8 +218,14 @@ public class DemoAction extends AbstractActionExt {
         // SHORT_DESCRIPTION will setToolTipText in addActionToToolBar
         if(this.democlass!=null) {
             String key = this.democlass.getSimpleName() + '.' + "tooltip";
-            // TODO use AbstractDemo.getBundleString(String key, String fallback)
-            String desc = StaticUtilities.getResourceAsString(key, null);
+            // TODO use AbstractDemo.getBundleString(String key, String fallback) ! getBundleString not static
+            String desc = null;
+        	try {
+            	// getTextAndMnemonicString throws MissingResourceException
+        		desc = TextAndMnemonicUtils.getTextAndMnemonicString(key);
+        	} catch (MissingResourceException e) {
+        		desc = null;
+        	}
             super.setShortDescription(desc);
         }
 	}
@@ -321,7 +327,7 @@ public class DemoAction extends AbstractActionExt {
         	ss2Actions.add(new DemoAction(TabbedPaneDemo.class, "TabbedPane", 2, Category.CONTAINERS, StaticUtilities.createImageIcon(TabbedPaneDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(TableDemo.class, "Table", 2, Category.DATA, StaticUtilities.createImageIcon(TableDemo.ICON_PATH)));
         	ss2Actions.add(new DemoAction(ToolTipDemo.class, "ToolTip", 2, Category.DECORATORS, StaticUtilities.createImageIcon(ToolTipDemo.ICON_PATH)));
-        	ss2Actions.add(new DemoAction(XTreeDemo.class, "Tree", 3, Category.DATA, StaticUtilities.createImageIcon(TreeDemo.ICON_PATH)));
+        	ss2Actions.add(new DemoAction(XTreeDemo.class, "Tree", 3, Category.DATA, StaticUtilities.createImageIcon(XTreeDemo.ICON_PATH)));
     	}
     	return ss2Actions;
     }
