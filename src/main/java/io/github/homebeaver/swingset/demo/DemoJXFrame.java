@@ -57,7 +57,6 @@ import org.jdesktop.swingx.demos.svg.FlagSE;
 import org.jdesktop.swingx.demos.svg.FlagUK;
 import org.jdesktop.swingx.icon.SizingConstants;
 
-import swingset.StaticUtilities;
 import swingset.TextAndMnemonicUtils;
 
 /**
