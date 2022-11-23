@@ -4,6 +4,7 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package org.jdesktop.swingx.demos.tree;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -22,8 +23,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
 
 import org.jdesktop.swingx.JXButton;
@@ -35,9 +39,12 @@ import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.Highlighter;
+import org.jdesktop.swingx.demos.svg.FeatheRmusic;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.FilteredIconValue;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
@@ -48,6 +55,7 @@ import org.jdesktop.swingx.rollover.TreeRolloverProducer;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import swingset.AbstractDemo;
+import swingset.plaf.ColorUnit;
 
 /**
  * JXTree Demo
@@ -197,18 +205,30 @@ public class XTreeDemo extends AbstractDemo {
         };
         tree.setRolloverEnabled(true);
         
-//        if(tree.getCellRenderer()==null) {
-//        	LOG.info("no CellRenderer for music tree");
-////            tree.setCellRenderer(tree.createDefaultCellRenderer()); // not visible
-//            tree.setCellRenderer(new DefaultXTreeCellRenderer());
-//        } else {
-//        	LOG.info(" CellRenderer for music tree:"+tree.getCellRenderer());
-//        	MusicTreeCellRenderer renderer = new MusicTreeCellRenderer();
-//        	renderer.setBackground(new ColorUIResource(Color.MAGENTA));
-//        	renderer.setBackgroundNonSelectionColor(Color.BLUE);
-//        	tree.setCellRenderer(renderer);
-//        }
-//        tree.setBackground(null); // nicht weiss, ABER beim Umschalten auf Nimbus wieder weiss!!! TODO
+        tree.setOpaque(true);
+        
+        LOG.info("Tree.CellRenderer for music tree:"+tree.getCellRenderer());
+        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+        RadianceIcon icon = FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS);
+        /*
+         * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
+         */
+        renderer.setLeafIcon(icon);
+        tree.setCellRenderer(renderer);
+        
+    	String currentClassName = UIManager.getLookAndFeel().getClass().getName();
+    	if(currentClassName.contains("Nimbus")) {
+    		renderer.setBackgroundNonSelectionColor(ColorUnit.NIMBUS_BACKGROUND);
+    		tree.setBackground(ColorUnit.NIMBUS_BACKGROUND);
+    	} else {
+    		LOG.config("current Laf is "+currentClassName);
+    		Color primary3 = MetalLookAndFeel.getCurrentTheme().getPrimaryControl();
+    		Color secondary3 = MetalLookAndFeel.getCurrentTheme().getControl();
+    		LOG.config("set BG to secondary3 "+secondary3);
+    		renderer.setBackgroundNonSelectionColor(secondary3);
+    		tree.setBackground(secondary3);
+    	}
+
         tree.setEditable(true);
         return new JScrollPane(tree);
     }
