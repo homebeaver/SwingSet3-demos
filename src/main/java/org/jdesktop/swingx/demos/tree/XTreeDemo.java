@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Window;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
@@ -43,7 +45,6 @@ import org.jdesktop.swingx.demos.svg.FeatheRmusic;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.FilteredIconValue;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
-import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
@@ -51,7 +52,6 @@ import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.renderer.WrappingIconPanel;
 import org.jdesktop.swingx.rollover.RolloverProducer;
-import org.jdesktop.swingx.rollover.TreeRolloverProducer;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import swingset.AbstractDemo;
@@ -106,7 +106,6 @@ public class XTreeDemo extends AbstractDemo {
     }
 
     private JTabbedPane tabbedpane; // contains music tree, index 0 and component tree, index 1
-    private TreeRolloverProducer musicRollover = null;
     private JXTree componentTree;
 
     /*
@@ -137,11 +136,38 @@ public class XTreeDemo extends AbstractDemo {
 
         tabbedpane.add(getBundleString("music"), createMusicTree());
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
-//        tabbedpane.add("a label", new JLabel(" ?????music ????"));
         tabbedpane.setTabPlacement(JTabbedPane.TOP);
         tabbedpane.getModel().addChangeListener( changeEvent -> {
             SingleSelectionModel model = (SingleSelectionModel) changeEvent.getSource();
         });
+    }
+
+    class Album {
+    	static char SEPARATOR = ';';
+        private String record; // title of the album
+        private String pixUrl; // wikimedia image url of the album
+        // f.i. "https://upload.wikimedia.org/wikipedia/en/a/ac/My_Name_Is_Albert_Ayler.jpg"
+        
+		Album(String line) {
+			String recordAlbumpix = line.substring(2);
+			int separator = recordAlbumpix.indexOf(SEPARATOR);
+			pixUrl = null;
+			if (separator == -1) {
+				record = recordAlbumpix;
+			} else {
+				record = recordAlbumpix.substring(0, separator);
+				pixUrl = recordAlbumpix.substring(separator+1);
+			}
+		}
+
+		public String getHtmlSrc() {
+			if(pixUrl==null) return null;
+			return "<html>" + "<img src=\"" + pixUrl + "\">"+ "</html>";
+		}
+
+		public String toString() {
+			return record;
+		}
     }
     
     private JComponent createMusicTree() {
@@ -152,7 +178,7 @@ public class XTreeDemo extends AbstractDemo {
         DefaultMutableTreeNode record = null;
 
         // open tree data
-        URL url = getClass().getResource("/swingset/tree.txt");
+        URL url = getClass().getResource("resources/tree.txt");
         LOG.info("tree data url="+url);
 
         try {
@@ -164,7 +190,7 @@ public class XTreeDemo extends AbstractDemo {
             // read one line at a time, put into tree
             String line = reader.readLine();
             while(line != null) {
-//                System.out.println("reading in: ->" + line + "<-");
+            	LOG.fine("reading in: ->" + line + "<-");
                 char linetype = line.charAt(0);
                 switch(linetype) {
                    case 'C':
@@ -178,7 +204,7 @@ public class XTreeDemo extends AbstractDemo {
                      break;
                    case 'R':
                      if(artist != null) {
-                         artist.add(record = new DefaultMutableTreeNode(line.substring(2)));
+                    	 artist.add(record = new DefaultMutableTreeNode(new Album(line)));
                      }
                      break;
                    case 'S':
@@ -198,22 +224,36 @@ public class XTreeDemo extends AbstractDemo {
             public Insets getInsets() {
                 return new Insets(5,5,5,5);
             }
-            protected RolloverProducer createRolloverProducer() {
-            	musicRollover = (TreeRolloverProducer)super.createRolloverProducer();
-            	return musicRollover;
-            }
         };
+        
+        // rollover support: enabled to show album cover, a "live" rollover behaviour:
         tree.setRolloverEnabled(true);
+        tree.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
+        	JXTree source = (JXTree)propertyChangeEvent.getSource();
+        	source.setToolTipText(null);
+			Point newPoint = (Point)propertyChangeEvent.getNewValue();
+			if(newPoint!=null && newPoint.y>-1) {
+				TreePath treePath = source.getPathForRow(newPoint.y);
+				if(treePath.getPathCount()==4) { // Album / Record / Style 
+					Object o = treePath.getLastPathComponent();
+					LOG.info("PathFor newPoint.y: "+source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"+propertyChangeEvent);
+					// show https://en.wikipedia.org/wiki/File:My_Name_Is_Albert_Ayler.jpg
+					DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)o;	
+					Album album = (Album)dmtn.getUserObject();
+					source.setToolTipText(album.getHtmlSrc());
+				}
+			}
+        });
         
         tree.setOpaque(true);
         
         LOG.info("Tree.CellRenderer for music tree:"+tree.getCellRenderer());
         DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-        RadianceIcon icon = FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS);
         /*
          * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
          */
-        renderer.setLeafIcon(icon);
+        renderer.setLeafIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+
         tree.setCellRenderer(renderer);
         
     	String currentClassName = UIManager.getLookAndFeel().getClass().getName();
@@ -349,7 +389,9 @@ public class XTreeDemo extends AbstractDemo {
         componentTree.setCellRenderer(new DefaultTreeRenderer(iv, sv));
         // </snip>
         
-        componentTree.setRowHeight(-1);     
+        // the current cell renderer is queried for each row's height: 
+        componentTree.setRowHeight(-1);
+
         // <snip> JXTree rollover
         // enable and register a highlighter
         componentTree.setRolloverEnabled(true);

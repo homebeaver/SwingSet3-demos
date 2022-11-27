@@ -64,13 +64,13 @@ S Violin Concerto No. 5
 S Violin Concerto No. 4
 C Jazz
 A Albert Ayler
-R My Name is Albert Ayler
+R My Name is Albert Ayler;https://upload.wikimedia.org/wikipedia/en/a/ac/My_Name_Is_Albert_Ayler.jpg
 S Bye Bye Blackbird
 S Billie's Bounce
 S Summertime
 S On Green Dolphin Street
 S C.T.
-R Swing Low Sweet Spiritual
+R Swing Low Sweet Spiritual;https://upload.wikimedia.org/wikipedia/en/a/ac/Swing_Low_Sweet_Spiritual.jpg
 S Goin' Home
 S Old Man River
 S When The Saints Go Marching In
@@ -80,19 +80,19 @@ S Spirits
 S Witches and Devils
 S Holy, Holy
 S Saints
-R Prophesy
+R Prophesy;https://upload.wikimedia.org/wikipedia/en/2/26/Prophecy_%28Albert_Ayler_album%29.jpg
 S Spirits
 S Wizard
 S Ghosts
 S Prophecy
-R New Grass
+R New Grass;https://upload.wikimedia.org/wikipedia/en/a/af/AlbertAylerNewGrass.jpg
 S Free At Last
 S Everybody's Movin'
 S New Generation
 S Heart Love
 S Sun Watcher
 A Chet Baker
-R Sings and Plays
+R Sings and Plays; https://upload.wikimedia.org/wikipedia/en/2/2f/Chet_Baker_Sings_and_Plays.jpg
 S Let's Get Lost
 S This Is Always
 S Long Ago and Far Away
@@ -114,7 +114,7 @@ S Like Someone In Love
 S I've Never Been In Love Before
 S Isn't it Romantic
 S I Fall In Love Too Easily
-R Grey December
+R Grey December;https://upload.wikimedia.org/wikipedia/en/c/cc/Grey_December_%28album%29.jpg
 S Grey December
 S I Wish I Knew
 S Someone To Watch Over Me
@@ -134,13 +134,13 @@ S The Great Lie
 S Sweet Lorrain
 S If I Should Lose You
 A John Coltrane
-R Blue Train
+R Blue Train;https://upload.wikimedia.org/wikipedia/en/6/68/John_Coltrane_-_Blue_Train.jpg
 S Blue Train
 S Moment's Notice
 S Locomotion
 S I'm Old Fashioned
 S Lazy Bird
-R Giant Steps
+R Giant Steps;https://upload.wikimedia.org/wikipedia/en/2/2a/Coltrane_Giant_Steps.jpg
 S Giant Steps
 S Cousin Mary Steps
 S Countdown
@@ -148,18 +148,18 @@ S Spiral
 S Syeeda's Song Flute
 S Naima
 S Mr. P.C.
-R My Favorite Things
+R My Favorite Things;https://upload.wikimedia.org/wikipedia/en/9/9b/My_Favorite_Things.jpg
 S My Favorite Things
 S Everytime We Say Goodbye
 S Summertime
 S But Not For Me
-R Crescent
+R Crescent;https://upload.wikimedia.org/wikipedia/en/7/7a/John_Coltrane_-_Crescent.jpg
 S Crescent
 S Wise One
 S Bessie's Blues
 S Lonnie's Lament
 S The Drum Thing
-R Interstellar Space
+R Interstellar Space;https://upload.wikimedia.org/wikipedia/en/2/26/John_Coltrane_Interstellar_Space.jpg
 S Mars
 S Leo
 S Venus
@@ -174,13 +174,13 @@ S Love, I've Found You
 S I Thought About You
 S All Blues
 S Seven Steps To Heaven
-R Quiet Nights
+R Quiet Nights;https://upload.wikimedia.org/wikipedia/en/7/7f/MileDavis_QuietNights.jpg
 S Once Upon a Summertime
 S Aos Pes Da Cruz
 S Wait Till You See Her
 S Corcovado
 S Summer Nights
-R My Funny Valentine
+R My Funny Valentine;https://upload.wikimedia.org/wikipedia/en/7/7a/MilesDavisMyFunnyValentine.jpg
 S All of You
 S Stella By Starlight
 S All Blues
@@ -193,7 +193,7 @@ S Bitches Brew
 S Hush
 C Rock
 A The Beatles
-R A Hard Day's Night
+R A Hard Day's Night;https://upload.wikimedia.org/wikipedia/en/e/e6/HardDayUK.jpg
 S A Hard Day's Night
 S I Should Have Known Better 
 S If I Fell 
@@ -206,7 +206,7 @@ S I'll Cry Instead
 S Things We Said Today 
 S When I Get Home 
 S You Can't Do That 
-R Beatles For Sale
+R Beatles For Sale;https://upload.wikimedia.org/wikipedia/en/b/be/BeatlesBfS.jpg
 S No Reply 
 S I'm a Loser 
 S Baby's In Black 
@@ -221,7 +221,7 @@ S Every Little Thing
 S I Don't Want To Spoil the Party 
 S What You're Doing 
 S Everybody's Trying To Be My Baby 
-R Help!
+R Help!;https://upload.wikimedia.org/wikipedia/en/e/e7/Help%21_%28The_Beatles_album_-_cover_art%29.jpg
 S Help! 
 S The Night Before 
 S You've Got To Hide Your Love Away 
@@ -236,7 +236,7 @@ S Tell Me What You See
 S I've Just Seen a Face 
 S Yesterday 
 S Dizzy Miss Lizzie 
-R Rubber Soul
+R Rubber Soul;https://upload.wikimedia.org/wikipedia/en/7/74/Rubber_Soul.jpg
 S Drive My Car 
 S Norwegian Wood
 S You Won't See Me
@@ -251,7 +251,7 @@ S In My Life
 S Wait 
 S If I Needed Someone 
 S Run For Your Life 
-R Revolver
+R Revolver;https://upload.wikimedia.org/wikipedia/en/e/ec/Revolver_%28album_cover%29.jpg
 S Taxman 
 S Rigby 
 S I'm Only Sleeping 
@@ -266,7 +266,7 @@ S Doctor Robert
 S I Want To Tell You 
 S Got To Get You Into My Life 
 S Tomorrow Never Knows 
-R Sgt. Pepper's Lonely Hearts Club Band
+R Sgt. Pepper's Lonely Hearts Club Band;https://upload.wikimedia.org/wikipedia/en/5/50/Sgt._Pepper%27s_Lonely_Hearts_Club_Band.jpg
 S Sgt. Pepper's Lonely Hearts Club Band
 S With a Little Help From My Friends
 S Lucy in the Sky With Diamonds
@@ -280,7 +280,7 @@ S Lovely Rita
 S Good Morning
 S Sgt. Pepper's Reprise
 S A Day In The Life
-R Magical Mystery Tour
+R Magical Mystery Tour;https://upload.wikimedia.org/wikipedia/en/e/e8/MagicalMysteryTourDoubleEPcover.jpg
 S Magical Mystery Tour
 S Fool on the Hill
 S Flying
@@ -292,7 +292,7 @@ S Strawberry Fields Forever
 S Penny Lane
 S Baby You're a Rich Man
 S All You Need Is Love
-R The White Album
+R The White Album;https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/TheBeatles68LP.jpg/240px-TheBeatles68LP.jpg
 S Back in the USSR
 S Dear Prudence
 S Glass Onion
@@ -320,7 +320,7 @@ S Savoy Truffle
 S Cry Baby Cry
 S Revolution 9
 S Good Night
-R Abbey Road
+R Abbey Road;https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg
 S Come Together
 S Something
 S Maxwell's Silver Hammer
@@ -337,7 +337,7 @@ S Golden Slumbers
 S Carry That Weight
 S The End
 S Her Majesty
-R Let It Be
+R Let It Be;https://upload.wikimedia.org/wikipedia/en/2/25/LetItBe.jpg
 S Two of Us
 S Dig A Pony
 S Across the Universe
@@ -584,13 +584,13 @@ S Our Hospitality
 S Focus 
 S A Simple Formality 
 A Steve Miller Band
-R Circle Of Love
+R Circle Of Love;https://upload.wikimedia.org/wikipedia/en/b/b6/Circleoflove.jpg
 S Heart Like A Wheel
 S Get On Home
 S Baby Wanna Dance
 S Circle Of Love
 S Macho City
-R Fly Like An Eagle
+R Fly Like An Eagle;https://upload.wikimedia.org/wikipedia/en/c/c0/Steve_Miller_Band_Fly_Like_an_Eagle.jpg
 S Space Intro
 S Fly Like An Eagle
 S Wild Mountain Honey
@@ -603,7 +603,7 @@ S You Send Me
 S Blue Odyssey
 S Sweet Maree
 S The Window
-R Book Of Dreams
+R Book Of Dreams;https://upload.wikimedia.org/wikipedia/en/d/de/Bookofdreamsalbum.jpg
 S Threshold
 S Jet Airliner
 S Winter Time
@@ -616,7 +616,7 @@ S Sacrifice
 S The Stake
 S My Own Space
 S Babes In The Wood
-R Joker
+R The Joker;https://upload.wikimedia.org/wikipedia/en/2/25/TheJoker.jpg
 S Sugar, Babe
 S Mary Lou
 S Shu Ba Da Du Ma
