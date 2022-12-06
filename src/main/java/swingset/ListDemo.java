@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
@@ -45,7 +46,7 @@ import org.jdesktop.swingx.JXPanel;
  * on the fly as only those elements are needed.
  *
  * @author Jeff Dinkins
- * @author EUG https://github.com/homebeaver (cellsLayout)
+ * @author EUG https://github.com/homebeaver (cellsLayout, selectionMode)
  */
 public class ListDemo extends AbstractDemo {
 
@@ -121,7 +122,7 @@ public class ListDemo extends AbstractDemo {
         listPanel.add(Box.createRigidArea(VGAP10));
 
         centerPanel.add(listPanel);
-        centerPanel.add(Box.createRigidArea(HGAP30));
+        centerPanel.add(Box.createRigidArea(HGAP10));
 
         // Create the list
         list = new JList<>();
@@ -132,6 +133,8 @@ public class ListDemo extends AbstractDemo {
         // Set the preferred row count. This affects the preferredSize of the JList when it's in a scrollpane.
         // In HORIZONTAL_WRAP and VERTICAL_WRAP orientations affects how cells are wrapped.
         list.setVisibleRowCount(10);
+        
+        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
 
         // Add list to a scrollpane
         JScrollPane scrollPane = new JScrollPane(list);
@@ -149,19 +152,19 @@ public class ListDemo extends AbstractDemo {
     private void createPrefixesAndSuffixes() {
         addPrefix("Tera", true);
         addPrefix("Micro", false);
-        addPrefix("Southern", false);
+//        addPrefix("Southern", false);
         addPrefix("Net", true);
         addPrefix("YoYo", true);
-        addPrefix("Northern", false);
+//        addPrefix("Northern", false);
         addPrefix("Tele", false);
-        addPrefix("Eastern", false);
+//        addPrefix("Eastern", false);
         addPrefix("Neo", false);
         addPrefix("Digi", false);
         addPrefix("National", false);
         addPrefix("Compu", true);
         addPrefix("Meta", true);
         addPrefix("Info", false);
-        addPrefix("Western", false);
+//        addPrefix("Western", false);
         addPrefix("Data", false);
         addPrefix("Atlantic", false);
         addPrefix("Advanced", false);
@@ -175,7 +178,7 @@ public class ListDemo extends AbstractDemo {
 
         addSuffix("Tech", true);
         addSuffix("Soft", true);
-        addSuffix("Telecom", true);
+//        addSuffix("Telecom", true);
         addSuffix("Solutions", false);
         addSuffix("Works", true);
         addSuffix("Dyne", false);
@@ -190,13 +193,13 @@ public class ListDemo extends AbstractDemo {
         addSuffix("Sys", false);
         addSuffix("Computing", false);
         addSuffix("Scape", false);
-        addSuffix("Com", false);
+//        addSuffix("Com", false);
         addSuffix("Ware", false);
-        addSuffix("Widgets", false);
+//        addSuffix("Widgets", false);
         addSuffix("Media", false);
         addSuffix("Computer", false);
         addSuffix("Hardware", false);
-        addSuffix("Gizmos", false);
+//        addSuffix("Gizmos", false);
         addSuffix("Concepts", false);
     }
     @Override
@@ -230,7 +233,6 @@ public class ListDemo extends AbstractDemo {
         	cellsLayout.setSelectedIndex(cellsLayout.getSelectedIndex());
         	list.setLayoutOrientation(cellsLayout.getSelectedIndex());
         });
-        cellsLayout.getInsets();
         
         // Add the control panel (holds the prefix/suffix list and prefix/suffix checkboxes)
         controller.add(createControlPanel(), BorderLayout.CENTER);
