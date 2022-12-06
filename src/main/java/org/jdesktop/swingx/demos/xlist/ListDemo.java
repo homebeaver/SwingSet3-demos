@@ -28,13 +28,32 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
-
 package org.jdesktop.swingx.demos.xlist;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.BorderLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /* ListDemo.java requires no other files. 
  * copied from https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#ListDemo
@@ -42,8 +61,9 @@ import javax.swing.event.*;
 @SuppressWarnings("serial")
 public class ListDemo extends JPanel
                       implements ListSelectionListener {
-    private JList list;
-    private DefaultListModel listModel;
+	
+    private JList<String> list;
+    private DefaultListModel<String> listModel;
 
     private static final String hireString = "Hire";
     private static final String fireString = "Fire";
@@ -53,13 +73,28 @@ public class ListDemo extends JPanel
     public ListDemo() {
         super(new BorderLayout());
 
-        listModel = new DefaultListModel();
+        listModel = new DefaultListModel<String>();
         listModel.addElement("Jane Doe");
         listModel.addElement("John Smith");
         listModel.addElement("Kathy Green");
+        listModel.addElement("Mark Andrews");
+        listModel.addElement("Tom Ball");
+        listModel.addElement("Alan Chung");
+        listModel.addElement("Jeff Dinkins");
+        listModel.addElement("Amy Fowler");
+        listModel.addElement("Brian Gerhold");
+        listModel.addElement("James Gosling");
+        listModel.addElement("David Karlton");
+        listModel.addElement("Dave Kloba");
+        listModel.addElement("Peter Korn");
+        listModel.addElement("Phil Milne");
+        listModel.addElement("Dave Moore");
+        listModel.addElement("Hans Muller");
+        listModel.addElement("Jane Doe"); // add this duplicate to show that JList allows it
 
         //Create the list and put it in a scroll pane.
-        list = new JList(listModel);
+        list = new JList<String>(listModel);
+        list.setLayoutOrientation(JList.HORIZONTAL_WRAP); // default is VERTICAL
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         list.addListSelectionListener(this);
@@ -79,8 +114,8 @@ public class ListDemo extends JPanel
         employeeName = new JTextField(10);
         employeeName.addActionListener(hireListener);
         employeeName.getDocument().addDocumentListener(hireListener);
-        String name = listModel.getElementAt(
-                              list.getSelectedIndex()).toString();
+//        String name = listModel.getElementAt(
+//                              list.getSelectedIndex()).toString();
 
         //Create a panel that uses BoxLayout.
         JPanel buttonPane = new JPanel();
@@ -220,9 +255,8 @@ public class ListDemo extends JPanel
     }
 
     /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
+     * Create the GUI and show it.
+     * For thread safety, this method should be invoked from the event-dispatching thread.
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
@@ -242,10 +276,8 @@ public class ListDemo extends JPanel
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
+        SwingUtilities.invokeLater( () -> {
+            createAndShowGUI();
         });
     }
 }
