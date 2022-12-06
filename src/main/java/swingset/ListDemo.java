@@ -22,6 +22,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -32,6 +33,7 @@ import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
 /**
@@ -55,7 +57,7 @@ public class ListDemo extends AbstractDemo {
 	
 	private static final long serialVersionUID = -6590141127414585946L;
 	private static final String DESCRIPTION = "JList Demo";
-	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = true;
+	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = false;
 
     /**
      * main method allows us to run as a standalone demo.
@@ -73,15 +75,19 @@ public class ListDemo extends AbstractDemo {
     	});
     }
 
-    JList list;
+    JList<Object> list;
 
+    // layout of cells
+    private static String[] CELLS_LAYOUT = { "VERTICAL" , "VERTICAL_WRAP" , "HORIZONTAL_WRAP"};
+    private JComboBox<String> cellsLayout;
+    
     JPanel prefixList;
     JPanel suffixList;
 
     Action prefixAction;
     Action suffixAction;
 
-    GeneratedListModel listModel;
+    GeneratedListModel<?> listModel;
 
     Vector<JCheckBox> checkboxes = new Vector<JCheckBox>();
 
@@ -115,24 +121,29 @@ public class ListDemo extends AbstractDemo {
         centerPanel.add(Box.createRigidArea(HGAP30));
 
         // Create the list
-        list = new JList();
+        list = new JList<>();
         list.setCellRenderer(new CompanyLogoListCellRenderer());
-        listModel = new GeneratedListModel(this);
+        listModel = new GeneratedListModel<>(this);
         list.setModel(listModel);
 
         // Set the preferred row count. This affects the preferredSize
         // of the JList when it's in a scrollpane.
-        list.setVisibleRowCount(22);
+        list.setVisibleRowCount(10);
 
         // Add list to a scrollpane
         JScrollPane scrollPane = new JScrollPane(list);
         listPanel.add(scrollPane);
         listPanel.add(Box.createRigidArea(VGAP10));
 
-        // Add the control panel (holds the prefix/suffix list and prefix/suffix checkboxes)
-        centerPanel.add(createControlPanel());
+        if(CONTROLLER_IN_PRESENTATION_FRAME) {
+            // Add the control panel (holds the prefix/suffix list and prefix/suffix checkboxes)
+            centerPanel.add(createControlPanel());
+            createPrefixesAndSuffixes();
+        }
 
-        // create prefixes and suffixes
+    }
+
+    private void createPrefixesAndSuffixes() {
         addPrefix("Tera", true);
         addPrefix("Micro", false);
         addPrefix("Southern", false);
@@ -185,15 +196,43 @@ public class ListDemo extends AbstractDemo {
         addSuffix("Gizmos", false);
         addSuffix("Concepts", false);
     }
-
     @Override
 	public JXPanel getControlPane() {
         if(CONTROLLER_IN_PRESENTATION_FRAME) return emptyControlPane();
 
-        JLabel description = new JLabel(getBundleString("description"));
+        JXPanel descPanel = new JXPanel(new BorderLayout());
+        JXLabel description = new JXLabel(getBundleString("xdescription"));
+        description.setLineWrap(true);
+        descPanel.add(description, BorderLayout.NORTH);
         
-        JXPanel controller = new JXPanel();
-        controller.add(description, BorderLayout.NORTH);
+        JXPanel controller = new JXPanel(new BorderLayout());
+        controller.add(descPanel, BorderLayout.NORTH);
+        
+        JXPanel py = new JXPanel();
+        py.setLayout(new BoxLayout(py, BoxLayout.Y_AXIS));
+        py.add(Box.createRigidArea(VGAP10));
+        descPanel.add(py, BorderLayout.CENTER);
+        
+        JXPanel px = new JXPanel();
+        px.setLayout(new BoxLayout(px, BoxLayout.X_AXIS));
+        py.add(px);
+     
+        // layout of cells
+        px.add(Box.createRigidArea(HGAP10));
+        px.add(new JLabel(getBundleString("cellsLayout")));
+        cellsLayout = new JComboBox<String>(CELLS_LAYOUT);
+        px.add(cellsLayout);
+        px.add(Box.createRigidArea(HGAP10));
+        cellsLayout.addActionListener(actionEvent -> {
+        	cellsLayout.setSelectedIndex(cellsLayout.getSelectedIndex());
+        	list.setLayoutOrientation(cellsLayout.getSelectedIndex());
+        });
+        cellsLayout.getInsets();
+        
+        // Add the control panel (holds the prefix/suffix list and prefix/suffix checkboxes)
+        controller.add(createControlPanel(), BorderLayout.CENTER);
+        createPrefixesAndSuffixes();
+
     	return controller;
     }
 
@@ -203,7 +242,8 @@ public class ListDemo extends AbstractDemo {
     }
 
     private JPanel createControlPanel() {
-        JPanel controlPanel = new JPanel() {
+        @SuppressWarnings("serial")
+		JPanel controlPanel = new JPanel() {
             Insets insets = new Insets(0, 4, 10, 10);
             public Insets getInsets() {
                 return insets;
@@ -284,9 +324,10 @@ public class ListDemo extends AbstractDemo {
         cb.addFocusListener(listFocusListener);
     }
 
-    class UpdatePrefixListAction extends AbstractAction {
-        GeneratedListModel listModel;
-        protected UpdatePrefixListAction(GeneratedListModel listModel) {
+    @SuppressWarnings("serial")
+	class UpdatePrefixListAction extends AbstractAction {
+        GeneratedListModel<?> listModel;
+        protected UpdatePrefixListAction(GeneratedListModel<?> listModel) {
             this.listModel = listModel;
         }
 
@@ -300,9 +341,10 @@ public class ListDemo extends AbstractDemo {
         }
     }
 
+    @SuppressWarnings("serial")
     class UpdateSuffixListAction extends AbstractAction {
-        GeneratedListModel listModel;
-        protected UpdateSuffixListAction(GeneratedListModel listModel) {
+        GeneratedListModel<?> listModel;
+        protected UpdateSuffixListAction(GeneratedListModel<?> listModel) {
             this.listModel = listModel;
         }
 
@@ -317,12 +359,13 @@ public class ListDemo extends AbstractDemo {
     }
 
 
-    class GeneratedListModel extends AbstractListModel {
+    @SuppressWarnings("serial")
+	class GeneratedListModel<E> extends AbstractListModel<Object> {
         ListDemo demo;
         Permuter permuter;
 
-        public Vector prefix = new Vector();
-        public Vector suffix = new Vector();
+        public Vector<String> prefix = new Vector<String>();
+        public Vector<String> suffix = new Vector<String>();
 
         public GeneratedListModel (ListDemo demo) {
             this.demo = demo;
@@ -385,19 +428,13 @@ public class ListDemo extends AbstractDemo {
             images[6] = StaticUtilities.createImageIcon("list/magenta.gif");
     }
 
-    class CompanyLogoListCellRenderer extends DefaultListCellRenderer {
-       public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus)
-        {
-            Component retValue = super.getListCellRendererComponent(
-                list, value, index, isSelected, cellHasFocus
-            );
-            setIcon(images[index%7]);
-            return retValue;
-        }
-    }
+	@SuppressWarnings("serial")
+	class CompanyLogoListCellRenderer extends DefaultListCellRenderer {
+		public Component getListCellRendererComponent(JList<?> list, Object value
+				, int index, boolean isSelected, boolean cellHasFocus) {
+			Component retValue = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			setIcon(images[index % 7]);
+			return retValue;
+		}
+	}
 }
