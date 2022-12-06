@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
@@ -37,16 +38,14 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
 /**
- * List Demo. This demo shows that it is not
- * always necessary to have an array of objects
+ * List Demo. This demo shows that it is not always necessary to have an array of objects
  * as big as the size of the list stored.
  *
- * Indeed, in this example, there is no array
- * kept for the list data, rather it is generated
+ * Indeed, in this example, there is no array kept for the list data, rather it is generated
  * on the fly as only those elements are needed.
  *
  * @author Jeff Dinkins
- * @author EUG https://github.com/homebeaver (reorg)
+ * @author EUG https://github.com/homebeaver (cellsLayout)
  */
 public class ListDemo extends AbstractDemo {
 
@@ -78,7 +77,11 @@ public class ListDemo extends AbstractDemo {
     JList<Object> list;
 
     // layout of cells
-    private static String[] CELLS_LAYOUT = { "VERTICAL" , "VERTICAL_WRAP" , "HORIZONTAL_WRAP"};
+    private static String[] CELLS_LAYOUT = 
+    	{ "VERTICAL - a single column" 
+    	, "VERTICAL_WRAP - a \"newspaper style\" flowing vertically then horizontally" 
+    	, "HORIZONTAL_WRAP - newspaper style flowing horizontally then vertically"
+    	};
     private JComboBox<String> cellsLayout;
     
     JPanel prefixList;
@@ -126,8 +129,8 @@ public class ListDemo extends AbstractDemo {
         listModel = new GeneratedListModel<>(this);
         list.setModel(listModel);
 
-        // Set the preferred row count. This affects the preferredSize
-        // of the JList when it's in a scrollpane.
+        // Set the preferred row count. This affects the preferredSize of the JList when it's in a scrollpane.
+        // In HORIZONTAL_WRAP and VERTICAL_WRAP orientations affects how cells are wrapped.
         list.setVisibleRowCount(10);
 
         // Add list to a scrollpane
@@ -434,6 +437,12 @@ public class ListDemo extends AbstractDemo {
 				, int index, boolean isSelected, boolean cellHasFocus) {
 			Component retValue = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			setIcon(images[index % 7]);
+			
+			// cell with border:
+//			setBorder(new LineBorder(UIManager.getColor("black"), 1));
+			setBorder(new EtchedBorder()); // LOWERED - this is the best border style
+//			setBorder(new EtchedBorder(EtchedBorder.RAISED));
+			
 			return retValue;
 		}
 	}
