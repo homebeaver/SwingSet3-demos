@@ -84,6 +84,14 @@ public class ListDemo extends AbstractDemo {
     	, "HORIZONTAL_WRAP - newspaper style flowing horizontally then vertically"
     	};
     private JComboBox<String> cellsLayout;
+
+    // selection mode
+    private static String[] SELECTION_MODE = 
+    	{ "SINGLE_SELECTION - select one list index at a time" 
+    	, "SINGLE_INTERVAL_SELECTION - select one contiguous range" 
+    	, "MULTIPLE_INTERVAL_SELECTION - select one or more contiguous ranges"
+    	};
+    private JComboBox<String> selectionMode;
     
     JPanel prefixList;
     JPanel suffixList;
@@ -232,6 +240,21 @@ public class ListDemo extends AbstractDemo {
         cellsLayout.addActionListener(actionEvent -> {
         	cellsLayout.setSelectedIndex(cellsLayout.getSelectedIndex());
         	list.setLayoutOrientation(cellsLayout.getSelectedIndex());
+        });
+        
+        // selection mode
+        px = new JXPanel();
+        px.setLayout(new BoxLayout(px, BoxLayout.X_AXIS));
+        py.add(px);
+        px.add(Box.createRigidArea(HGAP10));
+        px.add(new JLabel(getBundleString("selection mode")));
+        selectionMode = new JComboBox<String>(SELECTION_MODE);
+        selectionMode.setSelectedIndex(ListSelectionModel.SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
+        px.add(selectionMode);
+        px.add(Box.createRigidArea(HGAP10));
+        selectionMode.addActionListener(actionEvent -> {
+        	selectionMode.setSelectedIndex(selectionMode.getSelectedIndex());
+        	list.setSelectionMode(selectionMode.getSelectedIndex());
         });
         
         // Add the control panel (holds the prefix/suffix list and prefix/suffix checkboxes)
