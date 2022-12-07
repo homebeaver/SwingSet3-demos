@@ -17,12 +17,14 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXCollapsiblePane;
@@ -59,7 +61,7 @@ import swingset.AbstractDemo;
  * A demo for the {@code JXList}.
  *
  * @author Karl George Schaefer
- * @author EUG https://github.com/homebeaver (reorg)
+ * @author EUG https://github.com/homebeaver (reorg + controller for cellsLayout and selection mode)
  */
 //@DemoProperties(
 //    value = "JXList Demo",
@@ -101,6 +103,22 @@ public class XListDemo extends AbstractDemo {
     private JXList<Contributor> list;
     
     // Controller:
+    // layout of cells
+    private static String[] CELLS_LAYOUT = 
+    	{ "VERTICAL - a single column" 
+    	, "VERTICAL_WRAP - flowing vertically then horizontally" 
+    	, "HORIZONTAL_WRAP - flowing horizontally then vertically"
+    	};
+    private JComboBox<String> cellsLayout;
+    
+    // selection mode
+    private static String[] SELECTION_MODE = 
+    	{ "SINGLE_SELECTION - one list index at a time" 
+    	, "SINGLE_INTERVAL_SELECTION - one contiguous range" 
+    	, "MULTIPLE_INTERVAL_SELECTION - one or more contiguous ranges"
+    	};
+    private JComboBox<String> selectionMode;
+
     private JButton toggleSortOrder;
     private JButton resetSortOrder;
     private JXComboBox<DisplayInfo<Comparator<?>>> comparatorCombo;
@@ -132,7 +150,7 @@ public class XListDemo extends AbstractDemo {
         list = new JXList<Contributor>();
         list.setName("list");
 
-        JPanel monthViewContainer = new JXPanel();
+        JPanel listContainer = new JXPanel();
         FormLayout formLayout = new FormLayout(
                 "5dlu, f:d:g ", // l:4dlu:n, f:d:g", // columns
                 "c:d:n " +
@@ -141,7 +159,7 @@ public class XListDemo extends AbstractDemo {
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n"
         ); // rows
-        PanelBuilder builder = new PanelBuilder(formLayout, monthViewContainer);
+        PanelBuilder builder = new PanelBuilder(formLayout, listContainer);
         builder.setBorder(Borders.DLU4_BORDER);
         CellConstraints cc = new CellConstraints();
         
@@ -153,7 +171,7 @@ public class XListDemo extends AbstractDemo {
         builder.add(new JScrollPane(list), cc.xywh(2, 3, 1, 1));
         
         
-        add(monthViewContainer, BorderLayout.CENTER);
+        add(listContainer, BorderLayout.CENTER);
         
         // configureComponents:
         // <snip> JXList rendering
@@ -171,37 +189,18 @@ public class XListDemo extends AbstractDemo {
             
         };
         list.setCellRenderer(new DefaultListRenderer<Contributor>(sv));
+        
+        // Set the preferred row count. This affects the preferredSize of the JList when it's in a scrollpane.
+        // In HORIZONTAL_WRAP and VERTICAL_WRAP orientations affects how cells are wrapped.
+        list.setVisibleRowCount(20);
+
         // </snip>
         
         // PENDING JW: add visual clue to current sortorder
-//        toggleSortOrder.setAction(DemoUtils.getAction(this, "toggleSortOrder")); // @Action public void toggleSortOrder() {...
-//        resetSortOrder.setAction(DemoUtils.getAction(this, "resetSortOrder"));
-        
-        // TODO
-//        comparatorCombo.setRenderer(new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
-//        highlighterCombo.setRenderer(new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
-        
-        // demo specific config
-//        DemoUtils.setSnippet("JXList sorting", toggleSortOrder, resetSortOrder, comparatorCombo);
-//        DemoUtils.setSnippet("JXList rollover support", rolloverEnabledBox, highlighterCombo);
-//        DemoUtils.setSnippet("JXList rendering", list);
-
-//        bind():
         list.setAutoCreateRowSorter(true);
         list.setModel(Contributors.getContributorListModel());        
     }
 
-//    private void setComparator(Comparator<?> comparator) {
-//        // <snip> JXList sorting
-//        //  configure the comparator to use in sorting
-//        list.setComparator(comparator);
-//        if (list.getSortOrder() != SortOrder.UNSORTED) {
-//            // PENDING missing refresh api?
-//            ((DefaultSortController<?>) list.getRowSorter()).sort();
-//        }
-//        // </snip>
-//    }
-    
     @Override
 	public JXPanel getControlPane() {
         JXPanel controller = new JXPanel();
@@ -216,7 +215,10 @@ public class XListDemo extends AbstractDemo {
         FormLayout formLayout = new FormLayout(
                 "5dlu, r:d:n, l:4dlu:n, f:d:g", // , l:4dlu:n, f:d:g", // columns
                 "c:d:n " +
-                ", t:4dlu:n, c:d:n " +
+                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
@@ -229,15 +231,59 @@ public class XListDemo extends AbstractDemo {
         CellConstraints cl = new CellConstraints();
         CellConstraints cc = new CellConstraints();
         
-        JXTitledSeparator areaSeparator = new JXTitledSeparator();
-        areaSeparator.setName("extendedSeparator");
-        areaSeparator.setTitle(getBundleString("extendedSeparator.title"));
-
-        builder.add(areaSeparator, cc.xywh(1, 1, 4, 1));
+        JXTitledSeparator jListSeparator = new JXTitledSeparator();
+        jListSeparator.setName("jListSeparator");
+        jListSeparator.setTitle(getBundleString("jListSeparator.title"));
         
         int labelColumn = 2;
         int widgetColumn = labelColumn + 2;
-        int currentRow = 3;
+        int currentRow = 1;
+        builder.add(jListSeparator, cc.xywh(1, currentRow, 4, 1));
+        currentRow += 2;
+
+        cellsLayout = new JComboBox<String>(CELLS_LAYOUT);
+        cellsLayout.setName("cellsLayout");
+
+		// set default cells Layout
+        cellsLayout.setSelectedIndex(JList.VERTICAL_WRAP);
+    	list.setLayoutOrientation(JList.VERTICAL_WRAP);
+
+    	cellsLayout.addActionListener(ae -> {
+        	cellsLayout.setSelectedIndex(cellsLayout.getSelectedIndex());
+        	list.setLayoutOrientation(cellsLayout.getSelectedIndex());
+        });
+     
+        JLabel cellsLayoutLabel = builder.addLabel(
+                "", cl.xywh(labelColumn, currentRow, 1, 1),
+                cellsLayout, cc.xywh(widgetColumn, currentRow, 1, 1));
+        cellsLayoutLabel.setName("cellsLayoutLabel");
+        cellsLayoutLabel.setText(getBundleString("cellsLayoutLabel.text"));
+        currentRow += 2;
+
+        selectionMode = new JComboBox<String>(SELECTION_MODE);
+        selectionMode.setName("selectionMode");
+
+		// set default selection mode
+        selectionMode.setSelectedIndex(ListSelectionModel.SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
+    	list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+    	selectionMode.addActionListener(ae -> {
+    		selectionMode.setSelectedIndex(selectionMode.getSelectedIndex());
+        	list.setSelectionMode(selectionMode.getSelectedIndex());
+        });
+     
+        JLabel selectionModeLabel = builder.addLabel(
+                "", cl.xywh(labelColumn, currentRow, 1, 1),
+                selectionMode, cc.xywh(widgetColumn, currentRow, 1, 1));
+        selectionModeLabel.setName("selectionModeLabel");
+        selectionModeLabel.setText(getBundleString("selectionModeLabel.text"));
+        currentRow += 2;
+
+        JXTitledSeparator areaSeparator = new JXTitledSeparator();
+        areaSeparator.setName("extendedSeparator");
+        areaSeparator.setTitle(getBundleString("extendedSeparator.title"));
+        builder.add(areaSeparator, cc.xywh(1, currentRow, 4, 1));
+        currentRow += 2;
 
         toggleSortOrder = new JButton();
         toggleSortOrder.setName("toggleSortOrder");
@@ -296,7 +342,8 @@ public class XListDemo extends AbstractDemo {
 		rolloverEnabledBox.setText(getBundleString("rolloverBox.text"));
 		rolloverEnabledBox.addActionListener( ae -> {
         	LOG.fine("actionEvent:"+ae + " selected="+rolloverEnabledBox.isSelected());
-        	setRolloverEnabled(rolloverEnabledBox.isSelected());
+            list.setRolloverEnabled(rolloverEnabledBox.isSelected());
+            list.setToolTipText(list.isRolloverEnabled() ? getBundleString("stickyRolloverToolTip") : null);
         });
 		builder.add(rolloverEnabledBox, cc.xywh(labelColumn, currentRow, 3, 1));
 		currentRow += 2;
@@ -398,11 +445,6 @@ public class XListDemo extends AbstractDemo {
         return model;
     }
 
-    public void setRolloverEnabled(boolean enabled) {
-        list.setRolloverEnabled(enabled);
-        list.setToolTipText(list.isRolloverEnabled() ? getBundleString("stickyRolloverToolTip") : null);
-    }
-    
     private Highlighter createExtendedRolloverDecoration() {
         Color color = PaintUtils.setAlpha(Color.YELLOW, 100);
         final PainterHighlighter hl = new PainterHighlighter(HighlightPredicate.NEVER, new MattePainter(color));
