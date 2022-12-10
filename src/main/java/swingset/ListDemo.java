@@ -4,6 +4,7 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package swingset;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -13,6 +14,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
@@ -30,13 +32,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
+
+import swingset.plaf.ColorUnit;
 
 /**
  * List Demo. This demo shows that it is not always necessary to have an array of objects
@@ -57,6 +64,7 @@ public class ListDemo extends AbstractDemo {
 	
 	private static final long serialVersionUID = -6590141127414585946L;
 	private static final String DESCRIPTION = "JList Demo";
+    private static final Logger LOG = Logger.getLogger(ListDemo.class.getName());
 	private static final boolean CONTROLLER_IN_PRESENTATION_FRAME = false;
 
     /**
@@ -154,6 +162,20 @@ public class ListDemo extends AbstractDemo {
             centerPanel.add(createControlPanel());
             createPrefixesAndSuffixes();
         }
+
+        LOG.info("list.DragEnabled="+list.getDragEnabled());
+        list.setDragEnabled(true);
+        
+        // set BG color
+    	String currentClassName = UIManager.getLookAndFeel().getClass().getName();
+    	if(currentClassName.contains("Nimbus")) {
+    		list.setBackground(ColorUnit.NIMBUS_BACKGROUND);
+    	} else {
+    		LOG.config("current Laf is "+currentClassName);
+//    		Color primary3 = MetalLookAndFeel.getCurrentTheme().getPrimaryControl();
+    		Color secondary3 = MetalLookAndFeel.getCurrentTheme().getControl();
+    		list.setBackground(secondary3);
+    	}
 
     }
 
