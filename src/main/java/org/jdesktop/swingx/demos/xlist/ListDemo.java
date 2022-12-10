@@ -34,6 +34,7 @@ import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -55,6 +56,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.jdesktop.swingx.JYList;
+
 import swingset.plaf.LaFUtils;
 
 /* ListDemo.java requires no other files. 
@@ -63,10 +66,12 @@ import swingset.plaf.LaFUtils;
 @SuppressWarnings("serial")
 public class ListDemo extends JPanel implements ListSelectionListener {
 
+    private static final Logger LOG = Logger.getLogger(ListDemo.class.getName());
+
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-    	LaFUtils.setLAF("Nimbus");
+    	LaFUtils.setLAF(args[0]);
         SwingUtilities.invokeLater( () -> {
             createAndShowGUI();
         });
@@ -122,7 +127,7 @@ public class ListDemo extends JPanel implements ListSelectionListener {
         listModel.addElement("Jane Doe"); // add this duplicate to show that JList allows it
 
         //Create the list and put it in a scroll pane.
-        list = new JList<String>(listModel);
+        list = new JYList<String>(listModel);
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP); // default is VERTICAL
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
@@ -282,5 +287,95 @@ public class ListDemo extends JPanel implements ListSelectionListener {
             }
         }
     }
+/*
+    class MyListCellRenderer extends DefaultListCellRenderer {
+        public MyListCellRenderer() {
+            super();
+            setOpaque(true);
+            setBorder(getNoFocusBorder());
+            setName("List.cellRenderer");
+        }
+        private Border getNoFocusBorder() {
+        	LOG.info("use EtchedBorder ...");
+        	return new EtchedBorder();
+//            Border border = DefaultLookup.getBorder(this, ui, "List.cellNoFocusBorder");
+//            if (System.getSecurityManager() != null) {
+//                if (border != null) return border;
+//                return SAFE_NO_FOCUS_BORDER;
+//            } else {
+//                if (border != null &&
+//                        (noFocusBorder == null || noFocusBorder == DEFAULT_NO_FOCUS_BORDER)) {
+//                    return border;
+//                }
+//                return noFocusBorder;
+//            }
+        }
 
+        @Override // implements public interface ListCellRenderer<E>
+		public Component getListCellRendererComponent(JList<?> list, Object value
+				, int index, boolean isSelected, boolean cellHasFocus) {
+			
+			Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			
+			if (cellHasFocus) {
+				if (isSelected) {
+					LOG.info("list.getBackground()"+list.getBackground()+"cellHasFocus+isSelected >>>>>TODO"); //TODO "List.focusSelectedCellHighlightBorder"
+				}
+				LOG.info("cellHasFocus+isNOTSelected >>>>>TODO"); //TODO "List.focusCellHighlightBorder"
+			}
+			setBorder(getNoFocusBorder());
+			return comp;
+		}
+        // original in super: not accessible: sun.swing.DefaultLookup 
+//			setComponentOrientation(list.getComponentOrientation());
+//
+//			Color bg = null;
+//			Color fg = null;
+//
+//			JList.DropLocation dropLocation = list.getDropLocation();
+//			if (dropLocation != null && !dropLocation.isInsert() && dropLocation.getIndex() == index) {
+//
+//				bg = DefaultLookup.getColor(this, ui, "List.dropCellBackground");
+//				fg = DefaultLookup.getColor(this, ui, "List.dropCellForeground");
+//
+//				isSelected = true;
+//			}
+//
+//			if (isSelected) {
+//				setBackground(bg == null ? list.getSelectionBackground() : bg);
+//				setForeground(fg == null ? list.getSelectionForeground() : fg);
+//			} else {
+//				setBackground(list.getBackground());
+//				setForeground(list.getForeground());
+//			}
+//
+//			if (value instanceof Icon) {
+//				setIcon((Icon) value);
+//				setText("");
+//			} else {
+//				setIcon(null);
+//				setText((value == null) ? "" : value.toString());
+//			}
+//
+//			setEnabled(list.isEnabled());
+//			setFont(list.getFont());
+//
+//			Border border = null;
+//			if (cellHasFocus) {
+//				if (isSelected) {
+//					border = DefaultLookup.getBorder(this, ui, "List.focusSelectedCellHighlightBorder");
+//				}
+//				if (border == null) {
+//					border = DefaultLookup.getBorder(this, ui, "List.focusCellHighlightBorder");
+//				}
+//			} else {
+//				border = getNoFocusBorder();
+//			}
+//			setBorder(border);
+//
+//			return this;
+//		}
+
+    }
+ */
 }
