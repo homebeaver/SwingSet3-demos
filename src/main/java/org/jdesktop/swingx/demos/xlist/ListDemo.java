@@ -51,6 +51,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -71,7 +72,7 @@ public class ListDemo extends JPanel implements ListSelectionListener {
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-    	LaFUtils.setLAF(args[0]);
+    	if(args.length>0) LaFUtils.setLAF(args[0]);
         SwingUtilities.invokeLater( () -> {
             createAndShowGUI();
         });
@@ -83,7 +84,7 @@ public class ListDemo extends JPanel implements ListSelectionListener {
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("ListDemo");
+        JFrame frame = new JFrame("ListDemo "+UIManager.getLookAndFeel().getClass().getSimpleName());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
@@ -128,6 +129,7 @@ public class ListDemo extends JPanel implements ListSelectionListener {
 
         //Create the list and put it in a scroll pane.
         list = new JYList<String>(listModel);
+        LOG.info("JList<String> list = new JYList<String>(listModel)");
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP); // default is VERTICAL
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
@@ -288,94 +290,29 @@ public class ListDemo extends JPanel implements ListSelectionListener {
         }
     }
 /*
-    class MyListCellRenderer extends DefaultListCellRenderer {
-        public MyListCellRenderer() {
-            super();
-            setOpaque(true);
-            setBorder(getNoFocusBorder());
-            setName("List.cellRenderer");
-        }
-        private Border getNoFocusBorder() {
-        	LOG.info("use EtchedBorder ...");
-        	return new EtchedBorder();
-//            Border border = DefaultLookup.getBorder(this, ui, "List.cellNoFocusBorder");
-//            if (System.getSecurityManager() != null) {
-//                if (border != null) return border;
-//                return SAFE_NO_FOCUS_BORDER;
-//            } else {
-//                if (border != null &&
-//                        (noFocusBorder == null || noFocusBorder == DEFAULT_NO_FOCUS_BORDER)) {
-//                    return border;
-//                }
-//                return noFocusBorder;
-//            }
-        }
 
-        @Override // implements public interface ListCellRenderer<E>
-		public Component getListCellRendererComponent(JList<?> list, Object value
-				, int index, boolean isSelected, boolean cellHasFocus) {
-			
-			Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-			
-			if (cellHasFocus) {
-				if (isSelected) {
-					LOG.info("list.getBackground()"+list.getBackground()+"cellHasFocus+isSelected >>>>>TODO"); //TODO "List.focusSelectedCellHighlightBorder"
-				}
-				LOG.info("cellHasFocus+isNOTSelected >>>>>TODO"); //TODO "List.focusCellHighlightBorder"
-			}
-			setBorder(getNoFocusBorder());
-			return comp;
-		}
-        // original in super: not accessible: sun.swing.DefaultLookup 
-//			setComponentOrientation(list.getComponentOrientation());
-//
-//			Color bg = null;
-//			Color fg = null;
-//
-//			JList.DropLocation dropLocation = list.getDropLocation();
-//			if (dropLocation != null && !dropLocation.isInsert() && dropLocation.getIndex() == index) {
-//
-//				bg = DefaultLookup.getColor(this, ui, "List.dropCellBackground");
-//				fg = DefaultLookup.getColor(this, ui, "List.dropCellForeground");
-//
-//				isSelected = true;
-//			}
-//
-//			if (isSelected) {
-//				setBackground(bg == null ? list.getSelectionBackground() : bg);
-//				setForeground(fg == null ? list.getSelectionForeground() : fg);
-//			} else {
-//				setBackground(list.getBackground());
-//				setForeground(list.getForeground());
-//			}
-//
-//			if (value instanceof Icon) {
-//				setIcon((Icon) value);
-//				setText("");
-//			} else {
-//				setIcon(null);
-//				setText((value == null) ? "" : value.toString());
-//			}
-//
-//			setEnabled(list.isEnabled());
-//			setFont(list.getFont());
-//
-//			Border border = null;
-//			if (cellHasFocus) {
-//				if (isSelected) {
-//					border = DefaultLookup.getBorder(this, ui, "List.focusSelectedCellHighlightBorder");
-//				}
-//				if (border == null) {
-//					border = DefaultLookup.getBorder(this, ui, "List.focusCellHighlightBorder");
-//				}
-//			} else {
-//				border = getNoFocusBorder();
-//			}
-//			setBorder(border);
-//
-//			return this;
-//		}
+JYList.static: 
+ - LookAndFeelAddons.contribute(new YListAddon())
+JYList.ctor:
+ JList.ctor:
+ - call updateUI()
+ - JYList.updateUI:
+   in Abhängikein von JYList.uiClassID wird nur JList.updateUI() oder
+   die subclass Implemetierung JYList.updateUI gemacht, 
+   die via org.jdesktop.swingx.plaf.LookAndFeelAddons.getUI(...) die pluggable ComponentUI lädt,
+   also BasicYListUI bzw. synth (TODO).
+   In JYList.setUI wird dann die ui installiert; ui.installUI(this);
 
-    }
+Die ganze Instanzierung ist in UIDefaults#getUI(JComponent target) beschrieben :
+ UIDefaults#getUI(JComponent target) : Creates an ComponentUI implementation for the specified component. 
+ In other words create the look and feel specific delegate object for target.This is done in two steps: 
+  • Look up the name of the ComponentUI implementation class under the value returned by target.getUIClassID().
+  • Use the implementation classes static createUI() method to construct a look and feel delegate. 
+ 
+ 	mit setCellRenderer(new YListCellRenderer());
+ 	YListCellRenderer()
+ 	 - getNoFocusBorder() wo Border umdefiniert werden kann
+??? ! cellHasFocus+isSelected und cellHasFocus+isNOTSelected org.jdesktop.swingx.JYList$YListCellRenderer 
+      Border wird nicht angezeigt
  */
 }
