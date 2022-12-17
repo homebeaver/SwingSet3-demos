@@ -33,6 +33,7 @@ package org.jdesktop.swingx.demos.xlist;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -71,8 +72,8 @@ public class ListTransferHandler extends TransferHandler {
             return false;
         }
 
-        JList list = (JList)info.getComponent();
-        DefaultListModel listModel = (DefaultListModel)list.getModel();
+        JList<Object> list = (JList<Object>)info.getComponent();
+        DefaultListModel<Object> listModel = (DefaultListModel<Object>)list.getModel();
         JList.DropLocation dl = (JList.DropLocation)info.getDropLocation();
         int index = dl.getIndex();
         boolean insert = dl.isInsert();
@@ -101,9 +102,12 @@ public class ListTransferHandler extends TransferHandler {
     //Bundle up the selected items in the list
     //as a single string, for export.
     protected String exportString(JComponent c) {
-        JList list = (JList)c;
+        JList<?> list = (JList<?>)c;
         indices = list.getSelectedIndices();
-        Object[] values = list.getSelectedValues();
+//        Object[] values = list.getSelectedValues(); // deprecated As of JDK 1.7
+        List<?> l = list.getSelectedValuesList();
+        Object[] values = new Object[l.size()];
+        l.toArray(values); // fill the array
         
         StringBuffer buff = new StringBuffer();
 
@@ -121,8 +125,8 @@ public class ListTransferHandler extends TransferHandler {
     //Take the incoming string and wherever there is a
     //newline, break it into a separate item in the list.
     protected void importString(JComponent c, String str) {
-        JList target = (JList)c;
-        DefaultListModel listModel = (DefaultListModel)target.getModel();
+        JList<Object> target = (JList<Object>)c;
+        DefaultListModel<Object> listModel = (DefaultListModel<Object>)target.getModel();
         int index = target.getSelectedIndex();
 
         //Prevent the user from dropping data back on itself.
@@ -160,8 +164,8 @@ public class ListTransferHandler extends TransferHandler {
     //intact.
     protected void cleanup(JComponent c, boolean remove) {
         if (remove && indices != null) {
-            JList source = (JList)c;
-            DefaultListModel model  = (DefaultListModel)source.getModel();
+            JList<Object> source = (JList<Object>)c;
+            DefaultListModel<Object> model  = (DefaultListModel<Object>)source.getModel();
             //If we are moving items around in the same list, we
             //need to adjust the indices accordingly, since those
             //after the insertion point have moved.

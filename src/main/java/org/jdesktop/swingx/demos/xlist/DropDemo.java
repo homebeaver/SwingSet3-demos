@@ -30,20 +30,69 @@
  */ 
 package org.jdesktop.swingx.demos.xlist;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import swingset.plaf.LaFUtils;
 
 /*
  * DropDemo.java requires the following file:
  *     ListTransferHandler.java
  * copied from https://docs.oracle.com/javase/tutorial/uiswing/dnd/dropmodedemo.html
  */
+@SuppressWarnings("serial")
 public class DropDemo extends JPanel implements ActionListener {
 	
-    private JComboBox dropCombo;
-    private JList list;
+    public static void main(String[] args) {
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+    	if(args.length>0) LaFUtils.setLAF(args[0]);
+        SwingUtilities.invokeLater( () -> {
+        	//Turn off metal's use of bold fonts
+        	UIManager.put("swing.boldMetal", Boolean.FALSE);
+            createAndShowGUI();
+        });
+    }
+
+    /**
+     * Create the GUI and show it.
+     * For thread safety, this method should be invoked from the event-dispatching thread.
+     */
+    private static void createAndShowGUI() {
+        //Create and set up the window.
+        JFrame frame = new JFrame("DropDemo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Create and set up the content pane.
+        JComponent newContentPane = new DropDemo();
+        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(newContentPane);
+
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    private JComboBox<String> dropCombo;
+    private JList<Object> list;
     
     public DropDemo() {
         super(new GridLayout(2,1));
@@ -52,13 +101,13 @@ public class DropDemo extends JPanel implements ActionListener {
     }
     
     private JPanel createList() {
-        DefaultListModel listModel = new DefaultListModel();
+        DefaultListModel<Object> listModel = new DefaultListModel<Object>();
             
         for (int i = 0; i < 10; i++) {
             listModel.addElement("List Item " + i);
         }
         
-        list = new JList(listModel);
+        list = new JList<Object>(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setPreferredSize(new Dimension(400,100));
@@ -66,7 +115,7 @@ public class DropDemo extends JPanel implements ActionListener {
         list.setDragEnabled(true);
         list.setTransferHandler(new ListTransferHandler());
         
-        dropCombo = new JComboBox(new String[] {"USE_SELECTION", "ON", "INSERT", "ON_OR_INSERT"});
+        dropCombo = new JComboBox<String>(new String[] {"USE_SELECTION", "ON", "INSERT", "ON_OR_INSERT"});
         dropCombo.addActionListener(this);
         JPanel dropPanel = new JPanel();
         dropPanel.add(new JLabel("List Drop Mode:"));
@@ -106,35 +155,4 @@ public class DropDemo extends JPanel implements ActionListener {
         }
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("DropDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        JComponent newContentPane = new DropDemo();
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                //Turn off metal's use of bold fonts
-	        UIManager.put("swing.boldMetal", Boolean.FALSE);
-                createAndShowGUI();
-            }
-        });
-    }
 }
