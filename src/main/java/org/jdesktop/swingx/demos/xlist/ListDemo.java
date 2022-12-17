@@ -300,7 +300,7 @@ JYList.ctor:
    in Abhängikein von JYList.uiClassID wird nur JList.updateUI() oder
    die subclass Implemetierung JYList.updateUI gemacht, 
    die via org.jdesktop.swingx.plaf.LookAndFeelAddons.getUI(...) die pluggable ComponentUI lädt,
-   also BasicYListUI bzw. synth (TODO).
+   also BasicYListUI bzw. SynthYListUI.
    In JYList.setUI wird dann die ui installiert; ui.installUI(this);
 
 Die ganze Instanzierung ist in UIDefaults#getUI(JComponent target) beschrieben :
