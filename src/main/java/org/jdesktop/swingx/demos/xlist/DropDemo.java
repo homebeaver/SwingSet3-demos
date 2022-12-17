@@ -51,6 +51,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.jdesktop.swingx.JYList;
+
 import swingset.plaf.LaFUtils;
 
 /*
@@ -107,7 +109,8 @@ public class DropDemo extends JPanel implements ActionListener {
             listModel.addElement("List Item " + i);
         }
         
-        list = new JList<Object>(listModel);
+        list = new JYList<Object>(listModel);
+        list.setLayoutOrientation(JList.HORIZONTAL_WRAP); // default is VERTICAL
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setPreferredSize(new Dimension(400,100));
