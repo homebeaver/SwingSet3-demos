@@ -74,6 +74,8 @@ public class ListDemo extends JPanel implements ListSelectionListener {
         //creating and showing this application's GUI.
     	if(args.length>0) LaFUtils.setLAF(args[0]);
         SwingUtilities.invokeLater( () -> {
+        	//Turn off metal's use of bold fonts
+        	UIManager.put("swing.boldMetal", Boolean.FALSE);
             createAndShowGUI();
         });
     }
