@@ -4,7 +4,6 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package swingset;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -32,18 +31,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
-
-import swingset.plaf.ColorUnit;
+import org.jdesktop.swingx.JYList;
 
 /**
  * List Demo. This demo shows that it is not always necessary to have an array of objects
@@ -89,7 +83,7 @@ public class ListDemo extends AbstractDemo {
     private static String[] CELLS_LAYOUT = 
     	{ "VERTICAL - a single column" 
     	, "VERTICAL_WRAP - a \"newspaper style\" flowing vertically then horizontally" 
-    	, "HORIZONTAL_WRAP - newspaper style flowing horizontally then vertically"
+    	, "HORIZONTAL_WRAP - newspaper style flowing horizontally then vertically" // initial
     	};
     private JComboBox<String> cellsLayout;
 
@@ -141,7 +135,8 @@ public class ListDemo extends AbstractDemo {
         centerPanel.add(Box.createRigidArea(HGAP10));
 
         // Create the list
-        list = new JList<>();
+        list = new JYList<>();
+        list.setLayoutOrientation(JList.HORIZONTAL_WRAP); // default is VERTICAL
         list.setCellRenderer(new CompanyLogoListCellRenderer());
         listModel = new GeneratedListModel<>(this);
         list.setModel(listModel);
@@ -166,17 +161,6 @@ public class ListDemo extends AbstractDemo {
         LOG.info("list.DragEnabled="+list.getDragEnabled());
         list.setDragEnabled(true);
         
-        // set BG color
-    	String currentClassName = UIManager.getLookAndFeel().getClass().getName();
-    	if(currentClassName.contains("Nimbus")) {
-    		list.setBackground(ColorUnit.NIMBUS_BACKGROUND);
-    	} else {
-    		LOG.config("current Laf is "+currentClassName);
-//    		Color primary3 = MetalLookAndFeel.getCurrentTheme().getPrimaryControl();
-    		Color secondary3 = MetalLookAndFeel.getCurrentTheme().getControl();
-    		list.setBackground(secondary3);
-    	}
-
     }
 
     private void createPrefixesAndSuffixes() {
@@ -257,6 +241,7 @@ public class ListDemo extends AbstractDemo {
         px.add(Box.createRigidArea(HGAP10));
         px.add(new JLabel(getBundleString("cellsLayout")));
         cellsLayout = new JComboBox<String>(CELLS_LAYOUT);
+        cellsLayout.setSelectedIndex(2);
         px.add(cellsLayout);
         px.add(Box.createRigidArea(HGAP10));
         cellsLayout.addActionListener(actionEvent -> {
@@ -484,11 +469,6 @@ public class ListDemo extends AbstractDemo {
 				, int index, boolean isSelected, boolean cellHasFocus) {
 			Component retValue = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			setIcon(images[index % 7]);
-			
-			// cell with border:
-//			setBorder(new LineBorder(UIManager.getColor("black"), 1));
-			setBorder(new EtchedBorder()); // LOWERED - this is the best border style
-//			setBorder(new EtchedBorder(EtchedBorder.RAISED));
 			
 			return retValue;
 		}
