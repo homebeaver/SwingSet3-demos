@@ -8,10 +8,16 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -21,6 +27,7 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DropMode;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -29,8 +36,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXFrame;
@@ -95,6 +104,15 @@ public class ListDemo extends AbstractDemo {
     	};
     private JComboBox<String> selectionMode;
     
+    // drop mode
+    private static String[] DROP_MODE = 
+    	{ "USE_SELECTION - item moves to echo the potential drop point (not recommended)" 
+    	, "ON - used to drop on top of existing list items" 
+    	, "INSERT - select the space between existing list items"
+    	, "ON_OR_INSERT - a combination of the ON and INSERT"
+    	};
+    private JComboBox<String> dropMode;
+    
     JPanel prefixList;
     JPanel suffixList;
 
@@ -118,6 +136,13 @@ public class ListDemo extends AbstractDemo {
         if(CONTROLLER_IN_PRESENTATION_FRAME) {
             JLabel description = new JLabel(getBundleString("description"));
             super.add(description, BorderLayout.NORTH);
+        } else {
+            String text = "Drag from or drop into this area.\nThe default action is MOVE;"
+            		+"\nhold the Control key to COPY.";          
+            JTextArea area = new JTextArea();
+            area.setText(text);
+            area.setDragEnabled(true);
+            super.add(area, BorderLayout.NORTH);
         }
 
         loadImages();
@@ -160,6 +185,22 @@ public class ListDemo extends AbstractDemo {
 
         LOG.info("list.DragEnabled="+list.getDragEnabled());
         list.setDragEnabled(true);
+        list.setTransferHandler(new ListTransferHandler());
+        /*
+JList supports the following drop modes: 
+• DropMode.USE_SELECTION
+• DropMode.ON
+• DropMode.INSERT
+• DropMode.ON_OR_INSERT
+The drop mode is only meaningful if this component has a TransferHandler that accepts drops.
+
+Sets the drop mode for this component. 
+For backward compatibility,the default for this property is DropMode.USE_SELECTION (not recommended).
+Usage of one of the other modes is recommended, however, for an improved user experience. 
+DropMode.ON, for instance, offers similar behavior of showing items as selected, 
+but does so without affecting the actual selection in the list. 
+         */
+    	list.setDropMode(DropMode.ON);
         
     }
 
@@ -264,16 +305,41 @@ public class ListDemo extends AbstractDemo {
         	list.setSelectionMode(selectionMode.getSelectedIndex());
         });
         
+        // drop mode
+        px = new JXPanel();
+        px.setLayout(new BoxLayout(px, BoxLayout.X_AXIS));
+        py.add(px);
+        px.add(Box.createRigidArea(HGAP10));
+        px.add(new JLabel(getBundleString("drop mode")));
+        dropMode = new JComboBox<String>(DROP_MODE);
+        dropMode.setSelectedIndex(1); // DropMode.ON
+        px.add(dropMode);
+        px.add(Box.createRigidArea(HGAP10));
+        dropMode.addActionListener(actionEvent -> {
+        	int i = dropMode.getSelectedIndex();
+        	dropMode.setSelectedIndex(i);
+            switch (i) {
+            case 0:
+            	list.setDropMode(DropMode.USE_SELECTION);
+            	break;
+            case 1:
+            	list.setDropMode(DropMode.ON);
+            	break;
+            case 2:
+            	list.setDropMode(DropMode.INSERT);
+            	break;
+            case 3:
+            	list.setDropMode(DropMode.ON_OR_INSERT);
+            	break;
+            default:
+            }
+        });
+        
         // Add the control panel (holds the prefix/suffix list and prefix/suffix checkboxes)
         controller.add(createControlPanel(), BorderLayout.CENTER);
         createPrefixesAndSuffixes();
 
     	return controller;
-    }
-
-
-    void updateDragEnabled(boolean dragEnabled) {
-        list.setDragEnabled(dragEnabled);
     }
 
     private JPanel createControlPanel() {
@@ -401,19 +467,40 @@ public class ListDemo extends AbstractDemo {
 
         public Vector<String> prefix = new Vector<String>();
         public Vector<String> suffix = new Vector<String>();
+        public Vector<String> nix = new Vector<String>();
 
         public GeneratedListModel (ListDemo demo) {
             this.demo = demo;
         }
 
         private void update() {
-            permuter = new Permuter(getSize());
+            permuter = new Permuter(getSize()-nix.size());
+            /*
+             * call this method after one or more elements of the list change.  
+             * The changed elements are specified by the closed interval index0, index1.
+             * @param source the <code>ListModel</code> that changed, typically "this"
+             * @param index0 one end of the new interval
+             * @param index1 the other end of the new interval
+             */
             fireContentsChanged(this, 0, getSize());
         }
 
+        public void add(int index, Object element) {
+        	if(element instanceof String s) {
+                if(!nix.contains(s)) {
+                	// ignore index
+//         delegate.insertElementAt(element, index);
+
+                    nix.addElement(s);
+                    update();
+                }
+        	}
+        }
+        
         public void addPrefix(String s) {
             if(!prefix.contains(s)) {
                 prefix.addElement(s);
+                LOG.info(s + " at prefix."+prefix.size());
                 update();
             }
         }
@@ -426,6 +513,7 @@ public class ListDemo extends AbstractDemo {
         public void addSuffix(String s) {
             if(!suffix.contains(s)) {
                 suffix.addElement(s);
+                LOG.info(s + " at suffix."+suffix.size());
                 update();
             }
         }
@@ -436,7 +524,7 @@ public class ListDemo extends AbstractDemo {
         }
 
         public int getSize() {
-            return prefix.size() * suffix.size();
+            return (prefix.size() * suffix.size()) + nix.size();
         }
 
         public Object getElementAt(int index) {
@@ -473,4 +561,172 @@ public class ListDemo extends AbstractDemo {
 			return retValue;
 		}
 	}
+	
+	class ListTransferHandler extends TransferHandler {
+		
+	    private int[] indices = null;
+	    private int addIndex = -1; //Location where items were added
+	    private int addCount = 0;  //Number of items added.
+	            
+	    public boolean canImport(TransferHandler.TransferSupport info) {
+	        // Check for String flavor
+	        if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+	            return false;
+	        }
+	        return true;
+	   }
+
+	    protected Transferable createTransferable(JComponent c) {
+	    	String s = exportString(c);
+	    	LOG.info("exportString="+s);
+	        return new StringSelection(exportString(c));
+	    }
+	    
+	    // @param c  the component holding the data to be transferred, here JYList
+	    public int getSourceActions(JComponent c) {
+	    	LOG.info("-----------JComponent "+c);
+//	        return TransferHandler.COPY_OR_MOVE;
+	        return TransferHandler.COPY;
+	    }
+	    
+	    public boolean importData(TransferHandler.TransferSupport info) {
+	    	LOG.info("-----------TransferHandler.TransferSupport "+info);
+	        if (!info.isDrop()) {
+	            return false;
+	        }
+
+	        JList<Object> list = (JList<Object>)info.getComponent();
+	        GeneratedListModel<Object> listModel = (GeneratedListModel<Object>)list.getModel();
+	        JList.DropLocation dl = (JList.DropLocation)info.getDropLocation();
+	        int index = dl.getIndex();
+	        boolean insert = dl.isInsert();
+	        LOG.fine("DropLocation.Index="+index + " insert="+insert);
+	        // Get the string that is being dropped.
+	        Transferable t = info.getTransferable();
+	        String data;
+	        try {
+	            data = (String)t.getTransferData(DataFlavor.stringFlavor);
+	        } 
+	        catch (Exception e) { return false; }
+	                                
+	        LOG.info("DropLocation.Index="+index + " insert="+insert + " data:"+data);
+	        // Perform the actual import.  
+	        if (insert) {
+	            listModel.add(index, data);
+	        } else {
+	        	LOG.info("Drop! ***NOT IMPLEMENTED*** set "+data+" at "+index);
+//	            listModel.set(index, data);
+	        }
+	        return true;
+	    }
+
+	    protected void exportDone(JComponent c, Transferable data, int action) {
+	    	if(data instanceof StringSelection ss) {
+	    		try {
+	    			LOG.info("data:"+ss.getTransferData(DataFlavor.stringFlavor));
+				} catch (UnsupportedFlavorException | IOException e) {
+					e.printStackTrace();
+				}
+	    	}
+	        cleanup(c, action == TransferHandler.MOVE);
+	    }
+
+	    //Bundle up the selected items in the list
+	    //as a single string, for export.
+	    protected String exportString(JComponent c) {
+	        JList<?> list = (JList<?>)c;
+	        indices = list.getSelectedIndices();
+//	        Object[] values = list.getSelectedValues(); // deprecated As of JDK 1.7
+	        List<?> l = list.getSelectedValuesList();
+	        Object[] values = new Object[l.size()];
+	        l.toArray(values); // fill the array
+	        
+	        StringBuffer buff = new StringBuffer();
+
+	        for (int i = 0; i < values.length; i++) {
+	            Object val = values[i];
+	            buff.append(val == null ? "" : val.toString());
+	            if (i != values.length - 1) {
+	                buff.append("\n");
+	            }
+	        }
+	        
+	        return buff.toString();
+	    }
+
+	    //Take the incoming string and wherever there is a
+	    //newline, break it into a separate item in the list.
+	    protected void importString(JComponent c, String str) {
+	    	LOG.info("+++ "+str);
+	        JList<Object> target = (JList<Object>)c;
+	        GeneratedListModel<Object> listModel = (GeneratedListModel<Object>)target.getModel();
+	        int index = target.getSelectedIndex();
+
+	        //Prevent the user from dropping data back on itself.
+	        //For example, if the user is moving items #4,#5,#6 and #7 and
+	        //attempts to insert the items after item #5, this would
+	        //be problematic when removing the original items.
+	        //So this is not allowed.
+	        if (indices != null && index >= indices[0] - 1 &&
+	              index <= indices[indices.length - 1]) {
+	            indices = null;
+	            return;
+	        }
+
+	        int max = listModel.getSize();
+	        if (index < 0) {
+	            index = max;
+	        } else {
+	            index++;
+	            if (index > max) {
+	                index = max;
+	            }
+	        }
+	        addIndex = index;
+	        String[] values = str.split("\n");
+	        addCount = values.length;
+	        for (int i = 0; i < values.length; i++) {
+	            listModel.add(index++, values[i]);
+	        }
+	    }
+	    
+	    //If the remove argument is true, the drop has been
+	    //successful and it's time to remove the selected items 
+	    //from the list. If the remove argument is false, it
+	    //was a Copy operation and the original list is left
+	    //intact.
+	    protected void cleanup(JComponent c, boolean remove) {
+	        if(remove && indices != null) {
+	            JList<Object> source = (JList<Object>)c;
+	            LOG.info("indices#="+indices.length+" JComponent "+source);
+	            GeneratedListModel<Object> model  = (GeneratedListModel<Object>)source.getModel();
+	            //If we are moving items around in the same list, we
+	            //need to adjust the indices accordingly, since those
+	            //after the insertion point have moved.
+	            if (addCount > 0) {
+	                for (int i = 0; i < indices.length; i++) {
+	                    if (indices[i] > addIndex) {
+	                        indices[i] += addCount;
+	                    }
+	                }
+	            }
+	            for (int i = indices.length - 1; i >= 0; i--) {
+	            	LOG.info("TODO model.remove i="+i + " indices[i]="+indices[i]); // TODO
+//	                model.remove(indices[i]);
+	            }
+	        } else if(indices != null) {
+	            JList<Object> source = (JList<Object>)c;
+	            GeneratedListModel<Object> model  = (GeneratedListModel<Object>)source.getModel();
+	            for (int i = indices.length - 1; i >= 0; i--) {
+	            	LOG.info("***NOT IMPLEMENTED*** model.remove i="+i 
+	            			+ " indices[i]="+indices[i] + " element:"+model.getElementAt(indices[i]));
+//	                model.remove(indices[i]);
+	            }
+	        }
+	        indices = null;
+	        addCount = 0;
+	        addIndex = -1;
+	    }
+	}
+
 }
