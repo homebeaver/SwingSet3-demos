@@ -33,8 +33,6 @@ package org.jdesktop.swingx.demos.xlist;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -61,7 +59,7 @@ import swingset.plaf.LaFUtils;
  * copied from https://docs.oracle.com/javase/tutorial/uiswing/dnd/dropmodedemo.html
  */
 @SuppressWarnings("serial")
-public class DropDemo extends JPanel implements ActionListener {
+public class DropDemo extends JPanel {
 	
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
@@ -116,10 +114,30 @@ public class DropDemo extends JPanel implements ActionListener {
         scrollPane.setPreferredSize(new Dimension(400,100));
         
         list.setDragEnabled(true);
+    	list.setDropMode(DropMode.USE_SELECTION); // the default
         list.setTransferHandler(new ListTransferHandler());
         
         dropCombo = new JComboBox<String>(new String[] {"USE_SELECTION", "ON", "INSERT", "ON_OR_INSERT"});
-        dropCombo.addActionListener(this);
+        dropCombo.addActionListener(actionEvent -> {
+        	int i = dropCombo.getSelectedIndex();
+        	dropCombo.setSelectedIndex(i);
+            switch (i) {
+            case 0:
+            	list.setDropMode(DropMode.USE_SELECTION);
+            	break;
+            case 1:
+            	list.setDropMode(DropMode.ON);
+            	break;
+            case 2:
+            	list.setDropMode(DropMode.INSERT);
+            	break;
+            case 3:
+            	list.setDropMode(DropMode.ON_OR_INSERT);
+            	break;
+            default:
+            }
+        	
+        });
         JPanel dropPanel = new JPanel();
         dropPanel.add(new JLabel("List Drop Mode:"));
         dropPanel.add(dropCombo);
@@ -143,19 +161,6 @@ public class DropDemo extends JPanel implements ActionListener {
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createTitledBorder("Text Area"));
         return panel;
-    }
-
-    public void actionPerformed(ActionEvent ae) {
-        Object val = dropCombo.getSelectedItem();
-        if (val == "USE_SELECTION") {
-            list.setDropMode(DropMode.USE_SELECTION);
-        } else if (val == "ON") {
-            list.setDropMode(DropMode.ON);
-        } else if (val == "INSERT") {
-            list.setDropMode(DropMode.INSERT);
-        } else if (val == "ON_OR_INSERT") {
-            list.setDropMode(DropMode.ON_OR_INSERT);
-        }
     }
 
 }
