@@ -467,14 +467,14 @@ but does so without affecting the actual selection in the list.
 
         public Vector<String> prefix = new Vector<String>();
         public Vector<String> suffix = new Vector<String>();
-        public Vector<String> nix = new Vector<String>();
+        public Vector<String> dragdrop = new Vector<String>(); // used for drag & drop elements
 
         public GeneratedListModel (ListDemo demo) {
             this.demo = demo;
         }
 
         private void update() {
-            permuter = new Permuter(getSize()-nix.size());
+            permuter = new Permuter(getSize()-dragdrop.size());
             /*
              * call this method after one or more elements of the list change.  
              * The changed elements are specified by the closed interval index0, index1.
@@ -485,16 +485,25 @@ but does so without affecting the actual selection in the list.
             fireContentsChanged(this, 0, getSize());
         }
 
+        // add element to nix - used with drag & drop
         public void add(int index, Object element) {
-        	if(element instanceof String s) {
-                if(!nix.contains(s)) {
-                	// ignore index
-//         delegate.insertElementAt(element, index);
-
-                    nix.addElement(s);
-                    update();
-                }
+        	LOG.info("int index="+index + " element:"+element);
+        	if(index==-1) {
+            	if(element instanceof String s) {
+                    if(!dragdrop.contains(s)) {
+                        dragdrop.addElement(s);
+                        update();
+                    }
+            	}
         	}
+        }
+        public void remove(int index) {
+            if(index >= prefix.size() * suffix.size()) {
+            	dragdrop.remove(index-prefix.size() * suffix.size());
+            	update();
+            } else {
+            	LOG.info("cannot remove elemet at index="+index + " element:"+getElementAt(index));
+            }
         }
         
         public void addPrefix(String s) {
@@ -524,12 +533,15 @@ but does so without affecting the actual selection in the list.
         }
 
         public int getSize() {
-            return (prefix.size() * suffix.size()) + nix.size();
+            return (prefix.size() * suffix.size()) + dragdrop.size();
         }
 
         public Object getElementAt(int index) {
             if(permuter == null) {
                 update();
+            }
+            if(index >= prefix.size() * suffix.size()) {
+            	return (String) dragdrop.elementAt(index-prefix.size() * suffix.size());
             }
             // morph the index to another int -- this has the benefit of
             // causing the list to look random.
@@ -584,7 +596,7 @@ but does so without affecting the actual selection in the list.
 	    
 	    // @param c  the component holding the data to be transferred, here JYList
 	    public int getSourceActions(JComponent c) {
-	    	LOG.info("-----------JComponent "+c);
+//	    	LOG.info("-----------JComponent "+c);
 //	        return TransferHandler.COPY_OR_MOVE;
 	        return TransferHandler.COPY;
 	    }
@@ -616,6 +628,7 @@ but does so without affecting the actual selection in the list.
 	        } else {
 	        	LOG.info("Drop! ***NOT IMPLEMENTED*** set "+data+" at "+index);
 //	            listModel.set(index, data);
+	            listModel.add(index, data);
 	        }
 	        return true;
 	    }
@@ -718,9 +731,9 @@ but does so without affecting the actual selection in the list.
 	            JList<Object> source = (JList<Object>)c;
 	            GeneratedListModel<Object> model  = (GeneratedListModel<Object>)source.getModel();
 	            for (int i = indices.length - 1; i >= 0; i--) {
-	            	LOG.info("***NOT IMPLEMENTED*** model.remove i="+i 
+	            	LOG.info("model.remove i="+i 
 	            			+ " indices[i]="+indices[i] + " element:"+model.getElementAt(indices[i]));
-//	                model.remove(indices[i]);
+	                model.remove(indices[i]);
 	            }
 	        }
 	        indices = null;
