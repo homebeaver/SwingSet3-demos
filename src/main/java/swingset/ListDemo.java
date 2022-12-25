@@ -37,6 +37,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
@@ -183,7 +184,7 @@ public class ListDemo extends AbstractDemo {
             createPrefixesAndSuffixes();
         }
 
-        LOG.info("list.DragEnabled="+list.getDragEnabled());
+        LOG.config("list.DragEnabled="+list.getDragEnabled());
         list.setDragEnabled(true);
         list.setTransferHandler(new ListTransferHandler());
         /*
@@ -495,6 +496,8 @@ but does so without affecting the actual selection in the list.
                         update();
                     }
             	}
+        	} else {
+        		LOG.warning("Cannot add "+element+" at "+index);
         	}
         }
         public void remove(int index) {
@@ -602,13 +605,11 @@ but does so without affecting the actual selection in the list.
 	    }
 	    
 	    public boolean importData(TransferHandler.TransferSupport info) {
-	    	LOG.info("-----------TransferHandler.TransferSupport "+info);
+//	    	LOG.info("-----------TransferHandler.TransferSupport "+info);
 	        if (!info.isDrop()) {
 	            return false;
 	        }
 
-	        JList<Object> list = (JList<Object>)info.getComponent();
-	        GeneratedListModel<Object> listModel = (GeneratedListModel<Object>)list.getModel();
 	        JList.DropLocation dl = (JList.DropLocation)info.getDropLocation();
 	        int index = dl.getIndex();
 	        boolean insert = dl.isInsert();
@@ -622,15 +623,22 @@ but does so without affecting the actual selection in the list.
 	        catch (Exception e) { return false; }
 	                                
 	        LOG.info("DropLocation.Index="+index + " insert="+insert + " data:"+data);
-	        // Perform the actual import.  
-	        if (insert) {
-	            listModel.add(index, data);
-	        } else {
-	        	LOG.info("Drop! ***NOT IMPLEMENTED*** set "+data+" at "+index);
-//	            listModel.set(index, data);
-	            listModel.add(index, data);
+	        Component comp = info.getComponent();
+	        if(comp instanceof JList<?> list) {
+	        	ListModel<?> model = list.getModel();
+	        	if(model instanceof GeneratedListModel<?> listModel) {
+	    	        // Perform the actual import.  
+	    	        if (insert) {
+	    	            listModel.add(index, data);
+	    	        } else {
+//	    	        	LOG.info("Drop! ***NOT IMPLEMENTED*** set "+data+" at "+index);
+//	    	            listModel.set(index, data);
+	    	            listModel.add(index, data);
+	    	        }
+	    	        return true;
+	        	}
 	        }
-	        return true;
+	        return false;
 	    }
 
 	    protected void exportDone(JComponent c, Transferable data, int action) {
