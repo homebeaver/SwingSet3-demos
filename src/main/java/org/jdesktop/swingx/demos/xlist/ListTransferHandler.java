@@ -48,6 +48,9 @@ import javax.swing.TransferHandler;
 public class ListTransferHandler extends TransferHandler {
 	
     private int[] indices = null;
+    protected void setIndizes(int[] indizes) {
+    	this.indices = indizes;
+    }
     private int addIndex = -1; //Location where items were added
     private int addCount = 0;  //Number of items added.
             
@@ -72,8 +75,6 @@ public class ListTransferHandler extends TransferHandler {
             return false;
         }
 
-        JList<Object> list = (JList<Object>)info.getComponent();
-        DefaultListModel<Object> listModel = (DefaultListModel<Object>)list.getModel();
         JList.DropLocation dl = (JList.DropLocation)info.getDropLocation();
         int index = dl.getIndex();
         boolean insert = dl.isInsert();
@@ -86,6 +87,8 @@ public class ListTransferHandler extends TransferHandler {
         } 
         catch (Exception e) { return false; }
                                 
+        JList<Object> list = (JList<Object>)info.getComponent();
+        DefaultListModel<Object> listModel = (DefaultListModel<Object>)list.getModel();
         // Perform the actual import.  
         if (insert) {
             listModel.add(index, data);
@@ -99,26 +102,22 @@ public class ListTransferHandler extends TransferHandler {
         cleanup(c, action == TransferHandler.MOVE);
     }
 
-    //Bundle up the selected items in the list
-    //as a single string, for export.
+    //Bundle up the selected items in the list as a single string, for export.
     protected String exportString(JComponent c) {
-        JList<?> list = (JList<?>)c;
-        indices = list.getSelectedIndices();
-//        Object[] values = list.getSelectedValues(); // deprecated As of JDK 1.7
-        List<?> l = list.getSelectedValuesList();
-        Object[] values = new Object[l.size()];
-        l.toArray(values); // fill the array
-        
-        StringBuffer buff = new StringBuffer();
-
-        for (int i = 0; i < values.length; i++) {
-            Object val = values[i];
-            buff.append(val == null ? "" : val.toString());
-            if (i != values.length - 1) {
-                buff.append("\n");
-            }
-        }
-        
+    	StringBuffer buff = new StringBuffer();
+    	if(c instanceof JList<?> list) {
+    		setIndizes(list.getSelectedIndices());
+    		List<?> l = list.getSelectedValuesList();
+    		Object[] values = new Object[l.size()];
+    		l.toArray(values); // fill the array
+    		for (int i = 0; i < values.length; i++) {
+                Object val = values[i];
+                buff.append(val == null ? "" : val.toString());
+                if (i != values.length - 1) {
+                    buff.append("\n");
+                }
+    		}
+    	}
         return buff.toString();
     }
 
