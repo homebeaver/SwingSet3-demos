@@ -119,7 +119,7 @@ public class Contributors {
         contributors = new ArrayList<Contributor>();
         // fill the list from the resources
         readDataSource(contributors);
-        LOG.info("contributors size="+contributors.size());
+        LOG.fine("contributors size="+contributors.size());
         // wrap a listModel around , no serialVersionUID: Same-version serialization only
         listModel = new AbstractListModel<Object>() {
             @Override
@@ -135,7 +135,7 @@ public class Contributors {
             }
             
         };
-        LOG.info("listModel size="+listModel.getSize());
+        LOG.fine("listModel size="+listModel.getSize());
         
         // create NodeModel: returns a Contributor for each column
         contributorNodeModel = new NodeModel() {

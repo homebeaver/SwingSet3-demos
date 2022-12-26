@@ -8,13 +8,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Comparator;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -23,8 +29,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXCollapsiblePane;
@@ -170,8 +178,8 @@ public class XListDemo extends AbstractDemo {
         builder.add(areaSeparator, cc.xywh(1, 1, 2, 1));
         builder.add(new JScrollPane(list), cc.xywh(2, 3, 1, 1));
         
-        
         add(listContainer, BorderLayout.CENTER);
+//        add(list, BorderLayout.CENTER);
         
         // configureComponents:
         // <snip> JXList rendering
@@ -196,9 +204,103 @@ public class XListDemo extends AbstractDemo {
 
         // </snip>
         
-        // PENDING JW: add visual clue to current sortorder
+        // PENDING JW: add visual clue to current sort order
         list.setAutoCreateRowSorter(true);
-        list.setModel(Contributors.getContributorListModel());        
+        list.setModel(Contributors.getContributorListModel());
+        
+        list.setDragEnabled(true);
+        list.setDropMode(DropMode.USE_SELECTION);
+        list.setTransferHandler(new ListTransferHandler() {
+// ---------------------
+    	    protected Transferable createTransferable(JComponent c) {
+    	    	String s = exportString(c);
+    	    	LOG.info("exportString="+s);
+    	        return new StringSelection(s);
+    	    }
+    	    protected String exportString(JComponent c) {
+//    	    	LOG.info("JComponent type="+c.getClass());
+    	    	StringBuilder buff = new StringBuilder();
+    	    	if(c instanceof JXList<?> xlist) {
+    	    		setIndizes(list.getSelectedIndices());
+    	    		List<?> l = xlist.getSelectedValuesList();
+    	    		Object[] values = new Object[l.size()];
+    	    		l.toArray(values); // fill the array
+    	    		for (int i = 0; i < values.length; i++) {
+    	                Object val = values[i];
+    	                if(val instanceof Contributor contributor) {
+        	    	    	LOG.info("values["+i+"]="+contributor.getFirstName()
+    	    	    			+" "+contributor.getLastName()
+        	    	    		+" ("+contributor.getMerits()+")");
+        	                buff.append(val == null ? "" : contributor.getFirstName()
+        	                	+" "+contributor.getLastName()
+        	                	+" ("+contributor.getMerits()+")");
+    	                } else {
+        	    	    	LOG.info("values["+i+"]="+val);
+        	                buff.append(val == null ? "" : val.toString());
+    	                }
+    	                if (i != values.length - 1) {
+    	                    buff.append("\n");
+    	                }
+    	    		}
+    	    	}
+    	        return buff.toString();
+    	    }
+    	    public int getSourceActions(JComponent c) {
+//    	    	LOG.info("return 2:MOVE -unused JComponent: "+c);
+//    	        return TransferHandler.MOVE;
+    	    	LOG.config("return 3:COPY_OR_MOVE -unused JComponent "+c);
+    	        return TransferHandler.COPY_OR_MOVE;
+    	    }
+    	    public boolean importData(TransferHandler.TransferSupport info) {
+//    	    	LOG.info("-----------TransferHandler.TransferSupport "+info);
+//    	    	return super.importData(info);
+    	        if (!info.isDrop()) {
+    	            return false;
+    	        }
+
+    	        JList.DropLocation dl = (JList.DropLocation)info.getDropLocation();
+    	        int index = dl.getIndex();
+    	        boolean insert = dl.isInsert();
+
+    	        // Get the string that is being dropped.
+    	        Transferable t = info.getTransferable();
+    	        String data;
+    	        try {
+    	            data = (String)t.getTransferData(DataFlavor.stringFlavor);
+    	        } 
+    	        catch (Exception e) { return false; }
+
+    	        LOG.info("DropLocation:"+dl + " data:"+data);
+    	        Component comp = info.getComponent();
+    	        if(comp instanceof JList<?> list) {
+    	        	ListModel<?> listModel = list.getModel();
+    	        	if(listModel instanceof DefaultComboBoxModel<?>) {
+    	        		DefaultComboBoxModel<Contributor> model = (DefaultComboBoxModel<Contributor>)listModel;
+    	        		// Perform the actual import. Split data at nl to contributor
+    	        		StringTokenizer tokenizer = new StringTokenizer(data, "\n\r\f", false);
+    	        		while(tokenizer.hasMoreElements()) {
+    	        			String contributor = tokenizer.nextToken();
+    	        			if (insert || index<0) {
+    	        				model.addElement(new Contributor(contributor));
+    	        			} else {
+    	        				model.insertElementAt(new Contributor(contributor), index);
+    	        			}
+    	        		}
+    	                return true;
+    	        	}
+    	        }
+    	        return false;
+    	    }
+    	    protected void exportDone(JComponent c, Transferable data, int action) {
+    	    	// 0:NONE
+    	    	// 1:COPY
+    	    	// 2:TransferHandler.MOVE
+    	    	LOG.info("action="+action+", Transferable:"+data);
+    	        super.exportDone(listContainer, data, action);
+    	    }
+// ---------------------
+        });
+        
     }
 
     @Override
@@ -321,6 +423,7 @@ public class XListDemo extends AbstractDemo {
         			+ " getAction="+comparatorCombo.getAction());
         	DisplayInfo<Comparator<?>> di = (DisplayInfo<Comparator<?>>)comparatorCombo.getSelectedItem();
         	list.setComparator(di.getValue());
+        	list.toggleSortOrder();
         });
      
         JLabel comparatorComboLabel = builder.addLabel(
