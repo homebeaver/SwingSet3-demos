@@ -30,19 +30,24 @@
  */ 
 package org.jdesktop.swingx.demos.xlist;
 
+import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.ListModel;
 import javax.swing.TransferHandler;
 
 /*
  * ListTransferHandler.java is used by the DropDemo example.
  * copied from https://docs.oracle.com/javase/tutorial/uiswing/dnd/dropmodedemo.html
+ * 
+ * honor instanceof DefaultListModel and DefaultComboBoxModel as listModel
  */
 @SuppressWarnings("serial")
 public class ListTransferHandler extends TransferHandler {
@@ -86,16 +91,32 @@ public class ListTransferHandler extends TransferHandler {
             data = (String)t.getTransferData(DataFlavor.stringFlavor);
         } 
         catch (Exception e) { return false; }
-                                
-        JList<Object> list = (JList<Object>)info.getComponent();
-        DefaultListModel<Object> listModel = (DefaultListModel<Object>)list.getModel();
-        // Perform the actual import.  
-        if (insert) {
-            listModel.add(index, data);
-        } else {
-            listModel.set(index, data);
+                        
+        Component comp = info.getComponent();
+        if(comp instanceof JList<?> list) {
+        	ListModel<?> listModel = list.getModel();
+        	if(listModel instanceof DefaultListModel<?>) {
+        		DefaultListModel<Object> model = (DefaultListModel<Object>)listModel;
+                // Perform the actual import.  
+                if (insert) {
+                	model.add(index, data);
+                } else {
+                	model.set(index, data);
+                }
+                return true;
+        	}
+        	if(listModel instanceof DefaultComboBoxModel<?>) {
+        		DefaultComboBoxModel<Object> model = (DefaultComboBoxModel<Object>)listModel;
+                // Perform the actual import.  
+                if (insert || index<0) {
+                	model.addElement(data);
+                } else {
+                	model.insertElementAt(data, index);
+                }
+                return true;
+        	}
         }
-        return true;
+        return false;
     }
 
     protected void exportDone(JComponent c, Transferable data, int action) {
@@ -121,25 +142,28 @@ public class ListTransferHandler extends TransferHandler {
         return buff.toString();
     }
 
-    //Take the incoming string and wherever there is a
-    //newline, break it into a separate item in the list.
+    //Take the incoming string and wherever there is a newline, 
+    //break it into a separate item in the list.
     protected void importString(JComponent c, String str) {
-        JList<Object> target = (JList<Object>)c;
-        DefaultListModel<Object> listModel = (DefaultListModel<Object>)target.getModel();
-        int index = target.getSelectedIndex();
+    	int index = -1;
+    	int max = 0;
+    	ListModel<?> listModel = null;
+    	if(c instanceof JList<?> list) {
+    		index = list.getSelectedIndex();
+    		listModel = list.getModel();
+    		max = listModel.getSize();
+    	}
 
         //Prevent the user from dropping data back on itself.
         //For example, if the user is moving items #4,#5,#6 and #7 and
         //attempts to insert the items after item #5, this would
         //be problematic when removing the original items.
         //So this is not allowed.
-        if (indices != null && index >= indices[0] - 1 &&
-              index <= indices[indices.length - 1]) {
+        if (indices != null && index >= indices[0] - 1 && index <= indices[indices.length - 1]) {
             indices = null;
             return;
         }
 
-        int max = listModel.getSize();
         if (index < 0) {
             index = max;
         } else {
@@ -152,7 +176,14 @@ public class ListTransferHandler extends TransferHandler {
         String[] values = str.split("\n");
         addCount = values.length;
         for (int i = 0; i < values.length; i++) {
-            listModel.add(index++, values[i]);
+        	if(listModel instanceof DefaultListModel<?>) {
+        		DefaultListModel<Object> model = (DefaultListModel<Object>)listModel;
+                model.add(index++, values[i]);
+        	}
+        	if(listModel instanceof DefaultComboBoxModel<?>) {
+        		DefaultComboBoxModel<Object> model = (DefaultComboBoxModel<Object>)listModel;
+        		model.insertElementAt(values[i], index++);
+        	}
         }
     }
     
@@ -163,11 +194,8 @@ public class ListTransferHandler extends TransferHandler {
     //intact.
     protected void cleanup(JComponent c, boolean remove) {
         if (remove && indices != null) {
-            JList<Object> source = (JList<Object>)c;
-            DefaultListModel<Object> model  = (DefaultListModel<Object>)source.getModel();
-            //If we are moving items around in the same list, we
-            //need to adjust the indices accordingly, since those
-            //after the insertion point have moved.
+            //If we are moving items around in the same list, we need to adjust the indices accordingly, 
+        	//since those after the insertion point have moved.
             if (addCount > 0) {
                 for (int i = 0; i < indices.length; i++) {
                     if (indices[i] > addIndex) {
@@ -175,8 +203,18 @@ public class ListTransferHandler extends TransferHandler {
                     }
                 }
             }
-            for (int i = indices.length - 1; i >= 0; i--) {
-                model.remove(indices[i]);
+            if(c instanceof JList<?> list) {
+            	ListModel<?> listModel = list.getModel();
+            	if(listModel instanceof DefaultListModel<?> model) {
+                    for (int i = indices.length - 1; i >= 0; i--) {
+                        model.remove(indices[i]);
+                    }
+            	} 
+            	if(listModel instanceof DefaultComboBoxModel<?> model) {
+                    for (int i = indices.length - 1; i >= 0; i--) {
+                        model.removeElement(indices[i]);
+                    }
+            	} 
             }
         }
         indices = null;
