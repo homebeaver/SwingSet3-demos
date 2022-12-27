@@ -127,6 +127,15 @@ public class XListDemo extends AbstractDemo {
     	};
     private JComboBox<String> selectionMode;
 
+    // drop mode
+    private static String[] DROP_MODE = 
+    	{ "USE_SELECTION - item moves to echo the potential drop point (not recommended)" 
+    	, "ON - used to drop on top of existing list items" 
+    	, "INSERT - select the space between existing list items"
+    	, "ON_OR_INSERT - a combination of the ON and INSERT"
+    	};
+    private JComboBox<String> dropMode;
+
     private JButton toggleSortOrder;
     private JButton resetSortOrder;
     private JXComboBox<DisplayInfo<Comparator<?>>> comparatorCombo;
@@ -209,7 +218,7 @@ public class XListDemo extends AbstractDemo {
         list.setModel(Contributors.getContributorListModel());
         
         list.setDragEnabled(true);
-        list.setDropMode(DropMode.USE_SELECTION);
+        list.setDropMode(DropMode.ON);
         list.setTransferHandler(new ListTransferHandler() {
 // ---------------------
     	    protected Transferable createTransferable(JComponent c) {
@@ -319,6 +328,8 @@ public class XListDemo extends AbstractDemo {
                 "c:d:n " +
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
+//                ", t:4dlu:n, c:d:n" +
+                ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
@@ -379,6 +390,40 @@ public class XListDemo extends AbstractDemo {
                 selectionMode, cc.xywh(widgetColumn, currentRow, 1, 1));
         selectionModeLabel.setName("selectionModeLabel");
         selectionModeLabel.setText(getBundleString("selectionModeLabel.text"));
+        currentRow += 2;
+
+        dropMode = new JComboBox<String>(DROP_MODE);
+        dropMode.setName("dropMode");
+
+		// set default drop mode
+        dropMode.setSelectedIndex(1); // DropMode.ON , default is USE_SELECTION
+//    	list.setDropMode(DropMode.ON);
+
+        dropMode.addActionListener(ae -> {
+        	int i = dropMode.getSelectedIndex();
+        	dropMode.setSelectedIndex(i);
+            switch (i) {
+            case 0:
+            	list.setDropMode(DropMode.USE_SELECTION);
+            	break;
+            case 1:
+            	list.setDropMode(DropMode.ON);
+            	break;
+            case 2:
+            	list.setDropMode(DropMode.INSERT);
+            	break;
+            case 3:
+            	list.setDropMode(DropMode.ON_OR_INSERT);
+            	break;
+            default:
+            }
+        });
+     
+        JLabel dropModeLabel = builder.addLabel(
+                "", cl.xywh(labelColumn, currentRow, 1, 1),
+                dropMode, cc.xywh(widgetColumn, currentRow, 1, 1));
+        dropModeLabel.setName("dropModeLabel");
+        dropModeLabel.setText(getBundleString("dropModeLabel.text"));
         currentRow += 2;
 
         JXTitledSeparator areaSeparator = new JXTitledSeparator();
