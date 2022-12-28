@@ -4,7 +4,6 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package org.jdesktop.swingx.demos.tree;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -24,9 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -52,10 +49,10 @@ import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.renderer.WrappingIconPanel;
 import org.jdesktop.swingx.rollover.RolloverProducer;
+import org.jdesktop.swingx.tree.DefaultXTreeCellRenderer;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import swingset.AbstractDemo;
-import swingset.plaf.ColorUnit;
 
 /**
  * JXTree Demo
@@ -236,7 +233,7 @@ public class XTreeDemo extends AbstractDemo {
 				TreePath treePath = source.getPathForRow(newPoint.y);
 				if(treePath.getPathCount()==4) { // Album / Record / Style 
 					Object o = treePath.getLastPathComponent();
-					LOG.info("PathFor newPoint.y: "+source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"+propertyChangeEvent);
+//					LOG.info("PathFor newPoint.y: "+source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"+propertyChangeEvent);
 					// show https://en.wikipedia.org/wiki/File:My_Name_Is_Albert_Ayler.jpg
 					DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)o;	
 					Album album = (Album)dmtn.getUserObject();
@@ -248,26 +245,25 @@ public class XTreeDemo extends AbstractDemo {
         tree.setOpaque(true);
         
         LOG.info("Tree.CellRenderer for music tree:"+tree.getCellRenderer());
-        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+        DefaultTreeCellRenderer renderer = new DefaultXTreeCellRenderer();
         /*
          * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
          */
         renderer.setLeafIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
-
         tree.setCellRenderer(renderer);
         
-    	String currentClassName = UIManager.getLookAndFeel().getClass().getName();
-    	if(currentClassName.contains("Nimbus")) {
-    		renderer.setBackgroundNonSelectionColor(ColorUnit.NIMBUS_BACKGROUND);
-    		tree.setBackground(ColorUnit.NIMBUS_BACKGROUND);
-    	} else {
-    		LOG.config("current Laf is "+currentClassName);
-    		Color primary3 = MetalLookAndFeel.getCurrentTheme().getPrimaryControl();
-    		Color secondary3 = MetalLookAndFeel.getCurrentTheme().getControl();
-    		LOG.config("set BG to secondary3 "+secondary3);
-    		renderer.setBackgroundNonSelectionColor(secondary3);
-    		tree.setBackground(secondary3);
-    	}
+//    	String currentClassName = UIManager.getLookAndFeel().getClass().getName();
+//    	if(currentClassName.contains("Nimbus")) {
+////    		renderer.setBackgroundNonSelectionColor(ColorUnit.NIMBUS_BACKGROUND);
+////    		tree.setBackground(ColorUnit.NIMBUS_BACKGROUND);
+//    	} else {
+//    		LOG.config("current Laf is "+currentClassName);
+////    		Color primary3 = MetalLookAndFeel.getCurrentTheme().getPrimaryControl();
+////    		Color secondary3 = MetalLookAndFeel.getCurrentTheme().getControl();
+////    		LOG.config("set BG to secondary3 "+secondary3);
+////    		renderer.setBackgroundNonSelectionColor(secondary3);
+////    		tree.setBackground(secondary3);
+//    	}
 
         tree.setEditable(true);
         return new JScrollPane(tree);
