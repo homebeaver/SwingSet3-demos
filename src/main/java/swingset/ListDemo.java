@@ -61,6 +61,7 @@ import org.jdesktop.swingx.demos.svg.CircleFlagPT;
 import org.jdesktop.swingx.demos.svg.CircleFlagSE;
 import org.jdesktop.swingx.demos.svg.CircleFlagUA;
 import org.jdesktop.swingx.demos.svg.CircleFlagZA;
+import org.jdesktop.swingx.demos.xlist.ListDemoConstants;
 import org.jdesktop.swingx.icon.SizingConstants;
 
 /**
@@ -73,7 +74,7 @@ import org.jdesktop.swingx.icon.SizingConstants;
  * @author Jeff Dinkins
  * @author EUG https://github.com/homebeaver (cellsLayout, selectionMode)
  */
-public class ListDemo extends AbstractDemo {
+public class ListDemo extends AbstractDemo implements ListDemoConstants {
 
 	/**
 	 * this is used in DemoAction to build the demo toolbar
@@ -104,28 +105,12 @@ public class ListDemo extends AbstractDemo {
     JList<Object> list;
 
     // layout of cells , listLayoutOrientation
-    private static String[] CELLS_LAYOUT = 
-    	{ "VERTICAL - a single column" 
-    	, "VERTICAL_WRAP - a \"newspaper style\" flowing vertically then horizontally" 
-    	, "HORIZONTAL_WRAP - newspaper style flowing horizontally then vertically" // initial
-    	};
     private JComboBox<String> cellsLayout;
 
     // selection mode
-    private static String[] SELECTION_MODE = 
-    	{ "SINGLE_SELECTION - select one list index at a time" 
-    	, "SINGLE_INTERVAL_SELECTION - select one contiguous range" 
-    	, "MULTIPLE_INTERVAL_SELECTION - select one or more contiguous ranges"
-    	};
     private JComboBox<String> selectionMode;
     
     // drop mode
-    private static String[] DROP_MODE = 
-    	{ "USE_SELECTION - item moves to echo the potential drop point (not recommended)" 
-    	, "ON - used to drop on top of existing list items" 
-    	, "INSERT - select the space between existing list items"
-    	, "ON_OR_INSERT - a combination of the ON and INSERT"
-    	};
     private JComboBox<String> dropMode;
     
     JPanel prefixList;
@@ -176,7 +161,7 @@ public class ListDemo extends AbstractDemo {
 
         // Create the list
         list = new JYList<>();
-        list.setLayoutOrientation(JList.HORIZONTAL_WRAP); // default is VERTICAL
+        list.setLayoutOrientation(HORIZONTAL_WRAP); // default is VERTICAL
         list.setCellRenderer(new CompanyLogoListCellRenderer());
         listModel = new GeneratedListModel<>(this);
         list.setModel(listModel);
@@ -185,7 +170,7 @@ public class ListDemo extends AbstractDemo {
         // In HORIZONTAL_WRAP and VERTICAL_WRAP orientations affects how cells are wrapped.
         list.setVisibleRowCount(10);
         
-        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
+        list.setSelectionMode(SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
 
         // Add list to a scrollpane
         JScrollPane scrollPane = new JScrollPane(list);
@@ -296,8 +281,8 @@ but does so without affecting the actual selection in the list.
         // layout of cells
         px.add(Box.createRigidArea(HGAP10));
         px.add(new JLabel(getBundleString("cellsLayout")));
-        cellsLayout = new JComboBox<String>(CELLS_LAYOUT);
-        cellsLayout.setSelectedIndex(2);
+        cellsLayout = new JComboBox<String>(LIST_LAYOUT_ORIENTATION);
+        cellsLayout.setSelectedIndex(HORIZONTAL_WRAP);
         px.add(cellsLayout);
         px.add(Box.createRigidArea(HGAP10));
         cellsLayout.addActionListener(actionEvent -> {
@@ -312,7 +297,7 @@ but does so without affecting the actual selection in the list.
         px.add(Box.createRigidArea(HGAP10));
         px.add(new JLabel(getBundleString("selection mode")));
         selectionMode = new JComboBox<String>(SELECTION_MODE);
-        selectionMode.setSelectedIndex(ListSelectionModel.SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
+        selectionMode.setSelectedIndex(SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
         px.add(selectionMode);
         px.add(Box.createRigidArea(HGAP10));
         selectionMode.addActionListener(actionEvent -> {
@@ -327,7 +312,7 @@ but does so without affecting the actual selection in the list.
         px.add(Box.createRigidArea(HGAP10));
         px.add(new JLabel(getBundleString("drop mode")));
         dropMode = new JComboBox<String>(DROP_MODE);
-        dropMode.setSelectedIndex(1); // DropMode.ON
+        dropMode.setSelectedIndex(DropMode.ON.ordinal()); // DropMode.ON
         px.add(dropMode);
         px.add(Box.createRigidArea(HGAP10));
         dropMode.addActionListener(actionEvent -> {

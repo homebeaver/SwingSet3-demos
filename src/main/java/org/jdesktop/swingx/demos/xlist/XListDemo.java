@@ -80,7 +80,7 @@ import swingset.AbstractDemo;
 //        "org/jdesktop/swingx/demos/xlist/resources/XListDemo.properties"
 //    }
 //)
-public class XListDemo extends AbstractDemo {
+public class XListDemo extends AbstractDemo implements ListDemoConstants {
     
 	private static final long serialVersionUID = -1398533665658062231L;
     private static final Logger LOG = Logger.getLogger(XListDemo.class.getName());
@@ -112,28 +112,12 @@ public class XListDemo extends AbstractDemo {
     
     // Controller:
     // layout of cells , listLayoutOrientation
-    private static String[] CELLS_LAYOUT = 
-    	{ "VERTICAL - a single column" 
-    	, "VERTICAL_WRAP - flowing vertically then horizontally" 
-    	, "HORIZONTAL_WRAP - flowing horizontally then vertically"
-    	};
     private JComboBox<String> cellsLayout;
     
     // selection mode
-    private static String[] SELECTION_MODE = 
-    	{ "SINGLE_SELECTION - one list index at a time" 
-    	, "SINGLE_INTERVAL_SELECTION - one contiguous range" 
-    	, "MULTIPLE_INTERVAL_SELECTION - one or more contiguous ranges"
-    	};
     private JComboBox<String> selectionMode;
 
     // drop mode
-    private static String[] DROP_MODE = 
-    	{ "USE_SELECTION - item moves to echo the potential drop point (not recommended)" 
-    	, "ON - used to drop on top of existing list items" 
-    	, "INSERT - select the space between existing list items"
-    	, "ON_OR_INSERT - a combination of the ON and INSERT"
-    	};
     private JComboBox<String> dropMode;
 
     private JButton toggleSortOrder;
@@ -353,12 +337,12 @@ public class XListDemo extends AbstractDemo {
         builder.add(jListSeparator, cc.xywh(1, currentRow, 4, 1));
         currentRow += 2;
 
-        cellsLayout = new JComboBox<String>(CELLS_LAYOUT);
+        cellsLayout = new JComboBox<String>(LIST_LAYOUT_ORIENTATION);
         cellsLayout.setName("cellsLayout");
 
 		// set default cells Layout
-        cellsLayout.setSelectedIndex(JList.VERTICAL_WRAP);
-    	list.setLayoutOrientation(JList.VERTICAL_WRAP);
+        cellsLayout.setSelectedIndex(VERTICAL_WRAP);
+    	list.setLayoutOrientation(VERTICAL_WRAP);
 
     	cellsLayout.addActionListener(ae -> {
         	cellsLayout.setSelectedIndex(cellsLayout.getSelectedIndex());
@@ -376,8 +360,8 @@ public class XListDemo extends AbstractDemo {
         selectionMode.setName("selectionMode");
 
 		// set default selection mode
-        selectionMode.setSelectedIndex(ListSelectionModel.SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
-    	list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        selectionMode.setSelectedIndex(SINGLE_INTERVAL_SELECTION); // default is SINGLE_SELECTION
+    	list.setSelectionMode(SINGLE_INTERVAL_SELECTION);
 
     	selectionMode.addActionListener(ae -> {
     		selectionMode.setSelectedIndex(selectionMode.getSelectedIndex());
@@ -395,7 +379,7 @@ public class XListDemo extends AbstractDemo {
         dropMode.setName("dropMode");
 
 		// set default drop mode
-        dropMode.setSelectedIndex(1); // DropMode.ON , default is USE_SELECTION
+        dropMode.setSelectedIndex(DropMode.ON.ordinal()); // DropMode.ON , default is USE_SELECTION
 //    	list.setDropMode(DropMode.ON);
 
         dropMode.addActionListener(ae -> {
