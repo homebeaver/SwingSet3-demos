@@ -28,7 +28,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -48,6 +48,20 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JYList;
+import org.jdesktop.swingx.demos.svg.CircleFlagCA;
+import org.jdesktop.swingx.demos.svg.CircleFlagCH;
+import org.jdesktop.swingx.demos.svg.CircleFlagCZ;
+import org.jdesktop.swingx.demos.svg.CircleFlagDE;
+import org.jdesktop.swingx.demos.svg.CircleFlagES;
+import org.jdesktop.swingx.demos.svg.CircleFlagFR;
+import org.jdesktop.swingx.demos.svg.CircleFlagIT;
+import org.jdesktop.swingx.demos.svg.CircleFlagNL;
+import org.jdesktop.swingx.demos.svg.CircleFlagPL;
+import org.jdesktop.swingx.demos.svg.CircleFlagPT;
+import org.jdesktop.swingx.demos.svg.CircleFlagSE;
+import org.jdesktop.swingx.demos.svg.CircleFlagUA;
+import org.jdesktop.swingx.demos.svg.CircleFlagZA;
+import org.jdesktop.swingx.icon.SizingConstants;
 
 /**
  * List Demo. This demo shows that it is not always necessary to have an array of objects
@@ -89,7 +103,7 @@ public class ListDemo extends AbstractDemo {
 
     JList<Object> list;
 
-    // layout of cells
+    // layout of cells , listLayoutOrientation
     private static String[] CELLS_LAYOUT = 
     	{ "VERTICAL - a single column" 
     	, "VERTICAL_WRAP - a \"newspaper style\" flowing vertically then horizontally" 
@@ -555,15 +569,21 @@ but does so without affecting the actual selection in the list.
         }
     }
 
-    ImageIcon images[] = new ImageIcon[7];
+    Icon images[] = new Icon[13];
     void loadImages() {
-            images[0] = StaticUtilities.createImageIcon("list/red.gif");
-            images[1] = StaticUtilities.createImageIcon("list/blue.gif");
-            images[2] = StaticUtilities.createImageIcon("list/yellow.gif");
-            images[3] = StaticUtilities.createImageIcon("list/green.gif");
-            images[4] = StaticUtilities.createImageIcon("list/gray.gif");
-            images[5] = StaticUtilities.createImageIcon("list/cyan.gif");
-            images[6] = StaticUtilities.createImageIcon("list/magenta.gif");
+    	images[0] = CircleFlagCH.of(SizingConstants.S, SizingConstants.S);
+    	images[1] = CircleFlagCZ.of(SizingConstants.S, SizingConstants.S);
+    	images[2] = CircleFlagDE.of(SizingConstants.S, SizingConstants.S);
+    	images[3] = CircleFlagES.of(SizingConstants.S, SizingConstants.S);
+    	images[4] = CircleFlagFR.of(SizingConstants.S, SizingConstants.S);
+    	images[5] = CircleFlagIT.of(SizingConstants.S, SizingConstants.S);
+    	images[6] = CircleFlagNL.of(SizingConstants.S, SizingConstants.S);
+    	images[7] = CircleFlagPL.of(SizingConstants.S, SizingConstants.S);
+    	images[8] = CircleFlagPT.of(SizingConstants.S, SizingConstants.S);
+    	images[9] = CircleFlagSE.of(SizingConstants.S, SizingConstants.S);
+    	images[10] = CircleFlagUA.of(SizingConstants.S, SizingConstants.S);
+    	images[11] = CircleFlagCA.of(SizingConstants.S, SizingConstants.S);
+    	images[12] = CircleFlagZA.of(SizingConstants.S, SizingConstants.S);
     }
 
 	@SuppressWarnings("serial")
@@ -571,7 +591,7 @@ but does so without affecting the actual selection in the list.
 		public Component getListCellRendererComponent(JList<?> list, Object value
 				, int index, boolean isSelected, boolean cellHasFocus) {
 			Component retValue = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-			setIcon(images[index % 7]);
+			setIcon(images[index % 13]);
 			
 			return retValue;
 		}

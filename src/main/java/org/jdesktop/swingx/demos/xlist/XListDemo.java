@@ -111,7 +111,7 @@ public class XListDemo extends AbstractDemo {
     private JXList<Contributor> list;
     
     // Controller:
-    // layout of cells
+    // layout of cells , listLayoutOrientation
     private static String[] CELLS_LAYOUT = 
     	{ "VERTICAL - a single column" 
     	, "VERTICAL_WRAP - flowing vertically then horizontally" 
@@ -328,7 +328,6 @@ public class XListDemo extends AbstractDemo {
                 "c:d:n " +
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
-//                ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
                 ", t:4dlu:n, c:d:n" +
