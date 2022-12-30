@@ -67,6 +67,7 @@ import org.jdesktop.swingx.demos.svg.CircleFlagUS;
 import org.jdesktop.swingx.demos.svg.CircleFlagZA;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
@@ -243,7 +244,22 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         
         // configureComponents:
         // <snip> JXList rendering
-        list.setCellRenderer(new ContributorCellRenderer());
+        // custom String representation: concat various element fields
+        StringValue sv = new StringValue() {
+
+            @Override
+            public String getString(Object value) {
+                if (value instanceof Contributor) {
+                    Contributor c = (Contributor) value;
+                    return c.getFirstName() + " " + c.getLastName() + " (" + c.getMerits() + ")";
+                }
+                return StringValues.TO_STRING.getString(value);
+            }
+            
+        };
+        list.setCellRenderer(new DefaultListRenderer<Contributor>(sv));
+        // BUG: when using ContributorCellRenderer merit Highlighter does not work !!! TODO
+//        list.setCellRenderer(new ContributorCellRenderer());
         
         // Set the preferred row count. This affects the preferredSize of the JList when it's in a scrollpane.
         // In HORIZONTAL_WRAP and VERTICAL_WRAP orientations affects how cells are wrapped.
