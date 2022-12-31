@@ -144,8 +144,6 @@ public class ListDemo extends AbstractDemo implements ListDemoConstants {
             super.add(area, BorderLayout.NORTH);
         }
 
-        loadImages();
-
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
         centerPanel.add(Box.createRigidArea(HGAP10));
@@ -553,31 +551,31 @@ but does so without affecting the actual selection in the list.
         }
     }
 
-    Icon images[] = new Icon[13];
-    void loadImages() {
-    	images[0] = CircleFlagCH.of(SizingConstants.S, SizingConstants.S);
-    	images[1] = CircleFlagCZ.of(SizingConstants.S, SizingConstants.S);
-    	images[2] = CircleFlagDE.of(SizingConstants.S, SizingConstants.S);
-    	images[3] = CircleFlagES.of(SizingConstants.S, SizingConstants.S);
-    	images[4] = CircleFlagFR.of(SizingConstants.S, SizingConstants.S);
-    	images[5] = CircleFlagIT.of(SizingConstants.S, SizingConstants.S);
-    	images[6] = CircleFlagNL.of(SizingConstants.S, SizingConstants.S);
-    	images[7] = CircleFlagPL.of(SizingConstants.S, SizingConstants.S);
-    	images[8] = CircleFlagPT.of(SizingConstants.S, SizingConstants.S);
-    	images[9] = CircleFlagSE.of(SizingConstants.S, SizingConstants.S);
-    	images[10] = CircleFlagUA.of(SizingConstants.S, SizingConstants.S);
-    	images[11] = CircleFlagCA.of(SizingConstants.S, SizingConstants.S);
-    	images[12] = CircleFlagZA.of(SizingConstants.S, SizingConstants.S);
-    }
-
 	@SuppressWarnings("serial")
 	class CompanyLogoListCellRenderer extends DefaultListCellRenderer {
+        static Icon flagIcons[] = new Icon[] {
+        		CircleFlagCH.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagCZ.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagDE.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagES.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagFR.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagIT.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagNL.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagPL.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagPT.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagSE.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagUA.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagCA.of(SizingConstants.S, SizingConstants.S),
+        		CircleFlagZA.of(SizingConstants.S, SizingConstants.S),
+        };
+
 		public Component getListCellRendererComponent(JList<?> list, Object value
 				, int index, boolean isSelected, boolean cellHasFocus) {
-			Component retValue = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-			setIcon(images[index % 13]);
 			
-			return retValue;
+			Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			setIcon(flagIcons[index % flagIcons.length]);
+			
+			return comp;
 		}
 	}
 	
