@@ -14,12 +14,14 @@ Use it to try out different components and features.
 ## TO RUN the demo
 
 - download the [latest jar](https://github.com/homebeaver/SwingSet3-demos/releases/)
-- run with new java, i.e. openjdk version "17" 2021-09-14:
+- run with new java, i.e. with openjdk version "17" 2021-09-14:
 
 ```
->java -jar swingset3-demos-1.6.8-jar-with-dependencies.jar
+>java -jar swingset3-demos-1.7.4-jar-with-dependencies.jar
 
 ```
+
+![SwingSet-demos-v1.7.4-JXMonthView](src/main/resources/org/jdesktop/swingxset/resources/images/SwingSet-demos-v1.7.4-JXMonthView.PNG)
 
 The jar was
 - Created-By: Apache Maven 3.8.1
