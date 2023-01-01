@@ -21,7 +21,7 @@
   
   <name>swingset3 demos</name>
   <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 + swingset3</description>
-  <version>1.7.4</version>
+  <version>1.7.5</version>
   
   <inceptionYear>2005</inceptionYear>
 
@@ -247,42 +247,42 @@
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-core</artifactId>
-			<version>1.7.4</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-action</artifactId>
-			<version>1.7.4</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-autocomplete</artifactId>
-			<version>1.7.4</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-plaf</artifactId>
-			<version>1.7.4</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-painters</artifactId>
-			<version>1.7.4</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-graphics</artifactId>
-			<version>1.7.4</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-common</artifactId>
-			<version>1.7.4</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-testsupport</artifactId>
-			<version>1.7.4</version>
+			<version>1.7.5</version>
 			<scope>provided</scope>
 		</dependency>
 
