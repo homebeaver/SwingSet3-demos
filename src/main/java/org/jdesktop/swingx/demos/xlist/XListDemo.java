@@ -153,9 +153,16 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
      */
     private JXComboBox<DisplayInfo<Highlighter>> highlighterCombo;
 
-    class ContributorCellRenderer extends DefaultListCellRenderer implements StringValue, IconValue {
+    /**
+     * Do not use javax.swing.DefaultListCellRenderer and do not sublclass it 
+     * if you need a PainterHighlighter like Merit Range Highlighter
+     * 
+     * @see https://github.com/homebeaver/SwingSet/issues/42
+     */
+    @SuppressWarnings("serial")
+	class ContributorCellRenderer extends DefaultListCellRenderer implements StringValue, IconValue {
 
-        Icon images[] = new Icon[] {
+        static Icon flagIcons[] = new Icon[] {
         		CircleFlagCA.of(SizingConstants.S, SizingConstants.S),
         		CircleFlagCH.of(SizingConstants.S, SizingConstants.S),
         		CircleFlagCZ.of(SizingConstants.S, SizingConstants.S),
@@ -188,7 +195,7 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
 		public Icon getIcon(Object value, int index) {
             if (value instanceof Contributor) {
                 Contributor c = (Contributor) value;
-                return images[(c.getMerits()+index) % images.length];
+                return flagIcons[(c.getMerits()+index) % flagIcons.length];
             }
 			return null;
 		}
@@ -244,6 +251,18 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         
         // configureComponents:
         // <snip> JXList rendering
+        IconValue iv = new IconValue() {
+
+            @Override
+            public Icon getIcon(Object value) {
+                if (value instanceof Contributor) {
+                    Contributor c = (Contributor) value;
+                    return ContributorCellRenderer.flagIcons[(c.getMerits()) % ContributorCellRenderer.flagIcons.length];
+                }
+                return IconValue.NULL_ICON;
+            }
+            
+        };
         // custom String representation: concat various element fields
         StringValue sv = new StringValue() {
 
@@ -257,34 +276,8 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
             }
             
         };
-        list.setCellRenderer(new DefaultListRenderer<Contributor>(sv));
-/* BUG: when using ContributorCellRenderer merit Highlighter does not work !!! TODO
+        list.setCellRenderer(new DefaultListRenderer<Contributor>(sv, iv));
 
-Unterschied DefaultListRenderer<Contributor> vs ContributorCellRenderer :
-
-public abstract class AbstractRenderer implements RolloverRenderer, StringValue, Serializable, UIDependent
-
-public class org.jdesktop.swingx.renderer.DefaultListRenderer<E> 
-	extends org.jdesktop.swingx.renderer.AbstractRenderer 
-	implements ListCellRenderer<E> mit Methode Component getListCellRendererComponent
-	
--------------------
-
-inner class ContributorCellRenderer extends DefaultListCellRenderer ...
-public class javax.swing.DefaultListCellRenderer 
-	extends JLabel
-    implements ListCellRenderer<Object>, Serializable
-	
-dh.:
-- ContributorCellRenderer kann RolloverRenderer nicht!!!
-public interface RolloverRenderer {
-    boolean isEnabled();
-    void doClick();
-
-	
- */
-//        list.setCellRenderer(new ContributorCellRenderer(sv));
-        
         // Set the preferred row count. This affects the preferredSize of the JList when it's in a scrollpane.
         // In HORIZONTAL_WRAP and VERTICAL_WRAP orientations affects how cells are wrapped.
         list.setVisibleRowCount(20);
