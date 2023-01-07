@@ -258,8 +258,32 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
             
         };
         list.setCellRenderer(new DefaultListRenderer<Contributor>(sv));
-        // BUG: when using ContributorCellRenderer merit Highlighter does not work !!! TODO
-//        list.setCellRenderer(new ContributorCellRenderer());
+/* BUG: when using ContributorCellRenderer merit Highlighter does not work !!! TODO
+
+Unterschied DefaultListRenderer<Contributor> vs ContributorCellRenderer :
+
+public abstract class AbstractRenderer implements RolloverRenderer, StringValue, Serializable, UIDependent
+
+public class org.jdesktop.swingx.renderer.DefaultListRenderer<E> 
+	extends org.jdesktop.swingx.renderer.AbstractRenderer 
+	implements ListCellRenderer<E> mit Methode Component getListCellRendererComponent
+	
+-------------------
+
+inner class ContributorCellRenderer extends DefaultListCellRenderer ...
+public class javax.swing.DefaultListCellRenderer 
+	extends JLabel
+    implements ListCellRenderer<Object>, Serializable
+	
+dh.:
+- ContributorCellRenderer kann RolloverRenderer nicht!!!
+public interface RolloverRenderer {
+    boolean isEnabled();
+    void doClick();
+
+	
+ */
+//        list.setCellRenderer(new ContributorCellRenderer(sv));
         
         // Set the preferred row count. This affects the preferredSize of the JList when it's in a scrollpane.
         // In HORIZONTAL_WRAP and VERTICAL_WRAP orientations affects how cells are wrapped.
@@ -648,24 +672,18 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
 
     private Highlighter createExtendedRolloverDecoration() {
         Color color = PaintUtils.setAlpha(Color.YELLOW, 100);
+        // setHighlightPredicate to NEVER bevor setting MeritRangeHighlightPredicate
         final PainterHighlighter hl = new PainterHighlighter(HighlightPredicate.NEVER, new MattePainter(color));
         // <snip> JXList rollover support
         // listen to changes of cell-rollover property and set a Highlighters custom predicate accordingly
-        PropertyChangeListener l = new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                Point location = (Point) evt.getNewValue();
-                int row = -1;
-                if (location != null) {
-                    row = location.y;
-                }
-                hl.setHighlightPredicate(new MeritRangeHighlightPredicate(
-                        row < 0 ? null : list.getElementAt(row))); 
+        list.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, pce -> {
+        	Point location = (Point)pce.getNewValue();
+            int row = -1;
+            if (location != null) {
+                row = location.y;
             }
-            
-        };
-        list.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, l);
+            hl.setHighlightPredicate(new MeritRangeHighlightPredicate(row < 0 ? null : list.getElementAt(row))); 
+        });
         // </snip>
         return hl;
     }
@@ -682,8 +700,7 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         // <snip> JXList rollover support
         // custom HighlightPredicate which compare the current value
         // against a fixed value and returns true if "near" (+-5)
-        public boolean isHighlighted(Component renderer,
-                ComponentAdapter adapter) {
+        public boolean isHighlighted(Component renderer, ComponentAdapter adapter) {
             if (compare == null) return false;
             if (!(adapter.getValue() instanceof Contributor)) return false;
             Contributor contributor = (Contributor) adapter.getValue();
