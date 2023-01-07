@@ -1,10 +1,44 @@
 package org.jdesktop.swingx.demos.xlist;
 
+import javax.swing.Icon;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
+import org.jdesktop.swingx.demos.svg.CircleFlagCA;
+import org.jdesktop.swingx.demos.svg.CircleFlagCH;
+import org.jdesktop.swingx.demos.svg.CircleFlagCZ;
+import org.jdesktop.swingx.demos.svg.CircleFlagDE;
+import org.jdesktop.swingx.demos.svg.CircleFlagES;
+import org.jdesktop.swingx.demos.svg.CircleFlagFR;
+import org.jdesktop.swingx.demos.svg.CircleFlagIT;
+import org.jdesktop.swingx.demos.svg.CircleFlagNL;
+import org.jdesktop.swingx.demos.svg.CircleFlagPL;
+import org.jdesktop.swingx.demos.svg.CircleFlagPT;
+import org.jdesktop.swingx.demos.svg.CircleFlagSE;
+import org.jdesktop.swingx.demos.svg.CircleFlagUA;
+import org.jdesktop.swingx.demos.svg.CircleFlagUS;
+import org.jdesktop.swingx.demos.svg.CircleFlagZA;
+import org.jdesktop.swingx.icon.SizingConstants;
+
 public interface ListDemoConstants {
 
+    public static Icon flagIcons[] = new Icon[] {
+    		CircleFlagCA.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagCH.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagCZ.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagDE.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagES.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagFR.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagIT.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagNL.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagPL.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagPT.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagSE.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagUA.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagUS.of(SizingConstants.S, SizingConstants.S),
+    		CircleFlagZA.of(SizingConstants.S, SizingConstants.S),
+    };
+    
     public static final int VERTICAL_WRAP = JList.VERTICAL_WRAP;
     public static final int HORIZONTAL_WRAP = JList.HORIZONTAL_WRAP;
     public static String[] LIST_LAYOUT_ORIENTATION = 

@@ -11,8 +11,6 @@ import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -20,7 +18,6 @@ import java.util.logging.Logger;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.DropMode;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -51,21 +48,6 @@ import org.jdesktop.swingx.decorator.Highlighter;
 import org.jdesktop.swingx.decorator.PainterHighlighter;
 import org.jdesktop.swingx.demos.search.Contributor;
 import org.jdesktop.swingx.demos.search.Contributors;
-import org.jdesktop.swingx.demos.svg.CircleFlagCA;
-import org.jdesktop.swingx.demos.svg.CircleFlagCH;
-import org.jdesktop.swingx.demos.svg.CircleFlagCZ;
-import org.jdesktop.swingx.demos.svg.CircleFlagDE;
-import org.jdesktop.swingx.demos.svg.CircleFlagES;
-import org.jdesktop.swingx.demos.svg.CircleFlagFR;
-import org.jdesktop.swingx.demos.svg.CircleFlagIT;
-import org.jdesktop.swingx.demos.svg.CircleFlagNL;
-import org.jdesktop.swingx.demos.svg.CircleFlagPL;
-import org.jdesktop.swingx.demos.svg.CircleFlagPT;
-import org.jdesktop.swingx.demos.svg.CircleFlagSE;
-import org.jdesktop.swingx.demos.svg.CircleFlagUA;
-import org.jdesktop.swingx.demos.svg.CircleFlagUS;
-import org.jdesktop.swingx.demos.svg.CircleFlagZA;
-import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
@@ -154,64 +136,6 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
     private JXComboBox<DisplayInfo<Highlighter>> highlighterCombo;
 
     /**
-     * Do not use javax.swing.DefaultListCellRenderer and do not sublclass it 
-     * if you need a PainterHighlighter like Merit Range Highlighter
-     * 
-     * @see https://github.com/homebeaver/SwingSet/issues/42
-     */
-    @SuppressWarnings("serial")
-	class ContributorCellRenderer extends DefaultListCellRenderer implements StringValue, IconValue {
-
-        static Icon flagIcons[] = new Icon[] {
-        		CircleFlagCA.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagCH.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagCZ.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagDE.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagES.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagFR.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagIT.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagNL.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagPL.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagPT.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagSE.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagUA.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagUS.of(SizingConstants.S, SizingConstants.S),
-        		CircleFlagZA.of(SizingConstants.S, SizingConstants.S),
-        };
-
-		@Override
-		public String getString(Object value) {
-            if (value instanceof Contributor) {
-                Contributor c = (Contributor) value;
-                return c.getFirstName() + " " + c.getLastName() + " (" + c.getMerits() + ")";
-            }
-            return StringValues.TO_STRING.getString(value);
-		}
-
-		@Override
-		public Icon getIcon(Object value) {
-			return getIcon(value, 0);
-		}
-		public Icon getIcon(Object value, int index) {
-            if (value instanceof Contributor) {
-                Contributor c = (Contributor) value;
-                return flagIcons[(c.getMerits()+index) % flagIcons.length];
-            }
-			return null;
-		}
-  
-		public Component getListCellRendererComponent(JList<?> list, Object value
-				, int index, boolean isSelected, boolean cellHasFocus) {
-			String sv = getString(value);
-			Component comp = super.getListCellRendererComponent(list, sv, index, isSelected, cellHasFocus);
-			// decorate cell with a flag
-			setIcon(getIcon(value));
-			
-			return comp;
-		}
-
-    }
-    /**
      * XListDemo Constructor
      * 
      * @param frame controller Frame
@@ -251,20 +175,22 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         
         // configureComponents:
         // <snip> JXList rendering
-        IconValue iv = new IconValue() {
+        @SuppressWarnings("serial")
+		IconValue iv = new IconValue() {
 
             @Override
             public Icon getIcon(Object value) {
                 if (value instanceof Contributor) {
                     Contributor c = (Contributor) value;
-                    return ContributorCellRenderer.flagIcons[(c.getMerits()) % ContributorCellRenderer.flagIcons.length];
+                    return flagIcons[(c.getMerits()) % flagIcons.length];
                 }
                 return IconValue.NULL_ICON;
             }
             
         };
         // custom String representation: concat various element fields
-        StringValue sv = new StringValue() {
+        @SuppressWarnings("serial")
+		StringValue sv = new StringValue() {
 
             @Override
             public String getString(Object value) {
