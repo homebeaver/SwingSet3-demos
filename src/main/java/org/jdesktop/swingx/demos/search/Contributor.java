@@ -118,7 +118,7 @@ public class Contributor implements Comparable<Contributor> {
     }
 
 
-    @Override
+    @Override // implements Comparable<Contributor> interface
     public int compareTo(Contributor o) {
         if (!(o instanceof Contributor)) return -1;
         return lastName.compareTo(((Contributor) o).lastName);
