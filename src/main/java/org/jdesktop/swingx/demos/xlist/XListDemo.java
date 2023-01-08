@@ -29,6 +29,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.border.BevelBorder;
@@ -428,6 +429,34 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         builder.add(areaSeparator, cc.xywh(1, currentRow, 4, 1));
         currentRow += 2;
 
+        comparatorCombo = new JXComboBox<DisplayInfo<Comparator<?>>>();
+        comparatorCombo.setName("comparatorCombo");
+        comparatorCombo.setModel(createComparators());
+
+		// set default Comparator, by display string:
+        DisplayInfo<Comparator<?>> defaultComp = (DisplayInfo<Comparator<?>> )comparatorCombo.getItemAt(0);
+        list.setComparator(defaultComp.getValue());
+
+        comparatorCombo.addActionListener(ae -> {
+        	int index = comparatorCombo.getSelectedIndex();
+        	DisplayInfo<Comparator<?>> di = (DisplayInfo<Comparator<?>>)comparatorCombo.getSelectedItem();
+        	LOG.info("index="+index
+        			+ " ActionCommand="+comparatorCombo.getActionCommand() // comboBoxChanged
+        			+ " SelectedItem="+comparatorCombo.getSelectedItem()
+        			+ " DisplayInfo.Value:"+di.getValue()
+        			+ " getAction="+comparatorCombo.getAction());
+        	list.setComparator(di.getValue());
+        	list.toggleSortOrder();
+        	list.setSortOrder(SortOrder.ASCENDING);
+        });
+     
+        JLabel comparatorComboLabel = builder.addLabel(
+                "", cl.xywh(labelColumn, currentRow, 1, 1),
+                comparatorCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
+        comparatorComboLabel.setName("comparatorComboLabel");
+        comparatorComboLabel.setText(getBundleString("comparatorComboLabel.text"));
+        currentRow += 2;
+        
         toggleSortOrder = new JButton();
         toggleSortOrder.setName("toggleSortOrder");
         toggleSortOrder.setText(getBundleString("toggleSortOrder.Action.text")); 
@@ -449,32 +478,6 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         builder.add(resetSortOrder, cc.xywh(labelColumn, currentRow, 3, 1));
         currentRow += 2;
         
-        comparatorCombo = new JXComboBox<DisplayInfo<Comparator<?>>>();
-        comparatorCombo.setName("comparatorCombo");
-        comparatorCombo.setModel(createComparators());
-
-		// set default Comparator, by display string:
-        DisplayInfo<Comparator<?>> defaultComp = (DisplayInfo<Comparator<?>> )comparatorCombo.getItemAt(0);
-    	list.setComparator(defaultComp.getValue());
-
-        comparatorCombo.addActionListener(ae -> {
-        	LOG.info("actionEvent:"+ae 
-        			+ " ActionCommand="+comparatorCombo.getActionCommand() // comboBoxChanged
-        			+ " SelectedItem="+comparatorCombo.getSelectedItem()
-        			+ " getAction="+comparatorCombo.getAction());
-        	DisplayInfo<Comparator<?>> di = (DisplayInfo<Comparator<?>>)comparatorCombo.getSelectedItem();
-        	list.setComparator(di.getValue());
-        	list.toggleSortOrder();
-        });
-     
-        JLabel comparatorComboLabel = builder.addLabel(
-                "", cl.xywh(labelColumn, currentRow, 1, 1),
-                comparatorCombo, cc.xywh(widgetColumn, currentRow, 1, 1));
-        comparatorComboLabel.setName("comparatorComboLabel");
-        comparatorComboLabel.setText(getBundleString("comparatorComboLabel.text"));
-        currentRow += 2;
-        
-        currentRow += 2;
         JXTitledSeparator rolloverSeparator = new JXTitledSeparator();
         rolloverSeparator.setName("rolloverSeparator");
         rolloverSeparator.setTitle(getBundleString("rolloverSeparator.title"));
@@ -535,13 +538,20 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
     private ComboBoxModel<DisplayInfo<Comparator<?>>> createComparators() {
         DefaultComboBoxModel<DisplayInfo<Comparator<?>>> model = new DefaultComboBoxModel<DisplayInfo<Comparator<?>>>();
         // <snip> JXList sorting
-        // null comparator defaults to comparing by the display string
-        model.addElement(new DisplayInfo<Comparator<?>>("None (by display string)", null));
+        // comparator defaults to comparing by the display string
+        Comparator<Contributor> displayStringComparator = new Comparator<Contributor>() {
+            @Override
+            public int compare(Contributor o1, Contributor o2) {
+                return (o1.getFirstName() + " " + o1.getLastName()).compareToIgnoreCase(o2.getFirstName() + " " + o2.getLastName());
+            }
+        };
+        model.addElement(new DisplayInfo<Comparator<?>>("Custom (by display string)", displayStringComparator));
+        // NO! null comparator ==> setComparator(null) ==> sort by first row
+        model.addElement(new DisplayInfo<Comparator<?>>("None (by firstname)", null));
         // compare by Comparable as implemented by the elements
         model.addElement(new DisplayInfo<Comparator<?>>("Comparable (by lastname)", DefaultSortController.COMPARABLE_COMPARATOR));
         // custom comparator
         Comparator<Contributor> meritComparator = new Comparator<Contributor>() {
-
             @Override
             public int compare(Contributor o1, Contributor o2) {
                 return o1.getMerits() - o2.getMerits();
