@@ -1,10 +1,11 @@
-/* created from jxmapviewer sample1_basics
+/* created from jxmapviewer sample1_basics + sample3_interaction
 */ 
 package org.jdesktop.jxmapviewer.demos;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -18,9 +19,15 @@ import javax.swing.JPanel;
 import javax.swing.MutableComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.MouseInputListener;
 
 import org.jdesktop.jxmapviewer.JXMapViewer;
 import org.jdesktop.jxmapviewer.OSMTileFactoryInfo;
+import org.jdesktop.jxmapviewer.cache.FileBasedLocalCache;
+import org.jdesktop.jxmapviewer.input.CenterMapListener;
+import org.jdesktop.jxmapviewer.input.PanKeyListener;
+import org.jdesktop.jxmapviewer.input.PanMouseInputListener;
+import org.jdesktop.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jdesktop.jxmapviewer.viewer.DefaultTileFactory;
 import org.jdesktop.jxmapviewer.viewer.GeoPosition;
 import org.jdesktop.jxmapviewer.viewer.TileFactoryInfo;
@@ -64,6 +71,7 @@ public class MapViewerDemo extends AbstractDemo {
     	});
     }
 
+	private static final int DEFAULT_ZOOM = 9; // OSM MAX_ZOOM is 19;
     private JXMapViewer mapViewer;
 
     // controller:
@@ -79,24 +87,68 @@ public class MapViewerDemo extends AbstractDemo {
     	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	
-        mapViewer = new JXMapViewer();
-        mapViewer.setName("mapViewer");
+
         // Create a TileFactoryInfo for OpenStreetMap
         TileFactoryInfo info = new OSMTileFactoryInfo();
         DefaultTileFactory tileFactory = new DefaultTileFactory(info);
+
+        // Setup local file cache
+        File cacheDir = new File(System.getProperty("user.home") + File.separator + ".jxmapviewer2");
+        tileFactory.setLocalCache(new FileBasedLocalCache(cacheDir, false));
+
+        // Setup JXMapViewer
+        mapViewer = new JXMapViewer();
+        mapViewer.setName("mapViewer");
         mapViewer.setTileFactory(tileFactory);
 
         // Use 8 threads in parallel to load the tiles
         tileFactory.setThreadPoolSize(8);
 
         // Set the zoom and focus to Java - the island
-        mapViewer.setZoom(9); // OSM MAX_ZOOM is 19
+        mapViewer.setZoom(DEFAULT_ZOOM);
         mapViewer.setAddressLocation(nameToGeoPosition.get("Java"));
-        
+
+        // Add interactions / verschieben , zoomen , select
+// "Use left mouse button to pan, mouse wheel to zoom and right mouse to select";
+        MouseInputListener mia = new PanMouseInputListener(mapViewer);
+        mapViewer.addMouseListener(mia);
+        mapViewer.addMouseMotionListener(mia);
+
+        mapViewer.addMouseListener(new CenterMapListener(mapViewer));
+
+        mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCursor(mapViewer));
+
+        mapViewer.addKeyListener(new PanKeyListener(mapViewer));
+
+        // Add a selection painter
+        SelectionAdapter sa = new SelectionAdapter(mapViewer);
+        SelectionPainter sp = new SelectionPainter(sa);
+        mapViewer.addMouseListener(sa);
+        mapViewer.addMouseMotionListener(sa);
+        mapViewer.setOverlayPainter(sp);
+
         add(mapViewer);
+        
+        mapViewer.addPropertyChangeListener("zoom", pce -> {
+        	LOG.info("---------------------pce:"+pce);
+        	getPosAndZoom();
+        });
+        mapViewer.addPropertyChangeListener("center", pce -> {
+        	GeoPosition pos = getPosAndZoom();
+        	mapViewer.setCenterPosition(pos);
+        });
+        getPosAndZoom();
     }
-    
+ 
+    private GeoPosition getPosAndZoom() {
+        double lat = mapViewer.getCenterPosition().getLatitude();
+        double lon = mapViewer.getCenterPosition().getLongitude();
+        int zoom = mapViewer.getZoom();
+
+        LOG.info(String.format("Lat/Lon=(%.2f / %.2f) - Zoom: %d", lat, lon, zoom));
+        return new GeoPosition(lat, lon);
+    }
+
     @Override
 	public JXPanel getControlPane() {
 		JXPanel controls = new JXPanel() {
@@ -124,6 +176,7 @@ public class MapViewerDemo extends AbstractDemo {
 			DisplayInfo<GeoPosition> item = (DisplayInfo<GeoPosition>)positionChooserCombo.getSelectedItem();
 			LOG.info("Combo.SelectedItem=" + item.getDescription());
 			mapViewer.setAddressLocation(item.getValue());
+	        mapViewer.setZoom(DEFAULT_ZOOM);
 			positionChooserCombo.setSelectedIndex(index);
 		});
 		controls.add(positionChooserCombo);
