@@ -146,14 +146,15 @@ public class MapViewerDemo extends AbstractDemo {
     @SuppressWarnings("serial")
 	private static final Map<String, GeoPosition> nameToGeoPosition = new HashMap<>(){
         {
-            put("Frankfurt",            new GeoPosition(50.11, 8.68));
+            put("Berlin",               new GeoPosition(52,31,0, 13,24,0));
+            put("Darmstadt",            new GeoPosition(49,52,0,  8,39,0));
+            put("Frankfurt am Main",    new GeoPosition(50.11, 8.68));
 //            GeoPosition frankfurt = new GeoPosition(50,  7, 0, 8, 41, 0);
 //            GeoPosition wiesbaden = new GeoPosition(50,  5, 0, 8, 14, 0);
 //            GeoPosition mainz     = new GeoPosition(50,  0, 0, 8, 16, 0);
-//            GeoPosition darmstadt = new GeoPosition(49, 52, 0, 8, 39, 0);
 //            GeoPosition offenbach = new GeoPosition(50,  6, 0, 8, 46, 0);
             put("Java",                 new GeoPosition(-7.502778, 111.263056)); // default
-            put("Darmstadt",            new GeoPosition(49, 52, 0, 8, 39, 0));
+            put("Eugene Oregon",        new GeoPosition(44,3,0, -123,5,0));
         }
     };
 
