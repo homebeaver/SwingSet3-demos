@@ -376,7 +376,7 @@ public class DemoAction extends AbstractActionExt {
         	// category GRAPHICS 1/1:
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.blendcomposite.BlendCompositeDemo", "BlendComposite", 3, Category.GRAPHICS));
         	ss3Actions.add(new DemoAction("org.jdesktop.swingx.demos.graph.GraphDemo", "JXGraph", 3, Category.GRAPHICS));
-        	ss3Actions.add(new DemoAction("org.jdesktop.jxmapviewer.demos.MapViewerDemo", "JXMapViewer", 3, Category.GRAPHICS));
+        	ss3Actions.add(new DemoAction("org.jxmapviewer.demos.MapViewerDemo", "JXMapViewer", 3, Category.GRAPHICS));
         	// TODO JXGraph is cat Visualization
     	}
     	return ss3Actions;

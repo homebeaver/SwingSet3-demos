@@ -1,6 +1,6 @@
 /* created from jxmapviewer sample3_interaction
 */ 
-package org.jdesktop.jxmapviewer.demos;
+package org.jxmapviewer.demos;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

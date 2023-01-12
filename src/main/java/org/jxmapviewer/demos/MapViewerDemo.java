@@ -1,6 +1,6 @@
 /* created from jxmapviewer sample1_basics + sample3_interaction
 */ 
-package org.jdesktop.jxmapviewer.demos;
+package org.jxmapviewer.demos;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,16 +23,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.MouseInputListener;
 
-import org.jdesktop.jxmapviewer.JXMapViewer;
-import org.jdesktop.jxmapviewer.OSMTileFactoryInfo;
-import org.jdesktop.jxmapviewer.cache.FileBasedLocalCache;
-import org.jdesktop.jxmapviewer.input.CenterMapListener;
-import org.jdesktop.jxmapviewer.input.PanKeyListener;
-import org.jdesktop.jxmapviewer.input.PanMouseInputListener;
-import org.jdesktop.jxmapviewer.input.ZoomMouseWheelListenerCursor;
-import org.jdesktop.jxmapviewer.viewer.DefaultTileFactory;
-import org.jdesktop.jxmapviewer.viewer.GeoPosition;
-import org.jdesktop.jxmapviewer.viewer.TileFactoryInfo;
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.OSMTileFactoryInfo;
+import org.jxmapviewer.cache.FileBasedLocalCache;
+import org.jxmapviewer.input.CenterMapListener;
+import org.jxmapviewer.input.PanKeyListener;
+import org.jxmapviewer.input.PanMouseInputListener;
+import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
+import org.jxmapviewer.viewer.DefaultTileFactory;
+import org.jxmapviewer.viewer.GeoPosition;
+import org.jxmapviewer.viewer.TileFactoryInfo;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
@@ -151,6 +151,7 @@ public class MapViewerDemo extends AbstractDemo {
         double lat = mapViewer.getCenterPosition().getLatitude();
         double lon = mapViewer.getCenterPosition().getLongitude();
         int zoom = mapViewer.getZoom();
+        if(zoomSlider!=null) zoomSlider.setValue(zoom);
 
         LOG.info(String.format("Lat/Lon=(%.2f / %.2f) - Zoom: %d", lat, lon, zoom));
         return new GeoPosition(lat, lon);
@@ -210,6 +211,7 @@ public class MapViewerDemo extends AbstractDemo {
 		JPanel fill = new JPanel(new BorderLayout());
 		fill.add(new JLabel(getBundleString("zoomOut.text")), BorderLayout.NORTH);		
 		fill.add(zoomSlider, BorderLayout.WEST);		
+		fill.add(new JLabel(getBundleString("zoomIn.text")), BorderLayout.SOUTH);		
 		controls.add(fill);
 
 		return controls;
@@ -235,6 +237,7 @@ public class MapViewerDemo extends AbstractDemo {
 //            GeoPosition offenbach = new GeoPosition(50,  6, 0, 8, 46, 0);
             put("Java",                 new GeoPosition(-7.502778, 111.263056)); // default
             put("Eugene Oregon",        new GeoPosition(44,3,0, -123,5,0));
+            put("London",               new GeoPosition(51.5, 0));
         }
     };
 

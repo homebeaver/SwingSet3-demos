@@ -271,6 +271,11 @@
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
+			<artifactId>swingx-mapviewer</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-graphics</artifactId>
 			<version>1.7.5</version>
 		</dependency>

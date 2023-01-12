@@ -1,13 +1,13 @@
 /* created from jxmapviewer sample3_interaction
 */ 
-package org.jdesktop.jxmapviewer.demos;
+package org.jxmapviewer.demos;
 
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
-import org.jdesktop.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.JXMapViewer;
 
 /**
  * Creates a selection rectangle based on mouse input
