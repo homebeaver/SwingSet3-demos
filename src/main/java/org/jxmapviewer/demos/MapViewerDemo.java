@@ -25,6 +25,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.MouseInputListener;
 
+import org.jdesktop.swingx.JXComboBox;
+import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.binding.DisplayInfo;
+import org.jdesktop.swingx.demos.svg.FeatheRmap_pin;
+import org.jdesktop.swingx.icon.SizingConstants;
+import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.cache.FileBasedLocalCache;
@@ -34,17 +43,11 @@ import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jxmapviewer.viewer.DefaultTileFactory;
 import org.jxmapviewer.viewer.DefaultWaypoint;
+import org.jxmapviewer.viewer.DefaultWaypointRenderer;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.TileFactoryInfo;
 import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
-import org.jdesktop.swingx.JXComboBox;
-import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXFrame.StartPosition;
-import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.binding.DisplayInfo;
-import org.jdesktop.swingx.painter.CompoundPainter;
 
 import swingset.AbstractDemo;
 
@@ -80,7 +83,7 @@ public class MapViewerDemo extends AbstractDemo {
     	});
     }
 
-	private static final int DEFAULT_ZOOM = 9; // OSM MAX_ZOOM is 19;
+	private static final int DEFAULT_ZOOM = 13; // OSM MAX_ZOOM is 19;
 	private TileFactoryInfo info;
     private JXMapViewer mapViewer;
 
@@ -141,6 +144,7 @@ public class MapViewerDemo extends AbstractDemo {
         CompoundPainter<JXMapViewer> cp = new CompoundPainter<JXMapViewer>();
         cp.setCacheable(false);
         cp.setPainters(addressLocationPainter, selectionPainter);
+        addressLocationPainter.setRenderer(new DefaultWaypointRenderer(FeatheRmap_pin.of(SizingConstants.M, SizingConstants.M)));
         mapViewer.setOverlayPainter(cp);
 
         add(mapViewer);
