@@ -7,7 +7,9 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.swing.Box;
@@ -31,14 +33,18 @@ import org.jxmapviewer.input.PanKeyListener;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jxmapviewer.viewer.DefaultTileFactory;
+import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.TileFactoryInfo;
+import org.jxmapviewer.viewer.Waypoint;
+import org.jxmapviewer.viewer.WaypointPainter;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.binding.DisplayInfo;
+import org.jdesktop.swingx.painter.CompoundPainter;
 
 import swingset.AbstractDemo;
 
@@ -129,10 +135,13 @@ public class MapViewerDemo extends AbstractDemo {
 
         // Add a selection painter
         SelectionAdapter sa = new SelectionAdapter(mapViewer);
-        SelectionPainter sp = new SelectionPainter(sa);
+        SelectionPainter selectionPainter = new SelectionPainter(sa);
         mapViewer.addMouseListener(sa);
         mapViewer.addMouseMotionListener(sa);
-        mapViewer.setOverlayPainter(sp);
+        CompoundPainter<JXMapViewer> cp = new CompoundPainter<JXMapViewer>();
+        cp.setCacheable(false);
+        cp.setPainters(addressLocationPainter, selectionPainter);
+        mapViewer.setOverlayPainter(cp);
 
         add(mapViewer);
         
@@ -146,7 +155,21 @@ public class MapViewerDemo extends AbstractDemo {
         });
         getPosAndZoom();
     }
- 
+
+    // from JXMapKit
+	private WaypointPainter<Waypoint> addressLocationPainter = new WaypointPainter<Waypoint>() {
+		@Override
+		public Set<Waypoint> getWaypoints() {
+			Set<Waypoint> set = new HashSet<Waypoint>();
+			if (mapViewer.getAddressLocation() != null) {
+				set.add(new DefaultWaypoint(mapViewer.getAddressLocation()));
+			} else {
+				set.add(new DefaultWaypoint(0, 0));
+			}
+			return set;
+		}
+	};
+
     private GeoPosition getPosAndZoom() {
         double lat = mapViewer.getCenterPosition().getLatitude();
         double lon = mapViewer.getCenterPosition().getLongitude();
