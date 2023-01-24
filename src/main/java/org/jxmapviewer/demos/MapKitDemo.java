@@ -3,13 +3,7 @@
 package org.jxmapviewer.demos;
 
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Frame;
-import java.awt.Frame;
-import java.awt.Frame;
-import java.awt.Frame;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,7 +19,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,18 +29,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.MouseInputListener;
 
-import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.VerticalLayout;
 import org.jdesktop.swingx.binding.DisplayInfo;
-import org.jdesktop.swingx.demos.svg.FeatheRactivity;
 import org.jdesktop.swingx.demos.svg.FeatheRflag;
-import org.jdesktop.swingx.demos.svg.FeatheRmap_pin;
-import org.jdesktop.swingx.demos.svg.FeatheRminus;
-import org.jdesktop.swingx.demos.svg.FeatheRplus;
 import org.jdesktop.swingx.icon.ChevronIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
@@ -105,13 +93,14 @@ public class MapKitDemo extends AbstractDemo {
 	private static final String DEFAULT_POS = "Java, Mt.Merapi";
 	private TileFactoryInfo info;
 	private JXMapKit mapKit;
-//    private JXMapViewer mapViewer;
 
     // controller:
     private JComboBox<DisplayInfo<GeoPosition>> positionChooserCombo;
     private JSlider zoomSlider;
     // controller prop name
 //	private static final String SLIDER = "zoomSlider";
+    private JCheckBox drawTileBorder;
+    private JCheckBox miniMapVisible;
 
     /**
      * Demo Constructor
@@ -151,12 +140,11 @@ public class MapKitDemo extends AbstractDemo {
         // Use 8 threads in parallel to load the tiles
         tileFactory.setThreadPoolSize(8);
 
-        // Set the zoom and focus to Java - the island
+        // Set the zoom and focus to Merapi, Java - the island
         mapKit.setZoom(DEFAULT_ZOOM);
         mapKit.setAddressLocation(nameToGeoPosition.get(DEFAULT_POS));
-//        mapKit.getMainMap().setDrawTileBorders(true); TODO controler
 //        mapKit.getMainMap().setRestrictOutsidePanning(true); // ???
-        mapKit.getMainMap().setHorizontalWrapped(false);
+//        mapKit.getMainMap().setHorizontalWrapped(false);
 
         // Add interactions / verschieben , zoomen , select
 // "Use left mouse button to pan, mouse wheel to zoom and right mouse to select";
@@ -171,11 +159,11 @@ public class MapKitDemo extends AbstractDemo {
 
         mapKit.addKeyListener(new PanKeyListener(mapKit.getMainMap()));
 
-        // Add a selection painter
+        // Add painter
         SelectionAdapter sa = new SelectionAdapter(mapKit.getMainMap());
         SelectionPainter sp = new SelectionPainter(sa);
-        mapKit.addMouseListener(sa);
-        mapKit.addMouseMotionListener(sa);
+        mapKit.getMainMap().addMouseListener(sa);
+        mapKit.getMainMap().addMouseMotionListener(sa);
         CompoundPainter<JXMapViewer> cp = new CompoundPainter<JXMapViewer>();
         cp.setCacheable(false);
         cp.setPainters(addressLocationPainter, sp);
@@ -334,6 +322,25 @@ public class MapKitDemo extends AbstractDemo {
 ////        mainMap.add(jPanel1, gridBagConstraints);
 		controls.add(fill, gridBagConstraints);
 
+        drawTileBorder = new JCheckBox(); // JCheckBox extends JToggleButton, JToggleButton extends AbstractButton
+        drawTileBorder.setSelected(true);
+        mapKit.getMainMap().setDrawTileBorders(drawTileBorder.isSelected());
+        drawTileBorder.setName("drawTileBorder");
+        drawTileBorder.setText(getBundleString("drawTileBorder.text"));
+        drawTileBorder.addActionListener( ae -> {
+        	mapKit.getMainMap().setDrawTileBorders(drawTileBorder.isSelected());
+        });
+        controls.add(drawTileBorder);
+
+        miniMapVisible = new JCheckBox(); // JCheckBox extends JToggleButton, JToggleButton extends AbstractButton
+        miniMapVisible.setSelected(true);       
+        mapKit.setMiniMapVisible(miniMapVisible.isSelected());
+        miniMapVisible.setName("miniMapVisible");
+        miniMapVisible.setText(getBundleString("miniMapVisible.text"));
+        miniMapVisible.addActionListener( ae -> {
+            mapKit.setMiniMapVisible(miniMapVisible.isSelected());
+        });
+        controls.add(miniMapVisible);
 
 		return controls;
 	}
