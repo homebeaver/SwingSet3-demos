@@ -125,6 +125,7 @@ public class MapKitDemo extends AbstractDemo {
         mapKit = new JXMapKit() {
             protected Icon setZoomOutIcon() {
 //            	return FeatheRminus.of(SizingConstants.XS, SizingConstants.XS);
+            	// use "v" instead of "-" 
             	return ChevronIcon.of(RadianceIcon.XS, RadianceIcon.XS);
             }
             protected Icon setZoomInIcon() {
@@ -167,9 +168,8 @@ public class MapKitDemo extends AbstractDemo {
         CompoundPainter<JXMapViewer> cp = new CompoundPainter<JXMapViewer>();
         cp.setCacheable(false);
         cp.setPainters(addressLocationPainter, sp);
-        // TODO flag is not exactly at Pos location, because the flag pole is not at icon.getIconWidth() / 2
-        // is: <line x1="4" y1="22" x2="4" y2="15" />, expected icon.getIconWidth() / 2 = 12 but is 4
-        addressLocationPainter.setRenderer(new DefaultWaypointRenderer(FeatheRflag.of(SizingConstants.M, SizingConstants.M)));
+        addressLocationPainter.setRenderer(new DefaultWaypointRenderer(4*SizingConstants.M/SizingConstants.M, SizingConstants.M
+        		, FeatheRflag.of(SizingConstants.M, SizingConstants.M)));
         mapKit.getMainMap().setOverlayPainter(cp);
 
         LOG.info("isAddressLocationShown():"+mapKit.isAddressLocationShown());
@@ -213,14 +213,13 @@ public class MapKitDemo extends AbstractDemo {
 
     @Override
 	public JXPanel getControlPane() {
+		@SuppressWarnings("serial")
 		JXPanel controls = new JXPanel() {
 			public Dimension getMaximumSize() {
 				return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
 			}
 		};
 		controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-//		controls.add(Box.createRigidArea(VGAP15));
-//    	JXPanel controls = new JXPanel(new VerticalLayout());
 
 		JXLabel selectLabel = new JXLabel("select another location:");
 		selectLabel.setName("selectLabel");
@@ -248,6 +247,26 @@ public class MapKitDemo extends AbstractDemo {
 		selectLabel.setLabelFor(positionChooserCombo);
 		controls.add(Box.createRigidArea(VGAP15));
 
+        drawTileBorder = new JCheckBox(); // JCheckBox extends JToggleButton, JToggleButton extends AbstractButton
+        drawTileBorder.setSelected(true);
+        mapKit.getMainMap().setDrawTileBorders(drawTileBorder.isSelected());
+        drawTileBorder.setName("drawTileBorder");
+        drawTileBorder.setText(getBundleString("drawTileBorder.text"));
+        drawTileBorder.addActionListener( ae -> {
+        	mapKit.getMainMap().setDrawTileBorders(drawTileBorder.isSelected());
+        });
+        controls.add(drawTileBorder);
+
+        miniMapVisible = new JCheckBox(); // JCheckBox extends JToggleButton, JToggleButton extends AbstractButton
+        miniMapVisible.setSelected(true);       
+        mapKit.setMiniMapVisible(miniMapVisible.isSelected());
+        miniMapVisible.setName("miniMapVisible");
+        miniMapVisible.setText(getBundleString("miniMapVisible.text"));
+        miniMapVisible.addActionListener( ae -> {
+            mapKit.setMiniMapVisible(miniMapVisible.isSelected());
+        });
+        controls.add(miniMapVisible);
+
 //	    LOG.info("min/max/zoom:"+info.getMinimumZoomLevel()+" "+info.getMaximumZoomLevel()+" "+mapViewer.getZoom());
 //	    zoomSlider = new JSlider(JSlider.HORIZONTAL, info.getMinimumZoomLevel(), info.getMaximumZoomLevel(), mapKit.getZoomSlider().getValue());
 	    zoomSlider = new JSlider();
@@ -255,24 +274,11 @@ public class MapKitDemo extends AbstractDemo {
 	    zoomSlider.setMaximum(info.getMaximumZoomLevel());
 	    zoomSlider.setValue(mapKit.getZoomSlider().getValue());
 	    zoomSlider.addChangeListener(changeEvent -> {
-	    	//LOG.info(""+zoomSlider.getValue());
 	    	mapKit.setZoom(zoomSlider.getValue());
 	    });
 	    zoomSlider.setPaintTicks(true);
 	    zoomSlider.setMajorTickSpacing(1);
-//		controls.add(zoomSlider);
-//	    JPanel zoomPanel = new JPanel(new BorderLayout());
-//	    zoomPanel.add(zoomSlider, BorderLayout.CENTER);
-//		controls.add(zoomPanel);
-
 	    
-//        Dictionary<Integer, JComponent> labels = new Hashtable<Integer, JComponent>();
-        // can we fill these labels from the properties file? Yes, we can! but I do not
-//        String labelTable = getBundleString(SLIDER+".labelTable");
-//        labels.put(zoomSlider.getMinimum(), new JLabel("zoom in"));
-//        labels.put(zoomSlider.getMaximum(), new JLabel("zoom out"));
-//        zoomSlider.setLabelTable(labels);
-
         // to fill up the remaining space
 		JPanel fill = new JPanel();
 		fill.setOpaque(false);
@@ -322,26 +328,6 @@ public class MapKitDemo extends AbstractDemo {
 ////        mainMap.add(jPanel1, gridBagConstraints);
 		controls.add(fill, gridBagConstraints);
 
-        drawTileBorder = new JCheckBox(); // JCheckBox extends JToggleButton, JToggleButton extends AbstractButton
-        drawTileBorder.setSelected(true);
-        mapKit.getMainMap().setDrawTileBorders(drawTileBorder.isSelected());
-        drawTileBorder.setName("drawTileBorder");
-        drawTileBorder.setText(getBundleString("drawTileBorder.text"));
-        drawTileBorder.addActionListener( ae -> {
-        	mapKit.getMainMap().setDrawTileBorders(drawTileBorder.isSelected());
-        });
-        controls.add(drawTileBorder);
-
-        miniMapVisible = new JCheckBox(); // JCheckBox extends JToggleButton, JToggleButton extends AbstractButton
-        miniMapVisible.setSelected(true);       
-        mapKit.setMiniMapVisible(miniMapVisible.isSelected());
-        miniMapVisible.setName("miniMapVisible");
-        miniMapVisible.setText(getBundleString("miniMapVisible.text"));
-        miniMapVisible.addActionListener( ae -> {
-            mapKit.setMiniMapVisible(miniMapVisible.isSelected());
-        });
-        controls.add(miniMapVisible);
-
 		return controls;
 	}
 
@@ -360,7 +346,7 @@ public class MapKitDemo extends AbstractDemo {
             put("Darmstadt",         new GeoPosition(49,52,0,  8,39,0));
             put("Frankfurt am Main", new GeoPosition(50.11, 8.68));
             put(DEFAULT_POS,         new GeoPosition(-7.541389, 110.446111)); // default Java, Merapi
-            put("Eugene Oregon",     new GeoPosition(44,3,0, -123,5,0));
+            put("Eugene Oregon",     new GeoPosition(44.058333, -123.068611));
             put("London",            new GeoPosition(51.5, 0));
         }
     };
