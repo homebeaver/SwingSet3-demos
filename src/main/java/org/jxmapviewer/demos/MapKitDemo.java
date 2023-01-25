@@ -21,12 +21,14 @@ import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.MutableComboBoxModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.MouseInputListener;
@@ -98,11 +100,13 @@ public class MapKitDemo extends AbstractDemo {
 
     // controller:
     private JComboBox<DisplayInfo<GeoPosition>> positionChooserCombo;
-    private JSlider zoomSlider;
-    // controller prop name
-//	private static final String SLIDER = "zoomSlider";
     private JCheckBox drawTileBorder;
     private JCheckBox miniMapVisible;
+    private JSlider zoomSlider; // JSlider extends JComponent
+    // controller prop name
+//	private static final String SLIDER = "zoomSlider";
+    private JButton zoomOut;
+    private JButton zoomIn;
 
     /**
      * Demo Constructor
@@ -137,6 +141,18 @@ public class MapKitDemo extends AbstractDemo {
 //            	return FeatheRplus.of(SizingConstants.XS, SizingConstants.XS);
             }
         };
+        
+        // sync zoomSlider:
+        mapKit.getZoomSlider().addChangeListener(changeEvent -> {
+        	if(zoomSlider!=null) zoomSlider.setValue(mapKit.getZoomSlider().getValue());
+        });
+        mapKit.getZoomOutButton().addChangeListener(changeEvent -> {
+        	if(zoomSlider!=null) zoomSlider.setValue(mapKit.getZoomSlider().getValue());
+        });
+        mapKit.getZoomInButton().addChangeListener(changeEvent -> {
+        	if(zoomSlider!=null) zoomSlider.setValue(mapKit.getZoomSlider().getValue());
+        });
+        
         mapKit.setName("mapKit");
         mapKit.setTileFactory(tileFactory);
 
@@ -271,18 +287,6 @@ public class MapKitDemo extends AbstractDemo {
         });
         controls.add(miniMapVisible);
 
-//	    LOG.info("min/max/zoom:"+info.getMinimumZoomLevel()+" "+info.getMaximumZoomLevel()+" "+mapViewer.getZoom());
-//	    zoomSlider = new JSlider(JSlider.HORIZONTAL, info.getMinimumZoomLevel(), info.getMaximumZoomLevel(), mapKit.getZoomSlider().getValue());
-	    zoomSlider = new JSlider();
-	    zoomSlider.setMinimum(info.getMinimumZoomLevel());
-	    zoomSlider.setMaximum(info.getMaximumZoomLevel());
-	    zoomSlider.setValue(mapKit.getZoomSlider().getValue());
-	    zoomSlider.addChangeListener(changeEvent -> {
-	    	mapKit.setZoom(zoomSlider.getValue());
-	    });
-	    zoomSlider.setPaintTicks(true);
-	    zoomSlider.setMajorTickSpacing(1);
-	    
         // to fill up the remaining space
 		JPanel fill = new JPanel();
 		fill.setOpaque(false);
@@ -291,50 +295,72 @@ public class MapKitDemo extends AbstractDemo {
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-//        gridBagConstraints.gridwidth = 1;
         gridBagConstraints.fill = GridBagConstraints.VERTICAL;
         gridBagConstraints.anchor = GridBagConstraints.CENTER;
-		fill.add(zoomSlider, gridBagConstraints);		
+		fill.add(makeZoomSlider(), gridBagConstraints);		
 		
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = GridBagConstraints.NORTHEAST;
-//        gridBagConstraints.weightx = 1.0;
-//        gridBagConstraints.weighty = 1.0;
-//        jPanel1.add(zoomInButton, gridBagConstraints); // plus
-//		fill.add(new JLabel(getBundleString("zoomOut.text")), BorderLayout.NORTH);
-        fill.add(new JLabel(getBundleString("zoomOut.text")), gridBagConstraints);
+        zoomOut = new JButton();
+        zoomOut.setName("zoomOut");
+        zoomOut.setText(getBundleString("zoomOut.text"));
+        zoomOut.setIcon(ChevronIcon.of(RadianceIcon.XS, RadianceIcon.XS));
+        zoomOut.addActionListener( ae -> {
+//        	setAlphaProp(0f);
+//        	timeline.play(); // fade in
+	    	mapKit.setZoom(zoomSlider.getValue()+1);
+		    zoomSlider.setValue(mapKit.getZoomSlider().getValue());
+        });
+    	fill.add(zoomOut, gridBagConstraints);
 
-////        zoomOutButton.setAction(getZoomInAction());
-////        zoomOutButton.setIcon(new ImageIcon(JXMapKit.class.getResource("images/minus.png")));
-////        zoomOutButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-////        zoomOutButton.setMaximumSize(new java.awt.Dimension(20, 20));
-////        zoomOutButton.setMinimumSize(new java.awt.Dimension(20, 20));
-////        zoomOutButton.setOpaque(false);
-////        zoomOutButton.setPreferredSize(new java.awt.Dimension(20, 20));
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-//        gridBagConstraints.weighty = 1.0;
-//        jPanel1.add(zoomOutButton, gridBagConstraints);
-        fill.add(new JLabel(getBundleString("zoomIn.text")), gridBagConstraints);
-//
-////		controls.add(fill);
-//		gridBagConstraints = new GridBagConstraints();
-//        gridBagConstraints.gridx = 0;
-//        gridBagConstraints.gridy = 0;
-//        gridBagConstraints.anchor = GridBagConstraints.SOUTHWEST;
-//        gridBagConstraints.weightx = 1.0;
-//        gridBagConstraints.weighty = 1.0;
-//        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-////        mainMap.add(jPanel1, gridBagConstraints);
+    	zoomIn = new JButton();
+    	zoomIn.setName("zoomIn");
+    	zoomIn.setText(getBundleString("zoomIn.text"));
+    	zoomIn.setHorizontalTextPosition(SwingConstants.LEFT);
+    	RadianceIcon icon = ChevronIcon.of(RadianceIcon.XS, RadianceIcon.XS);
+    	icon.setRotation(RadianceIcon.SOUTH);
+    	zoomIn.setIcon(icon);
+    	zoomIn.addActionListener( ae -> {
+//        	setAlphaProp(1f);
+//        	timeline.playReverse(); // fade out, nextTip + fade in see TimelineCallback
+	    	mapKit.setZoom(zoomSlider.getValue()-1);
+		    zoomSlider.setValue(mapKit.getZoomSlider().getValue());
+        });
+    	fill.add(zoomIn, gridBagConstraints);
+
 		controls.add(fill, gridBagConstraints);
 
 		return controls;
 	}
 
+    private JComponent makeZoomSlider() {  	
+    	if(zoomSlider!=null) {
+    		LOG.warning("already instantiated "+zoomSlider);
+    		return zoomSlider;
+    	}
+//	    LOG.info("min/max/zoom:"+info.getMinimumZoomLevel()+" "+info.getMaximumZoomLevel()+" "+mapViewer.getZoom());
+//	    zoomSlider = new JSlider(JSlider.HORIZONTAL, info.getMinimumZoomLevel(), info.getMaximumZoomLevel(), mapKit.getZoomSlider().getValue());
+	    zoomSlider = new JSlider();
+	    zoomSlider.setName("zoomSlider");
+	    zoomSlider.setOpaque(false);
+	    //zoomSlider.setPaintLabels(true);
+	    zoomSlider.setMinimum(info.getMinimumZoomLevel());
+	    zoomSlider.setMaximum(info.getMaximumZoomLevel());
+	    zoomSlider.setValue(mapKit.getZoomSlider().getValue());
+	    zoomSlider.addChangeListener(changeEvent -> {
+	    	mapKit.setZoom(zoomSlider.getValue());
+	    });
+	    zoomSlider.setPaintTicks(true);
+	    zoomSlider.setMajorTickSpacing(1);
+		return zoomSlider;
+    }
+    
     private ComboBoxModel<DisplayInfo<GeoPosition>> createCBM() {
         MutableComboBoxModel<DisplayInfo<GeoPosition>> model = new DefaultComboBoxModel<DisplayInfo<GeoPosition>>();
         nameToGeoPosition.forEach((k,v) -> {
