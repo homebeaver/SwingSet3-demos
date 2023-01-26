@@ -39,6 +39,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.demos.svg.FeatheRflag;
 import org.jdesktop.swingx.icon.ChevronIcon;
+import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.painter.CompoundPainter;
@@ -97,23 +98,24 @@ public class MapKitDemo extends AbstractDemo {
 	private static final String DEFAULT_POS = "Madeira (Trail)";
 	private TileFactoryInfo info;
 	private JXMapKit mapKit;
-    Timeline timeline;
-    public void setAlphaProp(float newValue) {
-//        LOG.info("timeline pulse " + xpanel.getAlpha() + " -> " + newValue);
-//        xpanel.setAlpha(newValue);
-//        alphaSlider.setValue((int)(newValue*255+0.5));
-    }
+    private RoutePainter routePainter = new RoutePainter(Color.RED);
 
     // controller:
     private JComboBox<DisplayInfo<GeoPosition>> positionChooserCombo;
     private JCheckBox drawTileBorder;
     private JCheckBox miniMapVisible;
     private JSlider zoomSlider; // JSlider extends JComponent
-    private JSlider trackSlider;
     // controller prop name
 //	private static final String SLIDER = "zoomSlider";
     private JButton zoomOut;
     private JButton zoomIn;
+    private JSlider trackSlider;
+    // Animation
+    private JButton animation;
+    Timeline timeline;
+    public void setTrackProp(float newValue) {
+    	trackSlider.setValue((int)(newValue*routePainter.getTrackSize()+0.5));
+    }
 
     /**
      * Demo Constructor
@@ -210,10 +212,23 @@ public class MapKitDemo extends AbstractDemo {
         	mapKit.setCenterPosition(pos);
         });
         getPosAndZoom();
+        
+        createAnimation(4500, 0.5f); // 4,5sec , stop at 100% 
     }
  
-    private RoutePainter routePainter = new RoutePainter(Color.RED);
-    
+    public void createAnimation(long duration, float to) {
+    	Timeline.builder(this)
+			.addPropertyToInterpolate("trackProp", 0.0f, to)
+			.setDuration(duration)
+			.play(); // show track animated
+    	
+    	timeline = Timeline.builder(this)
+			.addPropertyToInterpolate("trackProp", 0.0f, 1.0f)
+			.setDuration(duration)
+			.build();
+    	LOG.info("Animation Duration = " + timeline.getDuration());
+    }
+
     // from JXMapKit
 	private WaypointPainter<Waypoint> addressLocationPainter = new WaypointPainter<Waypoint>() {
 		@Override
@@ -354,7 +369,21 @@ public class MapKitDemo extends AbstractDemo {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = GridBagConstraints.VERTICAL;
         gridBagConstraints.anchor = GridBagConstraints.CENTER;
-		fill.add(makeTrackSlider(), gridBagConstraints);		
+		fill.add(makeTrackSlider(), gridBagConstraints);
+		
+		gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = GridBagConstraints.NORTHEAST;
+        animation = new JButton();
+        animation.setName("animation");
+        animation.setText(getBundleString("animation.text"));
+        animation.setIcon(PlayIcon.of(RadianceIcon.XS, RadianceIcon.XS));
+        animation.addActionListener( ae -> {
+        	setTrackProp(0f);
+        	timeline.play(); // show track animated
+        });
+    	fill.add(animation, gridBagConstraints);
 
 		return controls;
 	}
