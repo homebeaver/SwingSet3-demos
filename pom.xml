@@ -201,6 +201,14 @@
 
 		</plugins>
 	</build>
+
+	<repositories>
+	    <repository> <!-- wg. artifact gpx-parser -->
+	        <id>jcenter</id>
+	        <name>jcenter</name>
+	        <url>https://jcenter.bintray.com</url>
+	    </repository>
+	</repositories>
 	
 	<dependencies>
 	
@@ -329,6 +337,12 @@
 		    <artifactId>batik-transcoder</artifactId>
 		    <version>1.15</version>
 		</dependency>
-		
+
+		<!-- Note: this artifact is located at JCenter repository (https://jcenter.bintray.com/)  -->
+		<dependency>
+			<groupId>me.himanshusoni.gpxparser</groupId>
+			<artifactId>gpx-parser</artifactId>
+			<version>1.13</version>
+		</dependency>
 	</dependencies>
 </project>
