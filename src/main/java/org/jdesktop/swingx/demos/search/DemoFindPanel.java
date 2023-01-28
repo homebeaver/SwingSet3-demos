@@ -54,6 +54,9 @@ public class DemoFindPanel extends JXFindPanel {
     protected void showNotFoundMessage() {
     	RadianceIcon informationIcon = FeatheRinfo.of(RadianceIcon.BUTTON_ICON, RadianceIcon.BUTTON_ICON);
     	informationIcon.setColorFilter(color -> Color.BLUE);
+    	// BUG, wenn searchField.getText() html Zeichen enthält zB <
+    	// "a<xx" ==> Nachricht: "Ausgruck nicht gefinden: a" TODO
+    	LOG.info("----BUG------searchField.getText():"+searchField.getText());
     	String msg = "<html>" + getUIString("notFound") + ":<font color=red><b> "+searchField.getText()+"</b></font></html>";
         JOptionPane.showMessageDialog
     	( this                                                              // parentComponent

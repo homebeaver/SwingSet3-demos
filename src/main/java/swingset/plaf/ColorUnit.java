@@ -138,8 +138,28 @@ public class ColorUnit extends Color {
 	/** BLIZZARD_BLUE is primary control color in AQUA Theme */
     public static final Color BLIZZARD_BLUE = new Color(0x9FEBEB);
     
+	// Color names taken from https://www.htmlcsscolor.com/hex/29598B (ENDEAVOUR) 
+    /*
+    static final Color ASTRAL             = new Color(0x376F89);
+    static final Color BROWN              = new Color(0xA52A2A);
+    static final Color CERULEAN_BLUE      = new Color(0x2A52BE);
+    static final Color CUMULUS            = new Color(0xF5F4C1);
+    static final Color EARLS_GREEN        = new Color(0xB8A722);
+    static final Color ENDEAVOUR          = new Color(0x29598B);
+    static final Color HAWKES_BLUE        = new Color(0xD2DAED);
+    static final Color JORDY_BLUE         = new Color(0x7AAAE0);
+    static final Color MANATEE            = new Color(0x8D90A1);
+    static final Color MISCHKA            = new Color(0xA5A9B2);
+    static final Color TENNE              = new Color(0xCD5700);
+    static final Color TURBO              = new Color(0xF5CC23);
+    */
 	// Nimbus Colors see https://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/_nimbusDefaults.html:
     // Primary Color Names, awt color names (BLACK,WHITE) not listed
+	/** approx. ASTRAL color is in Nimbus primary key NIMBUSSELECTIONBACKGROUND 
+	 * and also in secondary keys NIMBUSSELECTION, TEXTBACKGROUND, TEXTHIGHLIGHT
+	 * ! approx. ASTRAL is not same as ASTRAL in htmlcsscolor.com !
+	 */
+    public static final Color ASTRAL        = new Color(0x39698A); // Astral -> NIMBUSSELECTIONBACKGROUND
     public static final Color HAWKES_BLUE   = new Color(0xD6D9DF); // Hawkes Blue -> CONTROL
     public static final Color CUMULUS       = new Color(0xF2F2BD); // Cumulus -> INFO
     public static final Color TURBO         = new Color(0xFFDC23); // Turbo -> NIMBUSALERTYELLOW
@@ -150,10 +170,6 @@ public class ColorUnit extends Color {
     public static final Color CERULEAN_BLUE = new Color(0x2F5CB4); // Cerulean Blue -> NIMBUSINFOBLUE
     public static final Color TENNE         = new Color(0xBF6204); // Tenne (Tawny, Crema) -> NIMBUSORANGE
     public static final Color BROWN         = new Color(0xA92E22); // Brown -> NIMBUSRED
-	/** ASTRAL color is in Nimbus primary key NIMBUSSELECTIONBACKGROUND 
-	 * and also in secondary keys NIMBUSSELECTION, TEXTBACKGROUND, TEXTHIGHLIGHT
-	 */
-    public static final Color ASTRAL        = new Color(0x39698A); // Astral -> NIMBUSSELECTIONBACKGROUND
     
     // Secondary Colors Names, some are same to primary names, exp. Manatee, Astral
     public static final Color SPINDLE       = new Color(0xBABEC6); // Spindle
@@ -229,7 +245,7 @@ public class ColorUnit extends Color {
 	/** BLIZZARD_BLUE is primary control color in AQUA Theme */
     public static final ColorUnit AQUA_PRIMARY3 = new ColorUnit(BLIZZARD_BLUE, Context.AQUA, PRIMARY3);
 
-    // Nimbus Primary Colors
+    // Nimbus Primary Colors defined in javax.swing.plaf.nimbus.initializeDefaults
     public static final ColorUnit NIMBUS_CONTROL         = new ColorUnit(HAWKES_BLUE, Context.NIMBUS, "CONTROL");
     public static final ColorUnit NIMBUS_INFO            = new ColorUnit(CUMULUS, Context.NIMBUS, "INFO");
     public static final ColorUnit NIMBUS_ALERTYELLOW     = new ColorUnit(TURBO, Context.NIMBUS, "NIMBUSALERTYELLOW");
