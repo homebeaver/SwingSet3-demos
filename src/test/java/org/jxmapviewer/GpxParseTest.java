@@ -15,8 +15,10 @@ import swingset.StaticUtilities;
 
 public class GpxParseTest {
 
-	// Demo resources with osmand extensions
+	// Demo resource with osmand extensions
 	private static final String ODENWALD = "resources/Odenwald-Weg.gpx";
+	// Demo resource with two tracks
+	private static final String VIAROMA = "resources/Via-di-Roma.gpx";
 	// test
 	// https://www.openstreetmap.org/user/fir99/traces/6110027
 	private static final String FIR99_6110027 = "6110027.gpx";
@@ -63,6 +65,20 @@ public class GpxParseTest {
 		
 		RouteKey rk = gpxf.getRouteKey();
     	assertEquals(RouteKey.RouteType.HIKING, rk.type);		
+	}
+
+	@Test
+	public void testTwoTracksGPXfile() {
+		GPXFile gpxf = new GPXFile(VIAROMA);
+		
+		// keine Metadaten
+    	assertNull(gpxf.getMetadata());
+    	
+    	assertEquals(0, gpxf.getWaypoints().size());
+    	assertEquals(2, gpxf.getTracksSize());
+    	assertEquals( 779, gpxf.getTrackWaypoints(0).size());
+    	assertEquals( 669, gpxf.getTrackWaypoints(1).size());
+    	assertEquals(1448, gpxf.getTrackWaypoints().size());
 	}
 
 	@Test

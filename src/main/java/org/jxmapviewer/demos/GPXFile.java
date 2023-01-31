@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -149,6 +150,32 @@ public GeoPosition(double latitude, double longitude) {
 				allWpts.addAll(wpts);
 			}
 
+		}
+		return allWpts;
+	}
+	public ArrayList<Waypoint> getTrackWaypoints(int trackNo) {
+		int size = getTracksSize();
+		if(trackNo>=0 && trackNo<size) {
+	        Iterator<Track> iter = tracks.iterator();
+	        int i = 0;
+			while (iter.hasNext()) {
+				Track next = iter.next();
+				if(i==trackNo) return getTrackWaypoints(next);
+				i++;
+			}
+		}
+		// empty:
+		return new ArrayList<Waypoint>();
+	}
+	
+	private ArrayList<Waypoint> getTrackWaypoints(Track track) {
+		LOG.info("track.Name:" + track.getName());
+		ArrayList<Waypoint> allWpts = new ArrayList<Waypoint>();
+		List<TrackSegment> trackSegments = track.getTrackSegments(); // ArrayList
+		for (TrackSegment segment : trackSegments) {
+			ArrayList<Waypoint> wpts = segment.getWaypoints();
+			LOG.info("segment:" + segment + " with "+wpts.size()+" waypoints.");
+			allWpts.addAll(wpts);
 		}
 		return allWpts;
 	}
