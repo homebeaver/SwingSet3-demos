@@ -34,6 +34,12 @@ public class RoutePainter implements Painter<JXMapViewer> {
 		setMaxSize(getTrackSize());
 	}
 
+	public RoutePainter(Color color, List<GeoPosition> track) {
+		this.color = color;
+		this.track = track;
+		setMaxSize(getTrackSize());
+	}
+
 	/**
 	 * @param track the track
 	 */
