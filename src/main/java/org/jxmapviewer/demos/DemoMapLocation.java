@@ -44,7 +44,7 @@ public class DemoMapLocation {
 	}
 
 	public void addRoutePainter(RoutePainter rp) {
-		routePainter.add(rp);
+		if(rp!=null) routePainter.add(rp);
 	}
 	
 	public String toString() {
