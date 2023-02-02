@@ -317,7 +317,7 @@
 		<dependency>
 		    <groupId>org.apache.xmlgraphics</groupId>
 		    <artifactId>batik-bridge</artifactId>
-		    <version>1.15</version>
+		    <version>1.16</version>
 		    <exclusions>
 		    	<exclusion>
 		    		<groupId>xml-apis</groupId>
@@ -329,13 +329,13 @@
 		<dependency>
 		    <groupId>org.apache.xmlgraphics</groupId>
 		    <artifactId>batik-swing</artifactId>
-		    <version>1.15</version>
+		    <version>1.16</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder -->
 		<dependency>
 		    <groupId>org.apache.xmlgraphics</groupId>
 		    <artifactId>batik-transcoder</artifactId>
-		    <version>1.15</version>
+		    <version>1.16</version>
 		</dependency>
 
 		<!-- Note: this artifact is located at JCenter repository (https://jcenter.bintray.com/)  -->
