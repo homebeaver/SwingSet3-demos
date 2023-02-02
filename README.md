@@ -17,11 +17,13 @@ Use it to try out different components and features.
 - run with new java, i.e. with openjdk version "17" 2021-09-14:
 
 ```
->java -jar swingset3-demos-1.7.4-jar-with-dependencies.jar
+>java -jar swingset3-demos-1.7.5-jar-with-dependencies.jar
 
 ```
 
 ![SwingSet-demos-v1.7.4-JXMonthView](src/main/resources/org/jdesktop/swingxset/resources/images/SwingSet-demos-v1.7.4-JXMonthView.PNG)
+
+![SwingSet-demos-v1.7.5-JXMapKit](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/MapKitDemo.png)
 
 The jar was
 - Created-By: Apache Maven 3.8.1
