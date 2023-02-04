@@ -14,7 +14,7 @@ on:
     
 jobs:
   publish:
-
+	environment: staging
     runs-on: ubuntu-latest
 #    continue-on-error: ${{ matrix.experimental }}
 #    strategy:
