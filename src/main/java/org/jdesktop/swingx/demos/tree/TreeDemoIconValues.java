@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -18,6 +19,9 @@ import javax.swing.ImageIcon;
 import javax.swing.Painter;
 
 import org.jdesktop.swingx.icon.PainterIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.icon.SizingConstants;
+import org.jdesktop.swingx.icon.StopIcon;
 import org.jdesktop.swingx.painter.AbstractAreaPainter;
 import org.jdesktop.swingx.painter.ImagePainter;
 import org.jdesktop.swingx.renderer.IconValue;
@@ -30,6 +34,8 @@ import com.jhlabs.image.InvertFilter;
  * Custom icon values used in TreeDemo.
  */
 public class TreeDemoIconValues {
+    
+    private static final Logger LOG = Logger.getLogger(TreeDemoIconValues.class.getName());
     
     /**
      * An IconValue which maps cell value to an icon. The value is mapped
@@ -51,7 +57,10 @@ public class TreeDemoIconValues {
            this.baseClass = baseClass;
            iconCache = new HashMap<Object, Icon>(); 
            this.keyToFileName = sv;
-           fallbackIcon = loadFromResource(fallbackName);
+           // use a RadianceIcon as fallback
+           fallbackIcon = StopIcon.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON);
+           LOG.config("-------- baseClass:"+baseClass + " - " 
+        	+ (fallbackIcon==null ? "null fallbackIcon" : "fallbackIcon is "+fallbackName));
         }
         
         // <snip> JXTree rendering
@@ -75,7 +84,7 @@ public class TreeDemoIconValues {
             }
             return icon;
         }
-// </snip>
+        // </snip>
         
         private Icon loadIcon(String key) {
             Icon icon = loadFromResource(key);
@@ -114,7 +123,6 @@ public class TreeDemoIconValues {
     public static class FilteredIconValue implements IconValue {
 
         private IconValue delegate;
-
         private Map<Object, Icon> iconCache;
 
         /**
@@ -147,7 +155,9 @@ public class TreeDemoIconValues {
         // wraps the given icon into an ImagePainter with a filter effect
         private Icon manipulatedIcon(Icon icon) {
             PainterIcon painterIcon = new PainterIcon(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-            BufferedImage image = (BufferedImage) ((ImageIcon) icon).getImage();
+            BufferedImage image = icon instanceof RadianceIcon ? ((RadianceIcon)icon).toImage(1)
+            	: (BufferedImage) ((ImageIcon) icon).getImage();
+            
             // ImagePainter extends AbstractAreaPainter<Component>
             //                      AbstractAreaPainter<T> extends AbstractLayoutPainter<T>
             //                                                     AbstractPainter<T> implements Painter<T>

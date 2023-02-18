@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SingleSelectionModel;
@@ -104,6 +105,7 @@ public class XTreeDemo extends AbstractDemo {
 
     private JTabbedPane tabbedpane; // contains music tree, index 0 and component tree, index 1
     private JXTree componentTree;
+    private JLabel fakeLabel = new JLabel("fake");
 
     /*
      * intentionally not defined music tree here.
@@ -278,7 +280,8 @@ public class XTreeDemo extends AbstractDemo {
         componentTree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         JScrollPane scrollpane = new JScrollPane(componentTree);
 
-        configureComponents();
+        fakeLabel.setName("fakeLabel");
+        configureComponents(fakeLabel);
         // create and install the component tree model:
         addNotify();
         
@@ -338,7 +341,7 @@ public class XTreeDemo extends AbstractDemo {
 
 //---------------- binding/configure ComponentTree
     
-    private void configureComponents() {
+    private void configureComponents(Component comp) {
         // <snip> JXTree rendering
         // StringValue provides node text: concat several 
         StringValue sv = new StringValue() {
@@ -358,7 +361,7 @@ public class XTreeDemo extends AbstractDemo {
                 return StringValues.TO_STRING.getString(value);
             }
         };
-    	LOG.info("StringValue sv:"+sv);
+    	LOG.info("StringValue sv:"+sv + " - sv for the fake component:"+sv.getString(comp));
         // </snip>
         
         // StringValue for lazy icon loading interface org.jdesktop.swingx.renderer.StringValue
@@ -374,7 +377,7 @@ public class XTreeDemo extends AbstractDemo {
                 return simpleClassName + ".png";
             }
         };
-    	LOG.info("StringValue keyValue:"+keyValue);
+    	LOG.info("keyValue for the fake component:"+keyValue.getString(comp));
     	
         // <snip> JXTree rendering   	
         // IconValue provides node icon 
