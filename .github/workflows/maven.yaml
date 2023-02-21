@@ -13,9 +13,19 @@ on:
     types: [created]
     
 jobs:
-  publish:
-	environment: staging
+  greeting_job:
     runs-on: ubuntu-latest
+    env:
+      Greeting: Hello
+    steps:
+      - name: "Say Hello Mona it's Monday"
+        run: echo "$MY_VARIABLE_NAME"
+        env:
+          First_Name: Mona
+
+  publish:
+    runs-on: ubuntu-latest
+	environment: staging
 #    continue-on-error: ${{ matrix.experimental }}
 #    strategy:
 #      matrix:
