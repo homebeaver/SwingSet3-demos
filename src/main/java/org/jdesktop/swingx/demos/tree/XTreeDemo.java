@@ -254,19 +254,6 @@ public class XTreeDemo extends AbstractDemo {
         renderer.setLeafIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
         tree.setCellRenderer(renderer);
         
-//    	String currentClassName = UIManager.getLookAndFeel().getClass().getName();
-//    	if(currentClassName.contains("Nimbus")) {
-////    		renderer.setBackgroundNonSelectionColor(ColorUnit.NIMBUS_BACKGROUND);
-////    		tree.setBackground(ColorUnit.NIMBUS_BACKGROUND);
-//    	} else {
-//    		LOG.config("current Laf is "+currentClassName);
-////    		Color primary3 = MetalLookAndFeel.getCurrentTheme().getPrimaryControl();
-////    		Color secondary3 = MetalLookAndFeel.getCurrentTheme().getControl();
-////    		LOG.config("set BG to secondary3 "+secondary3);
-////    		renderer.setBackgroundNonSelectionColor(secondary3);
-////    		tree.setBackground(secondary3);
-//    	}
-
         tree.setEditable(true);
         return new JScrollPane(tree);
     }
@@ -464,5 +451,3 @@ public class XTreeDemo extends AbstractDemo {
     }
 
 }
-
-
