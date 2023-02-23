@@ -30,7 +30,6 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.beansbinding.BeanProperty;
@@ -50,6 +49,7 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.binding.ArrayAggregator;
 import org.jdesktop.swingx.binding.BindingAdapter;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
+import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.AlignmentHighlighter;
 import org.jdesktop.swingx.decorator.BorderHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
@@ -126,9 +126,9 @@ public class HighlighterDemo extends AbstractDemo {
     private JXComboBox<Component> comboBox;
     
     // Controller:
-    private JComboBox<HighlighterInfo> stripingOptions;
-    private JComboBox<HighlighterInfo> highlighters;
-    private JComboBox<HighlightPredicateInfo> predicates;
+    private JXComboBox<HighlighterInfo> stripingOptions;
+    private JXComboBox<HighlighterInfo> highlighters;
+    private JXComboBox<HighlightPredicateInfo> predicates;
     
     /**
      * HighlighterDemo Constructor
@@ -242,6 +242,8 @@ public class HighlighterDemo extends AbstractDemo {
 				return StringValues.TO_STRING.getString(value);
 			}
 		}));
+		treeTable.packColumn(treeTable.getHierarchicalColumn(), -1);
+
         
         // ComponentModels.getComboBoxModel(Component root) liefert ComboBoxModel<Component>:
         ComboBoxModel<Component> comboBoxModel = ComponentModels.getComboBoxModel(this);
@@ -267,7 +269,7 @@ public class HighlighterDemo extends AbstractDemo {
         JPanel control = new JPanel(new GridLayout(2, 2));
         control.add(new JLabel("Highlighter Options:"));
         
-        stripingOptions = new JComboBox<HighlighterInfo>(getStripingOptionsModel());
+        stripingOptions = new JXComboBox<HighlighterInfo>(getStripingOptionsModel());
         stripingOptions.setRenderer(new DefaultListRenderer<HighlighterInfo>(new StringValue() {
 			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
@@ -280,7 +282,7 @@ public class HighlighterDemo extends AbstractDemo {
         }));
         control.add(stripingOptions);
         
-        highlighters = new JComboBox<HighlighterInfo>(getHighlighterOptionsModel());
+        highlighters = new JXComboBox<HighlighterInfo>(getHighlighterOptionsModel());
         highlighters.setRenderer(new DefaultListRenderer<HighlighterInfo>(new StringValue() {
 			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
@@ -293,7 +295,7 @@ public class HighlighterDemo extends AbstractDemo {
         }));
         control.add(highlighters);
         
-        predicates = new JComboBox<HighlightPredicateInfo>(getPredicateOptionsModel());
+        predicates = new JXComboBox<HighlightPredicateInfo>(getPredicateOptionsModel());
         predicates.setRenderer(new DefaultListRenderer<HighlightPredicateInfo>(new StringValue() {
 			private static final long serialVersionUID = 1L;
             public String getString(Object value) {
@@ -304,10 +306,58 @@ public class HighlighterDemo extends AbstractDemo {
                 return StringValues.TO_STRING.getString(value);
             }
         }));
+
+        /*
+HighlightPredicate   | list   | table | tree | treeTable | comboBox
+               NEVER : ok     : ok    : ok   : ER1       : ok
+              ALWAYS : ok     : ok    : ok   : ok        : ok
+           HAS_FOCUS : ok     : ok    : ok   : ok        : ER2
+Non-Leaf,  IS_FOLDER : nA     : nA    : ok   : ???       : nA
+Leaf Node,   IS_LEAF : ALWAYS : alle  : ok   : ok        : alle
+        ROLLOVER_ROW : ???    : ok    : ???  : ok ???    : ???
+"Columns 0 and 3"    : alle   : ok    : alle : ok        : alle
+"Node Depth Columns.": nix    :
+"JButton Type"       : ???    :
+
+ER1 : lässt sich nicht ausschalten
+ER2 : kein highlight wenn ausgeklappt
+??? : ERROR 
+
+         */
+        predicates.addActionListener( ae -> {
+        	HighlightPredicateInfo hpi = (HighlightPredicateInfo)predicates.getSelectedItem();
+        	HighlighterInfo hi = (HighlighterInfo)highlighters.getSelectedItem();
+//        	LOG.info(hi.getDescription()+">>>>>>>>>>>>"+hpi.getDescription() + ">>"+hpi.getPredicate());
+        	Highlighter highlighter = hi.getHighlighter();
+        	if(highlighter==HighlighterInfo.EMPTY) {
+        		LOG.warning(hi.getDescription()+" with predicate "+hpi.getDescription() + " ignored.");
+        	} else if(highlighter instanceof AbstractHighlighter ah) {
+        		// Highlighter is interface
+            	ah.setHighlightPredicate(hpi.getPredicate());
+            	HighlighterDemo.this.list.addHighlighter(ah);
+            	HighlighterDemo.this.table.addHighlighter(ah);
+            	if(hpi.getPredicate()==HighlightPredicate.ROLLOVER_ROW) {
+//            		LOG.info(hi.getDescription()+">>>>>>"+tree.isRolloverEnabled()+">>>>>>"+hpi.getDescription() + ">>HighlightPredicate.ROLLOVER_ROW");
+                	RolloverIconHighlighter roh = new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null);
+                	tree.setRolloverEnabled(true);
+                	HighlighterDemo.this.tree.addHighlighter(roh);
+                	HighlighterDemo.this.tree.addHighlighter(ah);
+            	} else {
+//            		LOG.info(hi.getDescription()+">>>>>>>>>>>>"+hpi.getDescription() + ">>"+hpi.getPredicate());
+                	HighlighterDemo.this.tree.addHighlighter(ah);
+            	}
+            	HighlighterDemo.this.treeTable.addHighlighter(ah);
+            	HighlighterDemo.this.comboBox.addHighlighter(ah);
+        	} else {
+        		// Highlighter is interface
+            	LOG.info(hi.getDescription()+">>>>>>>>>>>>"+highlighter);          	
+        		list.addHighlighter(highlighter);       		
+        	}
+        });
         control.add(predicates);
         controller.add(control, BorderLayout.NORTH);
 
-        bind();
+//        bind();
 
         return controller;
 	}
@@ -371,31 +421,44 @@ public class HighlighterDemo extends AbstractDemo {
     }
     
     private void bind() {
-        
-        Binding b = Bindings.createAutoBinding(READ,
+        Binding<JComboBox<HighlightPredicateInfo>
+        	, Property<JComboBox<HighlighterInfo>, Highlighter>
+        	, JComboBox<HighlighterInfo>
+        	, Property<JComboBox<HighlighterInfo>, Highlighter>> b = Bindings.createAutoBinding(READ,
                 predicates, ELProperty.create("${selectedItem.predicate}"),
                 highlighters, ELProperty.create("${selectedItem.highlighter.highlightPredicate}"));
         b.addBindingListener(new BindingAdapter() {
+        	@SuppressWarnings("rawtypes")
+			@Override // BindingAdapter.targetChanged(Binding binding, PropertyStateEvent event)
             public void targetChanged(Binding binding, PropertyStateEvent event) {
                 binding.refresh();
             }
         });
         b.bind();
         
+        // converts source properties into an array
         ArrayAggregator<Highlighter> activeHighlighters = new ArrayAggregator<Highlighter>(Highlighter.class);
+        // public <S> void addSource(S object, Property<S, SV> property) {
+        Property<HighlighterInfo, Highlighter> propHighlighter = ELProperty.create("${highlighter}");
         activeHighlighters.addSource(new HighlighterInfo("Tooltip for truncated text",
                 new ToolTipHighlighter(new HighlightPredicate.AndHighlightPredicate(
                         new HighlightPredicate() {
-                            @Override
+                            @Override // implements org.jdesktop.swingx.decorator.HighlightPredicate.isHighlighted
                             public boolean isHighlighted(Component renderer, ComponentAdapter adapter) {
                                 return adapter.getComponent() instanceof JTable;
                             }
                         }, HighlightPredicate.IS_TEXT_TRUNCATED))),
-                (Property) ELProperty.create("${highlighter}"));
-        activeHighlighters.addSource(stripingOptions,
-                (Property) ELProperty.create("${selectedItem.highlighter}"));
-        activeHighlighters.addSource(highlighters,
-                (Property) ELProperty.create("${selectedItem.highlighter}"));
+        		propHighlighter);
+        
+        // type of stripingOptions, highlighters is JComboBox<HighlighterInfo>:
+        Property<JComboBox<HighlighterInfo>, Highlighter> selectedHighlighter = ELProperty.create("${selectedItem.highlighter}");
+        activeHighlighters.addSource(stripingOptions, selectedHighlighter);
+        activeHighlighters.addSource(highlighters, selectedHighlighter);
+        // protected <S> void addSourceImpl(S object, Property<S, V> property)
+//        activeHighlighters.addSource(stripingOptions,
+//                (Property) ELProperty.create("${selectedItem.highlighter}"));
+//        activeHighlighters.addSource(highlighters,
+//                (Property) ELProperty.create("${selectedItem.highlighter}"));
         
         Bindings.createAutoBinding(READ,
                 activeHighlighters, BeanProperty.create("value"),

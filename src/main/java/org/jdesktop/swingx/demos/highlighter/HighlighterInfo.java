@@ -38,7 +38,7 @@ public final class HighlighterInfo {
         }
     }
     
-    private static final Highlighter EMPTY = new EmptyHighlighter();
+    public static final Highlighter EMPTY = new EmptyHighlighter();
     
     private final String description;
     private final Highlighter highlighter;
