@@ -93,6 +93,26 @@ import swingset.AbstractDemo;
 //        "org/jdesktop/swingx/demos/highlighter/resources/images/HighlighterDemo.png"
 //    }
 //)
+/*
+HighlightPredicate   | list   | table | tree | treeTable | comboBox
+               NEVER : ok     : ok    : ok   : ER1       : ok
+              ALWAYS : ok     : ok    : ok   : ok        : ok
+           HAS_FOCUS : ok     : ok    : ok   : ER2       : ER3
+Non-Leaf,  IS_FOLDER : nA 1   : nA    : ok   : ???       : nA
+Leaf Node,   IS_LEAF : ALWAYS : alle  : ok   : ???       : alle
+        ROLLOVER_ROW : OKnow  : ok    : OKnow: ok ???    : ???
+"Columns 0 and 3"    : alle   : ok    : alle : ok        : alle
+"Node Depth Columns.": nix    :
+"JButton Type"       : ???    :
+
+1: List row is always leaf
+ER1 : lässt sich nicht ausschalten
+ER2 : ganze Spalte ist highlighted
+ER3 : kein highlight wenn ausgeklappt
+??? : ERROR 
+
+ */
+
 public class HighlighterDemo extends AbstractDemo {
 
 	private static final long serialVersionUID = -7205284335967801438L;
@@ -242,7 +262,7 @@ public class HighlighterDemo extends AbstractDemo {
 				return StringValues.TO_STRING.getString(value);
 			}
 		}));
-		treeTable.packColumn(treeTable.getHierarchicalColumn(), -1);
+//		treeTable.packColumn(treeTable.getHierarchicalColumn(), -1);
 
         
         // ComponentModels.getComboBoxModel(Component root) liefert ComboBoxModel<Component>:
@@ -306,58 +326,42 @@ public class HighlighterDemo extends AbstractDemo {
                 return StringValues.TO_STRING.getString(value);
             }
         }));
+        control.add(predicates);
+        controller.add(control, BorderLayout.NORTH);
 
-        /*
-HighlightPredicate   | list   | table | tree | treeTable | comboBox
-               NEVER : ok     : ok    : ok   : ER1       : ok
-              ALWAYS : ok     : ok    : ok   : ok        : ok
-           HAS_FOCUS : ok     : ok    : ok   : ok        : ER2
-Non-Leaf,  IS_FOLDER : nA     : nA    : ok   : ???       : nA
-Leaf Node,   IS_LEAF : ALWAYS : alle  : ok   : ok        : alle
-        ROLLOVER_ROW : ???    : ok    : ???  : ok ???    : ???
-"Columns 0 and 3"    : alle   : ok    : alle : ok        : alle
-"Node Depth Columns.": nix    :
-"JButton Type"       : ???    :
-
-ER1 : lässt sich nicht ausschalten
-ER2 : kein highlight wenn ausgeklappt
-??? : ERROR 
-
-         */
         predicates.addActionListener( ae -> {
         	HighlightPredicateInfo hpi = (HighlightPredicateInfo)predicates.getSelectedItem();
         	HighlighterInfo hi = (HighlighterInfo)highlighters.getSelectedItem();
-//        	LOG.info(hi.getDescription()+">>>>>>>>>>>>"+hpi.getDescription() + ">>"+hpi.getPredicate());
+        	
         	Highlighter highlighter = hi.getHighlighter();
         	if(highlighter==HighlighterInfo.EMPTY) {
         		LOG.warning(hi.getDescription()+" with predicate "+hpi.getDescription() + " ignored.");
         	} else if(highlighter instanceof AbstractHighlighter ah) {
-        		// Highlighter is interface
+            	LOG.info(hi.getDescription()+" Predicate:"+hpi.getDescription());
             	ah.setHighlightPredicate(hpi.getPredicate());
-            	HighlighterDemo.this.list.addHighlighter(ah);
-            	HighlighterDemo.this.table.addHighlighter(ah);
             	if(hpi.getPredicate()==HighlightPredicate.ROLLOVER_ROW) {
-//            		LOG.info(hi.getDescription()+">>>>>>"+tree.isRolloverEnabled()+">>>>>>"+hpi.getDescription() + ">>HighlightPredicate.ROLLOVER_ROW");
-                	RolloverIconHighlighter roh = new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null);
-                	tree.setRolloverEnabled(true);
-                	HighlighterDemo.this.tree.addHighlighter(roh);
-                	HighlighterDemo.this.tree.addHighlighter(ah);
-            	} else {
-//            		LOG.info(hi.getDescription()+">>>>>>>>>>>>"+hpi.getDescription() + ">>"+hpi.getPredicate());
-                	HighlighterDemo.this.tree.addHighlighter(ah);
+            		
+            		// enable Rollover and add highlighter
+            		list.setRolloverEnabled(true);
+            		list.addHighlighter(ah);
+            		
+            		tree.setRolloverEnabled(true);
+            		tree.addHighlighter(ah);
+            		// for testing: add RolloverIconHighlighter
+//                	RolloverIconHighlighter roih = new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null);
+//                	tree.addHighlighter(roih);
+//                	treeTable.addHighlighter(roih);
+                	
+            		// Rollover prop is true per default for JXTable , JXTreeTable
+            		LOG.fine(" treeTable.isRolloverEnabled() ===== "+treeTable.isRolloverEnabled());
+            		
+            		// no setRolloverEnabled for comboBox
             	}
-            	HighlighterDemo.this.treeTable.addHighlighter(ah);
-            	HighlighterDemo.this.comboBox.addHighlighter(ah);
         	} else {
-        		// Highlighter is interface
-            	LOG.info(hi.getDescription()+">>>>>>>>>>>>"+highlighter);          	
-        		list.addHighlighter(highlighter);       		
-        	}
+            	LOG.warning(hi.getDescription()+" Highlighter:"+highlighter);          	
+       	}
         });
-        control.add(predicates);
-        controller.add(control, BorderLayout.NORTH);
-
-//        bind();
+        bind();
 
         return controller;
 	}
@@ -388,12 +392,10 @@ ER2 : kein highlight wenn ausgeklappt
         info.add(new HighlighterInfo("Purple Text", new ColorHighlighter(null, new Color(0x80, 0x00, 0x80))));
         info.add(new HighlighterInfo("Blended Red Background", new ColorHighlighter(new Color(255, 0, 0, 127), null)));
         info.add(new HighlighterInfo("Blended Green Background", new ColorHighlighter(new Color(0, 180, 0, 80), null)));
-//        info.add(new HighlighterInfo("Green Orb Icon",
-//                new IconHighlighter(Application.getInstance().getContext()
-//                        .getResourceMap(HighlighterDemo.class).getIcon("greenOrb"))));
-        Icon greenOrb = getResourceAsIcon(this.getClass(), "resources/images/green-orb.png");
 
+        Icon greenOrb = getResourceAsIcon(this.getClass(), "resources/images/green-orb.png");
         info.add(new HighlighterInfo("Green Orb Icon", new IconHighlighter(greenOrb)));
+        
         info.add(new HighlighterInfo("Aerith Gradient Painter", new PainterHighlighter(new MattePainter(PaintUtils.AERITH, true))));
         info.add(new HighlighterInfo("Star Shape Painter",
                 new PainterHighlighter(new ShapePainter(ShapeUtils.generatePolygon(5, 10, 5, true), PaintUtils.NIGHT_GRAY_LIGHT))));
@@ -438,8 +440,8 @@ ER2 : kein highlight wenn ausgeklappt
         
         // converts source properties into an array
         ArrayAggregator<Highlighter> activeHighlighters = new ArrayAggregator<Highlighter>(Highlighter.class);
-        // public <S> void addSource(S object, Property<S, SV> property) {
         Property<HighlighterInfo, Highlighter> propHighlighter = ELProperty.create("${highlighter}");
+//         public <S> void addSource(S object, Property<S, SV> property) {
         activeHighlighters.addSource(new HighlighterInfo("Tooltip for truncated text",
                 new ToolTipHighlighter(new HighlightPredicate.AndHighlightPredicate(
                         new HighlightPredicate() {
@@ -454,11 +456,6 @@ ER2 : kein highlight wenn ausgeklappt
         Property<JComboBox<HighlighterInfo>, Highlighter> selectedHighlighter = ELProperty.create("${selectedItem.highlighter}");
         activeHighlighters.addSource(stripingOptions, selectedHighlighter);
         activeHighlighters.addSource(highlighters, selectedHighlighter);
-        // protected <S> void addSourceImpl(S object, Property<S, V> property)
-//        activeHighlighters.addSource(stripingOptions,
-//                (Property) ELProperty.create("${selectedItem.highlighter}"));
-//        activeHighlighters.addSource(highlighters,
-//                (Property) ELProperty.create("${selectedItem.highlighter}"));
         
         Bindings.createAutoBinding(READ,
                 activeHighlighters, BeanProperty.create("value"),
