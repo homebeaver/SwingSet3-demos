@@ -30,33 +30,68 @@
  */ 
 package org.jdesktop.swingx.demos.xlist;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.BorderFactory; 
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.ImageIcon;
-import javax.swing.JTabbedPane;
-import javax.swing.JLabel;
-import javax.swing.JPanel; 
-import javax.swing.JFrame;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
+import swingset.plaf.LaFUtils;
 
 /*
  * copied from https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#BorderDemo
  * BorderDemo.java requires the following file:
  *    images/wavy.gif
  */
+@SuppressWarnings("serial")
 public class BorderDemo extends JPanel {
+	
+    public static void main(String[] args) {
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+    	if(args.length>0) LaFUtils.setLAF(args[0]);
+        SwingUtilities.invokeLater( () -> {
+            createAndShowGUI();
+        });
+    }
+
+    /**
+     * Create the GUI and show it.
+     * For thread safety, this method should be invoked from the event-dispatching thread.
+     */
+    private static void createAndShowGUI() {
+        //Create and set up the window.
+        JFrame frame = new JFrame("BorderDemo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Create and set up the content pane.
+        BorderDemo newContentPane = new BorderDemo();
+        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(newContentPane);
+
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+    }
+
     public BorderDemo() {
         super(new GridLayout(1,0));
 
         //Keep references to the next few borders,
         //for use in titles and compound borders.
-        Border blackline, raisedetched, loweredetched,
-               raisedbevel, loweredbevel, empty;
+        Border blackline, raisedetched, loweredetched, raisedbevel, loweredbevel, empty;
 
         //A border that puts 10 extra pixels at the sides and
         //bottom of each pane.
@@ -72,54 +107,35 @@ public class BorderDemo extends JPanel {
         //First pane: simple borders
         JPanel simpleBorders = new JPanel();
         simpleBorders.setBorder(paneEdge);
-        simpleBorders.setLayout(new BoxLayout(simpleBorders,
-                                              BoxLayout.Y_AXIS));
+        simpleBorders.setLayout(new BoxLayout(simpleBorders, BoxLayout.Y_AXIS));
 
-        addCompForBorder(blackline, "line border",
-                         simpleBorders);
-        addCompForBorder(raisedetched, "raised etched border",
-                         simpleBorders);
-        addCompForBorder(loweredetched, "lowered etched border",
-                         simpleBorders);
-        addCompForBorder(raisedbevel, "raised bevel border",
-                         simpleBorders);
-        addCompForBorder(loweredbevel, "lowered bevel border",
-                         simpleBorders);
-        addCompForBorder(empty, "empty border",
-                         simpleBorders);
+        addCompForBorder(blackline, "line border", simpleBorders);
+        addCompForBorder(raisedetched, "raised etched border", simpleBorders);
+        addCompForBorder(loweredetched, "lowered etched border", simpleBorders);
+        addCompForBorder(raisedbevel, "raised bevel border", simpleBorders);
+        addCompForBorder(loweredbevel, "lowered bevel border", simpleBorders);
+        addCompForBorder(empty, "empty border", simpleBorders);
 
         //Second pane: matte borders
         JPanel matteBorders = new JPanel();
         matteBorders.setBorder(paneEdge);
-        matteBorders.setLayout(new BoxLayout(matteBorders,
-                                              BoxLayout.Y_AXIS));
+        matteBorders.setLayout(new BoxLayout(matteBorders, BoxLayout.Y_AXIS));
 
-        ImageIcon icon = createImageIcon("images/wavy.gif",
-                                         "wavy-line border icon"); //20x22
+        ImageIcon icon = createImageIcon("resources/images/wavy.gif", "wavy-line border icon"); //20x22
         Border border = BorderFactory.createMatteBorder(-1, -1, -1, -1, icon);
         if (icon != null) {
-            addCompForBorder(border,
-                             "matte border (-1,-1,-1,-1,icon)",
-                             matteBorders);
+            addCompForBorder(border, "matte border (-1,-1,-1,-1,icon)", matteBorders);
         } else {
-            addCompForBorder(border,
-                             "matte border (-1,-1,-1,-1,<null-icon>)",
-                             matteBorders);
+            addCompForBorder(border, "matte border (-1,-1,-1,-1,<null-icon>)", matteBorders);
         }
         border = BorderFactory.createMatteBorder(1, 5, 1, 1, Color.red);
-        addCompForBorder(border,
-                         "matte border (1,5,1,1,Color.red)",
-                         matteBorders);
+        addCompForBorder(border, "matte border (1,5,1,1,Color.red)", matteBorders);
 
         border = BorderFactory.createMatteBorder(0, 20, 0, 0, icon);
         if (icon != null) {
-            addCompForBorder(border,
-                             "matte border (0,20,0,0,icon)",
-                             matteBorders);
+            addCompForBorder(border, "matte border (0,20,0,0,icon)", matteBorders);
         } else {
-            addCompForBorder(border,
-                             "matte border (0,20,0,0,<null-icon>)",
-                             matteBorders);
+            addCompForBorder(border, "matte border (0,20,0,0,<null-icon>)", matteBorders);
         }
 
         //Third pane: titled borders
@@ -233,8 +249,7 @@ public class BorderDemo extends JPanel {
 
 
     /** Returns an ImageIcon, or null if the path was invalid. */
-    protected static ImageIcon createImageIcon(String path,
-                                               String description) {
+    protected static ImageIcon createImageIcon(String path, String description) {
         java.net.URL imgURL = BorderDemo.class.getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL, description);
@@ -244,34 +259,5 @@ public class BorderDemo extends JPanel {
         }
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the 
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("BorderDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        BorderDemo newContentPane = new BorderDemo();
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
 }
 
