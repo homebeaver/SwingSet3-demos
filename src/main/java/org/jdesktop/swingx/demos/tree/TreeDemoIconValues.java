@@ -36,32 +36,18 @@ import com.jhlabs.image.InvertFilter;
 public class TreeDemoIconValues {
     
     private static final Logger LOG = Logger.getLogger(TreeDemoIconValues.class.getName());
+    private static Map<Object, Icon> iconCache;
     
     /**
      * An IconValue which maps cell value to an icon. The value is mapped
      * to a filename using a StringValue. The icons are loaded lazyly.
      */
     public static class LazyLoadingIconValue implements IconValue {
+    	
         private Class<?> baseClass;
         private StringValue keyToFileName;
-        private Map<Object, Icon> iconCache;
         private Icon fallbackIcon;
         
-        /**
-         * 
-         * @param baseClass Class
-         * @param sv StringValue
-         * @param fallbackName fallbackName
-         */
-        public LazyLoadingIconValue(Class<?> baseClass, StringValue sv, String fallbackName) {
-           this.baseClass = baseClass;
-           iconCache = new HashMap<Object, Icon>(); 
-           this.keyToFileName = sv;
-           // use a RadianceIcon as fallback
-           fallbackIcon = StopIcon.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON);
-           LOG.config("-------- baseClass:"+baseClass + " - " 
-        	+ (fallbackIcon==null ? "null fallbackIcon" : "fallbackIcon is "+fallbackName));
-        }
         
         // <snip> JXTree rendering
         // IconValue based on node value
@@ -72,19 +58,48 @@ public class TreeDemoIconValues {
          * loaded (and later cached) as a resource, using a lookup key created by a StringValue. 
          * 
          */
-        @Override
+        @Override // implements IconValue
         public Icon getIcon(Object value) {
-            String key = keyToFileName.getString(value);
-            Icon icon = iconCache.get(key);
-            if (icon ==  null) {
-                icon = loadIcon(key);
-             }
-            if (icon == null) {
-                icon = fallbackIcon;
-            }
-            return icon;
+/*
+value ist String und kann auch die nodes des leeren tree's enthalten, also
+INFORMATION: ---------------- for JTree class java.lang.String
+INFORMATION: ---------------- for colors class java.lang.String
+INFORMATION: ---------------- for sports class java.lang.String
+INFORMATION: ---------------- for food class java.lang.String
+
+        	LOG.info("---------------- for "+value + " "+value.getClass());
+
+ */
+        	Icon icon = iconCache.get(value);
+        	if(icon!=null) {
+        		LOG.info("cached icon "+icon + " for "+value);
+        		return icon;
+        	}
+        	String key = keyToFileName.getString(value);
+        	icon = loadIcon(key);
+        	if(icon!=null) {
+        		LOG.info("key "+key + "... icon "+icon + " for "+value);
+        		return icon;
+        	}
+        	return fallbackIcon;
         }
         // </snip>
+
+        /**
+         * 
+         * @param baseClass Class
+         * @param sv StringValue
+         * @param fallbackName fallbackName
+         */
+        public LazyLoadingIconValue(Class<?> baseClass, StringValue sv, String fallbackName) {
+           this.baseClass = baseClass;
+           if(iconCache==null) iconCache = new HashMap<Object, Icon>(); 
+           this.keyToFileName = sv;
+           // use a RadianceIcon as fallback
+           fallbackIcon = StopIcon.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON);
+           LOG.info("-------- baseClass:"+baseClass + ", sv:"+sv
+        	+ (fallbackIcon==null ? ", null fallbackIcon" : ", fallbackIcon is "+fallbackName));
+        }
         
         private Icon loadIcon(String key) {
             Icon icon = loadFromResource(key);
@@ -120,7 +135,8 @@ public class TreeDemoIconValues {
      * A IconValue which delegates icon lookup to another IconValue and returns
      * a manipulated icon.
      */
-    public static class FilteredIconValue implements IconValue {
+    @SuppressWarnings("serial")
+	public static class FilteredIconValue implements IconValue {
 
         private IconValue delegate;
         private Map<Object, Icon> iconCache;
@@ -155,8 +171,14 @@ public class TreeDemoIconValues {
         // wraps the given icon into an ImagePainter with a filter effect
         private Icon manipulatedIcon(Icon icon) {
             PainterIcon painterIcon = new PainterIcon(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
-            BufferedImage image = icon instanceof RadianceIcon ? ((RadianceIcon)icon).toImage(1)
-            	: (BufferedImage) ((ImageIcon) icon).getImage();
+        	BufferedImage image = null;
+        	if(icon instanceof RadianceIcon ri) {
+        		image = ri.toImage(1);
+        	} else if(icon instanceof ImageIcon ii) {
+        		image = (BufferedImage)ii.getImage();
+        	} else {
+        		LOG.warning("no manipulated Icon for "+icon);
+        	}
             
             // ImagePainter extends AbstractAreaPainter<Component>
             //                      AbstractAreaPainter<T> extends AbstractLayoutPainter<T>

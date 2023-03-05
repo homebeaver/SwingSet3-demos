@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -22,12 +23,13 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTree;
 import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXButton;
@@ -39,6 +41,8 @@ import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.Highlighter;
+import org.jdesktop.swingx.demos.highlighter.RolloverIconHighlighter;
+import org.jdesktop.swingx.demos.svg.FeatheRdisc;
 import org.jdesktop.swingx.demos.svg.FeatheRmusic;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.FilteredIconValue;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
@@ -50,7 +54,6 @@ import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.renderer.WrappingIconPanel;
 import org.jdesktop.swingx.rollover.RolloverProducer;
-import org.jdesktop.swingx.tree.DefaultXTreeCellRenderer;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import swingset.AbstractDemo;
@@ -168,7 +171,148 @@ public class XTreeDemo extends AbstractDemo {
 			return record;
 		}
     }
-    
+
+    class TreeNodeXX implements StringValue, IconValue {
+
+    	DefaultMutableTreeNode treeNode;
+    	TreeNodeXX(DefaultMutableTreeNode top) {
+    		treeNode = top;
+    	}
+ 
+    	private String string;
+    	private Icon icon;
+		private void setStringAndIcon(Object value) {
+//        	LOG.info(" ### value:"+value + " "+value.getClass());
+            if(value instanceof Album album) {
+            	//string = album.pixUrl==null ? album.record : album.pixUrl;
+            	string = album.record;
+            	icon = null; // TODO disc or folder UIManager.getIcon("Tree.openIcon")
+            	return;
+            } else if(value instanceof String stringValue) {
+            	// root of Music, Catagory, Artist/Composer, Song/Composition
+            	if(value==treeNode.getUserObject()) {
+            		// root of Music
+            		string = stringValue;
+            		icon = null; // TODO
+            		return;
+            	}
+            	Enumeration<TreeNode> children = treeNode.children();
+            	// Catagory : "Rock", ...
+//            	LOG.info("try Catagory for "+stringValue);
+            	while(children.hasMoreElements()) {
+            		TreeNode next = children.nextElement();
+//                	LOG.info("----- Catagory for "+next.getClass());
+                	if(next instanceof DefaultMutableTreeNode category) {
+                		if(value==category.getUserObject()) {
+//                			LOG.info(stringValue + " ist ----- Catagory "+category.getUserObject());
+                    		string = stringValue;
+                    		icon = null; // TODO folder
+                    		return;            			
+                		}
+                	}
+            	}
+            	children = treeNode.children();
+            	boolean isArtist = false;
+//            	LOG.info("try Artist for "+stringValue);
+            	while(children.hasMoreElements()) {
+            		TreeNode cat = children.nextElement();
+            		Enumeration<? extends TreeNode> artists = cat.children();
+            		while(artists.hasMoreElements()) {
+            			TreeNode next = artists.nextElement();
+            			if(next instanceof DefaultMutableTreeNode artist) {
+                			if(value==artist.getUserObject()) {
+                        		string = stringValue;
+                        		icon = null; // TODO person/s or folder
+                            	return;
+                			}
+            			}
+            		}
+            	}
+            	assert isArtist==false;
+            	// Record is instanceof Album! - so we have Songs here:
+//            	LOG.info("try Song/Composition for "+value);
+        		string = stringValue;
+//        		icon = FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS); // wieso 2x ??????? XXX
+        		return;
+            } else if(value instanceof DefaultMutableTreeNode dmtn) {
+            	Object uo = dmtn.getUserObject();
+//            	TreeNode[] tn = dmtn.getPath();
+//            	LOG.info(" "+uo+"### Path#:"+tn.length + " "+tn[tn.length-1] + " UserObject.Class:"+dmtn.getUserObject().getClass());
+            	/* tn.length==
+            	   1 : ==> root Music
+            	   2 : ==> Catagory : "Rock", ...
+            	   3 : ==> Artist : "Steve Miller Band", ...
+            	   4 : ==> Record : "The Joker", ... class org.jdesktop.swingx.demos.tree.XTreeDemo$Album
+            	           with toString()-method returns record
+            	 */
+            	if(uo instanceof Album album) {
+                	string = album.pixUrl==null ? album.record : album.pixUrl;
+                	icon = null; // TODO disc or folder
+            		return;
+            	}
+            	if(value==treeNode) {
+//                	LOG.info("top UserObject:"+uo + " UserObject.Class:"+uo.getClass());
+                	string = uo.toString();
+                	icon = null; // TODO music or folder
+                	return;
+            	}
+            	Enumeration<TreeNode> children = treeNode.children();
+            	boolean isCategory = false;
+            	while(children.hasMoreElements()) {
+            		TreeNode child = children.nextElement();
+            		isCategory = value==child; 
+            	}
+            	if(isCategory) {
+//                	LOG.info("Catagory UserObject:"+uo + " UserObject.Class:"+uo.getClass());
+                	string = uo.toString();
+            		icon = null; // TODO folder
+                	return;
+            	}
+            	assert isCategory==false;
+            	children = treeNode.children();
+            	boolean isArtist = false;
+            	while(children.hasMoreElements()) {
+            		TreeNode cat = children.nextElement();
+            		Enumeration<? extends TreeNode> artists = cat.children();
+            		while(artists.hasMoreElements()) {
+            			TreeNode artist = artists.nextElement();
+            			if(value==artist) {
+//                        	LOG.info("Artist UserObject:"+uo + " UserObject.Class:"+uo.getClass());
+                        	string = uo.toString();
+                    		icon = null; // TODO person or folder
+                        	return;
+            			}
+            		}
+            	}
+            	assert isArtist==false;
+            } else if(value instanceof Component) {
+                Component component = (Component) value;
+                String simpleName = component.getClass().getSimpleName();
+                if (simpleName.length() == 0){
+                    // anonymous class
+                    simpleName = component.getClass().getSuperclass().getSimpleName();
+                }
+                string = simpleName + "(" + component.getName() + ")";
+        		icon = null; // TODO ...
+            	return;
+            }
+        	LOG.warning("???????????????????????? :"+value);
+		}
+
+		@Override
+		public String getString(Object value) {
+			setStringAndIcon(value);
+			return string;
+        }
+		
+		@Override
+		public Icon getIcon(Object value) {
+			setStringAndIcon(value);
+			return icon;
+		}
+    	
+    }
+
     private JComponent createMusicTree() {
     	
         DefaultMutableTreeNode top = new DefaultMutableTreeNode(getBundleString("music"));
@@ -219,7 +363,8 @@ public class XTreeDemo extends AbstractDemo {
         } catch (IOException e) {
         }
 
-        JXTree tree = new JXTree(top) {
+        @SuppressWarnings("serial")
+		JXTree tree = new JXTree(top) {
             public Insets getInsets() {
                 return new Insets(5,5,5,5);
             }
@@ -246,14 +391,37 @@ public class XTreeDemo extends AbstractDemo {
         
         tree.setOpaque(true);
         
-        LOG.info("Tree.CellRenderer for music tree:"+tree.getCellRenderer());
-        DefaultTreeCellRenderer renderer = new DefaultXTreeCellRenderer();
-        /*
-         * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
-         */
-        renderer.setLeafIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+        LOG.config("default Tree.CellRenderer for music tree:"+tree.getCellRenderer());
+        TreeNodeXX tnsv = new TreeNodeXX(top);
+        DefaultTreeRenderer renderer = new DefaultTreeRenderer((StringValue)tnsv) {
+
+            public Component getTreeCellRendererComponent(JTree tree, Object value,
+                    boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+            	Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+            	if(value instanceof DefaultMutableTreeNode dmtn) {
+        			if(comp instanceof WrappingIconPanel wip) {
+        				if(leaf) { // Level==4
+            				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+        				} else if(3==dmtn.getLevel()) {
+        					wip.setIcon(FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+//        				} else {       					
+//            				LOG.info("---"+value+"--- row="+row + " Level="+dmtn.getLevel()
+//            					+ " dmtn.UserObject="+dmtn.getUserObject()); 
+        				}
+//        			} else {
+//        				LOG.info("---"+value+"--- row="+row + " NOT wip, comp="+comp); 
+        			}
+            	} else {
+            		LOG.warning("value \""+value+"\" is "+value.getClass());
+            	}
+            	return comp;
+            }
+
+        };
         tree.setCellRenderer(renderer);
-        
+        tree.setRolloverEnabled(true);
+    	RolloverIconHighlighter roih = new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null);
+    	tree.addHighlighter(roih);
         tree.setEditable(true);
         return new JScrollPane(tree);
     }
@@ -436,7 +604,7 @@ public class XTreeDemo extends AbstractDemo {
         	return;
         }
         TreeModel model = componentTree.getModel();
-        LOG.info("tree.Model.Root:"+(model==null?"null":model.getRoot()));
+        LOG.config("tree.Model.Root:"+(model==null?"null":model.getRoot()));
         // der Vergleich mit null ist nicht sinnvoll, denn ein "leeres Modell" liefert nicht null, 
         // sondern DefaultTreeModel mit JTree: colors, sports, food
         if (model == null || "JTree".equals(model.getRoot().toString())) {
