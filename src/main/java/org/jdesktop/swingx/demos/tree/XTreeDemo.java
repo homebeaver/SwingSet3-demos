@@ -172,7 +172,7 @@ public class XTreeDemo extends AbstractDemo {
 		}
     }
 
-    class TreeNodeXX implements StringValue, IconValue {
+    class TreeNodeXX implements StringValue {
 
     	DefaultMutableTreeNode treeNode;
     	TreeNodeXX(DefaultMutableTreeNode top) {
@@ -180,20 +180,17 @@ public class XTreeDemo extends AbstractDemo {
     	}
  
     	private String string;
-    	private Icon icon;
 		private void setStringAndIcon(Object value) {
 //        	LOG.info(" ### value:"+value + " "+value.getClass());
             if(value instanceof Album album) {
             	//string = album.pixUrl==null ? album.record : album.pixUrl;
             	string = album.record;
-            	icon = null; // TODO disc or folder UIManager.getIcon("Tree.openIcon")
             	return;
             } else if(value instanceof String stringValue) {
             	// root of Music, Catagory, Artist/Composer, Song/Composition
             	if(value==treeNode.getUserObject()) {
             		// root of Music
             		string = stringValue;
-            		icon = null; // TODO
             		return;
             	}
             	Enumeration<TreeNode> children = treeNode.children();
@@ -206,7 +203,6 @@ public class XTreeDemo extends AbstractDemo {
                 		if(value==category.getUserObject()) {
 //                			LOG.info(stringValue + " ist ----- Catagory "+category.getUserObject());
                     		string = stringValue;
-                    		icon = null; // TODO folder
                     		return;            			
                 		}
                 	}
@@ -222,7 +218,6 @@ public class XTreeDemo extends AbstractDemo {
             			if(next instanceof DefaultMutableTreeNode artist) {
                 			if(value==artist.getUserObject()) {
                         		string = stringValue;
-                        		icon = null; // TODO person/s or folder
                             	return;
                 			}
             			}
@@ -232,7 +227,6 @@ public class XTreeDemo extends AbstractDemo {
             	// Record is instanceof Album! - so we have Songs here:
 //            	LOG.info("try Song/Composition for "+value);
         		string = stringValue;
-//        		icon = FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS); // wieso 2x ??????? XXX
         		return;
             } else if(value instanceof DefaultMutableTreeNode dmtn) {
             	Object uo = dmtn.getUserObject();
@@ -247,13 +241,11 @@ public class XTreeDemo extends AbstractDemo {
             	 */
             	if(uo instanceof Album album) {
                 	string = album.pixUrl==null ? album.record : album.pixUrl;
-                	icon = null; // TODO disc or folder
             		return;
             	}
             	if(value==treeNode) {
 //                	LOG.info("top UserObject:"+uo + " UserObject.Class:"+uo.getClass());
                 	string = uo.toString();
-                	icon = null; // TODO music or folder
                 	return;
             	}
             	Enumeration<TreeNode> children = treeNode.children();
@@ -265,7 +257,6 @@ public class XTreeDemo extends AbstractDemo {
             	if(isCategory) {
 //                	LOG.info("Catagory UserObject:"+uo + " UserObject.Class:"+uo.getClass());
                 	string = uo.toString();
-            		icon = null; // TODO folder
                 	return;
             	}
             	assert isCategory==false;
@@ -279,7 +270,6 @@ public class XTreeDemo extends AbstractDemo {
             			if(value==artist) {
 //                        	LOG.info("Artist UserObject:"+uo + " UserObject.Class:"+uo.getClass());
                         	string = uo.toString();
-                    		icon = null; // TODO person or folder
                         	return;
             			}
             		}
@@ -293,7 +283,6 @@ public class XTreeDemo extends AbstractDemo {
                     simpleName = component.getClass().getSuperclass().getSimpleName();
                 }
                 string = simpleName + "(" + component.getName() + ")";
-        		icon = null; // TODO ...
             	return;
             }
         	LOG.warning("???????????????????????? :"+value);
@@ -305,12 +294,6 @@ public class XTreeDemo extends AbstractDemo {
 			return string;
         }
 		
-		@Override
-		public Icon getIcon(Object value) {
-			setStringAndIcon(value);
-			return icon;
-		}
-    	
     }
 
     private JComponent createMusicTree() {
