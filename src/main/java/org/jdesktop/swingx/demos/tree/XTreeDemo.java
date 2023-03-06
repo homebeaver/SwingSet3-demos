@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -29,7 +28,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXButton;
@@ -172,129 +170,129 @@ public class XTreeDemo extends AbstractDemo {
 		}
     }
 
-    class TreeNodeXX implements StringValue {
-
-    	DefaultMutableTreeNode treeNode;
-    	TreeNodeXX(DefaultMutableTreeNode top) {
-    		treeNode = top;
-    	}
- 
-    	private String string;
-		private void setStringAndIcon(Object value) {
-//        	LOG.info(" ### value:"+value + " "+value.getClass());
-            if(value instanceof Album album) {
-            	//string = album.pixUrl==null ? album.record : album.pixUrl;
-            	string = album.record;
-            	return;
-            } else if(value instanceof String stringValue) {
-            	// root of Music, Catagory, Artist/Composer, Song/Composition
-            	if(value==treeNode.getUserObject()) {
-            		// root of Music
-            		string = stringValue;
-            		return;
-            	}
-            	Enumeration<TreeNode> children = treeNode.children();
-            	// Catagory : "Rock", ...
-//            	LOG.info("try Catagory for "+stringValue);
-            	while(children.hasMoreElements()) {
-            		TreeNode next = children.nextElement();
-//                	LOG.info("----- Catagory for "+next.getClass());
-                	if(next instanceof DefaultMutableTreeNode category) {
-                		if(value==category.getUserObject()) {
-//                			LOG.info(stringValue + " ist ----- Catagory "+category.getUserObject());
-                    		string = stringValue;
-                    		return;            			
-                		}
-                	}
-            	}
-            	children = treeNode.children();
-            	boolean isArtist = false;
-//            	LOG.info("try Artist for "+stringValue);
-            	while(children.hasMoreElements()) {
-            		TreeNode cat = children.nextElement();
-            		Enumeration<? extends TreeNode> artists = cat.children();
-            		while(artists.hasMoreElements()) {
-            			TreeNode next = artists.nextElement();
-            			if(next instanceof DefaultMutableTreeNode artist) {
-                			if(value==artist.getUserObject()) {
-                        		string = stringValue;
-                            	return;
-                			}
-            			}
-            		}
-            	}
-            	assert isArtist==false;
-            	// Record is instanceof Album! - so we have Songs here:
-//            	LOG.info("try Song/Composition for "+value);
-        		string = stringValue;
-        		return;
-            } else if(value instanceof DefaultMutableTreeNode dmtn) {
-            	Object uo = dmtn.getUserObject();
-//            	TreeNode[] tn = dmtn.getPath();
-//            	LOG.info(" "+uo+"### Path#:"+tn.length + " "+tn[tn.length-1] + " UserObject.Class:"+dmtn.getUserObject().getClass());
-            	/* tn.length==
-            	   1 : ==> root Music
-            	   2 : ==> Catagory : "Rock", ...
-            	   3 : ==> Artist : "Steve Miller Band", ...
-            	   4 : ==> Record : "The Joker", ... class org.jdesktop.swingx.demos.tree.XTreeDemo$Album
-            	           with toString()-method returns record
-            	 */
-            	if(uo instanceof Album album) {
-                	string = album.pixUrl==null ? album.record : album.pixUrl;
-            		return;
-            	}
-            	if(value==treeNode) {
-//                	LOG.info("top UserObject:"+uo + " UserObject.Class:"+uo.getClass());
-                	string = uo.toString();
-                	return;
-            	}
-            	Enumeration<TreeNode> children = treeNode.children();
-            	boolean isCategory = false;
-            	while(children.hasMoreElements()) {
-            		TreeNode child = children.nextElement();
-            		isCategory = value==child; 
-            	}
-            	if(isCategory) {
-//                	LOG.info("Catagory UserObject:"+uo + " UserObject.Class:"+uo.getClass());
-                	string = uo.toString();
-                	return;
-            	}
-            	assert isCategory==false;
-            	children = treeNode.children();
-            	boolean isArtist = false;
-            	while(children.hasMoreElements()) {
-            		TreeNode cat = children.nextElement();
-            		Enumeration<? extends TreeNode> artists = cat.children();
-            		while(artists.hasMoreElements()) {
-            			TreeNode artist = artists.nextElement();
-            			if(value==artist) {
-//                        	LOG.info("Artist UserObject:"+uo + " UserObject.Class:"+uo.getClass());
-                        	string = uo.toString();
-                        	return;
-            			}
-            		}
-            	}
-            	assert isArtist==false;
-            } else if(value instanceof Component) {
-                Component component = (Component) value;
-                String simpleName = component.getClass().getSimpleName();
-                if (simpleName.length() == 0){
-                    // anonymous class
-                    simpleName = component.getClass().getSuperclass().getSimpleName();
-                }
-                string = simpleName + "(" + component.getName() + ")";
-            	return;
-            }
-        	LOG.warning("???????????????????????? :"+value);
-		}
-
-		@Override
-		public String getString(Object value) {
-			setStringAndIcon(value);
-			return string;
-        }
-		
-    }
+//    class TreeNodeXX implements StringValue {
+//
+//    	DefaultMutableTreeNode treeNode;
+//    	TreeNodeXX(DefaultMutableTreeNode top) {
+//    		treeNode = top;
+//    	}
+// 
+//    	private String string;
+//		private void setStringAndIcon(Object value) {
+////        	LOG.info(" ### value:"+value + " "+value.getClass());
+//            if(value instanceof Album album) {
+//            	//string = album.pixUrl==null ? album.record : album.pixUrl;
+//            	string = album.record;
+//            	return;
+//            } else if(value instanceof String stringValue) {
+//            	// root of Music, Catagory, Artist/Composer, Song/Composition
+//            	if(value==treeNode.getUserObject()) {
+//            		// root of Music
+//            		string = stringValue;
+//            		return;
+//            	}
+//            	Enumeration<TreeNode> children = treeNode.children();
+//            	// Catagory : "Rock", ...
+////            	LOG.info("try Catagory for "+stringValue);
+//            	while(children.hasMoreElements()) {
+//            		TreeNode next = children.nextElement();
+////                	LOG.info("----- Catagory for "+next.getClass());
+//                	if(next instanceof DefaultMutableTreeNode category) {
+//                		if(value==category.getUserObject()) {
+////                			LOG.info(stringValue + " ist ----- Catagory "+category.getUserObject());
+//                    		string = stringValue;
+//                    		return;            			
+//                		}
+//                	}
+//            	}
+//            	children = treeNode.children();
+//            	boolean isArtist = false;
+////            	LOG.info("try Artist for "+stringValue);
+//            	while(children.hasMoreElements()) {
+//            		TreeNode cat = children.nextElement();
+//            		Enumeration<? extends TreeNode> artists = cat.children();
+//            		while(artists.hasMoreElements()) {
+//            			TreeNode next = artists.nextElement();
+//            			if(next instanceof DefaultMutableTreeNode artist) {
+//                			if(value==artist.getUserObject()) {
+//                        		string = stringValue;
+//                            	return;
+//                			}
+//            			}
+//            		}
+//            	}
+//            	assert isArtist==false;
+//            	// Record is instanceof Album! - so we have Songs here:
+////            	LOG.info("try Song/Composition for "+value);
+//        		string = stringValue;
+//        		return;
+//            } else if(value instanceof DefaultMutableTreeNode dmtn) {
+//            	Object uo = dmtn.getUserObject();
+////            	TreeNode[] tn = dmtn.getPath();
+////            	LOG.info(" "+uo+"### Path#:"+tn.length + " "+tn[tn.length-1] + " UserObject.Class:"+dmtn.getUserObject().getClass());
+//            	/* tn.length==
+//            	   1 : ==> root Music
+//            	   2 : ==> Catagory : "Rock", ...
+//            	   3 : ==> Artist : "Steve Miller Band", ...
+//            	   4 : ==> Record : "The Joker", ... class org.jdesktop.swingx.demos.tree.XTreeDemo$Album
+//            	           with toString()-method returns record
+//            	 */
+//            	if(uo instanceof Album album) {
+//                	string = album.pixUrl==null ? album.record : album.pixUrl;
+//            		return;
+//            	}
+//            	if(value==treeNode) {
+////                	LOG.info("top UserObject:"+uo + " UserObject.Class:"+uo.getClass());
+//                	string = uo.toString();
+//                	return;
+//            	}
+//            	Enumeration<TreeNode> children = treeNode.children();
+//            	boolean isCategory = false;
+//            	while(children.hasMoreElements()) {
+//            		TreeNode child = children.nextElement();
+//            		isCategory = value==child; 
+//            	}
+//            	if(isCategory) {
+////                	LOG.info("Catagory UserObject:"+uo + " UserObject.Class:"+uo.getClass());
+//                	string = uo.toString();
+//                	return;
+//            	}
+//            	assert isCategory==false;
+//            	children = treeNode.children();
+//            	boolean isArtist = false;
+//            	while(children.hasMoreElements()) {
+//            		TreeNode cat = children.nextElement();
+//            		Enumeration<? extends TreeNode> artists = cat.children();
+//            		while(artists.hasMoreElements()) {
+//            			TreeNode artist = artists.nextElement();
+//            			if(value==artist) {
+////                        	LOG.info("Artist UserObject:"+uo + " UserObject.Class:"+uo.getClass());
+//                        	string = uo.toString();
+//                        	return;
+//            			}
+//            		}
+//            	}
+//            	assert isArtist==false;
+//            } else if(value instanceof Component) {
+//                Component component = (Component) value;
+//                String simpleName = component.getClass().getSimpleName();
+//                if (simpleName.length() == 0){
+//                    // anonymous class
+//                    simpleName = component.getClass().getSuperclass().getSimpleName();
+//                }
+//                string = simpleName + "(" + component.getName() + ")";
+//            	return;
+//            }
+//        	LOG.warning("???????????????????????? :"+value);
+//		}
+//
+//		@Override
+//		public String getString(Object value) {
+//			setStringAndIcon(value);
+//			return string;
+//        }
+//		
+//    }
 
     private JComponent createMusicTree() {
     	
@@ -375,8 +373,19 @@ public class XTreeDemo extends AbstractDemo {
         tree.setOpaque(true);
         
         LOG.config("default Tree.CellRenderer for music tree:"+tree.getCellRenderer());
-        TreeNodeXX tnsv = new TreeNodeXX(top);
-        DefaultTreeRenderer renderer = new DefaultTreeRenderer((StringValue)tnsv) {
+//        TreeNodeXX tnsv = new TreeNodeXX(top);
+        StringValue sv = new StringValue() {          
+            @Override
+            public String getString(Object value) {
+            	LOG.fine(" ### value:"+value + " "+value.getClass());
+                if(value instanceof String string) {
+                	return StringValues.TO_STRING.getString(value);
+                }
+                String simpleName = value.getClass().getSimpleName();
+                return simpleName + "(" + value + ")";
+            }
+        };
+        DefaultTreeRenderer renderer = new DefaultTreeRenderer(sv) {
 
             public Component getTreeCellRendererComponent(JTree tree, Object value,
                     boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
