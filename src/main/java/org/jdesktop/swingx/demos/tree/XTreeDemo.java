@@ -9,11 +9,6 @@ import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Window;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -138,214 +133,16 @@ public class XTreeDemo extends AbstractDemo {
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
         tabbedpane.setTabPlacement(JTabbedPane.TOP);
         tabbedpane.getModel().addChangeListener( changeEvent -> {
-            SingleSelectionModel model = (SingleSelectionModel) changeEvent.getSource();
+            SingleSelectionModel ssmodel = (SingleSelectionModel) changeEvent.getSource();
         });
     }
 
-    class Album {
-    	static char SEPARATOR = ';';
-        private String record; // title of the album
-        private String pixUrl; // wikimedia image url of the album
-        // f.i. "https://upload.wikimedia.org/wikipedia/en/a/ac/My_Name_Is_Albert_Ayler.jpg"
-        
-		Album(String line) {
-			String recordAlbumpix = line.substring(2);
-			int separator = recordAlbumpix.indexOf(SEPARATOR);
-			pixUrl = null;
-			if (separator == -1) {
-				record = recordAlbumpix;
-			} else {
-				record = recordAlbumpix.substring(0, separator);
-				pixUrl = recordAlbumpix.substring(separator+1);
-			}
-		}
-
-		public String getHtmlSrc() {
-			if(pixUrl==null) return null;
-			return "<html>" + "<img src=\"" + pixUrl + "\">"+ "</html>";
-		}
-
-		public String toString() {
-			return record;
-		}
-    }
-
-//    class TreeNodeXX implements StringValue {
-//
-//    	DefaultMutableTreeNode treeNode;
-//    	TreeNodeXX(DefaultMutableTreeNode top) {
-//    		treeNode = top;
-//    	}
-// 
-//    	private String string;
-//		private void setStringAndIcon(Object value) {
-////        	LOG.info(" ### value:"+value + " "+value.getClass());
-//            if(value instanceof Album album) {
-//            	//string = album.pixUrl==null ? album.record : album.pixUrl;
-//            	string = album.record;
-//            	return;
-//            } else if(value instanceof String stringValue) {
-//            	// root of Music, Catagory, Artist/Composer, Song/Composition
-//            	if(value==treeNode.getUserObject()) {
-//            		// root of Music
-//            		string = stringValue;
-//            		return;
-//            	}
-//            	Enumeration<TreeNode> children = treeNode.children();
-//            	// Catagory : "Rock", ...
-////            	LOG.info("try Catagory for "+stringValue);
-//            	while(children.hasMoreElements()) {
-//            		TreeNode next = children.nextElement();
-////                	LOG.info("----- Catagory for "+next.getClass());
-//                	if(next instanceof DefaultMutableTreeNode category) {
-//                		if(value==category.getUserObject()) {
-////                			LOG.info(stringValue + " ist ----- Catagory "+category.getUserObject());
-//                    		string = stringValue;
-//                    		return;            			
-//                		}
-//                	}
-//            	}
-//            	children = treeNode.children();
-//            	boolean isArtist = false;
-////            	LOG.info("try Artist for "+stringValue);
-//            	while(children.hasMoreElements()) {
-//            		TreeNode cat = children.nextElement();
-//            		Enumeration<? extends TreeNode> artists = cat.children();
-//            		while(artists.hasMoreElements()) {
-//            			TreeNode next = artists.nextElement();
-//            			if(next instanceof DefaultMutableTreeNode artist) {
-//                			if(value==artist.getUserObject()) {
-//                        		string = stringValue;
-//                            	return;
-//                			}
-//            			}
-//            		}
-//            	}
-//            	assert isArtist==false;
-//            	// Record is instanceof Album! - so we have Songs here:
-////            	LOG.info("try Song/Composition for "+value);
-//        		string = stringValue;
-//        		return;
-//            } else if(value instanceof DefaultMutableTreeNode dmtn) {
-//            	Object uo = dmtn.getUserObject();
-////            	TreeNode[] tn = dmtn.getPath();
-////            	LOG.info(" "+uo+"### Path#:"+tn.length + " "+tn[tn.length-1] + " UserObject.Class:"+dmtn.getUserObject().getClass());
-//            	/* tn.length==
-//            	   1 : ==> root Music
-//            	   2 : ==> Catagory : "Rock", ...
-//            	   3 : ==> Artist : "Steve Miller Band", ...
-//            	   4 : ==> Record : "The Joker", ... class org.jdesktop.swingx.demos.tree.XTreeDemo$Album
-//            	           with toString()-method returns record
-//            	 */
-//            	if(uo instanceof Album album) {
-//                	string = album.pixUrl==null ? album.record : album.pixUrl;
-//            		return;
-//            	}
-//            	if(value==treeNode) {
-////                	LOG.info("top UserObject:"+uo + " UserObject.Class:"+uo.getClass());
-//                	string = uo.toString();
-//                	return;
-//            	}
-//            	Enumeration<TreeNode> children = treeNode.children();
-//            	boolean isCategory = false;
-//            	while(children.hasMoreElements()) {
-//            		TreeNode child = children.nextElement();
-//            		isCategory = value==child; 
-//            	}
-//            	if(isCategory) {
-////                	LOG.info("Catagory UserObject:"+uo + " UserObject.Class:"+uo.getClass());
-//                	string = uo.toString();
-//                	return;
-//            	}
-//            	assert isCategory==false;
-//            	children = treeNode.children();
-//            	boolean isArtist = false;
-//            	while(children.hasMoreElements()) {
-//            		TreeNode cat = children.nextElement();
-//            		Enumeration<? extends TreeNode> artists = cat.children();
-//            		while(artists.hasMoreElements()) {
-//            			TreeNode artist = artists.nextElement();
-//            			if(value==artist) {
-////                        	LOG.info("Artist UserObject:"+uo + " UserObject.Class:"+uo.getClass());
-//                        	string = uo.toString();
-//                        	return;
-//            			}
-//            		}
-//            	}
-//            	assert isArtist==false;
-//            } else if(value instanceof Component) {
-//                Component component = (Component) value;
-//                String simpleName = component.getClass().getSimpleName();
-//                if (simpleName.length() == 0){
-//                    // anonymous class
-//                    simpleName = component.getClass().getSuperclass().getSimpleName();
-//                }
-//                string = simpleName + "(" + component.getName() + ")";
-//            	return;
-//            }
-//        	LOG.warning("???????????????????????? :"+value);
-//		}
-//
-//		@Override
-//		public String getString(Object value) {
-//			setStringAndIcon(value);
-//			return string;
-//        }
-//		
-//    }
-
     private JComponent createMusicTree() {
     	
-        DefaultMutableTreeNode top = new DefaultMutableTreeNode(getBundleString("music"));
-        DefaultMutableTreeNode catagory = null ;
-        DefaultMutableTreeNode artist = null;
-        DefaultMutableTreeNode record = null;
-
-        // open tree data
-        URL url = getClass().getResource("resources/tree.txt");
-        LOG.info("tree data url="+url);
-
-        try {
-            // convert url to buffered string
-            InputStream is = url.openStream();
-            InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-            BufferedReader reader = new BufferedReader(isr);
-
-            // read one line at a time, put into tree
-            String line = reader.readLine();
-            while(line != null) {
-            	LOG.fine("reading in: ->" + line + "<-");
-                char linetype = line.charAt(0);
-                switch(linetype) {
-                   case 'C':
-                     catagory = new DefaultMutableTreeNode(line.substring(2));
-                     top.add(catagory);
-                     break;
-                   case 'A':
-                     if(catagory != null) {
-                         catagory.add(artist = new DefaultMutableTreeNode(line.substring(2)));
-                     }
-                     break;
-                   case 'R':
-                     if(artist != null) {
-                    	 artist.add(record = new DefaultMutableTreeNode(new Album(line)));
-                     }
-                     break;
-                   case 'S':
-                     if(record != null) {
-                         record.add(new DefaultMutableTreeNode(line.substring(2)));
-                     }
-                     break;
-                   default:
-                     break;
-                }
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-        }
+    	MusicTreeModel model = new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"));
 
         @SuppressWarnings("serial")
-		JXTree tree = new JXTree(top) {
+		JXTree tree = new JXTree(model) {
             public Insets getInsets() {
                 return new Insets(5,5,5,5);
             }
@@ -363,9 +160,9 @@ public class XTreeDemo extends AbstractDemo {
 					Object o = treePath.getLastPathComponent();
 //					LOG.info("PathFor newPoint.y: "+source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"+propertyChangeEvent);
 					// show https://en.wikipedia.org/wiki/File:My_Name_Is_Albert_Ayler.jpg
-					DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)o;	
-					Album album = (Album)dmtn.getUserObject();
-					source.setToolTipText(album.getHtmlSrc());
+					if(o instanceof MusicTreeModel.Album album) {
+						source.setToolTipText(album.getHtmlSrc());
+					}
 				}
 			}
         });
@@ -373,12 +170,14 @@ public class XTreeDemo extends AbstractDemo {
         tree.setOpaque(true);
         
         LOG.config("default Tree.CellRenderer for music tree:"+tree.getCellRenderer());
-//        TreeNodeXX tnsv = new TreeNodeXX(top);
         StringValue sv = new StringValue() {          
             @Override
             public String getString(Object value) {
             	LOG.fine(" ### value:"+value + " "+value.getClass());
-                if(value instanceof String string) {
+                if(value instanceof String
+                || value instanceof MusicTreeModel.Album
+                || value instanceof MusicTreeModel.Song
+                ) {
                 	return StringValues.TO_STRING.getString(value);
                 }
                 String simpleName = value.getClass().getSimpleName();
@@ -387,10 +186,27 @@ public class XTreeDemo extends AbstractDemo {
         };
         DefaultTreeRenderer renderer = new DefaultTreeRenderer(sv) {
 
+//            public ComponentProvider<?> getComponentProvider() {
+//            	ComponentProvider<?> cp = super.getComponentProvider();
+//            	//LOG.info(">>>>>>>>>>>>>"+cp);
+//                return cp;
+//            }
+
             public Component getTreeCellRendererComponent(JTree tree, Object value,
                     boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
             	Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-            	if(value instanceof DefaultMutableTreeNode dmtn) {
+//            	ComponentProvider<?> cp = getComponentProvider();
+//            	if(cp instanceof WrappingProvider wp) {
+//            		// wp         WrappingProvider extends ComponentProvider<WrappingIconPanel>
+//            		// wp.wrappee    LabelProvider extends ComponentProvider<JLabel>
+//            		ComponentProvider<?> wrappee = wp.getWrappee();
+//            		LOG.info(wp+">>>>>>>>>>>>> wrappee:"+wrappee);
+//            		if(wrappee instanceof LabelProvider lp) {
+//            			StringValue lpsv = lp.getStringValue();
+//                		LOG.info(sv+">>>>>>>>>>>>> lpsv:"+lpsv);
+//            		}
+//            	}
+            	if(value instanceof DefaultMutableTreeNode dmtn) { // local implementation
         			if(comp instanceof WrappingIconPanel wip) {
         				if(leaf) { // Level==4
             				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
@@ -403,6 +219,15 @@ public class XTreeDemo extends AbstractDemo {
 //        			} else {
 //        				LOG.info("---"+value+"--- row="+row + " NOT wip, comp="+comp); 
         			}
+            	} else if(value instanceof MusicTreeModel.Song song) {
+            		if(comp instanceof WrappingIconPanel wip) {
+        				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+            		}
+            	} else if(value instanceof MusicTreeModel.Album album) {
+            		if(comp instanceof WrappingIconPanel wip) {
+    					wip.setIcon(FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+            		}
+            	} else if(value instanceof String string) {
             	} else {
             		LOG.warning("value \""+value+"\" is "+value.getClass());
             	}

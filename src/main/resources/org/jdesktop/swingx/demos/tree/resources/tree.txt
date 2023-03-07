@@ -31,11 +31,11 @@ S No. 1 - C Major
 S No. 2 - D Major
 S No. 3 - E-Flat Major
 S No. 4 - B-Flat Major
-S No. 5 - C Minor
+S No. 5 - C Minor;https://commons.wikimedia.org/wiki/File:Ludwig_van_Beethoven_-_Symphonie_5_c-moll_-_1._Allegro_con_brio.ogg
 S No. 6 - F Major
 S No. 7 - A Major
-S No. 8 - F Major
-S No. 9 - D Minor
+S No. 8 - F Major;https://commons.wikimedia.org/wiki/File:Ludwig_van_Beethoven_-_symphony_no._8_in_f_major,_op._93_-_iv._allegro_vivace.ogg
+S No. 9 - D Minor;https://commons.wikimedia.org/wiki/File:PMLP01607-Symphony_No.9,_Op.125_(Beethoven,_Ludwig_van),_II._Scherzo,_Molto_vivace_-_Presto.ogg
 A Brahms
 R Concertos
 S Violin Concerto
@@ -51,7 +51,7 @@ R Sonatas
 S Two Sonatas for Clarinet - F Minor
 S Two Sonatas for Clarinet - E-Flat Major
 R Symphonies
-S No. 1 - C Minor
+S No. 1 - C Minor;https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._1_in_C_Minor,_Op._68_-_I._Un_poco_sostenuto_-_Allegro.ogg
 S No. 2 - D Minor
 S No. 3 - F Major
 S No. 4 - E Minor
