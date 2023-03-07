@@ -163,6 +163,11 @@ public class XTreeDemo extends AbstractDemo {
 					if(o instanceof MusicTreeModel.Album album) {
 						source.setToolTipText(album.getHtmlSrc());
 					}
+				} else if(treePath.getPathCount()==5) { // Song / Composition
+					Object o = treePath.getLastPathComponent();
+					if(o instanceof MusicTreeModel.Song song) {
+						source.setToolTipText(song.getHtmlSrc());
+					}
 				}
 			}
         });
@@ -186,50 +191,19 @@ public class XTreeDemo extends AbstractDemo {
         };
         DefaultTreeRenderer renderer = new DefaultTreeRenderer(sv) {
 
-//            public ComponentProvider<?> getComponentProvider() {
-//            	ComponentProvider<?> cp = super.getComponentProvider();
-//            	//LOG.info(">>>>>>>>>>>>>"+cp);
-//                return cp;
-//            }
-
             public Component getTreeCellRendererComponent(JTree tree, Object value,
                     boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
             	Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-//            	ComponentProvider<?> cp = getComponentProvider();
-//            	if(cp instanceof WrappingProvider wp) {
-//            		// wp         WrappingProvider extends ComponentProvider<WrappingIconPanel>
-//            		// wp.wrappee    LabelProvider extends ComponentProvider<JLabel>
-//            		ComponentProvider<?> wrappee = wp.getWrappee();
-//            		LOG.info(wp+">>>>>>>>>>>>> wrappee:"+wrappee);
-//            		if(wrappee instanceof LabelProvider lp) {
-//            			StringValue lpsv = lp.getStringValue();
-//                		LOG.info(sv+">>>>>>>>>>>>> lpsv:"+lpsv);
-//            		}
-//            	}
-            	if(value instanceof DefaultMutableTreeNode dmtn) { // local implementation
-        			if(comp instanceof WrappingIconPanel wip) {
-        				if(leaf) { // Level==4
-            				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
-        				} else if(3==dmtn.getLevel()) {
-        					wip.setIcon(FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-//        				} else {       					
-//            				LOG.info("---"+value+"--- row="+row + " Level="+dmtn.getLevel()
-//            					+ " dmtn.UserObject="+dmtn.getUserObject()); 
-        				}
-//        			} else {
-//        				LOG.info("---"+value+"--- row="+row + " NOT wip, comp="+comp); 
-        			}
-            	} else if(value instanceof MusicTreeModel.Song song) {
-            		if(comp instanceof WrappingIconPanel wip) {
+            	if(comp instanceof WrappingIconPanel wip) {
+                	if(value instanceof String string) {
+                		// default icon for Catagory, Artist/Composer
+                	} else if(value instanceof MusicTreeModel.Song song) {
         				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
-            		}
-            	} else if(value instanceof MusicTreeModel.Album album) {
-            		if(comp instanceof WrappingIconPanel wip) {
+                	} else if(value instanceof MusicTreeModel.Album album) {
     					wip.setIcon(FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-            		}
-            	} else if(value instanceof String string) {
-            	} else {
-            		LOG.warning("value \""+value+"\" is "+value.getClass());
+                	} else {
+                		LOG.warning("value \""+value+"\" is "+value.getClass());
+                	}
             	}
             	return comp;
             }

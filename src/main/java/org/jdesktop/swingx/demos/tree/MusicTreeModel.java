@@ -75,10 +75,14 @@ or
 	<audio src="AudioTest.ogg" autoplay>
 	  <a href="AudioTest.ogg">Download OGG audio</a>.
 	</audio>
+	
+    setToolTipText("<html><center><font color=blue size=+2>" + utl + "</font></center></html>");
+	
+	
  */
 		public String getHtmlSrc() {
 			if(url==null) return null;
-			return "<html>" + "<audio src=\"" + url + "\" autoplay>"+ "</html>";
+			return "<html>" + "<center><font color=blue size=+1>"+url+"</font></center>" + "</html>";
 		}
 
 		public String toString() {
