@@ -72,8 +72,13 @@ public class RolloverIconHighlighter extends IconHighlighter {
         	} else if(icon instanceof ImageIcon ii) {
         		image = (BufferedImage)ii.getImage();
         	} else {
-//        		WARNUNG: no highlighting for org.jdesktop.swingx.icon.PainterIcon@592c127c
-        		LOG.warning("no highlighting for "+icon); //
+/*        		WARNUNG: no highlighting for org.jdesktop.swingx.icon.PainterIcon@592c127c
+//        		WARNUNG: no highlighting for javax.swing.plaf.nimbus.NimbusIcon@2e76ae70
+   passiert bei XTreeDemo mit Nimbus,
+   weil dort für die nimbus icons directoryIcon verwendet werden
+
+ */       		
+        		LOG.warning("no highlighting for "+icon);
         	}
         	AbstractAreaPainter<Component> delegate = new ImagePainter(image);
         	delegate.setFilters(new InvertFilter());

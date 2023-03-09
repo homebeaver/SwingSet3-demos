@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 
 import javax.swing.event.TreeModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -15,7 +17,7 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 // interface TreeTableModel extends TreeModel
-public class MusicTreeModel implements TreeTableModel {
+public class MusicTreeModel extends AbstractTableModel implements TreeTableModel {
 
     static public class Album {
     	static char SEPARATOR = ';';
@@ -35,6 +37,16 @@ public class MusicTreeModel implements TreeTableModel {
 			}
 		}
 
+		public URL getURL() {
+			try {
+				return pixUrl==null ? null : new URL(pixUrl);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;		
+		}
+		
 		public String getHtmlSrc() {
 			if(pixUrl==null) return null;
 			return "<html>" + "<img src=\"" + pixUrl + "\">"+ "</html>";
@@ -63,6 +75,10 @@ public class MusicTreeModel implements TreeTableModel {
 			}
 		}
 
+		public URL getURL() throws MalformedURLException {
+			return new URL(url);
+		}
+		
 /*
     <audio
         controls
@@ -90,15 +106,23 @@ or
 		}
     }
 
+    int rowCount = 0;
     DefaultMutableTreeNode top;
     DefaultMutableTreeNode catagory;
     DefaultMutableTreeNode artist;
     DefaultMutableTreeNode record;
     DefaultMutableTreeNode song;
 
+	private MusicTreeModel() {
+		super();
+	}
+	
 	MusicTreeModel(String topName, URL url) {
+		this();
 //        LOG.info(top + " tree data url="+url);
-        top = new DefaultMutableTreeNode(topName);
+		// use url.getProtocol() or url.getPath()
+        top = new DefaultMutableTreeNode(topName==null ? url.getPath() : topName);
+        rowCount++;
         try {
             // convert url to buffered string
             InputStream is = url.openStream();
@@ -114,21 +138,25 @@ or
                    case 'C':
                      catagory = new DefaultMutableTreeNode(line.substring(2));
                      top.add(catagory);
+                     rowCount++;
                      break;
                    case 'A':
                      if(catagory != null) {
                          catagory.add(artist = new DefaultMutableTreeNode(line.substring(2)));
+                         rowCount++;
                      }
                      break;
                    case 'R':
                      if(artist != null) {
                     	 artist.add(record = new DefaultMutableTreeNode(new Album(line)));
+                         rowCount++;
                      }
                      break;
                    case 'S':
                      if(record != null) {
 //                         record.add(new DefaultMutableTreeNode(line.substring(2)));
                          record.add(song = new DefaultMutableTreeNode(new Song(line)));
+                         rowCount++;
                      }
                      break;
                    default:
@@ -139,6 +167,21 @@ or
         } catch (IOException e) {
         }
 	}
+
+	// implements abstract methods of AbstractTableModel ----------------------------
+	
+	@Override
+	public int getRowCount() {
+		return rowCount;
+	}
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+// implements interface TreeModel and TreeTableModel ---------------------------------
 
 	@Override
 	public Object getRoot() {
@@ -206,32 +249,36 @@ or
 	@Override
 	public void addTreeModelListener(TreeModelListener l) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
 		// TODO Auto-generated method stub
-
 	}
+
+//	P-S. TableModelListener management provided by AbstractTableModel superclass:
+//    public void addTableModelListener(TableModelListener l);
+//    public void removeTableModelListener(TableModelListener l);
 
 	// ab hier TreeTableModel >>>>>>>>>>>>>>>>>>>>>>
 	
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		if(columnIndex==0) return String.class;
-		return null;
+		if(columnIndex==1) return URL.class;
+		return super.getColumnClass(columnIndex);
 	}
 
 	@Override
 	public int getColumnCount() {
-		return 1;
+		return 2;
 	}
 
 	@Override
 	public String getColumnName(int column) {
 		if(column==0) return "name";
-		return null;
+		if(column==1) return "url";
+		return super.getColumnName(column);
 	}
 
 	@Override
@@ -241,7 +288,7 @@ or
 
 	@Override
 	public Object getValueAt(Object node, int column) {
-		if(column!=0) return null;
+		if(column<0 || column>=getColumnCount()) return null;
 		Enumeration<TreeNode> nodes = top.breadthFirstEnumeration();
 		while(nodes.hasMoreElements()) {
 			TreeNode next = nodes.nextElement();
@@ -249,7 +296,7 @@ or
 				if(node==dmtn.getUserObject()) {
 					if(3==dmtn.getLevel()) {
 						// Album
-						return node.toString();
+						return column==getHierarchicalColumn() ? node.toString() : ((Album)node).getURL();
 					} else {
 						// alle anderen sind String
 						return node;
