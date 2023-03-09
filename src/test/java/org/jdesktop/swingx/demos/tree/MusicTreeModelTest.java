@@ -2,12 +2,19 @@ package org.jdesktop.swingx.demos.tree;
 
 import static org.junit.Assert.*;
 
-import java.net.URL;
-
 import org.junit.Test;
 
 public class MusicTreeModelTest {
 
+	@Test
+	public void nullRoot() {
+		MusicTreeModel model = new MusicTreeModel(null, getClass().getResource("resources/tree.txt"));
+		assertNotNull(model.getRoot());
+		assertEquals(3, model.getChildCount(model.getRoot()));
+		assertEquals(model.catagory.getUserObject(), model.getChild(model.getRoot(), 2));
+		assertEquals(616, model.getRowCount());
+	}
+	
 	@Test
 	public void test() {
 //		fail("Not yet implemented");
@@ -37,7 +44,7 @@ public class MusicTreeModelTest {
 		assertEquals(-1, model.getIndexOfChild(model.artist.getUserObject(), "XXX"));
 		
 		// TreeTableModel tests:
-		assertNull(model.getValueAt(model.top.getUserObject(), 1));
+		assertNull(model.getValueAt(model.top.getUserObject(), model.getColumnCount())); // column not exists!
 		assertEquals("Root", model.getValueAt(model.top.getUserObject(), 0));
 		assertEquals("Steve Miller Band", model.getValueAt(model.artist.getUserObject(), 0));
 		assertEquals("The Joker", model.getValueAt(model.record.getUserObject(), 0));
