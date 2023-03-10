@@ -263,9 +263,12 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
     		 * getCellRenderer() aus super (JXTree) überschreiben.
     		 * ABER: es funktioniert zwar, aber der RolloverIconHighlighter tut nicht!!!?
     		 * !es liegt nicht am Highlighter! Denn der redText Highlighter tut ebenfalls nicht:
+    		 * 
+    		 * nach JXTree.DelegatingRenderer extends DefaultTreeRenderer ist es besser
+    		 * getCellRenderer() funktieniert und redText Highlighter auch
+    		 * RolloverIconHighlighter aber (noch) nicht
     		 */
-//    		setCellRenderer(getCellRenderer());
-    		setCellRenderer(makeCellRenderer());
+    		setCellRenderer(getCellRenderer());
     		
     		// UI-Dependent Striping 
     		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
@@ -288,9 +291,8 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
             return new Insets(5,5,5,5);
         }
         
-        // TreeCellRenderer is interface, DefaultTreeRenderer implements it
-//        public TreeCellRenderer getCellRenderer() {
-        private TreeCellRenderer makeCellRenderer() {
+        // TreeCellRenderer is interface, DelegatingRenderer extends DefaultTreeRenderer implements it
+        public TreeCellRenderer getCellRenderer() {
 			StringValue sv = new StringValue() {          
                 @Override
                 public String getString(Object value) {
@@ -305,7 +307,7 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
                     return simpleName + "(" + value + ")";
                 }
             };
-			TreeCellRenderer renderer = new DefaultTreeRenderer(sv) {
+			TreeCellRenderer renderer = new JXTree.DelegatingRenderer(sv) {
                 @Override
                 public Component getTreeCellRendererComponent(JTree tree, Object value,
                         boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
