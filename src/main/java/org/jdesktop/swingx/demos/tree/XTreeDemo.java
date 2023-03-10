@@ -4,12 +4,12 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package org.jdesktop.swingx.demos.tree;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Window;
-import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -22,11 +22,9 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -35,13 +33,14 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
+import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.Highlighter;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.demos.highlighter.RolloverIconHighlighter;
 import org.jdesktop.swingx.demos.svg.FeatheRdisc;
 import org.jdesktop.swingx.demos.svg.FeatheRmusic;
@@ -259,8 +258,30 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
     				getClientProperty("JTree.lineStyle") // warum ist es null? es sollte "Angled" sein
     		);
     		setRolloverEnabled(true); // to show a "live" rollover behaviour
-    		setOpaque(true); // wirklich notwendig? testen
+    		/*
+    		 * TODO seltsam : statt makeCellRenderer() sollte man eigentlich mit gleichem Code
+    		 * getCellRenderer() aus super (JXTree) überschreiben.
+    		 * ABER: es funktioniert zwar, aber der RolloverIconHighlighter tut nicht!!!?
+    		 * !es liegt nicht am Highlighter! Denn der redText Highlighter tut ebenfalls nicht:
+    		 */
+//    		setCellRenderer(getCellRenderer());
     		setCellRenderer(makeCellRenderer());
+    		
+    		// UI-Dependent Striping 
+    		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
+    		if(alternateStriping instanceof AbstractHighlighter ah) {
+        		ah.setHighlightPredicate(HighlightPredicate.ALWAYS);
+    		}
+    		// auskommentiert - (sieht nicht besonders gut aus)
+//    		addHighlighter(alternateStriping);
+    		
+    		Highlighter redText = new ColorHighlighter(null, Color.RED);
+    		if(redText instanceof AbstractHighlighter ah) {
+        		ah.setHighlightPredicate(HighlightPredicate.ROLLOVER_CELL);
+    		}
+    		addHighlighter(redText);
+    		
+    	    addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
     	}
     	
         public Insets getInsets() {
@@ -268,8 +289,8 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
         }
         
         // TreeCellRenderer is interface, DefaultTreeRenderer implements it
+//        public TreeCellRenderer getCellRenderer() {
         private TreeCellRenderer makeCellRenderer() {
-            @SuppressWarnings("serial")
 			StringValue sv = new StringValue() {          
                 @Override
                 public String getString(Object value) {
@@ -284,7 +305,6 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
                     return simpleName + "(" + value + ")";
                 }
             };
-            @SuppressWarnings("serial")
 			TreeCellRenderer renderer = new DefaultTreeRenderer(sv) {
                 @Override
                 public Component getTreeCellRendererComponent(JTree tree, Object value,
@@ -304,10 +324,62 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
                 	return comp;
                 }
             };
-            return renderer;
-        	
+            return renderer;        	
         }
 
+//        // DelegatingRenderer implements TreeCellRenderer, RolloverRenderer
+//        class TreeRendererAndHighlighter extends JXTree.DelegatingRenderer {
+//        //extends DefaultTreeRenderer {
+//        	// DefaultTreeRenderer extends AbstractRenderer implements TreeCellRenderer
+//        	// protected ComponentProvider<?> componentController;
+//        	// private TreeCellRenderer delegate; in JXTree.DelegatingRenderer
+//        	
+//        	TreeRendererAndHighlighter(StringValue sv) {
+//        		super(); // JXTree.DelegatingRenderer
+//        		//super(TreeCellRenderer delegate)
+//        	}
+//        	
+//            @Override
+//            public Component getTreeCellRendererComponent(JTree tree, Object value,
+//                    boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+//            	Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+//            	if(comp instanceof WrappingIconPanel wip) {
+//                	if(value instanceof String string) {
+//                		// default icon for Catagory, Artist/Composer
+//                	} else if(value instanceof MusicTreeModel.Song song) {
+//        				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+//                	} else if(value instanceof MusicTreeModel.Album album) {
+//    					wip.setIcon(FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+//                	} else {
+//                		LOG.warning("value \""+value+"\" is "+value.getClass());
+//                	}
+//            	}
+//            	return comp;
+//            }
+//
+//            @Override
+//            public String getString(Object value) {
+//                return componentController.getString(value);
+//            }
+//
+//            @Override
+//            public boolean isEnabled() {
+//// in super:
+////                return (componentController instanceof RolloverRenderer)
+////                        && ((RolloverRenderer) componentController).isEnabled();
+//                return super.isEnabled();
+//            }
+//
+//            @Override
+//            public void doClick() {
+//// in super:
+////                if (isEnabled()) {
+////                    ((RolloverRenderer) componentController).doClick();
+////                }
+//                super.doClick();
+//            }
+//
+//        }
         /* in JXTree gibt es ähnliches
         public Component getTreeCellRendererComponent(JTree tree, Object value,
                 boolean selected, boolean expanded, boolean leaf, int row,
@@ -360,8 +432,8 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
 				}
 			}
         });
-    	RolloverIconHighlighter roih = new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null);
-    	tree.addHighlighter(roih);
+//    	RolloverIconHighlighter roih = new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null);
+//    	tree.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
     	
         tree.setEditable(true);
         return new JScrollPane(tree);
