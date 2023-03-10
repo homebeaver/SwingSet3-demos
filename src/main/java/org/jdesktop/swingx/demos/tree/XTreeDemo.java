@@ -41,6 +41,7 @@ import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.Highlighter;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.IconHighlighter;
 import org.jdesktop.swingx.demos.highlighter.RolloverIconHighlighter;
 import org.jdesktop.swingx.demos.svg.FeatheRdisc;
 import org.jdesktop.swingx.demos.svg.FeatheRmusic;
@@ -266,7 +267,9 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
     		 * 
     		 * nach JXTree.DelegatingRenderer extends DefaultTreeRenderer ist es besser
     		 * getCellRenderer() funktieniert und redText Highlighter auch
-    		 * RolloverIconHighlighter aber (noch) nicht
+    		 * RolloverIconHighlighter aber nicht
+    		 * 
+    		 *  jetzt funktionieren die API-Highlighter korrekt !!!!!!
     		 */
     		setCellRenderer(getCellRenderer());
     		
@@ -278,12 +281,23 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
     		// auskommentiert - (sieht nicht besonders gut aus)
 //    		addHighlighter(alternateStriping);
     		
-    		Highlighter redText = new ColorHighlighter(null, Color.RED);
-    		if(redText instanceof AbstractHighlighter ah) {
-        		ah.setHighlightPredicate(HighlightPredicate.ROLLOVER_CELL);
-    		}
+    		Highlighter redText = new ColorHighlighter(HighlightPredicate.ROLLOVER_CELL, null, Color.RED);
     		addHighlighter(redText);
     		
+            /*
+             * use small disc icon for records/Albums
+             */
+    		Highlighter discIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(3), 
+    				FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+    		addHighlighter(discIcon);
+
+            /*
+             * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
+             */
+    		Highlighter musicIcon = new IconHighlighter(HighlightPredicate.IS_LEAF, 
+    				FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+    		addHighlighter(musicIcon);
+
     	    addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
     	}
     	
@@ -307,26 +321,27 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
                     return simpleName + "(" + value + ")";
                 }
             };
-			TreeCellRenderer renderer = new JXTree.DelegatingRenderer(sv) {
-                @Override
-                public Component getTreeCellRendererComponent(JTree tree, Object value,
-                        boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                	Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-                	if(comp instanceof WrappingIconPanel wip) {
-                    	if(value instanceof String string) {
-                    		// default icon for Catagory, Artist/Composer
-                    	} else if(value instanceof MusicTreeModel.Song song) {
-            				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
-                    	} else if(value instanceof MusicTreeModel.Album album) {
-        					wip.setIcon(FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-                    	} else {
-                    		LOG.warning("value \""+value+"\" is "+value.getClass());
-                    	}
-                	}
-                	return comp;
-                }
-            };
-            return renderer;        	
+//			TreeCellRenderer renderer = new JXTree.DelegatingRenderer(sv) {
+//                @Override
+//                public Component getTreeCellRendererComponent(JTree tree, Object value,
+//                        boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+//                	Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+//                	if(comp instanceof WrappingIconPanel wip) {
+//                    	if(value instanceof String string) {
+//                    		// default icon for Catagory, Artist/Composer
+//                    	} else if(value instanceof MusicTreeModel.Song song) {
+//            				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+//                    	} else if(value instanceof MusicTreeModel.Album album) {
+//        					wip.setIcon(FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+//                    	} else {
+//                    		LOG.warning("value \""+value+"\" is "+value.getClass());
+//                    	}
+//                	}
+//                	return comp;
+//                }
+//            };
+//            return renderer;
+            return new JXTree.DelegatingRenderer(sv);
         }
 
 //        // DelegatingRenderer implements TreeCellRenderer, RolloverRenderer
