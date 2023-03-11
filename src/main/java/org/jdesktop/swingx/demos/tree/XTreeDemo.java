@@ -13,9 +13,7 @@ import java.awt.Window;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -37,7 +35,6 @@ import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
-import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.Highlighter;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
@@ -45,15 +42,12 @@ import org.jdesktop.swingx.decorator.IconHighlighter;
 import org.jdesktop.swingx.demos.highlighter.RolloverIconHighlighter;
 import org.jdesktop.swingx.demos.svg.FeatheRdisc;
 import org.jdesktop.swingx.demos.svg.FeatheRmusic;
-import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.FilteredIconValue;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
 import org.jdesktop.swingx.icon.SizingConstants;
-import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
-import org.jdesktop.swingx.renderer.WrappingIconPanel;
 import org.jdesktop.swingx.rollover.RolloverProducer;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
@@ -109,7 +103,6 @@ public class XTreeDemo extends AbstractDemo {
 
     private JTabbedPane tabbedpane; // contains music tree, index 0 and component tree, index 1
     private JXTree componentTree;
-    private JLabel fakeLabel = new JLabel("fake");
 
     /*
      * intentionally not defined music tree here.
@@ -428,15 +421,58 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
     	/*
     	 * no param: in JTree there is a dafault DefaultMutableTreeNode JTree with colors, sports, food.
     	 */
-        componentTree = new JXTree(); 
+        componentTree = new JXTree((TreeModel)null) {
+        	@Override
+            public TreeCellRenderer getCellRenderer() {
+    			StringValue sv = new StringValue() {          
+                    @Override
+                    public String getString(Object value) {
+//                    	LOG.info(" ### value:"+value + value.getClass());
+                        if (value instanceof Component component) {
+                            String simpleName = component.getClass().getSimpleName();
+                            if (simpleName.length() == 0){
+                                // anonymous class
+                                simpleName = component.getClass().getSuperclass().getSimpleName();
+                            }
+                            return simpleName + "(" + component.getName() + ")";
+                        }
+                        return StringValues.TO_STRING.getString(value);
+                    }
+                };
+                // StringValue for lazy icon loading interface org.jdesktop.swingx.renderer.StringValue
+                StringValue keyValue = new StringValue() {         
+                    @Override // simple converter to return a String representation of an object
+                    public String getString(Object value) {
+                        if (value == null) return "";
+                        String simpleClassName = value.getClass().getSimpleName();
+                        if (simpleClassName.length() == 0){
+                            // anonymous class
+                            simpleClassName = value.getClass().getSuperclass().getSimpleName();
+                        }
+                        return simpleClassName + ".png";
+                    }
+                };
+                IconValue iv = new LazyLoadingIconValue(getClass(), keyValue, "fallback.png");
+                return new JXTree.DelegatingRenderer(iv, sv);
+            }
+        };
+        componentTree.setCellRenderer(componentTree.getCellRenderer());
+        // <snip> JXTree rollover
+        // enable and register a highlighter
+        componentTree.setRolloverEnabled(true);
+        componentTree.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+        // </snip>
+        
+        // the current cell renderer is queried for each row's height: 
+        componentTree.setRowHeight(-1);
+
         componentTree.setName("componentTree");
         componentTree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         JScrollPane scrollpane = new JScrollPane(componentTree);
 
-        fakeLabel.setName("fakeLabel");
-        configureComponents(fakeLabel);
         // create and install the component tree model:
         addNotify();
+        componentTree.expandAll();
         
 //        LOG.info("done init ComponentTree \n tree Background:"+componentTree.getBackground() 
 //        + "\n tabbedpane.getAccessibleContext():"+tabbedpane.getAccessibleContext()
@@ -496,104 +532,6 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
 
 		return buttons;
 	}
-
-//---------------- binding/configure ComponentTree
-    
-    private void configureComponents(Component comp) {
-        // <snip> JXTree rendering
-        // StringValue provides node text: concat several 
-        StringValue sv = new StringValue() {
-            
-            @Override
-            public String getString(Object value) {
-//            	LOG.info(" ### value:"+value);
-                if (value instanceof Component) {
-                    Component component = (Component) value;
-                    String simpleName = component.getClass().getSimpleName();
-                    if (simpleName.length() == 0){
-                        // anonymous class
-                        simpleName = component.getClass().getSuperclass().getSimpleName();
-                    }
-                    return simpleName + "(" + component.getName() + ")";
-                }
-                return StringValues.TO_STRING.getString(value);
-            }
-        };
-    	LOG.info("StringValue sv:"+sv + " - sv for the fake component:"+sv.getString(comp));
-        // </snip>
-        
-        // StringValue for lazy icon loading interface org.jdesktop.swingx.renderer.StringValue
-        StringValue keyValue = new StringValue() {         
-            @Override // simple converter to return a String representation of an object
-            public String getString(Object value) {
-                if (value == null) return "";
-                String simpleClassName = value.getClass().getSimpleName();
-                if (simpleClassName.length() == 0){
-                    // anonymous class
-                    simpleClassName = value.getClass().getSuperclass().getSimpleName();
-                }
-                return simpleClassName + ".png";
-            }
-        };
-    	LOG.info("keyValue for the fake component:"+keyValue.getString(comp));
-    	
-        // <snip> JXTree rendering   	
-        // IconValue provides node icon 
-        IconValue iv = new LazyLoadingIconValue(getClass(), keyValue, "fallback.png");
-    	LOG.info("IconValue iv:"+iv);
-    	
-        // create and set a tree renderer using the custom Icon-/StringValue
-        componentTree.setCellRenderer(new DefaultTreeRenderer(iv, sv));
-        // </snip>
-        
-        // the current cell renderer is queried for each row's height: 
-        componentTree.setRowHeight(-1);
-
-        // <snip> JXTree rollover
-        // enable and register a highlighter
-        componentTree.setRolloverEnabled(true);
-        componentTree.addHighlighter(createRolloverIconHighlighter(iv));
-        // </snip>
-    }
-
-    // <snip> JXTree rollover
-    // custom implementation of Highlighter which highlights 
-    // by changing the node icon on rollover
-    private Highlighter createRolloverIconHighlighter(IconValue delegate) {
-        // the icon look-up is left to an IconValue
-        final IconValue iv = new FilteredIconValue(delegate);
-        AbstractHighlighter hl = new AbstractHighlighter(HighlightPredicate.ROLLOVER_ROW) {
-
-            /**
-             * {@inheritDoc} <p>
-             * 
-             * Implemented to highlight by setting the node icon.
-             */
-            @Override
-            protected Component doHighlight(Component component, ComponentAdapter adapter) {
-                Icon icon = iv.getIcon(adapter.getValue());
-                if (icon != null) {
-                    ((WrappingIconPanel) component).setIcon(icon);
-                }
-                return component;
-            }
-            // </snip>
-            
-            /**
-             * {@inheritDoc} <p>
-             * 
-             * Implementated to return true if the component is a WrappingIconPanel,
-             * a panel implemenation specialized for rendering tree nodes.
-             * 
-             */
-            @Override
-            protected boolean canHighlight(Component component, ComponentAdapter adapter) {
-                return component instanceof WrappingIconPanel;
-            }
-            
-        };
-        return hl;
-    }
 
     /**
      * Overridden to create and install the component tree model.

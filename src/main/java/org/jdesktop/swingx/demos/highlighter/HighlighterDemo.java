@@ -31,6 +31,7 @@ import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.tree.TreeCellRenderer;
 
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -183,18 +184,28 @@ public class HighlighterDemo extends AbstractDemo {
         table.setColumnControlVisible(true);
         tabbedPane.addTab("JXTable", new JScrollPane(table));
         
-        tree = new JXTree();
-        tree.setName("tree");
-        tree.setCellRenderer(new DefaultTreeRenderer(new StringValue() {
+        tree = new JXTree() {
 			private static final long serialVersionUID = 1L;
-			public String getString(Object value) {
-                if (value instanceof Component) {
-                    return value.getClass().getSimpleName() + " (" + ((Component) value).getName() + ")";
-                }
-                    
-                return StringValues.TO_STRING.getString(value);
+            public TreeCellRenderer getCellRenderer() {
+    			StringValue sv = new StringValue() {
+    				private static final long serialVersionUID = 1L;
+                    public String getString(Object value) {
+                        if (value instanceof Component component) {
+                            String simpleName = component.getClass().getSimpleName();
+                            if (simpleName.length() == 0){
+                                // anonymous class
+                                simpleName = component.getClass().getSuperclass().getSimpleName();
+                            }
+                            return simpleName + "(" + component.getName() + ")";
+                        }
+                        return StringValues.TO_STRING.getString(value);
+                    }
+    			};
+                return new JXTree.DelegatingRenderer(sv);
             }
-        }));
+        };
+        tree.setName("tree");
+        tree.setCellRenderer(tree.getCellRenderer());
         tabbedPane.addTab("JXTree", new JScrollPane(tree));
         
         treeTable = new JXTreeTable();

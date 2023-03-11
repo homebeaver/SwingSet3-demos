@@ -78,7 +78,7 @@ INFORMATION: ---------------- for food class java.lang.String
         	String key = keyToFileName.getString(value);
         	icon = loadIcon(key);
         	if(icon!=null) {
-        		LOG.info("key "+key + "... icon "+icon + " for "+value);
+        		LOG.fine("key "+key + "... icon "+icon + " for "+value);
         		return icon;
         	}
         	return fallbackIcon;
@@ -97,7 +97,7 @@ INFORMATION: ---------------- for food class java.lang.String
            this.keyToFileName = sv;
            // use a RadianceIcon as fallback
            fallbackIcon = StopIcon.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON);
-           LOG.info("-------- baseClass:"+baseClass + ", sv:"+sv
+           LOG.fine("-------- baseClass:"+baseClass + ", sv:"+sv
         	+ (fallbackIcon==null ? ", null fallbackIcon" : ", fallbackIcon is "+fallbackName));
         }
         
