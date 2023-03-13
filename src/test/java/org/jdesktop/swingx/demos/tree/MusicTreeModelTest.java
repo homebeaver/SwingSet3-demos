@@ -17,9 +17,9 @@ public class MusicTreeModelTest {
 	
 	@Test
 	public void test() {
-//		fail("Not yet implemented");
 		MusicTreeModel model = new MusicTreeModel("Root", getClass().getResource("resources/tree.txt"));
-		assertEquals("Root", model.getRoot());
+		Object o = model.getRoot();
+		assertEquals("Root", ((MusicTreeModel.MusicEntry)o).toString());
 		assertEquals(3, model.getChildCount(model.getRoot()));
 		assertEquals(model.catagory.getUserObject(), model.getChild(model.getRoot(), 2));
 		
@@ -45,8 +45,12 @@ public class MusicTreeModelTest {
 		
 		// TreeTableModel tests:
 		assertNull(model.getValueAt(model.top.getUserObject(), model.getColumnCount())); // column not exists!
-		assertEquals("Root", model.getValueAt(model.top.getUserObject(), 0));
-		assertEquals("Steve Miller Band", model.getValueAt(model.artist.getUserObject(), 0));
+		Object top = model.top.getUserObject();
+		Object top0 = model.getValueAt(top, 0);
+		assertEquals("Root", top0.toString());
+		Object artist = model.artist.getUserObject();
+		Object artist0 = model.getValueAt(artist, 0);
+		assertEquals("Steve Miller Band", artist0.toString());
 		assertEquals("The Joker", model.getValueAt(model.record.getUserObject(), 0));
 	}
 

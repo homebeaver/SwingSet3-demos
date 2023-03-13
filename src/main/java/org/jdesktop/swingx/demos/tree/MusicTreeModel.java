@@ -19,27 +19,51 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
 // interface TreeTableModel extends TreeModel
 public class MusicTreeModel extends AbstractTableModel implements TreeTableModel {
 
-    static public class Album {
+	/*
+# Key:                                                                         #
+#     Popular   / Classical                                                    #
+# ----------------------------                                                 #
+# A = Artist    / Composer                                                     #
+# R = Record    / Style                                                        #
+# S = Song Name / Composition                                                  #
+# C = Catagory                                                                 #
+	 */
+    static public class MusicEntry {
     	static char SEPARATOR = ';';
-        private String record; // title of the album
-        private String pixUrl; // wikimedia image url of the album
+    	private Integer id; // root == 0 or Null
+    	String nameOrTitle; // Category: Classical, Jazz, ... ; Artist: Name; Album/Record: Title or Style
+        String url; // wikimedia audio url of the song/composition or wikimedia image url of the album
         // f.i. "https://upload.wikimedia.org/wikipedia/en/a/ac/My_Name_Is_Albert_Ayler.jpg"
         
-		Album(String line) {
-			String recordAlbumpix = line.substring(2);
-			int separator = recordAlbumpix.indexOf(SEPARATOR);
-			pixUrl = null;
+    	MusicEntry(String nameTitle) {
+    		nameOrTitle = nameTitle; 		
+    	}
+    	MusicEntry(int id, String line) {
+    		this.id = id;
+			String titlePlusUrl = line.substring(2);
+			int separator = titlePlusUrl.indexOf(SEPARATOR);
+			url = null;
 			if (separator == -1) {
-				record = recordAlbumpix;
+				nameOrTitle = titlePlusUrl;
 			} else {
-				record = recordAlbumpix.substring(0, separator);
-				pixUrl = recordAlbumpix.substring(separator+1);
+				nameOrTitle = titlePlusUrl.substring(0, separator);
+				url = titlePlusUrl.substring(separator+1);
 			}
+    	}
+    	
+		public String toString() {
+			return nameOrTitle;
+		}
+    }
+    static public class Album extends MusicEntry {
+        
+		Album(int id, String line) {
+			super(id, line);
 		}
 
 		public URL getURL() {
 			try {
-				return pixUrl==null ? null : new URL(pixUrl);
+				return url==null ? null : new URL(url);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -48,31 +72,16 @@ public class MusicTreeModel extends AbstractTableModel implements TreeTableModel
 		}
 		
 		public String getHtmlSrc() {
-			if(pixUrl==null) return null;
-			return "<html>" + "<img src=\"" + pixUrl + "\">"+ "</html>";
+			if(url==null) return null;
+			return "<html>" + "<img src=\"" + url + "\">"+ "</html>";
 		}
 
-		public String toString() {
-			return record;
-		}
     }
     
-    static public class Song { // or Composition
-    	static char SEPARATOR = ';';
-        private String title; // title of the song
-        private String url; // wikimedia audio url of the song/composition
-        // f.i. "https://commons.wikimedia.org/wiki/File:Ludwig_van_Beethoven_-_Symphonie_5_c-moll_-_1._Allegro_con_brio.ogg"
+    static public class Song extends MusicEntry { // or Composition
         
-        Song(String line) {
-			String titlePlusUrl = line.substring(2);
-			int separator = titlePlusUrl.indexOf(SEPARATOR);
-			url = null;
-			if (separator == -1) {
-				title = titlePlusUrl;
-			} else {
-				title = titlePlusUrl.substring(0, separator);
-				url = titlePlusUrl.substring(separator+1);
-			}
+        Song(int id, String line) {
+        	super(id, line);
 		}
 
 		public URL getURL() throws MalformedURLException {
@@ -101,9 +110,6 @@ or
 			return "<html>" + "<center><font color=blue size=+1>"+url+"</font></center>" + "</html>";
 		}
 
-		public String toString() {
-			return title;
-		}
     }
 
     int rowCount = 0;
@@ -121,7 +127,7 @@ or
 		this();
 //        LOG.info(top + " tree data url="+url);
 		// use url.getProtocol() or url.getPath()
-        top = new DefaultMutableTreeNode(topName==null ? url.getPath() : topName);
+        top = new DefaultMutableTreeNode(new MusicEntry(topName==null ? url.getPath() : topName));
         rowCount++;
         try {
             // convert url to buffered string
@@ -136,27 +142,26 @@ or
                 char linetype = line.charAt(0);
                 switch(linetype) {
                    case 'C':
-                     catagory = new DefaultMutableTreeNode(line.substring(2));
-                     top.add(catagory);
                      rowCount++;
+                     catagory = new DefaultMutableTreeNode(new MusicEntry(rowCount, line));
+                     top.add(catagory);
                      break;
                    case 'A':
                      if(catagory != null) {
-                         catagory.add(artist = new DefaultMutableTreeNode(line.substring(2)));
                          rowCount++;
+                         catagory.add(artist = new DefaultMutableTreeNode(new MusicEntry(rowCount, line)));
                      }
                      break;
                    case 'R':
                      if(artist != null) {
-                    	 artist.add(record = new DefaultMutableTreeNode(new Album(line)));
                          rowCount++;
+                    	 artist.add(record = new DefaultMutableTreeNode(new Album(rowCount, line)));
                      }
                      break;
                    case 'S':
                      if(record != null) {
-//                         record.add(new DefaultMutableTreeNode(line.substring(2)));
-                         record.add(song = new DefaultMutableTreeNode(new Song(line)));
                          rowCount++;
+                         record.add(song = new DefaultMutableTreeNode(new Song(rowCount, line)));
                      }
                      break;
                    default:
