@@ -129,9 +129,9 @@ public class XTreeDemo extends AbstractDemo {
         add(tabbedpane, BorderLayout.CENTER);
 
         tabbedpane.add(getBundleString("music")
-//            , createMusicTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
-//        	, createMusicTreeTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
-        	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
+//          , createMusicTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
+        	, createMusicTreeTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
+//        	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
         tabbedpane.setTabPlacement(JTabbedPane.TOP);
         tabbedpane.getModel().addChangeListener( changeEvent -> {
@@ -177,17 +177,9 @@ public class XTreeDemo extends AbstractDemo {
 
 			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
 			ComponentAdapter ca = getComponentAdapter();
-			LOG.info("ComponentAdapter:"+ca);
+			LOG.info("ComponentAdapter.ValueAt(3, 1):"+ca.getValueAt(3, 1));
     	}
-    	
-//        public Object getValueAt(int row) {
-//        	return getRowAdapter(row).getValueAt(row, 0);
-//        }
-//        public ComponentAdapter getRowAdapter(int row) {
-//            return super.getComponentAdapter(row);
-//
-//        }
-        
+
         public Insets getInsets() {
             return new Insets(5,5,5,5);
         }
@@ -401,5 +393,15 @@ public class XTreeDemo extends AbstractDemo {
     	JXTable xTable = new JXTable(dModel);
         return new JScrollPane(xTable);
     }
-   
+
+    // MusicTreeModel implements TreeTableModel
+    private JComponent createMusicTreeTable(TreeTableModel model) {
+    	JXTreeTable treeTable = new JXTreeTable(model);
+    	treeTable.setShowGrid(false, true);
+
+// TODO    	treeTable.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
+
+        return new JScrollPane(treeTable);
+    }
+
 }
