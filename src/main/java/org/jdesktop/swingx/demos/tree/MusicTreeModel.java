@@ -10,6 +10,7 @@ import java.util.Enumeration;
 
 import javax.swing.event.TreeModelListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -17,7 +18,8 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 // interface TreeTableModel extends TreeModel
-public class MusicTreeModel extends AbstractTableModel implements TreeTableModel {
+// interface javax.swing.table.TableModel
+public class MusicTreeModel extends AbstractTableModel implements TreeTableModel, TableModel {
 
 	/*
 # Key:                                                                         #
@@ -36,7 +38,7 @@ public class MusicTreeModel extends AbstractTableModel implements TreeTableModel
         // f.i. "https://upload.wikimedia.org/wikipedia/en/a/ac/My_Name_Is_Albert_Ayler.jpg"
         
     	MusicEntry(String nameTitle) {
-    		nameOrTitle = nameTitle; 		
+    		nameOrTitle = nameTitle;
     	}
     	MusicEntry(int id, String line) {
     		this.id = id;
@@ -128,7 +130,7 @@ or
 //        LOG.info(top + " tree data url="+url);
 		// use url.getProtocol() or url.getPath()
         top = new DefaultMutableTreeNode(new MusicEntry(topName==null ? url.getPath() : topName));
-        rowCount++;
+
         try {
             // convert url to buffered string
             InputStream is = url.openStream();
@@ -182,7 +184,47 @@ or
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		// TODO Auto-generated method stub
+		if(rowIndex==0) {
+			Object o = getRoot();
+			MusicEntry me = (MusicEntry)o;
+			switch(columnIndex) {
+            case 0:
+            	return me.id;
+                //break;
+            case 1:
+            	return me.toString();
+                //break;
+            case 2:
+            	return me.url;
+                //break;
+            default:
+                break;
+			}
+		}
+//		System.out.println("rowIndex="+rowIndex + ", columnIndex="+columnIndex);
+		Enumeration<TreeNode> nodes = top.breadthFirstEnumeration();
+		while(nodes.hasMoreElements()) {
+			TreeNode next = nodes.nextElement();
+			if(next instanceof DefaultMutableTreeNode dmtn) {
+				Object o = dmtn.getUserObject();
+				MusicEntry me = (MusicEntry)o;
+				if(me.id!=null && rowIndex==me.id.intValue()) {
+					switch(columnIndex) {
+		            case 0:
+		            	return me.id;
+		                //break;
+		            case 1:
+		            	return me.toString();
+		                //break;
+		            case 2:
+		            	return me.url;
+		                //break;
+		            default:
+		                break;
+					}
+				}
+			}
+		}
 		return null;
 	}
 
@@ -269,20 +311,22 @@ or
 	
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		if(columnIndex==0) return String.class;
-		if(columnIndex==1) return URL.class;
+		if(columnIndex==0) return Integer.class;
+		if(columnIndex==1) return String.class;
+		if(columnIndex==2) return URL.class;
 		return super.getColumnClass(columnIndex);
 	}
 
 	@Override
 	public int getColumnCount() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public String getColumnName(int column) {
-		if(column==0) return "name";
-		if(column==1) return "url";
+		if(column==0) return "id";
+		if(column==1) return "name";
+		if(column==2) return "url";
 		return super.getColumnName(column);
 	}
 

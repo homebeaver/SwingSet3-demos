@@ -17,7 +17,6 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTree;
 import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -31,13 +30,13 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
+import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.Highlighter;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.IconHighlighter;
 import org.jdesktop.swingx.demos.highlighter.RolloverIconHighlighter;
 import org.jdesktop.swingx.demos.svg.FeatheRdisc;
@@ -130,6 +129,7 @@ public class XTreeDemo extends AbstractDemo {
         add(tabbedpane, BorderLayout.CENTER);
 
         tabbedpane.add(getBundleString("music")
+//            , createMusicTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
 //        	, createMusicTreeTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
@@ -139,110 +139,6 @@ public class XTreeDemo extends AbstractDemo {
         });
     }
 
-    // MusicTreeModel implements TreeTableModel
-    private JComponent createMusicTreeTable(MusicTreeModel model) {
-    	JXTreeTable treeTable = new JXTreeTable(model);
-    	TableModel tm = treeTable.getModel();
-    	if(tm instanceof JXTreeTable.TreeTableModelAdapter ttma) {
-    		JTree t = ttma.getTreeCellRenderer();
-    		if(t instanceof JXTreeTable.TreeTableCellRenderer tree) {
-    			LOG.info("can show a \"live\" rollover behaviour:"+tree.isRolloverEnabled());
-    			
-//    	        tree.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
-//    	        	LOG.info(" "+propertyChangeEvent);
-//    	        	JXTree source = (JXTree)propertyChangeEvent.getSource();
-//    	        	source.setToolTipText(null);
-//    				Point newPoint = (Point)propertyChangeEvent.getNewValue();
-//    				if(newPoint!=null && newPoint.y>-1) {
-//    					TreePath treePath = source.getPathForRow(newPoint.y);
-//    					if(treePath.getPathCount()==4) { // Album / Record / Style 
-//    						Object o = treePath.getLastPathComponent();
-////    						LOG.info("PathFor newPoint.y: "+source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"+propertyChangeEvent);
-//    						// show https://en.wikipedia.org/wiki/File:My_Name_Is_Albert_Ayler.jpg
-//    						if(o instanceof MusicTreeModel.Album album) {
-//    							source.setToolTipText(album.getHtmlSrc());
-//    						}
-//    					} else if(treePath.getPathCount()==5) { // Song / Composition
-//    						Object o = treePath.getLastPathComponent();
-//    						if(o instanceof MusicTreeModel.Song song) {
-//    							source.setToolTipText(song.getHtmlSrc());
-//    						}
-//    					}
-//    				}
-//    	        });
-    		}
-    	} else {
-    		LOG.warning("tm:"+tm);    		
-    	}
-    	
-//    	RolloverIconHighlighter roih = new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null);
-//    	treeTable.addHighlighter(roih); // funktioniert nicht TODO
-
-        return new JScrollPane(treeTable);
-    }
-
-    @SuppressWarnings("serial")
-	// inner class JXTreeTable.TreeTableCellRenderer is not public, dort ca 600 Zeilen
-	static class MusicTreeTableCellRenderer extends JXTree implements TableCellRenderer {
-
-    	// ctor
-        // Force user to specify TreeTableModel instead of more general TreeModel
-        public MusicTreeTableCellRenderer(TreeTableModel model) {
-//        public TreeTableCellRenderer(TreeTableModel model) {
-//            super(model);
-//            putClientProperty("JTree.lineStyle", "None");
-//            setRootVisible(false); // superclass default is "true"
-//            setShowsRootHandles(true); // superclass default is "false"
-//                /**
-//                 * TODO: Support truncated text directly in
-//                 * DefaultTreeCellRenderer.
-//                 */
-//            // removed as fix for #769-swingx: defaults for treetable should be same as tree
-////            setOverwriteRendererIcons(true);
-//// setCellRenderer(new DefaultTreeRenderer());
-//            setCellRenderer(new ClippedTreeCellRenderer());
-        	super(model);
-        }
-        
-        /* in JXTree gibt es ähnliches
-        public Component getTreeCellRendererComponent(JTree tree, Object value,
-                boolean selected, boolean expanded, boolean leaf, int row,
-                boolean hasFocus) {
-wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent mappen ????
-
- - JTree tree ==> JTable table : muss man nicht, ist bekannt
- - int column ==> getHierarchicalColumn()
- - int row muss man berechnen
- 
-         */
-		@Override // implements TableCellRenderer
-		public Component getTableCellRendererComponent(JTable table, Object value
-				, boolean isSelected, boolean hasFocus, int row, int column) {
-			//assert table == treeTable;
-			//super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			if (isSelected) {
-				setBackground(table.getSelectionBackground());
-				setForeground(table.getSelectionForeground());
-			} else {
-				setBackground(table.getBackground());
-				setForeground(table.getForeground());
-			}
-
-//			highlightBorder = null;
-//			if (treeTable != null) {
-//				if (treeTable.realEditingRow() == row && treeTable.getEditingColumn() == column) {
-//				} else if (hasFocus) {
-//					highlightBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
-//				}
-//			}
-//
-//			visibleRow = row;
-
-			return this;
-		}
-    	
-    }
-    
     @SuppressWarnings("serial")
 	class MusicTree extends JXTree implements TableCellRenderer {
     	
@@ -254,11 +150,11 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
     		setRolloverEnabled(true); // to show a "live" rollover behaviour
     		setCellRenderer(getCellRenderer());
     		
-    		// UI-Dependent Striping 
-    		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
-    		if(alternateStriping instanceof AbstractHighlighter ah) {
-        		ah.setHighlightPredicate(HighlightPredicate.ALWAYS);
-    		}
+//    		// UI-Dependent Striping 
+//    		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
+//    		if(alternateStriping instanceof AbstractHighlighter ah) {
+//        		ah.setHighlightPredicate(HighlightPredicate.ALWAYS);
+//    		}
     		// auskommentiert - (sieht nicht besonders gut aus)
 //    		addHighlighter(alternateStriping);
     		
@@ -278,10 +174,20 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
 			
 			Highlighter redText = new ColorHighlighter(HighlightPredicate.ROLLOVER_CELL, null, Color.RED);
 			addHighlighter(redText);
-			
+
 			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+			ComponentAdapter ca = getComponentAdapter();
+			LOG.info("ComponentAdapter:"+ca);
     	}
     	
+//        public Object getValueAt(int row) {
+//        	return getRowAdapter(row).getValueAt(row, 0);
+//        }
+//        public ComponentAdapter getRowAdapter(int row) {
+//            return super.getComponentAdapter(row);
+//
+//        }
+        
         public Insets getInsets() {
             return new Insets(5,5,5,5);
         }
@@ -292,7 +198,7 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
                 @Override
                 public String getString(Object value) {
                 	LOG.fine(" ### value:"+value + " "+value.getClass());
-                    if(value instanceof String
+                    if(value instanceof MusicTreeModel.MusicEntry
                     || value instanceof MusicTreeModel.Album
                     || value instanceof MusicTreeModel.Song
                     ) {
@@ -305,84 +211,14 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
             return new JXTree.DelegatingRenderer(sv);
         }
 
-//        // DelegatingRenderer implements TreeCellRenderer, RolloverRenderer
-//        class TreeRendererAndHighlighter extends JXTree.DelegatingRenderer {
-//        //extends DefaultTreeRenderer {
-//        	// DefaultTreeRenderer extends AbstractRenderer implements TreeCellRenderer
-//        	// protected ComponentProvider<?> componentController;
-//        	// private TreeCellRenderer delegate; in JXTree.DelegatingRenderer
-//        	
-//        	TreeRendererAndHighlighter(StringValue sv) {
-//        		super(); // JXTree.DelegatingRenderer
-//        		//super(TreeCellRenderer delegate)
-//        	}
-//        	
-//            @Override
-//            public Component getTreeCellRendererComponent(JTree tree, Object value,
-//                    boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-//            	Component comp = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-//            	if(comp instanceof WrappingIconPanel wip) {
-//                	if(value instanceof String string) {
-//                		// default icon for Catagory, Artist/Composer
-//                	} else if(value instanceof MusicTreeModel.Song song) {
-//        				wip.setIcon(FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
-//                	} else if(value instanceof MusicTreeModel.Album album) {
-//    					wip.setIcon(FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-//                	} else {
-//                		LOG.warning("value \""+value+"\" is "+value.getClass());
-//                	}
-//            	}
-//            	return comp;
-//            }
-//
-//            @Override
-//            public String getString(Object value) {
-//                return componentController.getString(value);
-//            }
-//
-//            @Override
-//            public boolean isEnabled() {
-//// in super:
-////                return (componentController instanceof RolloverRenderer)
-////                        && ((RolloverRenderer) componentController).isEnabled();
-//                return super.isEnabled();
-//            }
-//
-//            @Override
-//            public void doClick() {
-//// in super:
-////                if (isEnabled()) {
-////                    ((RolloverRenderer) componentController).doClick();
-////                }
-//                super.doClick();
-//            }
-//
-//        }
-        /* in JXTree gibt es ähnliches
-        public Component getTreeCellRendererComponent(JTree tree, Object value,
-                boolean selected, boolean expanded, boolean leaf, int row,
-                boolean hasFocus) {
-wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent mappen ????
-
- - JTree tree ==> JTable table : muss man nicht, ist bekannt
- - int column ==> getHierarchicalColumn()
- - int row muss man berechnen
- 
+        /*  
+ !!!!!!!!!!!!!!!! wg. implements TableCellRenderer // wird aber für tree nicht benötigt
          */
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, 
-				boolean isSelected, boolean hasFocus, int row, int column) {
-        	LOG.info("row="+row + " column="+column + " value:"+value);
-        	boolean expanded = true;
-        	boolean leaf = false;
-        	Component comp = getCellRenderer().getTreeCellRendererComponent(MusicTree.this, value, isSelected, expanded, leaf, row, hasFocus);
-        	
-        	TreeModel m = getModel();
-        	if(m instanceof TreeTableModel ttm) {
-        		column = ttm.getHierarchicalColumn();
-        	}
-//        	updateUI();
-			return comp;
+				boolean isSelected, boolean hasFocus, int row, int column) {			
+        	LOG.warning("NICHT IMPLEMENTIERT row="+row + " column="+column + " value:"+value);
+			return null;
 		}
     }
     
@@ -559,4 +395,11 @@ wie kann man getTreeCellRendererComponent nach getTableCellRendererComponent map
        return TreeTableDemo.getTreeTableModel(window != null ? window : this);
     }
 
+// experimental ----------------------------------------------------------------------------------------
+    
+    private JComponent createMusicTable(TableModel dModel) {
+    	JXTable xTable = new JXTable(dModel);
+        return new JScrollPane(xTable);
+    }
+   
 }
