@@ -17,6 +17,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -30,7 +31,6 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
@@ -388,18 +388,115 @@ public class XTreeDemo extends AbstractDemo {
     }
 
 // experimental ----------------------------------------------------------------------------------------
-    
-    private JComponent createMusicTable(TableModel dModel) {
-    	JXTable xTable = new JXTable(dModel);
-        return new JScrollPane(xTable);
+    // class JXTreeTable.TreeTableCellRenderer extends JXTree implements TableCellRenderer
+    // ?? interface IconAware kann setIcon / getIcon
+    class MusicTreeTableCellRenderer extends JXTreeTable.TreeTableCellRenderer {
+    	MusicTreeTableCellRenderer(TreeTableModel model) {
+    		super(model);
+    	}
     }
 
+	class MusicTreeTable extends JXTreeTable implements TableCellRenderer {
+
+		MusicTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
+			super(renderer);
+			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+			
+			// IS_LEAF AND Column 1:
+//			 new HighlightPredicate.ColumnHighlightPredicate(1);
+//			 new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.ColumnHighlightPredicate(1));
+			Highlighter musicIcon = new IconHighlighter(
+				//new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.ColumnHighlightPredicate(1)),
+				//new HighlightPredicate.ColumnHighlightPredicate(0), // in Spalten 0,2 funktioniert es
+				new HighlightPredicate.ColumnHighlightPredicate(1), // in Spalte 1 funktioniert es NICHT
+				//HighlightPredicate.IS_LEAF, // in Spalte 0
+				FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+			addHighlighter(musicIcon);
+			
+			Highlighter redText = new ColorHighlighter(HighlightPredicate.ROLLOVER_CELL, null, Color.RED);
+			addHighlighter(redText);
+
+			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+			ComponentAdapter ca = getComponentAdapter();
+			LOG.info("ComponentAdapter.ValueAt(2, 1):"+ca.getValueAt(2, 1) // "Rock" expected
+				+ " ComponentAdapter:"+ca
+			);
+
+		}
+
+	    public TreeTableModel getTreeTableModel() {
+//	        return (TreeTableModel) renderer.getModel();
+			TableModel tm = this.getModel();
+			if(tm instanceof TreeTableModelAdapter mttma) {
+				return mttma.getTreeTableModel();
+			}
+			return super.getTreeTableModel();
+	    }
+//	    protected ComponentAdapter getComponentAdapter(int row, int column) {
+//	    	ComponentAdapter ca = super.getComponentAdapter(row, column);
+////	    	int c = ca.column;
+//			return ca;    	
+//	    }
+		public int getHierarchicalColumn() {
+			TableModel tm = this.getModel();
+			if(tm instanceof TreeTableModelAdapter mttma) {
+//				return mttma.getHierarchicalColumn(); // XXX ???
+				TreeTableModel ttm = mttma.getTreeTableModel();
+				if(ttm instanceof MusicTreeModel mtm) {
+					return mtm.getHierarchicalColumn();
+				}
+			}
+			return super.getHierarchicalColumn();
+		}
+	    @Override
+	    public TableCellRenderer getCellRenderer(int row, int column) {
+	    	ComponentAdapter ca = getComponentAdapter(row, column);
+	    	if(ca.column == getHierarchicalColumn()) {
+	    		JXTree.DelegatingRenderer renderer = (JXTree.DelegatingRenderer)getTreeCellRenderer();
+		    	LOG.info("column "+column + " isHierarchicalColumn!!! renderer:"+renderer);
+	    		//return renderer;
+	    		JTree tree = ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree();
+	    		JXTree xtree = (JXTree)tree;
+	    		return (JXTreeTable.TreeTableCellRenderer)xtree;
+//		    	return (TableCellRenderer)getTreeCellRenderer();
+	    	}
+	    	return super.getCellRenderer(row, column);
+	    }
+	    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+	    	LOG.info("??? TableCellRenderer:"+renderer);
+	    	return super.prepareRenderer(renderer, row, column);
+	    }
+//	    Component getTreeCellRendererComponent(JTree tree, Object value,
+//                boolean selected, boolean expanded,
+//                boolean leaf, int row, boolean hasFocus) {
+//					return tree;
+//	    	
+//	    }
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, 
+				boolean isSelected, boolean hasFocus, int row, int column) {			
+        	LOG.warning("NICHT IMPLEMENTIERT row="+row + " column="+column + " value:"+value);
+//        	super.getCellRenderer(row, column)
+			return null;
+		}
+
+	}
+
     // MusicTreeModel implements TreeTableModel
-    private JComponent createMusicTreeTable(TreeTableModel model) {
-    	JXTreeTable treeTable = new JXTreeTable(model);
+    private JComponent createMusicTreeTable(MusicTreeModel model) {
+//    	MusicTree musicTree = new MusicTree(model);
+//    	JXTreeTable.TreeTableModelAdapter adapter = new MusicTreeTableModelAdapter(musicTree);
+//    	JXTreeTable treeTable = new MusicTreeTable(adapter);
+    	JXTreeTable.TreeTableCellRenderer renderer = new MusicTreeTableCellRenderer(model);
+    	JXTreeTable treeTable = new MusicTreeTable(renderer);
+    	
+    	// Gut: !!! ABER Highlighter icons in Spalte 1 sind nicht da
+//    	JXTreeTable treeTable = new JXTreeTable(model);
     	treeTable.setShowGrid(false, true);
 
 // TODO    	treeTable.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
+//    	treeTable.addHighlighter(null);
+//    	tree.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
 
         return new JScrollPane(treeTable);
     }
