@@ -332,7 +332,7 @@ or
 
 	@Override
 	public int getHierarchicalColumn() {
-		return 0;
+		return 1;
 	}
 
 	@Override
@@ -343,13 +343,9 @@ or
 			TreeNode next = nodes.nextElement();
 			if(next instanceof DefaultMutableTreeNode dmtn) {
 				if(node==dmtn.getUserObject()) {
-					if(3==dmtn.getLevel()) {
-						// Album
-						return column==getHierarchicalColumn() ? node.toString() : ((Album)node).getURL();
-					} else {
-						// alle anderen sind String
-						return node;
-					}
+					if(column==0) return ((MusicEntry)node).id;
+					if(column==1) return ((MusicEntry)node).nameOrTitle;
+					if(column==2) return ((MusicEntry)node).url;
 				}
 			}
 		}

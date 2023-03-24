@@ -12,7 +12,7 @@ public class MusicTreeModelTest {
 		assertNotNull(model.getRoot());
 		assertEquals(3, model.getChildCount(model.getRoot()));
 		assertEquals(model.catagory.getUserObject(), model.getChild(model.getRoot(), 2));
-		assertEquals(616, model.getRowCount());
+		assertEquals(615, model.getRowCount());
 	}
 	
 	@Test
@@ -46,12 +46,12 @@ public class MusicTreeModelTest {
 		// TreeTableModel tests:
 		assertNull(model.getValueAt(model.top.getUserObject(), model.getColumnCount())); // column not exists!
 		Object top = model.top.getUserObject();
-		Object top0 = model.getValueAt(top, 0);
+		Object top0 = model.getValueAt(top, 1);
 		assertEquals("Root", top0.toString());
 		Object artist = model.artist.getUserObject();
-		Object artist0 = model.getValueAt(artist, 0);
+		Object artist0 = model.getValueAt(artist, 1);
 		assertEquals("Steve Miller Band", artist0.toString());
-		assertEquals("The Joker", model.getValueAt(model.record.getUserObject(), 0));
+		assertEquals("The Joker", model.getValueAt(model.record.getUserObject(), 1));
 	}
 
 }
