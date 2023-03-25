@@ -34,10 +34,12 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.Highlighter;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.decorator.IconHighlighter;
 import org.jdesktop.swingx.demos.highlighter.RolloverIconHighlighter;
 import org.jdesktop.swingx.demos.svg.FeatheRdisc;
@@ -131,8 +133,8 @@ public class XTreeDemo extends AbstractDemo {
 
         tabbedpane.add(getBundleString("music")
 //        	, createMusicTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
-        	, createMusicTreeTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
-//        	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
+//        	, createMusicTreeTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
+        	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
         tabbedpane.setTabPlacement(JTabbedPane.TOP);
         tabbedpane.getModel().addChangeListener( changeEvent -> {
@@ -150,14 +152,6 @@ public class XTreeDemo extends AbstractDemo {
     		);
     		setRolloverEnabled(true); // to show a "live" rollover behaviour
     		setCellRenderer(getCellRenderer());
-    		
-//    		// UI-Dependent Striping 
-//    		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
-//    		if(alternateStriping instanceof AbstractHighlighter ah) {
-//        		ah.setHighlightPredicate(HighlightPredicate.ALWAYS);
-//    		}
-    		// auskommentiert - (sieht nicht besonders gut aus)
-//    		addHighlighter(alternateStriping);
     		
 			/*
 			 * use small disc icon for records/Albums
@@ -431,6 +425,14 @@ public class XTreeDemo extends AbstractDemo {
 			super(renderer);
 			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
 			
+    		
+    		// UI-Dependent Striping 
+    		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
+    		if(alternateStriping instanceof AbstractHighlighter ah) {
+        		ah.setHighlightPredicate(HighlightPredicate.ALWAYS);
+    		}
+    		addHighlighter(alternateStriping);
+    		
 			// IS_LEAF AND Column 1:
 //			 new HighlightPredicate.ColumnHighlightPredicate(1);
 //			 new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.ColumnHighlightPredicate(1));
