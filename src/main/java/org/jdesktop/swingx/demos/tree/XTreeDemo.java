@@ -31,6 +31,7 @@ import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
@@ -129,7 +130,7 @@ public class XTreeDemo extends AbstractDemo {
         add(tabbedpane, BorderLayout.CENTER);
 
         tabbedpane.add(getBundleString("music")
-//          , createMusicTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
+//        	, createMusicTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         	, createMusicTreeTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
 //        	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
@@ -388,12 +389,40 @@ public class XTreeDemo extends AbstractDemo {
     }
 
 // experimental ----------------------------------------------------------------------------------------
+    private JComponent createMusicTable(TableModel dModel) {
+    	JXTable xTable = new JXTable(dModel);
+        return new JScrollPane(xTable);
+    }
+    
     // class JXTreeTable.TreeTableCellRenderer extends JXTree implements TableCellRenderer
-    // ?? interface IconAware kann setIcon / getIcon
     class MusicTreeTableCellRenderer extends JXTreeTable.TreeTableCellRenderer {
     	MusicTreeTableCellRenderer(TreeTableModel model) {
     		super(model);
+    		
+//    		setCellRenderer(getCellRenderer());
+    		
+			/*
+			 * use small disc icon for records/Albums
+			 */
+			Highlighter discIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(3), 
+					FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+			addHighlighter(discIcon);
+			
+			/*
+			 * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
+			 */
+			Highlighter musicIcon = new IconHighlighter(HighlightPredicate.IS_LEAF, 
+					FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+			addHighlighter(musicIcon);
+			
+			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
     	}
+	    @Override // to log
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+        	//LOG.info("----- r/c:"+row+"/"+column +" value:"+value + " " + value.getClass());
+        	return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        }
     }
 
 	class MusicTreeTable extends JXTreeTable implements TableCellRenderer {
@@ -408,35 +437,31 @@ public class XTreeDemo extends AbstractDemo {
 			Highlighter musicIcon = new IconHighlighter(
 				//new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.ColumnHighlightPredicate(1)),
 				//new HighlightPredicate.ColumnHighlightPredicate(0), // in Spalten 0,2 funktioniert es
-				new HighlightPredicate.ColumnHighlightPredicate(1), // in Spalte 1 funktioniert es NICHT
+				new HighlightPredicate.ColumnHighlightPredicate(1), // in hierarchical Spalte 1 funktioniert es NICHT
 				//HighlightPredicate.IS_LEAF, // in Spalte 0
 				FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
-			addHighlighter(musicIcon);
+//			addHighlighter(musicIcon);
 			
 			Highlighter redText = new ColorHighlighter(HighlightPredicate.ROLLOVER_CELL, null, Color.RED);
 			addHighlighter(redText);
 
-			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+//			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
 			ComponentAdapter ca = getComponentAdapter();
-			LOG.info("ComponentAdapter.ValueAt(2, 1):"+ca.getValueAt(2, 1) // "Rock" expected
+			LOG.info("\"Rock\" expected st ComponentAdapter.ValueAt(2, 1):"+ca.getValueAt(2, 1)
 				+ " ComponentAdapter:"+ca
 			);
 
 		}
 
+	    @Override // code in super: return (TreeTableModel) renderer.getModel();
 	    public TreeTableModel getTreeTableModel() {
-//	        return (TreeTableModel) renderer.getModel();
 			TableModel tm = this.getModel();
 			if(tm instanceof TreeTableModelAdapter mttma) {
 				return mttma.getTreeTableModel();
 			}
 			return super.getTreeTableModel();
 	    }
-//	    protected ComponentAdapter getComponentAdapter(int row, int column) {
-//	    	ComponentAdapter ca = super.getComponentAdapter(row, column);
-////	    	int c = ca.column;
-//			return ca;    	
-//	    }
+	    @Override
 		public int getHierarchicalColumn() {
 			TableModel tm = this.getModel();
 			if(tm instanceof TreeTableModelAdapter mttma) {
@@ -453,19 +478,17 @@ public class XTreeDemo extends AbstractDemo {
 	    	ComponentAdapter ca = getComponentAdapter(row, column);
 	    	if(ca.column == getHierarchicalColumn()) {
 	    		JXTree.DelegatingRenderer renderer = (JXTree.DelegatingRenderer)getTreeCellRenderer();
-		    	LOG.info("column "+column + " isHierarchicalColumn!!! renderer:"+renderer);
-	    		//return renderer;
+//		    	LOG.info("hierarchical column "+column + " isHierarchicalColumn!!! renderer:"+renderer);
 	    		JTree tree = ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree();
 	    		JXTree xtree = (JXTree)tree;
 	    		return (JXTreeTable.TreeTableCellRenderer)xtree;
-//		    	return (TableCellRenderer)getTreeCellRenderer();
 	    	}
 	    	return super.getCellRenderer(row, column);
 	    }
-	    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-	    	LOG.info("??? TableCellRenderer:"+renderer);
-	    	return super.prepareRenderer(renderer, row, column);
-	    }
+//	    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+//	    	LOG.info("??? TableCellRenderer:"+renderer);
+//	    	return super.prepareRenderer(renderer, row, column);
+//	    }
 //	    Component getTreeCellRendererComponent(JTree tree, Object value,
 //                boolean selected, boolean expanded,
 //                boolean leaf, int row, boolean hasFocus) {
@@ -485,14 +508,38 @@ public class XTreeDemo extends AbstractDemo {
     // MusicTreeModel implements TreeTableModel
     private JComponent createMusicTreeTable(MusicTreeModel model) {
 //    	MusicTree musicTree = new MusicTree(model);
-//    	JXTreeTable.TreeTableModelAdapter adapter = new MusicTreeTableModelAdapter(musicTree);
-//    	JXTreeTable treeTable = new MusicTreeTable(adapter);
     	JXTreeTable.TreeTableCellRenderer renderer = new MusicTreeTableCellRenderer(model);
     	JXTreeTable treeTable = new MusicTreeTable(renderer);
     	
-    	// Gut: !!! ABER Highlighter icons in Spalte 1 sind nicht da
-//    	JXTreeTable treeTable = new JXTreeTable(model);
     	treeTable.setShowGrid(false, true);
+    	
+    	treeTable.setRolloverEnabled(true); // to show a "live" rollover behaviour
+    	
+    	/*
+    	 * rollover a row shows the Album Cover as ToolTip, f.i.
+    	 * from https://en.wikipedia.org/wiki/File:My_Name_Is_Albert_Ayler.jpg
+    	 */
+    	treeTable.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
+			JXTreeTable source = (JXTreeTable) propertyChangeEvent.getSource();
+			source.setToolTipText(null);
+			Point newPoint = (Point) propertyChangeEvent.getNewValue();
+			if (newPoint != null && newPoint.y > -1) {
+				TreePath treePath = source.getPathForRow(newPoint.y);
+				if (treePath.getPathCount() == 4) { // Album / Record / Style
+					Object o = treePath.getLastPathComponent();
+					LOG.fine("PathFor newPoint.y: " + source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"
+							+ propertyChangeEvent + " o:" + o);
+					if (o instanceof MusicTreeModel.Album album) {
+						source.setToolTipText(album.getHtmlSrc());
+					}
+				} else if (treePath.getPathCount() == 5) { // Song / Composition
+					Object o = treePath.getLastPathComponent();
+					if (o instanceof MusicTreeModel.Song song) {
+						source.setToolTipText(song.getHtmlSrc());
+					}
+				}
+			}
+		});
 
 // TODO    	treeTable.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
 //    	treeTable.addHighlighter(null);
