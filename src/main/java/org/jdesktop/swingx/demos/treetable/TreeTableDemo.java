@@ -11,34 +11,38 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Window;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeCellRenderer;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXTree.DelegatingRenderer;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTree;
+import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.ComponentAdapter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
+import org.jdesktop.swingx.decorator.Highlighter;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.FilteredIconValue;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
-import org.jdesktop.swingx.demos.tree.XTreeDemo;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
-import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
+import org.jdesktop.swingx.renderer.WrappingIconPanel;
 import org.jdesktop.swingx.table.ColumnFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
@@ -110,22 +114,138 @@ public class TreeTableDemo extends AbstractDemo {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
     	// initComponents:
-        treeTable = new JXTreeTable();
+		JXTreeTable.TreeTableCellRenderer renderer = new JXTreeTable.TreeTableCellRenderer(getTreeTableModel(SwingUtilities.getWindowAncestor(this))) {
+		    /**
+		     * {@inheritDoc} <p>
+		     * 
+		     * Overridden to return the <code>JXTree</code> delegating renderer 
+		     * with <code>StringValue</code> and <code>IconValue</code>.
+		     */
+		    @Override
+			public TreeCellRenderer getCellRenderer() {
+				StringValue sv = (Object value) -> {
+					if (value instanceof Component component) {
+						String simpleName = component.getClass().getSimpleName();
+						if (simpleName.length() == 0) {
+							// anonymous class
+							simpleName = component.getClass().getSuperclass().getSimpleName();
+						}
+						return simpleName + "(" + component.getName() + ")";
+					}
+					return StringValues.TO_STRING.getString(value);
+				};
+				// StringValue for lazy icon loading interface
+				// org.jdesktop.swingx.renderer.StringValue
+				StringValue keyValue = (Object value) -> {
+					if (value == null)
+						return "";
+					String simpleClassName = value.getClass().getSimpleName();
+					if (simpleClassName.length() == 0) {
+						// anonymous class
+						simpleClassName = value.getClass().getSuperclass().getSimpleName();
+					}
+					return simpleClassName + ".png";
+				};
+				IconValue iv = new LazyLoadingIconValue(getClass(), keyValue, "fallback.png");
+				return new JXTree.DelegatingRenderer(iv, sv);
+			}
+
+		};
+
+        // <snip> JXTree rollover
+        // enable and register a highlighter
+        renderer.setRolloverEnabled(true);
+//		Highlighter musicIcon = new IconHighlighter(HighlightPredicate.IS_LEAF, 
+//				FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+//		renderer.addHighlighter(musicIcon);
+// TODO: IS_LEAF funktioniert, aber es ist ein Test, einen rollover icon HL erstellen:
+        //renderer.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+        //treeTable.addHighlighter(createRolloverIconHighlighter(iv));
+        // </snip>
+
+		treeTable = new ComponentTreeTable(renderer);
         treeTable.setName("componentTreeTable");
         add(new JScrollPane(treeTable));
         LOG.info("done initComponents treeTable:"+treeTable);
 
-        configureComponents();
-        bind();
+        // configureComponents:
+        treeTable.setColumnControlVisible(true);
+        
+		// UI-Dependent Striping 
+		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
+		if(alternateStriping instanceof AbstractHighlighter ah) {
+    		ah.setHighlightPredicate(HighlightPredicate.ALWAYS);
+		}
+		treeTable.addHighlighter(alternateStriping);
+
+        Highlighter mouseOverHighlighter = new ColorHighlighter(HighlightPredicate.ROLLOVER_CELL, PaintUtils.setSaturation(Color.MAGENTA, 0.3f), null);
+        treeTable.addHighlighter(mouseOverHighlighter);
+
+        customColumnFactory();
     }
+	@SuppressWarnings("serial")
+	class ComponentTreeTable extends JXTreeTable implements TableCellRenderer {
+
+		ComponentTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
+			super(renderer);
+			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+        	StringValue locSize = (Object value) -> {
+				int x;
+				int y;
+				if (value instanceof Dimension dim) {
+					x = dim.width;
+					y = dim.height;
+				} else if (value instanceof Point point) {
+					x = point.x;
+					y = point.y;
+				} else {
+					return StringValues.TO_STRING.getString(value); // also for value==null
+				}
+				return "(" + x + ", " + y + ")";
+	        };
+	        setDefaultRenderer(Point.class, new DefaultTableRenderer(locSize, JLabel.CENTER));
+	        setDefaultRenderer(Dimension.class, this.getDefaultRenderer(Point.class));
+		}
+//	    @Override // code in super: return (TreeTableModel) renderer.getModel();
+//	    public TreeTableModel getTreeTableModel() {
+//			TableModel tm = this.getModel();
+//			if(tm instanceof TreeTableModelAdapter mttma) {
+//				return mttma.getTreeTableModel();
+//			}
+//			return super.getTreeTableModel();
+//	    }
+//	    @Override
+//		public int getHierarchicalColumn() {
+//	    	int superret = super.getHierarchicalColumn();
+//	    	assert superret==0;
+//			return super.getHierarchicalColumn();
+//		}
+//	    @Override
+//	    public TableCellRenderer getCellRenderer(int row, int column) {
+//	    	ComponentAdapter ca = getComponentAdapter(row, column);
+//	    	if(ca.column == getHierarchicalColumn()) {
+//	    		JXTree.DelegatingRenderer renderer = (JXTree.DelegatingRenderer)getTreeCellRenderer();
+////		    	LOG.info("hierarchical column "+column + " isHierarchicalColumn!!! renderer:"+renderer);
+//	    		JTree tree = ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree();
+//	    		JXTree xtree = (JXTree)tree;
+//	    		return (JXTreeTable.TreeTableCellRenderer)xtree;
+//	    	}
+//	    	return super.getCellRenderer(row, column);
+//	    }
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, 
+				boolean isSelected, boolean hasFocus, int row, int column) {			
+        	LOG.warning("NICHT IMPLEMENTIERT row="+row + " column="+column + " value:"+value);
+//        	super.getCellRenderer(row, column)
+			return null;
+		}
+		
+	}
 
     // Controller:
 //    private JXButton loadButton;
     private JXButton expandButton;
     private JXButton collapseButton;
-//    private AbstractInputEventDispatcher inputEventDispatcher;
-    private AbstractHighlighter mouseOverHighlighter;
-    
 
     @Override
 	public JXPanel getControlPane() {
@@ -163,7 +283,7 @@ public class TreeTableDemo extends AbstractDemo {
         treeTable.packColumn(treeTable.getHierarchicalColumn(), -1);
     }
 
-    private void bind() {
+    private void customColumnFactory() {
         // <snip>JXTreeTable column customization
         // configure and install a custom columnFactory, arguably data related ;-)
         ColumnFactory factory = new ColumnFactory() {
@@ -178,7 +298,6 @@ public class TreeTableDemo extends AbstractDemo {
             public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
                 super.configureTableColumn(model, columnExt);
                 if (columnExt.getModelIndex() < columnNameKeys.length) {
-//                    columnExt.setTitle(DemoUtils.getResourceString(TreeTableDemo.class, columnNameKeys[columnExt.getModelIndex()]));
                     columnExt.setTitle(columnNameKeys[columnExt.getModelIndex()]);
                 }
             }
@@ -188,105 +307,39 @@ public class TreeTableDemo extends AbstractDemo {
         // </snip>
     }
    
-    private void configureComponents() {
-        // <snip> JXTreeTable rendering
-        // StringValue provides node text, used in hierarchical column
-        StringValue sv = new StringValue() {
-            
-            @Override
-            public String getString(Object value) {
-                if (value instanceof Component) {
-                    Component component = (Component) value;
-                    String simpleName = component.getClass().getSimpleName();
-                    if (simpleName.length() == 0){
-                        // anonymous class
-                        simpleName = component.getClass().getSuperclass().getSimpleName();
-                    }
-                    return simpleName;
-                }
-                return StringValues.TO_STRING.getString(value);
-            }
-        };
-        // </snip>
-        
-        // StringValue for lazy icon loading
-        StringValue keyValue = new StringValue() {
-            
-            @Override
-            public String getString(Object value) {
-                if (value == null) return "";
-                String simpleClassName = value.getClass().getSimpleName();
-                if (simpleClassName.length() == 0){
-                    // anonymous class
-                    simpleClassName = value.getClass().getSuperclass().getSimpleName();
-                }
-                return simpleClassName + ".png";
-            }
-        };
-        // <snip> JXTreeTable rendering
-        // IconValue provides node icon (same as in XTreeDemo)
-        IconValue iv = new LazyLoadingIconValue(XTreeDemo.class, keyValue, "fallback.png");
-        // create and set a tree renderer using the custom Icon-/StringValue
-        treeTable.setTreeCellRenderer(new DefaultTreeRenderer(iv, sv));
-        // string representation for use of Dimension/Point class
-        StringValue locSize = new StringValue() {
-            
-            @Override
-            public String getString(Object value) {
-                int x;
-                int y;
-                if (value instanceof Dimension) {
-                    x = ((Dimension) value).width;
-                    y = ((Dimension) value).height;
-                } else if (value instanceof Point) {
-                    x = ((Point) value).x;
-                    y = ((Point) value).y;
-                } else {
-                    return StringValues.TO_STRING.getString(value);
-                }
-                return "(" + x + ", " + y + ")";
-            }
-        };
-        treeTable.setDefaultRenderer(Point.class, new DefaultTableRenderer(locSize, JLabel.CENTER));
-        treeTable.setDefaultRenderer(Dimension.class, treeTable.getDefaultRenderer(Point.class));
-        // </snip>
-        
-        mouseOverHighlighter = new ColorHighlighter(HighlightPredicate.NEVER, PaintUtils.setSaturation(Color.MAGENTA, 0.3f), null);
-        treeTable.addHighlighter(mouseOverHighlighter);
-        
-        treeTable.setColumnControlVisible(true);
-    }
 
-    
+//  private AbstractInputEventDispatcher inputEventDispatcher;
+//  private AbstractHighlighter mouseOverHighlighter;
+  
     // <snip> Input-/FocusEvent notification 
     /**
      * update Highlighter's predicate to highlight the tree row
      * which contains the component under the current mouse position
      * @param component Component
      */
-    protected void updateHighlighter(Component component) {
-        mouseOverHighlighter.setHighlightPredicate(HighlightPredicate.NEVER);
-        if (component != null) {
-        
-            List<Component> pathList = new ArrayList<Component>();
-            while (component != null) {
-                pathList.add(0, component);
-                component = component.getParent();
-            }
-            final TreePath treePath = new TreePath(pathList.toArray());
-            treeTable.scrollPathToVisible(treePath);
-            HighlightPredicate predicate = new HighlightPredicate() {
-                
-                @Override
-                public boolean isHighlighted(Component renderer, ComponentAdapter adapter) {
-                    return adapter.row == treeTable.getRowForPath(treePath);
-                }
-            };
-            mouseOverHighlighter.setHighlightPredicate(predicate);
-            // </snip>
-
-        }
-    }
+//    protected void updateHighlighter(Component component) {
+//        mouseOverHighlighter.setHighlightPredicate(HighlightPredicate.NEVER);
+//        if (component != null) {
+//        
+//            List<Component> pathList = new ArrayList<Component>();
+//            while (component != null) {
+//                pathList.add(0, component);
+//                component = component.getParent();
+//            }
+//            final TreePath treePath = new TreePath(pathList.toArray());
+//            treeTable.scrollPathToVisible(treePath);
+//            HighlightPredicate predicate = new HighlightPredicate() {
+//                
+//                @Override
+//                public boolean isHighlighted(Component renderer, ComponentAdapter adapter) {
+//                    return adapter.row == treeTable.getRowForPath(treePath);
+//                }
+//            };
+//            mouseOverHighlighter.setHighlightPredicate(predicate);
+//            // </snip>
+//
+//        }
+//    }
 
     /**
      * Overridden to create and install the component tree model.
@@ -357,7 +410,7 @@ public class TreeTableDemo extends AbstractDemo {
      * @return TreeTableModel
      */
     public static TreeTableModel getTreeTableModel(Component root) {
-    	LOG.info("Component root:"+root);
+    	LOG.config("Component root:"+root);
         return new AbstractTreeTableModel(root) {
         	// Returns the number of columns in the model.
             public int getColumnCount() {
@@ -370,7 +423,7 @@ public class TreeTableDemo extends AbstractDemo {
                 
                 switch (column) {
                 case 0:
-                    o = c;
+                    o = c; // c.getClass().getSimpleName();
                     break;
                 case 1:
                     o = c.getName();
@@ -429,6 +482,44 @@ public class TreeTableDemo extends AbstractDemo {
         };
     }
 
+    // <snip> JXTree rollover
+    // custom implementation of Highlighter which highlights 
+    // by changing the node icon on rollover
+    private Highlighter createRolloverIconHighlighter(IconValue delegate) {
+        // the icon look-up is left to an IconValue
+        final IconValue iv = new FilteredIconValue(delegate);
+        AbstractHighlighter hl = new AbstractHighlighter(HighlightPredicate.ROLLOVER_ROW) {
+
+            /**
+             * {@inheritDoc} <p>
+             * 
+             * Implemented to highlight by setting the node icon.
+             */
+            @Override
+            protected Component doHighlight(Component component, ComponentAdapter adapter) {
+                Icon icon = iv.getIcon(adapter.getValue());
+                if (icon != null) {
+                    ((WrappingIconPanel) component).setIcon(icon);
+                }
+                return component;
+            }
+            // </snip>
+            
+            /**
+             * {@inheritDoc} <p>
+             * 
+             * Implementated to return true if the component is a WrappingIconPanel,
+             * a panel implemenation specialized for rendering tree nodes.
+             * 
+             */
+            @Override
+            protected boolean canHighlight(Component component, ComponentAdapter adapter) {
+                return component instanceof WrappingIconPanel;
+            }
+            
+        };
+        return hl;
+    }
 
 }
 
