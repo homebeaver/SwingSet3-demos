@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -41,6 +42,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeModel;
 
 import org.jdesktop.beans.AbstractBean;
 import org.jdesktop.swingx.JXFindBar;
@@ -59,12 +61,12 @@ import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
-import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.search.AbstractSearchable;
 import org.jdesktop.swingx.search.SearchFactory;
 import org.jdesktop.swingx.search.Searchable;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModelAdapter;
 import org.jdesktop.swingx.util.DecoratorFactory;
 
@@ -115,15 +117,15 @@ public class SearchDemo extends AbstractDemo {
     	});
     }
 
-    private Contributors contributors; // Data
     private String[] keys = {"name", "date", "merits", "email"};
-    private JTabbedPane tabbedPane;
+    private Contributors contributors; // Data
+    private TreeModel treeModel;
     private JXTreeTable treeTable;
     private JXTree tree;
     private JXList<Object> list;
     private JXTable table;
+    private JTabbedPane tabbedPane;
     
-//    private JXSearchField searchField;
     private JPanel jxFindContainer;
     private JXFindPanel findPanel;
     private JXFindBar findBar;
@@ -148,7 +150,10 @@ public class SearchDemo extends AbstractDemo {
         jxFindContainer.add(findBar);
 
         initStringRepresentation();
-    	tabbedPane = initComponents();
+        contributors = new Contributors();
+        treeModel = new DefaultTreeModel(contributors.getRootNode());
+
+    	tabbedPane = initComponents(); // with init treeTable
         add(tabbedPane, BorderLayout.CENTER);
         
         // findPanel with searchField
@@ -156,12 +161,9 @@ public class SearchDemo extends AbstractDemo {
         
         installCustomSearch();
         
-//        bind(); :
-        contributors = new Contributors();
         table.setModel(contributors.getTableModel());
         list.setModel(contributors.getListModel());
-        tree.setModel(new DefaultTreeModel(contributors.getRootNode()));
-        treeTable.setTreeTableModel(new TreeTableModelAdapter(tree.getModel(), contributors.getContributorNodeModel()));
+        tree.setModel(treeModel);
         searchControl = new SearchControl();        
         
         installRenderers();
@@ -403,69 +405,44 @@ public class SearchDemo extends AbstractDemo {
         // Note: the content of each cell is always of type Contributor
         // its string representation as-seen is defined here in the StringValue
         // default: show contributor's first and last name
-        @SuppressWarnings("serial")
-		StringValue nameValue = new StringValue() {
-
-            public String getString(Object value) {
-                if (value instanceof Contributor) {
-                    Contributor c = (Contributor) value;
-                    return c.getLastName() + ", " + c.getFirstName();
-                }
-                return StringValues.TO_STRING.getString(value);
+        StringValue nameValue = (Object value) -> {
+            if(value instanceof Contributor c) {
+                return c.getLastName() + ", " + c.getFirstName();
             }
-            
+            return StringValues.TO_STRING.getString(value);        	
         };
         stringValues.put("name", nameValue);
 
         // show the joined date
-        @SuppressWarnings("serial")
-		StringValue dateValue = new StringValue() {
-
-            @Override
-            public String getString(Object value) {
-                if (value instanceof Contributor) {
-                    return StringValues.DATE_TO_STRING.getString(((Contributor) value).getJoinedDate());
-                }
-                return StringValues.TO_STRING.getString(value);
+        StringValue dateValue = (Object value) -> {
+            if(value instanceof Contributor c) {
+                return StringValues.DATE_TO_STRING.getString(c.getJoinedDate());
             }
-            
+            return StringValues.TO_STRING.getString(value);   	
         };
         // </snip>
         stringValues.put("date", dateValue);
         
         // show the merits
-        @SuppressWarnings("serial")
-		StringValue meritValue = new StringValue() {
-
-            @Override
-            public String getString(Object value) {
-                if (value instanceof Contributor) {
-                    return StringValues.NUMBER_TO_STRING.getString(((Contributor) value).getMerits());
-                }
-                return StringValues.TO_STRING.getString(value);
+        StringValue meritValue = (Object value) -> {
+            if(value instanceof Contributor c) {
+                return StringValues.NUMBER_TO_STRING.getString(c.getMerits());
             }
-            
+            return StringValues.TO_STRING.getString(value);
         };
         stringValues.put("merits", meritValue);
 
         // show the email
-        @SuppressWarnings("serial")
-		StringValue emailValue = new StringValue() {
-
-            @Override
-            public String getString(Object value) {
-                if (value instanceof Contributor) {
-                    URI mail = ((Contributor) value).getEmail();
-                    // strip mailto:
-                    String path = mail.toString();
-                    return path.replace("mailto:", "");
-                }
-                return StringValues.EMPTY.getString(value);
+        StringValue emailValue = (Object value) -> {
+            if(value instanceof Contributor c) {
+                URI mail = c.getEmail();
+                // strip mailto:
+                String path = mail.toString();
+                return path.replace("mailto:", "");
             }
-            
+            return StringValues.EMPTY.getString(value);       	
         };
         stringValues.put("email", emailValue);
-
     }
 
     /**
@@ -481,7 +458,6 @@ public class SearchDemo extends AbstractDemo {
         table.setDefaultRenderer(Contributor.class, new DefaultTableRenderer(sv));
         list.setCellRenderer(new DefaultListRenderer<Object>(sv));
         tree.setCellRenderer(tree.new DelegatingRenderer(sv));
-        treeTable.setTreeCellRenderer(new DefaultTreeRenderer(sv));
         
         for (int i = 1; i < keys.length; i++) {
             installColumnRenderers(i, new DefaultTableRenderer(stringValues.get(keys[i])));
@@ -617,11 +593,22 @@ public class SearchDemo extends AbstractDemo {
         list = new JXList<Object>(true);
         tree = new JXTree() {
 			private static final long serialVersionUID = 1L;
+		    @Override
             public TreeCellRenderer getCellRenderer() {
                 return new JXTree.DelegatingRenderer(stringValues.get("name"));
             }
         };
-        treeTable = new JXTreeTable();
+        
+        // TreeTableModelAdapter implements TreeTableModel
+        TreeTableModel ttmodel = new TreeTableModelAdapter(treeModel, contributors.getContributorNodeModel());
+		JXTreeTable.TreeTableCellRenderer renderer = new JXTreeTable.TreeTableCellRenderer(ttmodel) {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public TreeCellRenderer getCellRenderer() {
+                return new JXTree.DelegatingRenderer(stringValues.get("name"));
+		    }
+		};
+		treeTable = new ContributorTreeTable(renderer);
         
         table.setColumnControlVisible(true);
         treeTable.setColumnControlVisible(true);
@@ -633,5 +620,20 @@ public class SearchDemo extends AbstractDemo {
         
         return tabbedPane;
     }
+	class ContributorTreeTable extends JXTreeTable implements TableCellRenderer {
+
+		ContributorTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
+			super(renderer);
+			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;			
+		}
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, 
+				boolean isSelected, boolean hasFocus, int row, int column) {			
+        	LOG.warning("NICHT IMPLEMENTIERT row="+row + " column="+column + " value:"+value);
+//        	super.getCellRenderer(row, column)
+			return null;
+		}
+		
+	}
 
 }
