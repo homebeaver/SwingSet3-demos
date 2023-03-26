@@ -6,6 +6,7 @@ package org.jdesktop.swingx.demos.tree;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Point;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -47,6 +49,7 @@ import org.jdesktop.swingx.demos.svg.FeatheRmusic;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
 import org.jdesktop.swingx.icon.SizingConstants;
+import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
@@ -136,6 +139,7 @@ public class XTreeDemo extends AbstractDemo {
 //        	, createMusicTreeTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
+//        tabbedpane.add(getBundleString("componentTreeTable"), createComponentTreeTable()); // experimental
         tabbedpane.setTabPlacement(JTabbedPane.TOP);
         tabbedpane.getModel().addChangeListener( changeEvent -> {
             SingleSelectionModel ssmodel = (SingleSelectionModel) changeEvent.getSource();
@@ -293,6 +297,102 @@ public class XTreeDemo extends AbstractDemo {
 //        + "\n tree:"+componentTree);
         return scrollpane;
     }
+	@SuppressWarnings("serial")
+	class ComponentTreeTable extends JXTreeTable implements TableCellRenderer {
+
+		ComponentTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
+			super(renderer);
+			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+        	StringValue locSize = (Object value) -> {
+				int x;
+				int y;
+				if (value instanceof Dimension dim) {
+					x = dim.width;
+					y = dim.height;
+				} else if (value instanceof Point point) {
+					x = point.x;
+					y = point.y;
+				} else {
+					return StringValues.TO_STRING.getString(value); // also for value==null
+				}
+				return "(" + x + ", " + y + ")";
+	        };
+	        setDefaultRenderer(Point.class, new DefaultTableRenderer(locSize, JLabel.CENTER));
+	        setDefaultRenderer(Dimension.class, this.getDefaultRenderer(Point.class));
+		}
+	    @Override // code in super: return (TreeTableModel) renderer.getModel();
+	    public TreeTableModel getTreeTableModel() {
+			TableModel tm = this.getModel();
+			if(tm instanceof TreeTableModelAdapter mttma) {
+				return mttma.getTreeTableModel();
+			}
+			return super.getTreeTableModel();
+	    }
+	    @Override
+		public int getHierarchicalColumn() {
+	    	int superret = super.getHierarchicalColumn();
+	    	assert superret==0;
+			return super.getHierarchicalColumn();
+		}
+	    @Override
+	    public TableCellRenderer getCellRenderer(int row, int column) {
+	    	ComponentAdapter ca = getComponentAdapter(row, column);
+	    	if(ca.column == getHierarchicalColumn()) {
+	    		JXTree.DelegatingRenderer renderer = (JXTree.DelegatingRenderer)getTreeCellRenderer();
+		    	LOG.info("hierarchical column "+column + " isHierarchicalColumn!!! renderer:"+renderer);
+	    		JTree tree = ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree();
+	    		JXTree xtree = (JXTree)tree;
+	    		return (JXTreeTable.TreeTableCellRenderer)xtree;
+	    	}
+	    	return super.getCellRenderer(row, column);
+	    }
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, 
+				boolean isSelected, boolean hasFocus, int row, int column) {			
+        	LOG.warning("NICHT IMPLEMENTIERT row="+row + " column="+column + " value:"+value);
+//        	super.getCellRenderer(row, column)
+			return null;
+		}
+		
+	}
+	private JComponent createComponentTreeTable() {
+		JXTreeTable.TreeTableCellRenderer componentTreeRenderer 
+			= new JXTreeTable.TreeTableCellRenderer(createTreeModel()) {
+	        public TreeCellRenderer getCellRenderer() {
+            	StringValue sv = (Object value) -> {
+                    if (value instanceof Component component) {
+                        String simpleName = component.getClass().getSimpleName();
+                        if (simpleName.length() == 0){
+                            // anonymous class
+                            simpleName = component.getClass().getSuperclass().getSimpleName();
+                        }
+                        return simpleName + "(" + component.getName() + ")";
+                    }
+                    return StringValues.TO_STRING.getString(value);
+            	};
+                // StringValue for lazy icon loading interface org.jdesktop.swingx.renderer.StringValue
+            	StringValue keyValue = (Object value) -> {
+                    if (value == null) return "";
+                    String simpleClassName = value.getClass().getSimpleName();
+                    if (simpleClassName.length() == 0){
+                        // anonymous class
+                        simpleClassName = value.getClass().getSuperclass().getSimpleName();
+                    }
+                    return simpleClassName + ".png";
+            	};
+                IconValue iv = new LazyLoadingIconValue(getClass(), keyValue, "fallback.png");
+                return new JXTree.DelegatingRenderer(iv, sv);
+	        }
+
+		};
+		JXTreeTable componentTreeTable = new ComponentTreeTable(componentTreeRenderer);
+        JScrollPane scrollpane = new JScrollPane(componentTreeTable);
+
+        // create and install the component tree model:
+        addNotify();
+        componentTreeTable.expandAll();
+        return scrollpane;
+	}
 
     // Controller:
     private JXButton loadButton;
@@ -414,8 +514,7 @@ public class XTreeDemo extends AbstractDemo {
 		MusicTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
 			super(renderer);
 			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
-			
-    		
+			  		
     		// UI-Dependent Striping 
     		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
     		if(alternateStriping instanceof AbstractHighlighter ah) {
