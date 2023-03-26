@@ -181,20 +181,16 @@ public class XTreeDemo extends AbstractDemo {
         
         // TreeCellRenderer is interface, DelegatingRenderer extends DefaultTreeRenderer implements it
         public TreeCellRenderer getCellRenderer() {
-			StringValue sv = new StringValue() {          
-                @Override
-                public String getString(Object value) {
-                	LOG.fine(" ### value:"+value + " "+value.getClass());
-                    if(value instanceof MusicTreeModel.MusicEntry
-                    || value instanceof MusicTreeModel.Album
-                    || value instanceof MusicTreeModel.Song
-                    ) {
-                    	return StringValues.TO_STRING.getString(value);
-                    }
-                    String simpleName = value.getClass().getSimpleName();
-                    return simpleName + "(" + value + ")";
+        	StringValue sv = (Object value) -> {
+                if(value instanceof MusicTreeModel.MusicEntry
+                || value instanceof MusicTreeModel.Album
+                || value instanceof MusicTreeModel.Song
+                ) {
+                	return StringValues.TO_STRING.getString(value);
                 }
-            };
+                String simpleName = value.getClass().getSimpleName();
+                return simpleName + "(" + value + ")";
+        	};
             return new JXTree.DelegatingRenderer(sv);
         }
 
@@ -240,41 +236,35 @@ public class XTreeDemo extends AbstractDemo {
         return new JScrollPane(tree);
     }
     
-    private JComponent createComponentTree() {
+	@SuppressWarnings("serial")
+	private JComponent createComponentTree() {
     	/*
     	 * no param: in JTree there is a dafault DefaultMutableTreeNode JTree with colors, sports, food.
     	 */
         componentTree = new JXTree((TreeModel)null) {
         	@Override
             public TreeCellRenderer getCellRenderer() {
-    			StringValue sv = new StringValue() {          
-                    @Override
-                    public String getString(Object value) {
-//                    	LOG.info(" ### value:"+value + value.getClass());
-                        if (value instanceof Component component) {
-                            String simpleName = component.getClass().getSimpleName();
-                            if (simpleName.length() == 0){
-                                // anonymous class
-                                simpleName = component.getClass().getSuperclass().getSimpleName();
-                            }
-                            return simpleName + "(" + component.getName() + ")";
-                        }
-                        return StringValues.TO_STRING.getString(value);
-                    }
-                };
-                // StringValue for lazy icon loading interface org.jdesktop.swingx.renderer.StringValue
-                StringValue keyValue = new StringValue() {         
-                    @Override // simple converter to return a String representation of an object
-                    public String getString(Object value) {
-                        if (value == null) return "";
-                        String simpleClassName = value.getClass().getSimpleName();
-                        if (simpleClassName.length() == 0){
+            	StringValue sv = (Object value) -> {
+                    if (value instanceof Component component) {
+                        String simpleName = component.getClass().getSimpleName();
+                        if (simpleName.length() == 0){
                             // anonymous class
-                            simpleClassName = value.getClass().getSuperclass().getSimpleName();
+                            simpleName = component.getClass().getSuperclass().getSimpleName();
                         }
-                        return simpleClassName + ".png";
+                        return simpleName + "(" + component.getName() + ")";
                     }
-                };
+                    return StringValues.TO_STRING.getString(value);
+            	};
+                // StringValue for lazy icon loading interface org.jdesktop.swingx.renderer.StringValue
+            	StringValue keyValue = (Object value) -> {
+                    if (value == null) return "";
+                    String simpleClassName = value.getClass().getSimpleName();
+                    if (simpleClassName.length() == 0){
+                        // anonymous class
+                        simpleClassName = value.getClass().getSuperclass().getSimpleName();
+                    }
+                    return simpleClassName + ".png";
+            	};
                 IconValue iv = new LazyLoadingIconValue(getClass(), keyValue, "fallback.png");
                 return new JXTree.DelegatingRenderer(iv, sv);
             }
