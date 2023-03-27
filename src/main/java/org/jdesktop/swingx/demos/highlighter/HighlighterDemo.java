@@ -67,7 +67,6 @@ import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.ShapePainter;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
-import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.util.PaintUtils;
@@ -103,11 +102,11 @@ Non-Leaf,  IS_FOLDER : nA 1   : nA    : ok   : ???       : nA
 Leaf Node,   IS_LEAF : ALWAYS : alle  : ok   : ???       : alle
         ROLLOVER_ROW : OKnow  : ok    : OKnow: ok ???    : ???
 "Columns 0 and 3"    : alle   : ok    : alle : ok        : alle
-"Node Depth Columns.": nix    :
-"JButton Type"       : ???    :
+"Node Depth Columns.": nix    : nix   : ok   :
+"JButton Type"       : ok     : ok    : ok   :
 
 1: List row is always leaf
-ER1 : lässt sich nicht ausschalten
+ER1 : lässt sich nicht ausschalten für hierarchical Column
 ER2 : ganze Spalte ist highlighted
 ER3 : kein highlight wenn ausgeklappt
 ??? : ERROR 
@@ -167,15 +166,13 @@ public class HighlighterDemo extends AbstractDemo {
         list = new JXList<Component>();
         list.setName("list");
         
-        list.setCellRenderer(new DefaultListRenderer<Component>(new StringValue() {
-			private static final long serialVersionUID = 5276652668267961397L;
-			public String getString(Object value) {
-                if (value instanceof Component) {
-                    return value.getClass().getSimpleName() + " (" + ((Component) value).getName() + ")";
-                }               
-                return StringValues.TO_STRING.getString(value);
-            }
-        }));
+		StringValue sv = (Object value) -> {
+            if (value instanceof Component c) {
+                return value.getClass().getSimpleName() + (c.getName()==null ? " with no name" : " (name=" + c.getName() + ")");
+            }               
+            return StringValues.TO_STRING.getString(value);
+		};
+        list.setCellRenderer(new DefaultListRenderer<Component>(sv));
         tabbedPane.addTab("JXList", new JScrollPane(list));
         
         table = new JXTable();
@@ -187,20 +184,17 @@ public class HighlighterDemo extends AbstractDemo {
         tree = new JXTree() {
 			private static final long serialVersionUID = 1L;
             public TreeCellRenderer getCellRenderer() {
-    			StringValue sv = new StringValue() {
-    				private static final long serialVersionUID = 1L;
-                    public String getString(Object value) {
-                        if (value instanceof Component component) {
-                            String simpleName = component.getClass().getSimpleName();
-                            if (simpleName.length() == 0){
-                                // anonymous class
-                                simpleName = component.getClass().getSuperclass().getSimpleName();
-                            }
-                            return simpleName + "(" + component.getName() + ")";
-                        }
-                        return StringValues.TO_STRING.getString(value);
-                    }
-    			};
+				StringValue sv = (Object value) -> {
+					if (value instanceof Component component) {
+						String simpleName = component.getClass().getSimpleName();
+						if (simpleName.length() == 0) {
+							// anonymous class
+							simpleName = component.getClass().getSuperclass().getSimpleName();
+						}
+						return simpleName + "(" + component.getName() + ")";
+					}
+					return StringValues.TO_STRING.getString(value);
+				};
                 return new JXTree.DelegatingRenderer(sv);
             }
         };
@@ -208,7 +202,26 @@ public class HighlighterDemo extends AbstractDemo {
         tree.setCellRenderer(tree.getCellRenderer());
         tabbedPane.addTab("JXTree", new JScrollPane(tree));
         
-        treeTable = new JXTreeTable();
+		@SuppressWarnings("serial")
+		JXTreeTable.TreeTableCellRenderer renderer = new JXTreeTable.TreeTableCellRenderer(ComponentModels.getTreeTableModel(this)) {
+		    @Override
+			public TreeCellRenderer getCellRenderer() {
+				StringValue sv = (Object value) -> {
+					if (value instanceof Component component) {
+						String simpleName = component.getClass().getSimpleName();
+						if (simpleName.length() == 0) {
+							// anonymous class
+							simpleName = component.getClass().getSuperclass().getSimpleName();
+						}
+						return simpleName + (component.getName()==null ? "" : "(" + component.getName() + ")");
+					}
+					return StringValues.TO_STRING.getString(value);
+				};
+				return new JXTree.DelegatingRenderer(sv);
+			}
+			
+		};
+		treeTable = new ComponentTreeTable(renderer);
         treeTable.setName("treeTable");
         treeTable.setColumnControlVisible(true);
         treeTable.setShowGrid(true, false);
@@ -228,43 +241,35 @@ public class HighlighterDemo extends AbstractDemo {
         
         table.setModel(ComponentModels.getTableModel(this));
         // now define the TableRenderer per column:
-        table.getColumn(0).setCellRenderer(new DefaultTableRenderer(new StringValue() {
-			private static final long serialVersionUID = 1L;
-            public String getString(Object value) {
-                if (value instanceof Component) {
-                    return value.getClass().getSimpleName();
-                }
-                    
-                return StringValues.TO_STRING.getString(value);
-            }
-        }));
-        table.getColumn(2).setCellRenderer(new DefaultTableRenderer(new StringValue() {
-			private static final long serialVersionUID = 1L;
-            public String getString(Object value) {
-                if(value instanceof Point) {
-                	Point p = (Point) value;
-                	return "[x=" + p.x + ",y=" + p.y + "]";
-                } 
-                return "not showing";
-            }
-        }));
+        StringValue simpleName = (Object value) -> {
+            if (value instanceof Component) {
+                return value.getClass().getSimpleName();
+            }              
+            return StringValues.TO_STRING.getString(value);
+        };
+        table.getColumn(0).setCellRenderer(new DefaultTableRenderer(simpleName));
+        
+        // Column 1 is Name ==> no converter
+        
+        StringValue pointConverter = (Object value) -> {
+            if(value instanceof Point p) {
+            	return "[x=" + p.x + ",y=" + p.y + "]";
+            } 
+            return "not showing";
+        };
+        table.getColumn(2).setCellRenderer(new DefaultTableRenderer(pointConverter));
         
         tree.setModel(ComponentModels.getTreeModel(this));
         tree.expandAll();
         
-        treeTable.setTreeTableModel(ComponentModels.getTreeTableModel(this));
         treeTable.expandAll();     
-        treeTable.getColumn(2).setCellRenderer(new DefaultTableRenderer(new StringValue() {
-			private static final long serialVersionUID = 1L;
-            public String getString(Object value) {
-                if(value instanceof Point) {
-                	Point p = (Point) value;
-                	return "[x=" + p.x + ",y=" + p.y + "]";
-                } 
-                return StringValues.TO_STRING.getString(value);
-            }
-        }));
-		treeTable.setTreeCellRenderer(new DefaultTreeRenderer(new StringValue() {
+        treeTable.getColumn(2).setCellRenderer(new DefaultTableRenderer(pointConverter));
+/*
+	- No enclosing instance of type JXTree is accessible. 
+	Must qualify the allocation with an enclosing instance of type JXTree 
+	(e.g. x.new A() where x is an instance of JXTree).
+	
+		treeTable.setTreeCellRenderer(new JXTree.DelegatingRenderer(new StringValue() {
 			private static final long serialVersionUID = 1L;
 			public String getString(Object value) {
 				if (value instanceof Component && value.getClass() != Component.class) {
@@ -273,27 +278,34 @@ public class HighlighterDemo extends AbstractDemo {
 				return StringValues.TO_STRING.getString(value);
 			}
 		}));
-//		treeTable.packColumn(treeTable.getHierarchicalColumn(), -1);
-
-        
+ */
+      
         // ComponentModels.getComboBoxModel(Component root) liefert ComboBoxModel<Component>:
         ComboBoxModel<Component> comboBoxModel = ComponentModels.getComboBoxModel(this);
         comboBox.setModel(comboBoxModel);
         
+        StringValue svConverter = (Object value) -> {
+            if (value instanceof Component) {
+                return value.getClass().getSimpleName() + " (" + ((Component) value).getName() + ")";
+            }              
+            return StringValues.TO_STRING.getString(value);
+        };
         // DefaultListRenderer<E> extends AbstractRenderer implements ListCellRenderer<E>
-        ListCellRenderer<? super Component> comboBoxRenderer = new DefaultListRenderer<Component>(new StringValue() {
-			private static final long serialVersionUID = 1L;
-            public String getString(Object value) {
-                if (value instanceof Component) {
-                    return value.getClass().getSimpleName() + " (" + ((Component) value).getName() + ")";
-                }
-                    
-                return StringValues.TO_STRING.getString(value);
-            }
-        });
+        ListCellRenderer<? super Component> comboBoxRenderer = new DefaultListRenderer<Component>(svConverter);
         comboBox.setRenderer(comboBoxRenderer);
     }
-    
+
+	@SuppressWarnings("serial")
+	class ComponentTreeTable extends JXTreeTable /*implements TableCellRenderer*/ {
+		ComponentTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
+			super(renderer);
+			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+		}
+	    public void setTreeCellRenderer(TreeCellRenderer cellRenderer) {
+	    	super.setTreeCellRenderer(cellRenderer);
+	    }
+	}
+
     @Override
 	public JXPanel getControlPane() {
         JXPanel controller = new JXPanel(new BorderLayout());
