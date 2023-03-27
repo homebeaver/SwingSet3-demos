@@ -58,7 +58,12 @@ import org.jdesktop.swingx.SwingXUtilities;
 import org.jdesktop.swingx.action.AbstractActionExt;
 import org.jdesktop.swingx.decorator.AbstractHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
+import org.jdesktop.swingx.decorator.HighlightPredicate;
+import org.jdesktop.swingx.decorator.Highlighter;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.IconHighlighter;
+import org.jdesktop.swingx.demos.svg.FeatheRuser;
+import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.StringValue;
@@ -598,6 +603,12 @@ public class SearchDemo extends AbstractDemo {
                 return new JXTree.DelegatingRenderer(stringValues.get("name"));
             }
         };
+		/*
+		 * use small user/person icon for contributors
+		 */
+		Highlighter personIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(1), 
+				FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+		tree.addHighlighter(personIcon);
         
         // TreeTableModelAdapter implements TreeTableModel
         TreeTableModel ttmodel = new TreeTableModelAdapter(treeModel, contributors.getContributorNodeModel());
@@ -608,6 +619,7 @@ public class SearchDemo extends AbstractDemo {
                 return new JXTree.DelegatingRenderer(stringValues.get("name"));
 		    }
 		};
+		renderer.addHighlighter(personIcon);
 		treeTable = new ContributorTreeTable(renderer);
         
         table.setColumnControlVisible(true);
