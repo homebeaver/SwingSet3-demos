@@ -329,19 +329,12 @@ public class SearchDemo extends AbstractDemo {
 //        DemoUtils.setSnippet("Customize Search", table, list, tree, treeTable);
         // wire the update on tab changed
         JTabbedPane tabbed = SwingXUtilities.getAncestor(JTabbedPane.class, table);
-        ChangeListener l  = new ChangeListener() {
-            
-            @Override
-            public void stateChanged(final ChangeEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        updateSearchable((JTabbedPane) e.getSource());
-                    }
-
-                });
-            }
-        };
-        tabbed.addChangeListener(l);
+        // addChangeListener shorter with Lambda Expression
+        tabbed.addChangeListener(changeEvent -> {
+            SwingUtilities.invokeLater( () -> {
+                updateSearchable((JTabbedPane) changeEvent.getSource());
+            });
+        });
         // initial searchable
         updateSearchable(tabbed);
     }
