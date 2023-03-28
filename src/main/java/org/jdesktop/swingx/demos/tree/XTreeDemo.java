@@ -46,6 +46,7 @@ import org.jdesktop.swingx.decorator.IconHighlighter;
 import org.jdesktop.swingx.demos.highlighter.RolloverIconHighlighter;
 import org.jdesktop.swingx.demos.svg.FeatheRdisc;
 import org.jdesktop.swingx.demos.svg.FeatheRmusic;
+import org.jdesktop.swingx.demos.svg.FeatheRuser;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
 import org.jdesktop.swingx.icon.SizingConstants;
@@ -157,6 +158,13 @@ public class XTreeDemo extends AbstractDemo {
     		setRolloverEnabled(true); // to show a "live" rollover behaviour
     		setCellRenderer(getCellRenderer());
     		
+			/*
+			 * use small person icon for Composer (use And Predicate)
+			 */
+			Highlighter personIcon = new IconHighlighter(
+					new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.DepthHighlightPredicate(2)),
+					FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+			addHighlighter(personIcon);
 			/*
 			 * use small disc icon for records/Albums
 			 */
