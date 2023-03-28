@@ -12,7 +12,7 @@ public class MusicTreeModelTest {
 		assertNotNull(model.getRoot());
 		assertEquals(3, model.getChildCount(model.getRoot()));
 		assertEquals(model.catagory.getUserObject(), model.getChild(model.getRoot(), 2));
-		assertEquals(615, model.getRowCount());
+		assertEquals(616, model.getRowCount());
 	}
 	
 	@Test

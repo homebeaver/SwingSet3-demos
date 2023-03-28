@@ -12,7 +12,7 @@
 #                                                                              #
 ################################################################################
 C Classical
-A Beethoven
+A Beethoven;https://{language}.wikipedia.org/wiki/Ludwig_van_Beethoven
 R concertos
 S No. 1 - C
 S No. 2 - B-Flat Major
@@ -55,6 +55,7 @@ S No. 1 - C Minor;https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._1
 S No. 2 - D Minor
 S No. 3 - F Major
 S No. 4 - E Minor
+A Chopin
 A Mozart
 R Concertos
 S Piano Concerto No. 12
