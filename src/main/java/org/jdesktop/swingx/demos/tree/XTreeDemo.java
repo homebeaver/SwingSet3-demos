@@ -148,7 +148,7 @@ public class XTreeDemo extends AbstractDemo {
     }
 
     @SuppressWarnings("serial")
-	class MusicTree extends JXTree implements TableCellRenderer {
+	class MusicTree extends JXTree /*implements TableCellRenderer*/ {
     	
     	MusicTree(MusicTreeModel model) {
     		super(model);
@@ -156,38 +156,7 @@ public class XTreeDemo extends AbstractDemo {
     				getClientProperty("JTree.lineStyle") // warum ist es null? es sollte "Angled" sein
     		);
     		setRolloverEnabled(true); // to show a "live" rollover behaviour
-    		setCellRenderer(getCellRenderer());
-    		
-			/*
-			 * use small person icon for Composer (use And Predicate)
-			 */
-			Highlighter personIcon = new IconHighlighter(
-					new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.DepthHighlightPredicate(2)),
-					FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-			addHighlighter(personIcon);
-			/*
-			 * use small disc icon for records/Albums
-			 */
-			Highlighter discIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(3), 
-					FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-			addHighlighter(discIcon);
-			
-			/*
-			 * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
-			 * HighlightPredicate.IS_LEAF is not good, because there is a composer (Chopin) entry,
-			 * with no records ==> hence Chopin is a leaf
-			 * ==> use Depth predicate
-			 */
-			Highlighter musicIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(4), 
-					FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
-			addHighlighter(musicIcon);
-			
-			Highlighter redText = new ColorHighlighter(HighlightPredicate.ROLLOVER_CELL, null, Color.RED);
-			addHighlighter(redText);
-
-			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
-			ComponentAdapter ca = getComponentAdapter();
-			LOG.info("ComponentAdapter.ValueAt(3, 1):"+ca.getValueAt(3, 1));
+    		setCellRenderer(getCellRenderer()); 		
     	}
 
         public Insets getInsets() {
@@ -211,18 +180,47 @@ public class XTreeDemo extends AbstractDemo {
 
         /*  
  !!!!!!!!!!!!!!!! wg. implements TableCellRenderer // wird aber für tree nicht benötigt
-         */
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, 
 				boolean isSelected, boolean hasFocus, int row, int column) {			
         	LOG.warning("NICHT IMPLEMENTIERT row="+row + " column="+column + " value:"+value);
 			return null;
 		}
+         */
     }
     
     private JComponent createMusicTree(MusicTreeModel model) {
     	JXTree tree = new MusicTree(model);
-    	
+
+		/*
+		 * use small person icon for Composer (use And Predicate)
+		 */
+		Highlighter personIcon = new IconHighlighter(
+				new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.DepthHighlightPredicate(2)),
+				FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+		tree.addHighlighter(personIcon);
+		/*
+		 * use small disc icon for records/Albums
+		 */
+		Highlighter discIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(3), 
+				FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+		tree.addHighlighter(discIcon);
+		
+		/*
+		 * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
+		 * HighlightPredicate.IS_LEAF is not good, because there is a composer (Chopin) entry,
+		 * with no records ==> hence Chopin is a leaf
+		 * ==> use Depth predicate
+		 */
+		Highlighter musicIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(4), 
+				FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+		tree.addHighlighter(musicIcon);
+		
+		Highlighter redText = new ColorHighlighter(HighlightPredicate.ROLLOVER_CELL, null, Color.RED);
+		tree.addHighlighter(redText);
+
+		tree.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+
         tree.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
         	JXTree source = (JXTree)propertyChangeEvent.getSource();
         	source.setToolTipText(null);
