@@ -166,8 +166,11 @@ public class XTreeDemo extends AbstractDemo {
 			
 			/*
 			 * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
+			 * HighlightPredicate.IS_LEAF is not good, because there is a composer (Chopin) entry,
+			 * with no records ==> hence Chopin is a leaf
+			 * ==> use Depth predicate
 			 */
-			Highlighter musicIcon = new IconHighlighter(HighlightPredicate.IS_LEAF, 
+			Highlighter musicIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(4), 
 					FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
 			addHighlighter(musicIcon);
 			
@@ -493,9 +496,9 @@ public class XTreeDemo extends AbstractDemo {
 			addHighlighter(discIcon);
 			
 			/*
-			 * use very small XS music icon instead the default Tree.leafIcon (file/sheet/fileview)
+			 * use very small XS music icon instead the default for songs/compositions
 			 */
-			Highlighter musicIcon = new IconHighlighter(HighlightPredicate.IS_LEAF, 
+			Highlighter musicIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(4),  
 					FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
 			addHighlighter(musicIcon);
 			
@@ -635,6 +638,8 @@ public class XTreeDemo extends AbstractDemo {
 // TODO    	treeTable.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
 //    	treeTable.addHighlighter(null);
 //    	tree.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+
+        treeTable.setColumnControlVisible(true);
 
         return new JScrollPane(treeTable);
     }
