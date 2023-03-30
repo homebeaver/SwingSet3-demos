@@ -553,7 +553,7 @@ S As We Are One
 S Far Away
 S Leaving Science
 S What A Life
-A Komeda;https://{language}.wikipedia.org/wiki/Komeda
+A Komeda;https://en.wikipedia.org/wiki/Komeda
 R Plan 714 Till
 S Fuego De La Vida 
 S Herbamore 
