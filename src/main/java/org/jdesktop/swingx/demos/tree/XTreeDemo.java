@@ -6,11 +6,14 @@ package org.jdesktop.swingx.demos.tree;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Window;
+import java.io.IOException;
+import java.net.URI;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -199,6 +202,7 @@ public class XTreeDemo extends AbstractDemo {
 				new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.DepthHighlightPredicate(2)),
 				FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
 		tree.addHighlighter(personIcon);
+
 		/*
 		 * use small disc icon for records/Albums
 		 */
@@ -234,16 +238,56 @@ public class XTreeDemo extends AbstractDemo {
 					if(o instanceof MusicTreeModel.Album album) {
 						source.setToolTipText(album.getHtmlSrc());
 					}
+				} else if (treePath.getPathCount() == 3) { // Artist / Composer
+					Object o = treePath.getLastPathComponent();
+					if (o instanceof MusicTreeModel.Artist artist) {
+						URI uri = artist.getURI();
+						if(uri!=null) {
+							source.setToolTipText("click to browse wikipedia");
+						}
+					}
 				} else if(treePath.getPathCount()==5) { // Song / Composition
 					Object o = treePath.getLastPathComponent();
 					if(o instanceof MusicTreeModel.Song song) {
-						source.setToolTipText(song.getHtmlSrc());
+						URI uri = song.getURI();
+						if(uri!=null) {
+							source.setToolTipText("click to open a browser player");
+						}
 					}
 				}
 			}
         });
-//    	RolloverIconHighlighter roih = new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null);
-//    	tree.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+        tree.addPropertyChangeListener(RolloverProducer.CLICKED_KEY, propertyChangeEvent -> {
+        	JXTree source = (JXTree)propertyChangeEvent.getSource();
+        	source.setToolTipText(null);
+			Point newPoint = (Point)propertyChangeEvent.getNewValue();
+			if(newPoint!=null && newPoint.y>-1) {
+				TreePath treePath = source.getPathForRow(newPoint.y);
+				if(treePath.getPathCount()==3) { // Artist / Composer
+					Object o = treePath.getLastPathComponent();
+					if (o instanceof MusicTreeModel.Artist artist) {
+						URI uri = artist.getURI();
+						if(uri!=null) try {
+							Desktop.getDesktop().browse(uri);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				} else if(treePath.getPathCount()==5) { // Song / Composition
+					Object o = treePath.getLastPathComponent();
+					if(o instanceof MusicTreeModel.Song song) {
+						URI uri = song.getURI();
+						if(uri!=null) try {
+							Desktop.getDesktop().browse(uri);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+        });
     	
         tree.setEditable(true);
         return new JScrollPane(tree);
@@ -492,23 +536,21 @@ public class XTreeDemo extends AbstractDemo {
     	MusicTreeTableCellRenderer(TreeTableModel model) {
     		super(model);
     		
-//    		setCellRenderer(getCellRenderer());
-    		
-			/*
-			 * use small disc icon for records/Albums
-			 */
-			Highlighter discIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(3), 
-					FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-			addHighlighter(discIcon);
-			
-			/*
-			 * use very small XS music icon instead the default for songs/compositions
-			 */
-			Highlighter musicIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(4),  
-					FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
-			addHighlighter(musicIcon);
-			
-			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+//			/*
+//			 * use small disc icon for records/Albums
+//			 */
+//			Highlighter discIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(3), 
+//					FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+//			addHighlighter(discIcon);
+//			
+//			/*
+//			 * use very small XS music icon instead the default for songs/compositions
+//			 */
+//			Highlighter musicIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(4),  
+//					FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+//			addHighlighter(musicIcon);
+//			
+//			addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
     	}
 	    @Override // to log
         public Component getTableCellRendererComponent(JTable table, Object value,
@@ -609,6 +651,31 @@ public class XTreeDemo extends AbstractDemo {
     private JComponent createMusicTreeTable(MusicTreeModel model) {
 //    	MusicTree musicTree = new MusicTree(model);
     	JXTreeTable.TreeTableCellRenderer renderer = new MusicTreeTableCellRenderer(model);
+    	
+		/*
+		 * use small person icon for Composer (use And Predicate)
+		 */
+		Highlighter personIcon = new IconHighlighter(
+				new HighlightPredicate.AndHighlightPredicate(HighlightPredicate.IS_LEAF, new HighlightPredicate.DepthHighlightPredicate(2)),
+				FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+		renderer.addHighlighter(personIcon);
+		
+		/*
+		 * use small disc icon for records/Albums
+		 */
+		Highlighter discIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(3), 
+				FeatheRdisc.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+		renderer.addHighlighter(discIcon);
+		
+		/*
+		 * use very small XS music icon instead the default for songs/compositions
+		 */
+		Highlighter musicIcon = new IconHighlighter(new HighlightPredicate.DepthHighlightPredicate(4),  
+				FeatheRmusic.of(SizingConstants.XS, SizingConstants.XS));
+		renderer.addHighlighter(musicIcon);
+		
+		renderer.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_CELL, null));
+		
     	JXTreeTable treeTable = new MusicTreeTable(renderer);
     	
     	treeTable.setShowGrid(false, true);
@@ -632,10 +699,35 @@ public class XTreeDemo extends AbstractDemo {
 					if (o instanceof MusicTreeModel.Album album) {
 						source.setToolTipText(album.getHtmlSrc());
 					}
+				} else if (treePath.getPathCount() == 3) { // Artist / Composer
+						Object o = treePath.getLastPathComponent();
+//						LOG.info("PathFor newPoint.y: " + source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"
+//								+ propertyChangeEvent + " o:" + o.getClass());
+						if (o instanceof MusicTreeModel.Artist artist) { // TODO ?????
+//							LOG.info("PathFor newPoint.y: " + source.getPathForRow(newPoint.y) 
+//								+ " artist:"+artist.getURL());
+							URI uri = artist.getURI();
+							if(uri!=null) try {
+								Desktop.getDesktop().browse(uri);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 				} else if (treePath.getPathCount() == 5) { // Song / Composition
 					Object o = treePath.getLastPathComponent();
 					if (o instanceof MusicTreeModel.Song song) {
-						source.setToolTipText(song.getHtmlSrc());
+						// JXHyperlink extends JButton ==> also nichts für setToolTipText !!!
+						//JXHyperlink hl = song.getHyperlink();
+						// Aber das geht: ist aber als ROLLOVER_KEY nicht sinnvoll ==> CLICKED_KEY
+						URI uri = song.getURI();
+						if(uri!=null) try {
+							Desktop.getDesktop().browse(uri);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						//source.setToolTipText(song.getHtmlSrc());
 					}
 				}
 			}

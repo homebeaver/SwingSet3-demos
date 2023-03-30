@@ -36,7 +36,7 @@ S No. 6 - F Major
 S No. 7 - A Major
 S No. 8 - F Major;https://commons.wikimedia.org/wiki/File:Ludwig_van_Beethoven_-_symphony_no._8_in_f_major,_op._93_-_iv._allegro_vivace.ogg
 S No. 9 - D Minor;https://commons.wikimedia.org/wiki/File:PMLP01607-Symphony_No.9,_Op.125_(Beethoven,_Ludwig_van),_II._Scherzo,_Molto_vivace_-_Presto.ogg
-A Brahms
+A Brahms;https://{language}.wikipedia.org/wiki/Johannes_Brahms
 R Concertos
 S Violin Concerto
 S Double Concerto - A Minor
@@ -55,8 +55,8 @@ S No. 1 - C Minor;https://commons.wikimedia.org/wiki/File:Brahms,_Symphony_No._1
 S No. 2 - D Minor
 S No. 3 - F Major
 S No. 4 - E Minor
-A Chopin
-A Mozart
+A Chopin;https://{language}.wikipedia.org/wiki/Fr%C3%A9d%C3%A9ric_Chopin
+A Mozart;https://{language}.wikipedia.org/wiki/Wolfgang_Amadeus_Mozart
 R Concertos
 S Piano Concerto No. 12
 S Piano Concerto No. 17
@@ -64,7 +64,7 @@ S Clarinet Concerto
 S Violin Concerto No. 5
 S Violin Concerto No. 4
 C Jazz
-A Albert Ayler
+A Albert Ayler;https://{language}.wikipedia.org/wiki/Albert_Ayler
 R My Name is Albert Ayler;https://upload.wikimedia.org/wikipedia/en/a/ac/My_Name_Is_Albert_Ayler.jpg
 S Bye Bye Blackbird
 S Billie's Bounce
@@ -92,7 +92,7 @@ S Everybody's Movin'
 S New Generation
 S Heart Love
 S Sun Watcher
-A Chet Baker
+A Chet Baker;https://{language}.wikipedia.org/wiki/Chet_Baker
 R Sings and Plays; https://upload.wikimedia.org/wikipedia/en/2/2f/Chet_Baker_Sings_and_Plays.jpg
 S Let's Get Lost
 S This Is Always
@@ -134,7 +134,7 @@ S Ol' Croix
 S The Great Lie
 S Sweet Lorrain
 S If I Should Lose You
-A John Coltrane
+A John Coltrane;https://{language}.wikipedia.org/wiki/John_Coltrane
 R Blue Train;https://upload.wikimedia.org/wikipedia/en/6/68/John_Coltrane_-_Blue_Train.jpg
 S Blue Train
 S Moment's Notice
@@ -167,7 +167,7 @@ S Venus
 S Jupiter Variation
 S Jupiter
 S Saturn
-A Miles Davis
+A Miles Davis;https://{language}.wikipedia.org/wiki/Miles_Davis
 R Transition
 S Autumn Leaves
 S Two Bass Hit
@@ -193,7 +193,7 @@ S Directions
 S Bitches Brew
 S Hush
 C Rock
-A The Beatles
+A The Beatles;https://{language}.wikipedia.org/wiki/The_Beatles
 R A Hard Day's Night;https://upload.wikimedia.org/wikipedia/en/e/e6/HardDayUK.jpg
 S A Hard Day's Night
 S I Should Have Known Better 
@@ -351,7 +351,7 @@ S One After 909
 S The Long and Winding Road
 S For You Blue
 S Get Back
-A Crowded House
+A Crowded House;https://{language}.wikipedia.org/wiki/Crowded_House
 R Crowded House
 S Mean To Me
 S World Where You Live
@@ -404,7 +404,7 @@ S Distant Sun
 S Catherine Wheels
 S Skin Feeling
 S Together Alone
-A The Fixx
+A The Fixx;https://{language}.wikipedia.org/wiki/The_Fixx
 R Shuttered Room
 S Some People
 S Stand or Fall
@@ -486,7 +486,7 @@ S Ocean Blue
 S You Know Me
 S We Once Held Hands
 S Life's What's Killing Me
-A Harvin Garvel
+A Harvin Garvel;
 R Harvin Garvel I
 S Body
 S What You Said
@@ -553,7 +553,7 @@ S As We Are One
 S Far Away
 S Leaving Science
 S What A Life
-A Komeda
+A Komeda;https://{language}.wikipedia.org/wiki/Komeda
 R Plan 714 Till
 S Fuego De La Vida 
 S Herbamore 
@@ -584,7 +584,7 @@ S Happyment
 S Our Hospitality 
 S Focus 
 S A Simple Formality 
-A Steve Miller Band
+A Steve Miller Band;https://{language}.wikipedia.org/wiki/Steve_Miller_Band
 R Circle Of Love;https://upload.wikimedia.org/wikipedia/en/b/b6/Circleoflove.jpg
 S Heart Like A Wheel
 S Get On Home

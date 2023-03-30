@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Locale;
 
+import javax.swing.JComponent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
@@ -53,10 +57,53 @@ public class MusicTreeModel extends AbstractTableModel implements TreeTableModel
 			}
     	}
     	
+		public URL getURL() {
+			return null;
+		}
+		public URI getURI() {
+			return null;
+		}
 		public String toString() {
 			return nameOrTitle;
 		}
     }
+    static URL getURL(String url) {
+		try {
+			return url==null ? null : new URL(url);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;		
+    }
+    
+    static public class Artist extends MusicEntry {
+        
+    	Artist(int id, String line) {
+			super(id, line);
+		}
+
+		public URL getURL() {
+			return MusicTreeModel.getURL(url);
+		}
+
+		public URI getURI() {
+			if(url==null) return null;
+			try {
+				if(url.contains("{language}")) {
+					Locale defaultLocale = JComponent.getDefaultLocale();
+//					System.out.println("------"+defaultLocale.getLanguage()+"---------"+defaultLocale); // de_DE
+					return new URI(url.replace("{language}", defaultLocale.getLanguage()));
+				}
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+    }
+    
     static public class Album extends MusicEntry {
         
 		Album(int id, String line) {
@@ -64,13 +111,7 @@ public class MusicTreeModel extends AbstractTableModel implements TreeTableModel
 		}
 
 		public URL getURL() {
-			try {
-				return url==null ? null : new URL(url);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;		
+			return MusicTreeModel.getURL(url);
 		}
 		
 		public String getHtmlSrc() {
@@ -86,8 +127,8 @@ public class MusicTreeModel extends AbstractTableModel implements TreeTableModel
         	super(id, line);
 		}
 
-		public URL getURL() throws MalformedURLException {
-			return new URL(url);
+		public URL getURL() {
+			return MusicTreeModel.getURL(url);
 		}
 		
 /*
@@ -112,6 +153,28 @@ or
 			return "<html>" + "<center><font color=blue size=+1>"+url+"</font></center>" + "</html>";
 		}
 
+		public URI getURI() {
+			if(url==null) return null;
+			try {
+				return new URI(url);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+//		public JXHyperlink getHyperlink() {
+//			if(url==null) return null;
+//			JXHyperlink song = new JXHyperlink();
+//	        song.setName("song");
+//	        try {
+//				song.setURI(new URI(url));
+//			} catch (URISyntaxException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//	        return song;
+//		}
     }
 
     int rowCount = 0;
@@ -151,7 +214,7 @@ or
                    case 'A':
                      if(catagory != null) {
                          rowCount++;
-                         catagory.add(artist = new DefaultMutableTreeNode(new MusicEntry(rowCount, line)));
+                         catagory.add(artist = new DefaultMutableTreeNode(new Artist(rowCount, line)));
                      }
                      break;
                    case 'R':
@@ -190,13 +253,10 @@ or
 			switch(columnIndex) {
             case 0:
             	return me.id;
-                //break;
             case 1:
             	return me.toString();
-                //break;
             case 2:
-            	return me.url;
-                //break;
+            	return me.getURL();
             default:
                 break;
 			}
@@ -212,12 +272,10 @@ or
 					switch(columnIndex) {
 		            case 0:
 		            	return me.id;
-		                //break;
 		            case 1:
 		            	return me.toString();
-		                //break;
 		            case 2:
-		            	return me.url;
+		            	return me.getURL();
 		                //break;
 		            default:
 		                break;
@@ -313,7 +371,7 @@ or
 	public Class<?> getColumnClass(int columnIndex) {
 		if(columnIndex==0) return Integer.class;
 		if(columnIndex==1) return String.class;
-		if(columnIndex==2) return URL.class;
+		if(columnIndex==2) return String.class; // nicht URL.class;
 		return super.getColumnClass(columnIndex);
 	}
 
