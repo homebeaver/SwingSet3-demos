@@ -90,11 +90,8 @@ public class MusicTreeModel extends AbstractTableModel implements TreeTableModel
 		public URI getURI() {
 			if(url==null) return null;
 			try {
-				if(url.contains("{language}")) {
-					Locale defaultLocale = JComponent.getDefaultLocale();
-//					System.out.println("------"+defaultLocale.getLanguage()+"---------"+defaultLocale); // de_DE
-					return new URI(url.replace("{language}", defaultLocale.getLanguage()));
-				}
+				Locale defaultLocale = JComponent.getDefaultLocale();
+				return new URI(url.replace("{language}", defaultLocale.getLanguage()));
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

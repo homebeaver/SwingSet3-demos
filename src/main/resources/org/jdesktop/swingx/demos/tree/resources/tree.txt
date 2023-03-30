@@ -486,7 +486,7 @@ S Ocean Blue
 S You Know Me
 S We Once Held Hands
 S Life's What's Killing Me
-A Harvin Garvel;
+A Harvin Garvel
 R Harvin Garvel I
 S Body
 S What You Said
