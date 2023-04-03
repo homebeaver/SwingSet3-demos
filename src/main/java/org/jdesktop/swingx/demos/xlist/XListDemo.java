@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DropMode;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -176,33 +175,21 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         
         // configureComponents:
         // <snip> JXList rendering
-        @SuppressWarnings("serial")
-		IconValue iv = new IconValue() {
+		IconValue iv = (Object value) -> {
+			if (value instanceof Contributor c) {
+				return flagIcons[(c.getMerits()) % flagIcons.length];
+			}
+			return IconValue.NULL_ICON;
+		};
 
-            @Override
-            public Icon getIcon(Object value) {
-                if (value instanceof Contributor) {
-                    Contributor c = (Contributor) value;
-                    return flagIcons[(c.getMerits()) % flagIcons.length];
-                }
-                return IconValue.NULL_ICON;
-            }
-            
-        };
         // custom String representation: concat various element fields
-        @SuppressWarnings("serial")
-		StringValue sv = new StringValue() {
-
-            @Override
-            public String getString(Object value) {
-                if (value instanceof Contributor) {
-                    Contributor c = (Contributor) value;
-                    return c.getFirstName() + " " + c.getLastName() + " (" + c.getMerits() + ")";
-                }
-                return StringValues.TO_STRING.getString(value);
+        StringValue sv = (Object value) -> {
+            if (value instanceof Contributor c) {
+                return c.getFirstName() + " " + c.getLastName() + " (" + c.getMerits() + ")";
             }
-            
+            return StringValues.TO_STRING.getString(value);
         };
+
         list.setCellRenderer(new DefaultListRenderer<Contributor>(sv, iv));
 
         // Set the preferred row count. This affects the preferredSize of the JList when it's in a scrollpane.
