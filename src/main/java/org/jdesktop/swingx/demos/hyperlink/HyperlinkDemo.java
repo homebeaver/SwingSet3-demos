@@ -4,11 +4,16 @@ Copyright notice, list of conditions and disclaimer see LICENSE file
 package org.jdesktop.swingx.demos.hyperlink;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
@@ -23,23 +28,32 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jdesktop.swingx.action.OpenBrowserAction;
+import org.jdesktop.swingx.decorator.HighlightPredicate;
+import org.jdesktop.swingx.decorator.Highlighter;
+import org.jdesktop.swingx.decorator.IconHighlighter;
+import org.jdesktop.swingx.demos.svg.FeatheRglobe;
 import org.jdesktop.swingx.hyperlink.AbstractHyperlinkAction;
 import org.jdesktop.swingx.hyperlink.HyperlinkAction;
+import org.jdesktop.swingx.hyperlink.LinkModel;
+import org.jdesktop.swingx.icon.SizingConstants;
+import org.jdesktop.swingx.renderer.ComponentProvider;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
-import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.HyperlinkProvider;
-import org.jdesktop.swingx.renderer.WrappingProvider;
+import org.jdesktop.swingx.renderer.StringValue;
+import org.jdesktop.swingx.renderer.StringValues;
+import org.jdesktop.swingx.rollover.RolloverProducer;
 
 import swingset.AbstractDemo;
 
@@ -87,9 +101,10 @@ public class HyperlinkDemo extends AbstractDemo {
     private JXHyperlink customBrowse;
     private JXHyperlink plainMail;
     private JXHyperlink customLink;
+    private JXPanel top; // contains linkList and linkTree
     private JXList<URI> linkList;
-    private JXTable linkTable;
     private JXTree linkTree;
+//  private JXTable linkTable; not used
     
     /**
      * HyperlinkDemo Constructor
@@ -105,9 +120,96 @@ public class HyperlinkDemo extends AbstractDemo {
         createHyperlinkDemo();
         try {
             bind();
-        } catch (URISyntaxException e) {
+            
+            /*
+             
+for historical reasons linkList contains not existing "java.net" pages.
+	==> Error 404: couldn't show
+	
+So I add the wikipedia swinglabs page as LinkModel externalLink to the tree
+and add a IconHighlighter globeIcon 
+
+ 
+             */ 
+
+            // <snip> Tree with hyperlink renderer model containing URIs wrapped in treeNodes
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode("Tree with hyperlink renderer model");
+            for (int i = 0; i < linkList.getElementCount(); i++) {
+                root.add(new DefaultMutableTreeNode(linkList.getElementAt(i)));
+            }
+            
+            DefaultMutableTreeNode wiki = new DefaultMutableTreeNode("existing pages");
+            root.add(wiki);            
+            URL swinglabs = new URL("https://en.wikipedia.org/wiki/SwingLabs"); // throws MalformedURLException
+            LinkModel externalLink = new LinkModel("SwingLabs on wikipedia", null, swinglabs);
+//            LinkModelAction<?> externalAction = new LinkModelAction<LinkModel>(externalLink, visitor);
+//            new HyperlinkAction(externalLink.getURL(), Action desktopAction);
+//            HyperlinkAction hla = HyperlinkAction.createHyperlinkAction(externalLink.getURL().toURI());
+            wiki.add(new DefaultMutableTreeNode(externalLink));
+            linkTree = new JXTree(new DefaultTreeModel(root)) 
+            {
+            	public TreeCellRenderer getCellRenderer() {
+                	StringValue sv = (Object value) -> {
+                		//LOG.info("value class "+value.getClass() + " , value:"+value);
+                        if(value instanceof LinkModel lm
+                        ) {
+                        	return lm.getText();
+                        }
+                        if(value instanceof URI
+                        || value instanceof String
+                        ) {
+                        	return StringValues.TO_STRING.getString(value);
+                        }
+                        String simpleName = value.getClass().getSimpleName();
+                        return simpleName + "(" + value + ")";
+                	};
+                    return new JXTree.DelegatingRenderer(sv);
+            	}
+            };
+            top.add(new JScrollPane(linkTree));
+            linkTree.setRootVisible(false); // do not show root
+            linkTree.expandAll();
+            // enable rollover
+            linkTree.setRolloverEnabled(true);
+//            // set a renderer delegating to wrapper around a HyperlinkProvider configured with a raw HyperlinkAction 
+//            ComponentProvider<JXHyperlink> hlp = new HyperlinkProvider(new HyperlinkAction());
+////            ComponentProvider<JXHyperlink> hlp = new HyperlinkProvider(hla);
+//            linkTree.setCellRenderer(new DefaultTreeRenderer(hlp));
+            linkTree.setCellRenderer(linkTree.getCellRenderer()); 
+    		Highlighter globeIcon = new IconHighlighter(
+    				HighlightPredicate.IS_LEAF,
+    				FeatheRglobe.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+    		linkTree.addHighlighter(globeIcon);
+    		linkTree.addPropertyChangeListener(RolloverProducer.CLICKED_KEY, propertyChangeEvent -> {
+            	JXTree source = (JXTree)propertyChangeEvent.getSource();
+            	source.setToolTipText(null);
+    			Point newPoint = (Point)propertyChangeEvent.getNewValue();
+    			if(newPoint!=null && newPoint.y>-1) {
+    				TreePath treePath = source.getPathForRow(newPoint.y);
+					Object o = treePath.getLastPathComponent();
+					if(o instanceof DefaultMutableTreeNode dmtn) {
+						Object uo = dmtn.getUserObject();
+						try {
+							if (uo instanceof LinkModel lm) {
+								uo = lm.getURL().toURI(); // throws URISyntaxException
+							}
+							if (uo instanceof URI uri) {
+								Desktop.getDesktop().browse(uri); // throws IOException
+								return;
+							}
+							LOG.warning("UserObject is "+uo + " , Class="+uo.getClass());
+						} catch (IOException | URISyntaxException e) {
+							e.printStackTrace();
+						}
+					}
+    			}
+            });
+            // </snip>
+//            DemoUtils.setSnippet("Tree with hyperlink renderer", linkTree);        
+
+        } catch (IOException | URISyntaxException e) {
             // will not happen ... we did type correctly, didn't we ;-)
-        }
+		}
     }
    
     @Override
@@ -165,14 +267,9 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
         JComponent renderedLinks = new JXPanel(new BorderLayout());
         linkList = new JXList<URI>();
         
-        linkTable = new JXTable();
-        linkTable.setVisibleRowCount(10);
-
-        linkTree = new JXTree();
-        
-        JXPanel top = new JXPanel(new GridLayout(1, 2, 20, 10));
+        top = new JXPanel(new GridLayout(1, 2, 20, 10));
         top.add(new JScrollPane(linkList));
-        top.add(new JScrollPane(linkTree));
+//        top.add(new JScrollPane(linkTree)); // create and add linkTree in ctor
         renderedLinks.add(top);
         renderedLinks.setBorder(standaloneLinks.getBorder());
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -209,28 +306,11 @@ customBrowse.toolTipText = Default browser action, custom icon and text injected
         }));
         // enable rollover
         linkList.setRolloverEnabled(true);
-        // set a renderer delegating to a HyperlinkProvider configured
-        // with raw HyperlinkAction
-        linkList.setCellRenderer(new DefaultListRenderer(new HyperlinkProvider(new HyperlinkAction())));
+        // set a renderer delegating to a HyperlinkProvider configured with raw HyperlinkAction
+        ComponentProvider<JXHyperlink> hlp = new HyperlinkProvider(new HyperlinkAction());
+        linkList.setCellRenderer(new DefaultListRenderer<>(hlp));
         //</snip>
-//        DemoUtils.setSnippet("List with hyperlink renderer", linkList);
-        
-        // <snip> Tree with hyperlink renderer
-        // model containing URIs wrapped in treeNodes
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(new URI("http://java.net"));
-        for (int i = 0; i < linkList.getElementCount(); i++) {
-            root.add(new DefaultMutableTreeNode(linkList.getElementAt(i)));
-        }
-        linkTree.setModel(new DefaultTreeModel(root));
-        linkTree.expandAll();
-        // enable rollover
-        linkTree.setRolloverEnabled(true);
-        // set a renderer delegating to wrapper around a HyperlinkProvider
-        // configured with a raw HyperlinkAction 
-        linkTree.setCellRenderer(new DefaultTreeRenderer(new WrappingProvider(
-                new HyperlinkProvider(new HyperlinkAction()))));
-        // </snip>
-//        DemoUtils.setSnippet("Tree with hyperlink renderer", linkTree);        
+//        DemoUtils.setSnippet("List with hyperlink renderer", linkList);       
     }
 
     private Action createLinkAction() {
