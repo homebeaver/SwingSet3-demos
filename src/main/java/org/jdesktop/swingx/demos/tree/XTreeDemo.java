@@ -27,9 +27,9 @@ import javax.swing.SingleSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXButton;
@@ -58,6 +58,7 @@ import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
 import org.jdesktop.swingx.rollover.RolloverProducer;
+import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 import swingset.AbstractDemo;
@@ -225,15 +226,25 @@ public class XTreeDemo extends AbstractDemo {
 
 		tree.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
 
+		/*
+		 * define a ToolTip for Cursor-Rollover event.
+		 * - for Albums : show the Album cover from wikipedia
+		 * 
+		 * addPropertyChangeListener is defined and implemented in java.awt.Component
+		 * PropertyChangeListener is a SAM-interface (Single Abstract Method) 
+		 * with method void propertyChange(PropertyChangeEvent evt). So I can define this method
+		 * as Lambda-Expression.
+		 *  
+		 * @see #addPropertyChangeListener(java.lang.String, java.beans.PropertyChangeListener)
+		 */
         tree.addPropertyChangeListener(RolloverProducer.ROLLOVER_KEY, propertyChangeEvent -> {
-        	JXTree source = (JXTree)propertyChangeEvent.getSource();
+        	JXTree source = (JXTree)propertyChangeEvent.getSource(); // source where event occurred
         	source.setToolTipText(null);
 			Point newPoint = (Point)propertyChangeEvent.getNewValue();
 			if(newPoint!=null && newPoint.y>-1) {
 				TreePath treePath = source.getPathForRow(newPoint.y);
 				if(treePath.getPathCount()==4) { // Album / Record / Style 
 					Object o = treePath.getLastPathComponent();
-//					LOG.info("PathFor newPoint.y: "+source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"+propertyChangeEvent);
 					// show https://en.wikipedia.org/wiki/File:My_Name_Is_Albert_Ayler.jpg
 					if(o instanceof MusicTreeModel.Album album) {
 						source.setToolTipText(album.getHtmlSrc());
@@ -298,7 +309,9 @@ public class XTreeDemo extends AbstractDemo {
     	/*
     	 * no param: in JTree there is a dafault DefaultMutableTreeNode JTree with colors, sports, food.
     	 */
-        componentTree = new JXTree((TreeModel)null) {
+        //componentTree = new JXTree((TreeModel)null) {
+		// ctror with component tree model:
+        componentTree = new JXTree(createTreeModel()) {
         	@Override
             public TreeCellRenderer getCellRenderer() {
             	StringValue sv = (Object value) -> {
@@ -340,8 +353,6 @@ public class XTreeDemo extends AbstractDemo {
         componentTree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         JScrollPane scrollpane = new JScrollPane(componentTree);
 
-        // create and install the component tree model:
-        addNotify();
         componentTree.expandAll();
         
 //        LOG.info("done init ComponentTree \n tree Background:"+componentTree.getBackground() 
@@ -439,11 +450,11 @@ public class XTreeDemo extends AbstractDemo {
 
 		};
 		JXTreeTable componentTreeTable = new ComponentTreeTable(componentTreeRenderer);
+		
         JScrollPane scrollpane = new JScrollPane(componentTreeTable);
 
-        // create and install the component tree model:
-        addNotify();
         componentTreeTable.expandAll();
+        componentTreeTable.setColumnControlVisible(true);
         return scrollpane;
 	}
 
@@ -459,7 +470,10 @@ public class XTreeDemo extends AbstractDemo {
 		loadButton = new JXButton(getBundleString("reloadComponentTreeData"));
 		loadButton.setName("loadButton");
 		loadButton.addActionListener(actionEvent -> {
-			if(componentTree!=null) componentTree.setModel(createTreeModel());
+			if(componentTree!=null) {
+				LOG.warning("JXTree.setModel is deprecated TODO"); //TODO		
+				componentTree.setModel(createTreeModel());				
+			}
 		});
 		buttons.add(loadButton);
 		
@@ -498,26 +512,6 @@ public class XTreeDemo extends AbstractDemo {
 
 		return buttons;
 	}
-
-    /**
-     * Overridden to create and install the component tree model.
-     */
-    @Override // overrides javax.swing.JComponent.addNotify
-    public void addNotify() {
-        super.addNotify();
-//        LOG.info("-------------this:"+this);
-        if(componentTree==null) {
-        	getTreeComp(tabbedpane.getComponentAt(1));
-        	return;
-        }
-        TreeModel model = componentTree.getModel();
-        LOG.config("tree.Model.Root:"+(model==null?"null":model.getRoot()));
-        // der Vergleich mit null ist nicht sinnvoll, denn ein "leeres Modell" liefert nicht null, 
-        // sondern DefaultTreeModel mit JTree: colors, sports, food
-        if (model == null || "JTree".equals(model.getRoot().toString())) {
-            componentTree.setModel(createTreeModel());
-        }
-    }
 
     private TreeTableModel createTreeModel() {
        Window window = SwingUtilities.getWindowAncestor(this);
@@ -700,20 +694,37 @@ public class XTreeDemo extends AbstractDemo {
 						source.setToolTipText(album.getHtmlSrc());
 					}
 				} else if (treePath.getPathCount() == 3) { // Artist / Composer
-						Object o = treePath.getLastPathComponent();
-//						LOG.info("PathFor newPoint.y: " + source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"
-//								+ propertyChangeEvent + " o:" + o.getClass());
-						if (o instanceof MusicTreeModel.Artist artist) { // TODO ?????
-//							LOG.info("PathFor newPoint.y: " + source.getPathForRow(newPoint.y) 
-//								+ " artist:"+artist.getURL());
-							URI uri = artist.getURI();
-							if(uri!=null) try {
-								Desktop.getDesktop().browse(uri);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+					TableColumn tc = source.getColumn(newPoint);
+					
+					if(tc instanceof TableColumnExt tce) {
+						LOG.info("-----"+source.convertColumnIndexToView(tce.getModelIndex())+"----->"+tce.getTitle()+ " ModelIndex="+tce.getModelIndex());
+					} else {
+						LOG.info("---------->"+tc.getModelIndex()); // getColumnName
+					}
+					Object o = treePath.getLastPathComponent();
+					if (o instanceof MusicTreeModel.Artist artist) {
+						URI uri = artist.getURI();
+						if(uri!=null) {
+							source.setToolTipText("click to browse wikipedia");
 						}
+					}
+//				} else if (treePath.getPathCount() == 3) { // Artist / Composer
+//					//     public TableColumn getColumn(Point point) {
+//
+//						Object o = treePath.getLastPathComponent();
+////						LOG.info("PathFor newPoint.y: " + source.getPathForRow(newPoint.y) + " PropertyChangeEvent:"
+////								+ propertyChangeEvent + " o:" + o.getClass());
+//						if (o instanceof MusicTreeModel.Artist artist) { // TODO ?????
+////							LOG.info("PathFor newPoint.y: " + source.getPathForRow(newPoint.y) 
+////								+ " artist:"+artist.getURL());
+//							URI uri = artist.getURI();
+//							if(uri!=null) try {
+//								Desktop.getDesktop().browse(uri);
+//							} catch (IOException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//						}
 				} else if (treePath.getPathCount() == 5) { // Song / Composition
 					Object o = treePath.getLastPathComponent();
 					if (o instanceof MusicTreeModel.Song song) {
