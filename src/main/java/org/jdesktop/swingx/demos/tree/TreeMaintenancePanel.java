@@ -1,7 +1,6 @@
 package org.jdesktop.swingx.demos.tree;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.util.logging.Logger;
@@ -17,12 +16,11 @@ import javax.swing.tree.TreeNode;
 
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
+import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTree;
-import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
-import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 
 import swingset.AbstractDemo;
 
@@ -49,7 +47,7 @@ public class TreeMaintenancePanel extends AbstractDemo {
         	frame.getContentPane().add(demo);
         	frame.pack();
         	frame.setVisible(true);
-			
+
 			controller.getContentPane().add(demo.getControlPane());
 			controller.pack();
 			controller.setVisible(true);
@@ -67,7 +65,7 @@ public class TreeMaintenancePanel extends AbstractDemo {
     	frame.setTitle(getBundleString("frame.title", DESCRIPTION));
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    	
+
     	preInit(); // // name wie in VTreeMaintenance
     	this.add(treeField, BorderLayout.PAGE_START);
     	this.add(panel, BorderLayout.CENTER);
@@ -86,44 +84,30 @@ public class TreeMaintenancePanel extends AbstractDemo {
     	});
     	DefaultMutableTreeNode root = new DefaultMutableTreeNode("Tree root");
     	treeModel = new GossipTreeModel(root, true);
-    	centerTree = new JXTree(treeModel) {
-    		@Override
-            public TreeCellRenderer getCellRenderer() {
-            	StringValue sv = (Object value) -> {
-                    if(value instanceof MusicTreeModel.MusicEntry
-                    || value instanceof MusicTreeModel.Album
-                    || value instanceof MusicTreeModel.Song
-                    ) {
-                    	return StringValues.TO_STRING.getString(value);
-                    }
-                    String simpleName = value.getClass().getSimpleName();
-                    return simpleName + "(" + value + ")";
-            	};
-                return new JXTree.DelegatingRenderer(sv) {
-                    @Override
-                    public Component getTreeCellRendererComponent(JTree tree, Object value,
-                            boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                    	Component c = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-                    	LOG.info("getTreeCellRendererComponent for "+(value==null?"":value.getClass())+" value "+value
-                    			+ " componentController/Provider:"+getComponentProvider()
-                    			+ "\n returns "+c);
-                    	return c;
-                    }  	
-                };
-            }
-    		
-    	};
+    	centerTree = new JXMaintananceTree(treeModel);
     	centerTree.setRootVisible(true);
+//    	centerTree.setEditable(true);
     	panel.add(new JScrollPane(centerTree), BorderLayout.CENTER);
     }
-    
+
     private void action_loadTree(int treeID) {
-    	treeModel.setRoot(null);
+//    	treeModel.setRoot(null);
     	MTreeNode root = // mtree.getRootNode();
-    	new MTreeNode(11, 0, "HQ", "description", 0, false, null, false, null); 
+    	new MTreeNode(0, 0, "GardenWorld Organization", "description", 0, true, null, false, null);
+    	root.add(new MTreeNode(11, 0, "HQ", "description first child", 0, false, null, false, null));
+    	root.add(new MTreeNode(50000, 1, "Furniture", "description child seqNo=1", 0, false, null, false, null));
 //    	(int node_ID, int seqNo, String name, String description,
 //    			int parent_ID, boolean isSummary, String imageIndicator, boolean onBar, Color color)
-
+//21:17:16.649   MTreeNode.<init>: MTreeNode Node_ID=0, seqNo=0, Parent_ID=0, isSummary=true, imageIndicator=null - GardenWorld Organization [23]
+//21:17:16.661   MTreeNode.<init>: MTreeNode Node_ID=11, seqNo=0, Parent_ID=0, isSummary=false, imageIndicator=null - HQ [23]
+//21:17:16.661   MTreeNode.<init>: MTreeNode Node_ID=50000, seqNo=1, Parent_ID=0, isSummary=false, imageIndicator=null - Furniture [23]
+//21:17:16.661   MTreeNode.<init>: MTreeNode Node_ID=50001, seqNo=2, Parent_ID=0, isSummary=false, imageIndicator=null - Fertilizer [23]
+//21:17:16.661   MTreeNode.<init>: MTreeNode Node_ID=50007, seqNo=3, Parent_ID=0, isSummary=true, imageIndicator=null - Stores [23]
+//21:17:16.662   MTreeNode.<init>: MTreeNode Node_ID=50006, seqNo=0, Parent_ID=50007, isSummary=false, imageIndicator=null - Store West [23]
+//21:17:16.662   MTreeNode.<init>: MTreeNode Node_ID=50005, seqNo=1, Parent_ID=50007, isSummary=false, imageIndicator=null - Store East [23]
+//21:17:16.662   MTreeNode.<init>: MTreeNode Node_ID=50004, seqNo=2, Parent_ID=50007, isSummary=false, imageIndicator=null - Store South [23]
+//21:17:16.662   MTreeNode.<init>: MTreeNode Node_ID=50002, seqNo=3, Parent_ID=50007, isSummary=false, imageIndicator=null - Store North [23]
+//21:17:16.662   MTreeNode.<init>: MTreeNode Node_ID=12, seqNo=4, Parent_ID=50007, isSummary=false, imageIndicator=null - Store Central [23]
     	treeModel.setRoot(root);
     }
 
@@ -147,7 +131,4 @@ public class TreeMaintenancePanel extends AbstractDemo {
 		}
 	}
 
-//	class MTreeNode extends DefaultMutableTreeTableNode { // implements NodeModel {
-//		
-//	}
 }
