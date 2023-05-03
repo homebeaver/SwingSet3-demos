@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
-import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
@@ -35,19 +34,14 @@ public class JXMaintananceTree extends JXTree {
     	StringValue sv = (Object value) -> {
     		if(value==null) return StringValues.TO_STRING.getString(value);
             if(value instanceof MTreeNode mTreeNode) return StringValues.TO_STRING.getString(mTreeNode.getName());
-//            if(value instanceof MusicTreeModel.MusicEntry
-//            || value instanceof MusicTreeModel.Album
-//            || value instanceof MusicTreeModel.Song
-//            ) {
-//            	return StringValues.TO_STRING.getString(value);
-//            }
             String simpleName = value.getClass().getSimpleName();
             return simpleName + "(" + value + ")";
     	};
         return new TreeDelegatingRenderer(null, null, sv);
     }
 
-//  class DelegatingRenderer extends DefaultTreeRenderer implements TreeCellRenderer, RolloverRenderer {
+//  class DelegatingRenderer extends DefaultTreeRenderer implements TreeCellRenderer, RolloverRenderer
+	@SuppressWarnings("serial")
 	class TreeDelegatingRenderer extends DefaultTreeRenderer implements TreeCellRenderer, RolloverRenderer {
 
 		private Icon closedIcon = null;
