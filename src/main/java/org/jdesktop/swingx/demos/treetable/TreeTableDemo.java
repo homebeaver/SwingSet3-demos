@@ -26,7 +26,6 @@ import javax.swing.tree.TreeCellRenderer;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
-import org.jdesktop.swingx.JXTree.DelegatingRenderer;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.JXTreeTable;
