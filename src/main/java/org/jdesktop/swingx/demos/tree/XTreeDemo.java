@@ -429,44 +429,6 @@ public class XTreeDemo extends AbstractDemo {
 		}
 		
 	}
-	private JComponent createComponentTreeTable() {
-		JXTreeTable.TreeTableCellRenderer componentTreeRenderer 
-			= new JXTreeTable.TreeTableCellRenderer(createTreeModel()) {
-	        public TreeCellRenderer getCellRenderer() {
-            	StringValue sv = (Object value) -> {
-                    if (value instanceof Component component) {
-                        String simpleName = component.getClass().getSimpleName();
-                        if (simpleName.length() == 0){
-                            // anonymous class
-                            simpleName = component.getClass().getSuperclass().getSimpleName();
-                        }
-                        return simpleName + "(" + component.getName() + ")";
-                    }
-                    return StringValues.TO_STRING.getString(value);
-            	};
-                // StringValue for lazy icon loading interface org.jdesktop.swingx.renderer.StringValue
-            	StringValue keyValue = (Object value) -> {
-                    if (value == null) return "";
-                    String simpleClassName = value.getClass().getSimpleName();
-                    if (simpleClassName.length() == 0){
-                        // anonymous class
-                        simpleClassName = value.getClass().getSuperclass().getSimpleName();
-                    }
-                    return simpleClassName + ".png";
-            	};
-                IconValue iv = new LazyLoadingIconValue(getClass(), keyValue, "fallback.png");
-                return new JXTree.DelegatingRenderer(iv, sv);
-	        }
-
-		};
-		JXTreeTable componentTreeTable = new ComponentTreeTable(componentTreeRenderer);
-		
-        JScrollPane scrollpane = new JScrollPane(componentTreeTable);
-
-        componentTreeTable.expandAll();
-        componentTreeTable.setColumnControlVisible(true);
-        return scrollpane;
-	}
 
     // Controller:
     private JXButton loadButton;
