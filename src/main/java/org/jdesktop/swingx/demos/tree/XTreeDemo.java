@@ -179,7 +179,17 @@ public class XTreeDemo extends AbstractDemo {
                 String simpleName = value.getClass().getSimpleName();
                 return simpleName + "(" + value + ")";
         	};
-            return new JXTree.DelegatingRenderer(sv);
+            return new JXTree.DelegatingRenderer(sv) {
+                @Override
+                public Component getTreeCellRendererComponent(JTree tree, Object value,
+                        boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                	Component c = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+                	LOG.info("getTreeCellRendererComponent for "+(value==null?"":value.getClass())+" value "+value
+                			+ " componentController/Provider:"+getComponentProvider()
+                			+ "\n returns "+c);
+                	return c;
+                }  	
+            };
         }
 
         /*  
