@@ -8,9 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.treetable.AbstractMutableTreeTableNode;
-import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
-import org.jdesktop.swingx.treetable.TreeTableNode;
 
 /*
  *  Mutable Tree Node (not a PO).
@@ -224,17 +222,6 @@ public class MTreeNode extends AbstractMutableTreeTableNode { // interface Mutab
 		super.setAllowsChildren(isSummary);
 	}
 
-	/**
-	 *  Set Image Indicator and Index          W X R P F T B S X_AD_Menu.ACTION_XXX
-	 *  @param imageIndicator image indicator (W/X/R/P/F/T/B)  MWFNode.ACTION_
-	 */
-//	public void setImageIndicator(String imageIndicator) {
-//		if (imageIndicator != null) {
-//			m_imageIndicator = imageIndicator;
-//			m_imageIndex = getImageIndex(m_imageIndicator);
-//		}
-//	}
-
 	public static final int TYPE_WINDOW = 1;
 	public static final int TYPE_REPORT = 2;
 	public static final int TYPE_PROCESS = 3;
@@ -243,70 +230,6 @@ public class MTreeNode extends AbstractMutableTreeTableNode { // interface Mutab
 	public static final int TYPE_SETVARIABLE = 6;
 	public static final int TYPE_USERCHOICE = 7;
 	public static final int TYPE_DOCACTION = 8;
-
-//	static final int SMALL_ICON_SIZE = 16;
-//	AbstractImageTranscoder AIT = AbstractImageTranscoder.getInstance();
-//	public JXIcon getImageIcon() {
-//		return getImageIcon(m_imageIndex, JXIcon.SMALL_ICON);
-//	}
-//	public static JXIcon getImageIcon(int index, int iconSize) {
-//	      switch (index) {
-//	      case TYPE_WINDOW:
-//	    	  return IconFactory.getMENU_WINDOW(iconSize);
-//	      case TYPE_REPORT:
-//	    	  return IconFactory.getREPORT(iconSize);
-//	      case TYPE_PROCESS:
-//	    	  return IconFactory.getPROCESS(iconSize);
-//	      case TYPE_WORKFLOW:
-//	    	  return IconFactory.getWORKFLOW(iconSize);
-//	      case TYPE_WORKBENCH:
-//	    	  return IconFactory.getEND(iconSize);
-//	      case TYPE_SETVARIABLE:
-//	    	  return IconFactory.getREPORT(iconSize);
-//	      case TYPE_USERCHOICE:
-//	    	  return IconFactory.getPROCESS(iconSize);
-//	      case TYPE_DOCACTION:
-//	    	  return IconFactory.getWORKFLOW(iconSize);
-//	      default:
-//	    	  return IconFactory.getFOLDER(iconSize);
-//	      }
-//	}
-	
-	/**************************************************************************
-	 *  Get Image Indicator/Index
-	 *  @param imageIndicator image indicator (W/X/R/P/F/T/B) MWFNode.ACTION_
-	 *  @return index of image
-	 */
-//	public static int getImageIndex (String imageIndicator) {
-//		int imageIndex = 0;
-//		if (imageIndicator == null)
-//			;
-//		else if (imageIndicator.equals(MWFNode.ACTION_UserWindow)		// W	Window 
-//			|| imageIndicator.equals(MWFNode.ACTION_UserForm))          // X
-//			imageIndex = TYPE_WINDOW;
-//		else if (imageIndicator.equals(MWFNode.ACTION_AppsReport))		// R	Report
-//			imageIndex = TYPE_REPORT;
-//		else if (imageIndicator.equals(MWFNode.ACTION_AppsProcess)		// P	Process
-//			|| imageIndicator.equals(MWFNode.ACTION_AppsTask))          // T
-//			imageIndex = TYPE_PROCESS;
-//		else if (imageIndicator.equals(MWFNode.ACTION_SubWorkflow))		// F	WorkFlow
-//			imageIndex = TYPE_WORKFLOW;
-//		/*
-//		else if (imageIndicator.equals(MWFNode.ACTION_UserWorkbench))	//	Workbench
-//			imageIndex = TYPE_WORKBENCH;
-//		*/
-//		else if (imageIndicator.equals(MWFNode.ACTION_SetVariable))		// V	Set Variable
-//			imageIndex = TYPE_SETVARIABLE;
-//		else if (imageIndicator.equals(MWFNode.ACTION_UserChoice))		// C	User Choice
-//			imageIndex = TYPE_USERCHOICE;
-//		else if (imageIndicator.equals(MWFNode.ACTION_DocumentAction))	// D	Document Action
-//			imageIndex = TYPE_DOCACTION;
-//		else if (imageIndicator.equals(MWFNode.ACTION_WaitSleep))		// Z	Sleep
-//			;
-//		else if (imageIndicator.equals(MWFNode.ACTION_SmartBrowse))		// S	Smart Browser
-//			imageIndex = TYPE_DOCACTION;
-//		return imageIndex;
-//	}
 
 	/*************************************************************************/
 
@@ -380,35 +303,4 @@ public class MTreeNode extends AbstractMutableTreeTableNode { // interface Mutab
 		return null;
 	}
 	
-//	/*************************************************************************/
-//
-//	/**	Last found ID				*/
-//	private int                 m_lastID = -1;
-//	/** Last found Node				*/
-//	private MTreeNode           m_lastNode = null;
-//	/*
-//	 *	findNode aus (base) org.compiere.model.MTreeNode : (zur Info)
-//	 */
-//	public MTreeNode findNodeXXX (int ID)
-//	{
-//		if (m_node_ID == ID)
-//			return this;
-//		//
-//		if (ID == m_lastID && m_lastNode != null)
-//			return m_lastNode;
-//		//
-//		Enumeration<TreeNode> en = preorderEnumeration();
-//		while (en.hasMoreElements())
-//		{
-//			MTreeNode nd = (MTreeNode)en.nextElement();
-//			if (ID == nd.getNode_ID())
-//			{
-//				m_lastID = ID;
-//				m_lastNode = nd;
-//				return nd;
-//			}
-//		}
-//		return null;
-//	}   //  findNode
-
 }
