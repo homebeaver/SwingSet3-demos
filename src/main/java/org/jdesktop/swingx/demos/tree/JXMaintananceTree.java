@@ -20,6 +20,7 @@ import org.jdesktop.swingx.renderer.WrappingProvider;
 import org.jdesktop.swingx.rollover.RolloverRenderer;
 import org.jdesktop.swingx.tree.DefaultXTreeCellRenderer;
 
+@Deprecated
 public class JXMaintananceTree extends JXTree {
 
 	private static final long serialVersionUID = -4118213619140974890L;

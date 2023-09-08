@@ -7,8 +7,10 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.jdesktop.swingx.treetable.AbstractMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.MutableTreeTableNode;
+import org.jdesktop.swingx.treetable.TreeTableNode;
 
 /*
  *  Mutable Tree Node (not a PO).
@@ -19,8 +21,10 @@ import org.jdesktop.swingx.treetable.MutableTreeTableNode;
  *  Ich leite ab von jdesktop DefaultMutableTreeTableNode extends AbstractMutableTreeTableNode 
  *  AbstractMutableTreeTableNode implements MutableTreeTableNode extends TreeTableNode extends TreeNode
  *
+ *  DefaultMutableTreeTableNode is designed mainly for testing
  */
-public class MTreeNode extends DefaultMutableTreeTableNode { // implements NodeModel {
+@Deprecated
+public class MTreeNode extends AbstractMutableTreeTableNode { // interface MutableTreeTableNode extends TreeTableNode
 
 	private static final Logger LOG = Logger.getLogger(MTreeNode.class.getName());
 
@@ -40,11 +44,18 @@ public class MTreeNode extends DefaultMutableTreeTableNode { // implements NodeM
 		return columnName[column];
 	}
 
+	@Override // interface TreeTableNode extends TreeNode
+	public Object getValueAt(int column) {
+		LOG.info("column="+column+"----------UserObject:"+this.getUserObject()+ " this:"+this );
+//		return getValueAt(super.getUserObject(), column);
+		return getValueAt(this, column);
+	}
+
 //	@Override
-//	public int getHierarchicalColumn() {
-//		return 0;
-//	}
-//
+	public int getHierarchicalColumn() {
+		return 0;
+	}
+
 //	@Override
 	public Object getValueAt(Object node, int column) {
 		MTreeNode c = (MTreeNode) node;
