@@ -146,11 +146,22 @@ public class XTreeDemo extends AbstractDemo {
     @SuppressWarnings("serial")
 	class MusicTree extends JXTree /*implements TableCellRenderer*/ {
     	
+    	static final String LINE_STYLE = "JTree.lineStyle";
+    	static final String LEG_LINE_STYLE_STRING = "Angled";
+    	
     	MusicTree(MusicTreeModel model) {
     		super(model);
-    		LOG.info("JTree.lineStyle="+
-    				getClientProperty("JTree.lineStyle") // warum ist es null? es sollte "Angled" sein
-    		);
+    		// javax.swing.plaf.metal.MetalTreeUI.LINE_STYLE : the property name is private
+    		Object lineStyle = getClientProperty(LINE_STYLE);
+    		if(lineStyle==null) {
+        		LOG.warning("JTree.lineStyle="+lineStyle); // warum ist es null? es sollte "Angled" sein
+        		// null oder LEG_LINE_STYLE_STRING ist gleichwertig!! 
+        		// siehe MetalTreeUI#144: lineStyle = LEG_LINE_STYLE; // default case
+        		putClientProperty(LINE_STYLE, "Horizontal"); // macht es einen Unterschied? JA
+        		LOG.info("JTree.lineStyle="+
+        				getClientProperty(LINE_STYLE)
+        		);
+    		}
     		setRolloverEnabled(true); // to show a "live" rollover behaviour
     		setCellRenderer(musicCellRenderer()); 		
     	}
