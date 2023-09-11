@@ -106,13 +106,14 @@ public class XTreeDemo extends AbstractDemo {
     	});
     }
 
-    private JTabbedPane tabbedpane; // contains music tree, index 0 and component tree, index 1
+    private JTabbedPane tabbedpane; // contains music tree, index 0 and component tree at tabbedpane.getTabCount()
     private JXTree componentTree;
 
     /*
      * intentionally not defined music tree here.
      * You can get it from scroll pane with getTree(tabbedpane.getComponentAt(0))
      */
+    
     private Component getTreeComp(Component c) {
     	JScrollPane sp = (JScrollPane)c;
     	LOG.fine(" ---> getViewport:"+sp.getViewport());
@@ -136,10 +137,26 @@ public class XTreeDemo extends AbstractDemo {
 
         tabbedpane.add(getBundleString("music")
         	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
+        tabbedpane.add(getBundleString("default"), createDefaultTree()); 
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
         tabbedpane.setTabPlacement(JTabbedPane.TOP);
+        // the default model of tabbedpane implements SingleSelectionModel
+        // javax.swing.DefaultSingleSelectionModel
         tabbedpane.getModel().addChangeListener( changeEvent -> {
-            SingleSelectionModel ssmodel = (SingleSelectionModel) changeEvent.getSource();
+        	Object source = changeEvent.getSource();
+        	if(source instanceof SingleSelectionModel ssmodel) {
+        		Component scrollPane = tabbedpane.getComponentAt(ssmodel.getSelectedIndex());
+    			// componentTree ist in JScrollPane eingepackt
+        		if(getTreeComp(scrollPane)==componentTree) {
+        			LOG.info("componentTree selected "+changeEvent);
+        			componentTree.setModel(createTreeModel()); // lazy createTreeModel
+        			componentTree.expandAll();
+        		} else {
+        			LOG.info("selected "+getTreeComp(scrollPane));
+        		}
+        	} else {
+        		LOG.warning(""+changeEvent);
+        	}
         });
     }
 
@@ -159,7 +176,7 @@ public class XTreeDemo extends AbstractDemo {
         		// siehe MetalTreeUI#144: lineStyle = LEG_LINE_STYLE; // default case
         		putClientProperty(LINE_STYLE, "Horizontal"); // macht es einen Unterschied? JA
         		LOG.info("JTree.lineStyle="+
-        				getClientProperty(LINE_STYLE)
+        				getClientProperty(LINE_STYLE) + "\n"
         		);
     		}
     		setRolloverEnabled(true); // to show a "live" rollover behaviour
@@ -168,6 +185,11 @@ public class XTreeDemo extends AbstractDemo {
 
         public Insets getInsets() {
             return new Insets(5,5,5,5);
+        }
+        
+        public void setEditable(boolean editable) {
+        	LOG.info("setEditable to "+editable+(isLargeModel()?", tree isLargeModel":"")+", cellEditor:"+cellEditor);
+        	super.setEditable(editable);
         }
         
         private TreeCellRenderer musicCellRenderer() {
@@ -298,13 +320,43 @@ public class XTreeDemo extends AbstractDemo {
     }
     
 	@SuppressWarnings("serial")
+	private JComponent createDefaultTree() {
+    	/*
+    	 * no param: use the DefaultMutableTreeNode JTree with colors, sports, food
+    	 * defined in protected static TreeModel JTree.getDefaultTreeModel()
+    	 */
+		JXTree dtree = new JXTree() {
+			@Override
+			public TreeCellRenderer getCellRenderer() {
+				StringValue sv = (Object value) -> {
+					if (value instanceof String) {
+						return StringValues.TO_STRING.getString(value);
+					}
+					String simpleName = value.getClass().getSimpleName();
+					return simpleName + "(" + value + ")";
+				};
+				return new JXTree.DelegatingRenderer(sv);
+			}
+		};
+    	dtree.setCellRenderer(dtree.getCellRenderer());
+    	dtree.setRolloverEnabled(true);
+    	dtree.addHighlighter(new RolloverIconHighlighter(HighlightPredicate.ROLLOVER_ROW, null));
+    	dtree.setRowHeight(-1);
+    	dtree.setName("dtree");
+    	dtree.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+    	JScrollPane scrollpane = new JScrollPane(dtree);
+    	dtree.expandAll();
+    	dtree.updateUI();
+    	return scrollpane;
+    }
+	
+	@SuppressWarnings("serial")
 	private JComponent createComponentTree() {
     	/*
     	 * no param: in JTree there is a dafault DefaultMutableTreeNode JTree with colors, sports, food.
+    	 * the TreeModel is set later when componentTree is selected
     	 */
-        //componentTree = new JXTree((TreeModel)null) {
-		// ctror with component tree model:
-        componentTree = new JXTree(createTreeModel()) {
+        componentTree = new JXTree() {
         	@Override
             public TreeCellRenderer getCellRenderer() {
             	StringValue sv = (Object value) -> {
@@ -422,29 +474,18 @@ public class XTreeDemo extends AbstractDemo {
 	public JXPanel getControlPane() {
 		JXPanel buttons = new JXPanel();
 
-		loadButton = new JXButton(getBundleString("reloadComponentTreeData"));
-		loadButton.setName("loadButton");
-		loadButton.addActionListener(actionEvent -> {
-			if(componentTree!=null) {
-				LOG.warning("JXTree.setModel is deprecated TODO"); //TODO		
-				componentTree.setModel(createTreeModel());				
-			}
-		});
-		buttons.add(loadButton);
-		
 		// <snip> JXTree convenience api
 		expandButton = new JXButton(getBundleString("expandAll.Action.text"));
 		expandButton.setName("expandButton");
 		expandButton.addActionListener(actionEvent -> {
-			if(tabbedpane.getSelectedIndex()==0) {
-				// JScrollPane with music
-				Component c = tabbedpane.getComponentAt(0);
-				Component comp = getTreeComp(tabbedpane.getComponentAt(0));
+			if(tabbedpane.getSelectedIndex()==tabbedpane.getTabCount()) {
+				componentTree.expandAll();
+			} else if(tabbedpane.getSelectedIndex()>=0) {
+				// 0:JScrollPane with music , 1:JScrollPane with default JTree
+//				Component c = tabbedpane.getComponentAt(tabbedpane.getSelectedIndex());
+				Component comp = getTreeComp(tabbedpane.getComponentAt(tabbedpane.getSelectedIndex()));
 				if(comp instanceof JXTree tree) tree.expandAll();
 				if(comp instanceof JXTreeTable ttable) ttable.expandAll();
-			}
-			if(tabbedpane.getSelectedIndex()==1) {
-				componentTree.expandAll();
 			}
 		});
 		buttons.add(expandButton);
@@ -452,14 +493,12 @@ public class XTreeDemo extends AbstractDemo {
 		collapseButton = new JXButton(getBundleString("collapseAll.Action.text"));
 		collapseButton.setName("collapseButton");
 		collapseButton.addActionListener(actionEvent -> {
-			if(tabbedpane.getSelectedIndex()==0) {
-				// JScrollPane with music
-				Component comp = getTreeComp(tabbedpane.getComponentAt(0));
+			if(tabbedpane.getSelectedIndex()==tabbedpane.getTabCount()) {
+				componentTree.collapseAll();
+			} else if(tabbedpane.getSelectedIndex()>=0) {
+				Component comp = getTreeComp(tabbedpane.getComponentAt(tabbedpane.getSelectedIndex()));
 				if(comp instanceof JXTree tree) tree.collapseAll();
 				if(comp instanceof JXTreeTable ttable) ttable.collapseAll();
-			}
-			if(tabbedpane.getSelectedIndex()==1) {
-				componentTree.collapseAll();
 			}
 		});
 		buttons.add(collapseButton);
