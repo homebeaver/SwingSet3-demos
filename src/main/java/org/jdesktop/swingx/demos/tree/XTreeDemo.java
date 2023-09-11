@@ -48,7 +48,10 @@ import org.jdesktop.swingx.demos.svg.FeatheRmusic;
 import org.jdesktop.swingx.demos.svg.FeatheRuser;
 import org.jdesktop.swingx.demos.tree.TreeDemoIconValues.LazyLoadingIconValue;
 import org.jdesktop.swingx.demos.treetable.TreeTableDemo;
+import org.jdesktop.swingx.icon.JXIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
+import org.jdesktop.swingx.icon.TrafficLightRedIcon;
+import org.jdesktop.swingx.icon.TrafficLightYellowIcon;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
@@ -137,7 +140,7 @@ public class XTreeDemo extends AbstractDemo {
 
         tabbedpane.add(getBundleString("music")
         	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
-        tabbedpane.add(getBundleString("default"), createDefaultTree()); 
+        tabbedpane.add(getBundleString("default JTree"), createDefaultTree()); 
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
         tabbedpane.setTabPlacement(JTabbedPane.TOP);
         // the default model of tabbedpane implements SingleSelectionModel
@@ -335,7 +338,19 @@ public class XTreeDemo extends AbstractDemo {
 					String simpleName = value.getClass().getSimpleName();
 					return simpleName + "(" + value + ")";
 				};
-				return new JXTree.DelegatingRenderer(sv);
+	        	IconValue iv = (Object value) -> {
+					if (value instanceof String s) {
+						if(s.equals("red")) {
+//							return UIManager.getIcon("Tree.leafIcon");
+							return TrafficLightRedIcon.of(JXIcon.SMALL_ICON, JXIcon.SMALL_ICON);
+						}
+						if(s.equals("yellow")) {
+							return TrafficLightYellowIcon.of(JXIcon.SMALL_ICON, JXIcon.SMALL_ICON);
+						}
+					}
+					return null;
+	        	};
+				return new JXTree.DelegatingRenderer(iv, sv);
 			}
 		};
     	dtree.setCellRenderer(dtree.getCellRenderer());
@@ -466,7 +481,6 @@ public class XTreeDemo extends AbstractDemo {
 	}
 
     // Controller:
-    private JXButton loadButton;
     private JXButton expandButton;
     private JXButton collapseButton;
     
