@@ -43,11 +43,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import swingset.plaf.LaFUtils;
 
-/*
+/* ComboBoxDemo which uses an uneditable combo box.
  * copied from https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#ComboBoxDemo
+ * 
  * ComboBoxDemo.java uses these additional files:
  *   images/Bird.gif
  *   images/Cat.gif
@@ -68,13 +70,13 @@ public class ComboBoxDemo extends JPanel {
     }
 
     /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
+     * Create the GUI and show it.
+     * For thread safety, this method should be invoked from the event-dispatching thread.
      */
     private static void createAndShowGUI() {
+    	UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
         //Create and set up the window.
-        JFrame frame = new JFrame("ComboBoxDemo");
+        JFrame frame = new JFrame("Shows an uneditable combo box");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.

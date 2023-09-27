@@ -30,16 +30,62 @@
  */ 
 package org.jdesktop.swingx.demos.combobox;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
-/* ComboBoxDemo2.java requires no other files. */
-public class ComboBoxDemo2 extends JPanel
-                           implements ActionListener {
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import swingset.plaf.LaFUtils;
+
+/*
+ * copied from https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#ComboBoxDemo2
+ * ComboBoxDemo2.java requires no other files.
+ */
+@SuppressWarnings("serial")
+public class ComboBoxDemo2 extends JPanel 
+{
+    public static void main(String[] args) {
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
+    	if(args.length>0) LaFUtils.setLAF(args[0]);
+        SwingUtilities.invokeLater( () -> {
+            createAndShowGUI();
+        });
+    }
+
+    /**
+     * Create the GUI and show it.
+     * For thread safety, this method should be invoked from the event-dispatching thread.
+     */
+    private static void createAndShowGUI() {
+    	UIManager.put("swing.boldMetal", Boolean.FALSE); // turn off bold fonts in Metal
+        //Create and set up the window.
+        JFrame frame = new JFrame("an editable combo box");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Create and set up the content pane.
+        JComponent newContentPane = new ComboBoxDemo2();
+        newContentPane.setOpaque(true); //content panes must be opaque
+        frame.setContentPane(newContentPane);
+
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+    }
+
     static JFrame frame;
     JLabel result;
     String currentPattern;
@@ -64,9 +110,13 @@ public class ComboBoxDemo2 extends JPanel
         JLabel patternLabel1 = new JLabel("Enter the pattern string or");
         JLabel patternLabel2 = new JLabel("select one from the list:");
 
-        JComboBox patternList = new JComboBox(patternExamples);
+        JComboBox<String> patternList = new JComboBox<>(patternExamples);
         patternList.setEditable(true);
-        patternList.addActionListener(this);
+        patternList.addActionListener(ae -> {
+            String newSelection = (String)patternList.getSelectedItem();
+            currentPattern = newSelection;
+            reformat();
+        });
 
         //Create the UI for displaying result.
         JLabel resultLabel = new JLabel("Current Date/Time",
@@ -80,8 +130,7 @@ public class ComboBoxDemo2 extends JPanel
 
         //Lay out everything.
         JPanel patternPanel = new JPanel();
-        patternPanel.setLayout(new BoxLayout(patternPanel,
-                               BoxLayout.PAGE_AXIS));
+        patternPanel.setLayout(new BoxLayout(patternPanel, BoxLayout.PAGE_AXIS));
         patternPanel.add(patternLabel1);
         patternPanel.add(patternLabel2);
         patternList.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -101,21 +150,13 @@ public class ComboBoxDemo2 extends JPanel
         setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         reformat();
-    } //constructor
-
-    public void actionPerformed(ActionEvent e) {
-        JComboBox cb = (JComboBox)e.getSource();
-        String newSelection = (String)cb.getSelectedItem();
-        currentPattern = newSelection;
-        reformat();
     }
 
     /** Formats and displays today's date. */
     public void reformat() {
         Date today = new Date();
-        SimpleDateFormat formatter =
-           new SimpleDateFormat(currentPattern);
         try {
+            SimpleDateFormat formatter = new SimpleDateFormat(currentPattern); // throws IllegalArgumentException
             String dateString = formatter.format(today);
             result.setForeground(Color.black);
             result.setText(dateString);
@@ -125,33 +166,4 @@ public class ComboBoxDemo2 extends JPanel
         }
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("ComboBoxDemo2");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        JComponent newContentPane = new ComboBoxDemo2();
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
 }
