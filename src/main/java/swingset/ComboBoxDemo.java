@@ -14,18 +14,19 @@ import java.util.Hashtable;
 import java.util.logging.Logger;
 
 import javax.accessibility.AccessibleRelation;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 
@@ -83,21 +84,82 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         face = new Face();
         xfaceLabel = new JXLabel(face);
         super.add(xfaceLabel, BorderLayout.CENTER);
+        
+		getComboPane(); // creates ComboBoxes hairCB, ... and presetCB
+		JXPanel presetsPanel = new JXPanel();
+		presetsPanel.setLayout(new BoxLayout(presetsPanel, BoxLayout.Y_AXIS));
+		JXLabel l = new JXLabel(getBundleString("presets"));
+		l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+		presetsPanel.add(l);
+		presetsPanel.add(presetCB);
+		presetsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		presetCB.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.LINE_PRINTER));
+		l.setLabelFor(presetCB);
+		super.add(presetsPanel, BorderLayout.NORTH);
+        
+		// to hold hairCB, eyesCB, mouthCB
+		JXPanel sidePanel = new JXPanel() {
+            public Dimension getMaximumSize() {
+                return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
+            }
+            public Dimension getPreferredSize() {
+                return new Dimension(PREFERRED_SIZE.width/3, super.getMaximumSize().height);
+            }
+		};
+		sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
+		
+        l = new JXLabel(getBundleString("hair_description"));
+        l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+        sidePanel.add(l);
+        hairCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
+        hairCB.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.NOTEPAD));
+        sidePanel.add(hairCB);
+        l.setLabelFor(hairCB);
+        sidePanel.add(Box.createRigidArea(VGAP15));
 
+        l = new JXLabel(getBundleString("eyes_description"));
+        l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+        sidePanel.add(l);
+        eyesCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
+        eyesCB.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.FLORAL_WHITE));
+        sidePanel.add(eyesCB);
+        l.setLabelFor(eyesCB);
+        sidePanel.add(Box.createRigidArea(VGAP15));
+        
+        l = new JXLabel(getBundleString("mouth_description"));
+        l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
+        sidePanel.add(l);
+        mouthCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
+        mouthCB.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.GENERIC_GRAY));
+        sidePanel.add(mouthCB);
+        l.setLabelFor(mouthCB);
+        sidePanel.add(Box.createRigidArea(VGAP15));
+
+        // Fill up the remaining space
+		sidePanel.add(new JPanel(new BorderLayout()));
+		sidePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 20));
+		super.add(sidePanel, BorderLayout.EAST);
+		
         getControlPane();
     }
 
-    JXPanel comboBoxPanel = null; // Controller
+    JXPanel comboBoxPanel = null;
     JXComboBox<String> hairCB;
     JXComboBox<String> eyesCB;
     JXComboBox<String> mouthCB;
 
     JXComboBox<String> presetCB;
 
-    private Hashtable parts = new Hashtable();
+    @SuppressWarnings("rawtypes") // parts can be <String, ImageIcon> or reverse or <String, String>
+	private Hashtable parts = new Hashtable();
 
     @Override
-    public JXPanel getControlPane() {
+	public JXPanel getControlPane() {
+		// no controller
+    	return emptyControlPane();
+	}
+    
+    private JXPanel getComboPane() {
     	if(comboBoxPanel!=null) {
         	LOG.fine("---------------comboBoxPanel:"+comboBoxPanel);
     		return comboBoxPanel;
