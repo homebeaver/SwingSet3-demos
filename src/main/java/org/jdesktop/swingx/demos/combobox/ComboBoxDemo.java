@@ -31,19 +31,24 @@
 package org.jdesktop.swingx.demos.combobox;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import swingset.plaf.LaFUtils;
 
@@ -104,6 +109,7 @@ public class ComboBoxDemo extends JPanel {
             String petName = (String)petList.getSelectedItem();
             updateLabel(petName);
         });
+        petList.setRenderer(new MyComboBoxRenderer());
 
         //Set up the picture.
         picture = new JLabel();
@@ -144,6 +150,52 @@ public class ComboBoxDemo extends JPanel {
             System.err.println("Couldn't find file: " + path);
             return null;
         }
+    }
+
+    /**
+     * A subclass of BasicComboBoxRenderer to override the renderer property
+     * - border of the Label : EmptyNoFocusBorder,
+     *          of the List : EtchedBorder
+     */
+    class MyComboBoxRenderer extends BasicComboBoxRenderer {
+
+        static Border etchedNoFocusBorder = BorderFactory.createEtchedBorder();
+
+        public MyComboBoxRenderer() {
+            super();
+        }
+
+        Border getEmptyNoFocusBorder() {
+        	return BasicComboBoxRenderer.noFocusBorder;
+        }
+
+        @Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, 
+				int index, boolean isSelected, boolean cellHasFocus) {
+        	
+        	// index -1 when called in BasicComboBoxUI.getDisplaySize()
+        	//      >=0 when called in BasicListUI.updateLayoutState()
+			setBorder(index == -1 ? getEmptyNoFocusBorder() : etchedNoFocusBorder);
+
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+
+			setFont(list.getFont());
+
+			if (value instanceof Icon) {
+				setIcon((Icon) value);
+			} else {
+				setText((value == null) ? "" : value.toString());
+			}
+			
+			return this;
+		}
+
     }
 
 }
