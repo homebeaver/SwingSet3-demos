@@ -19,16 +19,23 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.decorator.Highlighter;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.IconHighlighter;
+import org.jdesktop.swingx.demos.svg.FeatheRuser;
+import org.jdesktop.swingx.icon.SizingConstants;
 
 /**
  * JComboBox Demo
@@ -71,6 +78,55 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
     }
 
     /**
+     * A subclass of BasicComboBoxRenderer to override the renderer property
+     * - border of the Label : EmptyNoFocusBorder,
+     *          of the List : EtchedBorder
+     */
+    @SuppressWarnings("serial")
+	class MyComboBoxRenderer extends BasicComboBoxRenderer {
+
+        static Border etchedNoFocusBorder = BorderFactory.createEtchedBorder();
+
+        public MyComboBoxRenderer() {
+            super();
+            // Alternativ via IconHighlighter
+//          setIcon(FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+        }
+
+        Border getEmptyNoFocusBorder() {
+        	return BasicComboBoxRenderer.noFocusBorder;
+        }
+
+        @Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, 
+				int index, boolean isSelected, boolean cellHasFocus) {
+        	
+        	// index -1 when called in BasicComboBoxUI.getDisplaySize()
+        	//      >=0 when called in BasicListUI.updateLayoutState()
+			setBorder(index == -1 ? getEmptyNoFocusBorder() : etchedNoFocusBorder);
+
+			if (isSelected) {
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
+
+			setFont(list.getFont());
+
+			if (value instanceof Icon) {
+				setIcon((Icon) value);
+			} else {
+				setText((value == null) ? "" : value.toString());
+			}
+			
+			return this;
+		}
+
+    }
+
+    /**
      * ComboBoxDemo Constructor
      * 
      * @param controllerFrame controller Frame
@@ -93,7 +149,11 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 		presetsPanel.add(l);
 		presetsPanel.add(presetCB);
 		presetsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-		presetCB.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.LINE_PRINTER));
+		presetCB.setRenderer(new MyComboBoxRenderer());
+		Highlighter personIcon = new IconHighlighter(
+				FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
+		presetCB.addHighlighter(personIcon);
+		
 		l.setLabelFor(presetCB);
 		super.add(presetsPanel, BorderLayout.NORTH);
         
@@ -130,7 +190,7 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         l.setAlignmentX(JXLabel.LEFT_ALIGNMENT);
         sidePanel.add(l);
         mouthCB.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
-        mouthCB.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.GENERIC_GRAY));
+        mouthCB.addHighlighter(HighlighterFactory.createSimpleStriping(HighlighterFactory.LINE_PRINTER));
         sidePanel.add(mouthCB);
         l.setLabelFor(mouthCB);
         sidePanel.add(Box.createRigidArea(VGAP15));
