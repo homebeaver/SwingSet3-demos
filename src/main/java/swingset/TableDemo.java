@@ -49,14 +49,16 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.jdesktop.swingx.JXFrame;
-import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXFrame.StartPosition;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.renderer.DefaultTableRenderer;
+import org.jdesktop.swingx.renderer.StringValue;
+import org.jdesktop.swingx.renderer.StringValues;
 
 /**
  * Table demo
@@ -255,16 +257,17 @@ public class TableDemo extends AbstractDemo {
         tableView.setRowSorter(sorter);
 
         // Show colors by rendering them in their own color.
-        DefaultTableCellRenderer colorRenderer = new DefaultTableCellRenderer() {
-            public void setValue(Object value) {
-                if (value instanceof NamedColor) {
-                    NamedColor c = (NamedColor) value;
-                    setBackground(c);
-                    setForeground(c.getTextColor());
-                    setText(c.toString());
-                } else {
-                    super.setValue(value);
-                }
+        StringValue sv = (Object value) -> {
+        	return StringValues.TO_STRING.getString(value);
+        };
+        DefaultTableRenderer colorRenderer = new DefaultTableRenderer(sv, JLabel.CENTER) {
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+            	Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            	if(comp instanceof JLabel label && value instanceof Color color) {
+            		label.setBackground(color);
+            	}
+                return comp;
             }
         };
 
@@ -295,8 +298,6 @@ public class TableDemo extends AbstractDemo {
         TableColumn colorColumn = tableView.getColumn(getBundleString("favorite_color"));
         // Use the combo box as the editor in the "Favorite Color" column.
         colorColumn.setCellEditor(new DefaultCellEditor(comboBox));
-
-        colorRenderer.setHorizontalAlignment(JLabel.CENTER);
         colorColumn.setCellRenderer(colorRenderer);
 
         tableView.setRowHeight(INITIAL_ROWHEIGHT);
