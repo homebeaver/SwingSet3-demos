@@ -30,12 +30,14 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -45,14 +47,17 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXPanel;
@@ -272,7 +277,7 @@ public class TableDemo extends AbstractDemo {
         };
 
         // Create a combo box to show that you can use one in a table.
-        JComboBox<NamedColor> comboBox = new JComboBox<NamedColor>();
+        JXComboBox<NamedColor> comboBox = new JXComboBox<NamedColor>();
         comboBox.addItem(aqua);
         comboBox.addItem(beige);
         comboBox.addItem(black);
@@ -294,7 +299,8 @@ public class TableDemo extends AbstractDemo {
         comboBox.addItem(turquoise);
         comboBox.addItem(violet);
         comboBox.addItem(yellow);
-
+        comboBox.setRenderer(new MyComboBoxRenderer());
+        
         TableColumn colorColumn = tableView.getColumn(getBundleString("favorite_color"));
         // Use the combo box as the editor in the "Favorite Color" column.
         colorColumn.setCellEditor(new DefaultCellEditor(comboBox));
@@ -707,6 +713,50 @@ public class TableDemo extends AbstractDemo {
         public String toString() {
             return name;
         }
+    }
+
+    @SuppressWarnings("serial")
+	class MyComboBoxRenderer extends BasicComboBoxRenderer {
+
+        static Border etchedNoFocusBorder = BorderFactory.createEtchedBorder();
+
+        public MyComboBoxRenderer() {
+            super();
+        }
+
+        Border getEmptyNoFocusBorder() {
+        	return BasicComboBoxRenderer.noFocusBorder;
+        }
+
+        @Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, 
+				int index, boolean isSelected, boolean cellHasFocus) {
+        	
+        	// index -1 when called in BasicComboBoxUI.getDisplaySize()
+        	//      >=0 when called in BasicListUI.updateLayoutState()
+			setBorder(index == -1 ? getEmptyNoFocusBorder() : etchedNoFocusBorder);
+
+			Color bg = value instanceof Color c ? c : null;
+			if (isSelected) {
+				setBackground(bg==null ? list.getSelectionBackground() : bg);
+				setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(bg==null ? list.getBackground() : bg);
+				setForeground(list.getForeground());
+			}
+
+			setFont(list.getFont());
+
+			if (value instanceof Icon) {
+				setIcon((Icon) value);
+			} else {
+				setText((value == null) ? "" : value.toString());
+			}
+			
+			return this;
+		}
+
     }
 
     class ColumnLayout implements LayoutManager {
