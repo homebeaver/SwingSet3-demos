@@ -35,6 +35,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -55,12 +56,12 @@ import swingset.plaf.LaFUtils;
  * ComboBoxDemo2.java requires no other files.
  */
 @SuppressWarnings("serial")
-public class ComboBoxDemo2 extends JPanel 
-{
+public class ComboBoxDemo2 extends JPanel {
+	
     public static void main(String[] args) {
+    	if(args.length>0) LaFUtils.setLAFandTheme(Arrays.asList(args));
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-    	if(args.length>0) LaFUtils.setLAF(args[0]);
         SwingUtilities.invokeLater( () -> {
             createAndShowGUI();
         });
