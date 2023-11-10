@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -38,6 +39,7 @@ import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
+import org.jdesktop.swingx.icon.EmptyIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -81,23 +83,25 @@ public class XComboBoxDemo extends AbstractDemo {
         });
     }
 
-    private static final String[] petStrings = { "Dog", "Bird", "Cat", "Rabbit", "Pig" };
+    private static final String[] petStrings = { "Dog", "Bird", "Cat", "Rabbit", "Pig" }; // unsorted
     private static final String toolTipText = "Choose an animal name from the combo box to view its picture"; // TODO NLS
 
     // abgeschrieben aus MirroringIconDemo
+    private static final String DEFAULT = "DEFAULT";
     private static final Map<String, String> nameToClassname = new HashMap<>(){
         {
+            put(DEFAULT,                "org.jdesktop.swingx.icon.EmptyIcon");
             put("arrow",                "org.jdesktop.swingx.icon.ArrowIcon");
             put("chevron",              "org.jdesktop.swingx.icon.ChevronIcon");
             put("chevrons",             "org.jdesktop.swingx.icon.ChevronsIcon");
         }
     };
-    private static final String[] iconNames = {"arrow", "arrowInCircle", "chevron", "chevrons" };
+    private static final String[] iconNames = { DEFAULT, "arrow", "arrowInCircle", "chevron", "chevrons" };
     private String upperCasePrefix(String iconName) {
     	return Character.isLowerCase(iconName.charAt(0)) ? "FeatheR" : "";
     }
     Class<?> iconClass = null;
-    private RadianceIcon getRadianceIcon(String iconName, int size) {
+    private Icon getRadianceIcon(String iconName, int size) {
     	int width=size;
     	int height=size;
     	String className = nameToClassname.get(iconName);
@@ -113,6 +117,9 @@ public class XComboBoxDemo extends AbstractDemo {
 				e.printStackTrace();
 				return null;
 			}
+    	}
+    	if(iconName==DEFAULT) {
+    		return new EmptyIcon(width, height);
     	}
     	RadianceIcon icon = null;
     	try {
@@ -235,7 +242,7 @@ public class XComboBoxDemo extends AbstractDemo {
 
 	// Controller:
     private JComboBox<SortOrder> sortCombo;
-    private JComboBox<DisplayInfo<RadianceIcon>> iconChooserCombo;
+    private JComboBox<DisplayInfo<Icon>> iconChooserCombo;
 
     @Override
 	public JXPanel getControlPane() {
@@ -282,15 +289,15 @@ public class XComboBoxDemo extends AbstractDemo {
         
         label = new JLabel("Combo box icons:");
         panel.add(label, cc.rc(3, 2));
-        iconChooserCombo = new JComboBox<DisplayInfo<RadianceIcon>>();
+        iconChooserCombo = new JComboBox<DisplayInfo<Icon>>();
         iconChooserCombo.setName("iconChooserCombo");
-        MutableComboBoxModel<DisplayInfo<RadianceIcon>> model = new DefaultComboBoxModel<DisplayInfo<RadianceIcon>>();
+        MutableComboBoxModel<DisplayInfo<Icon>> model = new DefaultComboBoxModel<DisplayInfo<Icon>>();
         for (int i = 0; i < iconNames.length; i++) {
-        	RadianceIcon ri = getRadianceIcon(iconNames[i], RadianceIcon.SMALL_ICON);
+        	Icon ri = getRadianceIcon(iconNames[i], RadianceIcon.SMALL_ICON);
         	if(ri==null) {
         		LOG.warning("no icon class for "+iconNames[i]);
         	} else {
-                model.addElement(new DisplayInfo<RadianceIcon>(iconNames[i], ri));
+                model.addElement(new DisplayInfo<Icon>(iconNames[i], ri));
         	}
         }
         iconChooserCombo.setModel(model);
@@ -299,20 +306,22 @@ public class XComboBoxDemo extends AbstractDemo {
 //        iconChooserCombo.setRenderer(renderer);
 		iconChooserCombo.addActionListener(ae -> {
 			@SuppressWarnings("unchecked")
-			DisplayInfo<RadianceIcon> item = (DisplayInfo<RadianceIcon>)iconChooserCombo.getSelectedItem();
-			RadianceIcon ri = item.getValue();
-			ri.setReflection(true, false); // horizontal spiegeln
-			RadianceIcon icon = null; // nicht gespiegelt
-			try {
-				Method method = ri.getClass().getMethod("of", int.class, int.class);
-				Object o = method.invoke(null, RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
-				icon = (RadianceIcon)o; // ClassCastException
-			} catch (NoSuchMethodException | SecurityException 
-					| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			DisplayInfo<Icon> item = (DisplayInfo<Icon>)iconChooserCombo.getSelectedItem();
+			Icon i = item.getValue();
+			if(i instanceof RadianceIcon ri) {
+				ri.setReflection(true, false); // horizontal spiegeln
+				RadianceIcon icon = null; // nicht gespiegelt
+				try {
+					Method method = ri.getClass().getMethod("of", int.class, int.class);
+					Object o = method.invoke(null, RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+					icon = (RadianceIcon)o; // ClassCastException
+				} catch (NoSuchMethodException | SecurityException 
+						| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				}
+				LOG.info("iconChooserCombo.SelectedItem=" + item.getDescription() + "\n "+ri + "\n "+icon);
+				xcb.setComboBoxIcon(ri, icon);
+				right.updateUI();
 			}
-			LOG.info("iconChooserCombo.SelectedItem=" + item.getDescription() + "\n "+ri + "\n "+icon);
-			xcb.setComboBoxIcon(ri, icon);
-			right.updateUI();
 		});
 //		iconChooserCombo.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
 //		controls.add(iconChooserCombo);
