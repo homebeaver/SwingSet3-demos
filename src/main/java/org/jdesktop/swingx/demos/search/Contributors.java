@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ListModel;
 import javax.swing.table.AbstractTableModel;
@@ -27,8 +28,7 @@ import swingset.StaticUtilities;
 
 /**
  * Class Contributors
- * used in SearchDemo, XListDemo, HighlighterExtDemo
- *
+ * used in SearchDemo, XListDemo, HighlighterExtDemo, XComboBoxDemo
  */
 public class Contributors {
 
@@ -96,10 +96,10 @@ public class Contributors {
     }
     
     /**
-     * Returns Contributor ListModel
-     * @return ListModel
+     * Returns Contributor Model which is an extended ListModel
+     * @return ComboBoxModel an extended ListModel
      */
-    public static ListModel<Contributor> getContributorListModel() {
+    public static ComboBoxModel<Contributor> getContributorModel() {
         List<Contributor> list = getContributors();
         DefaultComboBoxModel<Contributor> model = new DefaultComboBoxModel<Contributor>();
         for (Contributor contributor : list) {

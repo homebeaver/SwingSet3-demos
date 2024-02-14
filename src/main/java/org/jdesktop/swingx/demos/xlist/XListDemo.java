@@ -200,7 +200,7 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         
         // PENDING JW: add visual clue to current sort order
         list.setAutoCreateRowSorter(true);
-        list.setModel(Contributors.getContributorListModel());
+        list.setModel(Contributors.getContributorModel());
         
         list.setDragEnabled(true);
         list.setDropMode(DropMode.ON);
