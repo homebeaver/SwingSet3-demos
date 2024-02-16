@@ -59,6 +59,7 @@ import javax.swing.border.EmptyBorder;
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.demos.search.Contributor;
 import org.jdesktop.swingx.demos.search.Contributors;
+import org.jdesktop.swingx.demos.xlist.ListDemoConstants;
 import org.jdesktop.swingx.icon.ChevronIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
@@ -132,7 +133,7 @@ public class XComboBoxPetsAndContributor extends JPanel {
     public XComboBoxPetsAndContributor() {
         super(new BorderLayout());
 
-        String[] emptyStrings = { };
+        // intentionally not sorted, no pix for tyrannosaurus
         String[] petStrings = { "Rabbit", "Bird", "Pig", "Cat"
         		, "Tyrannosaurus Rex", "Dog"
         };
@@ -254,14 +255,13 @@ ComponentProvider<JLabel> componentProvider = new LabelProvider();
 DefaultComboBoxRenderer renderer = new DefaultComboBoxRenderer(ComponentProvider<?> componentProvider);
      */
 //    class MyComboBoxRenderer extends BasicComboBoxRenderer {
-    class MyComboBoxRenderer extends JLabel implements ListCellRenderer<Object>, Serializable {
+    class MyComboBoxRenderer extends JLabel implements ListCellRenderer<Object>, Serializable, ListDemoConstants {
 
         static Border etchedNoFocusBorder = BorderFactory.createEtchedBorder();
 
         ComboBoxContext cc;
         public MyComboBoxRenderer() {
             super();
-//            CellContext cc = new ComboBoxContext();
             cc = new ComboBoxContext();
         }
 
@@ -322,6 +322,11 @@ im renderer: wird bei index == -1
 				setIcon(icon);
 			} else {
 				setText(preferredStringRepresentation(value));
+				if(value instanceof Contributor c) {
+					setIcon(flagIcons[(c.getMerits()) % flagIcons.length]);
+				} else {
+					setIcon(null);
+				}
 			}
 			
 			return this;
