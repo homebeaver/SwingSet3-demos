@@ -31,41 +31,31 @@
 package org.jdesktop.swingx.demos.combobox;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.Arrays;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.RowSorter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
 import org.jdesktop.swingx.JXComboBox;
-import org.jdesktop.swingx.icon.ChevronIcon;
-import org.jdesktop.swingx.icon.RadianceIcon;
-import org.jdesktop.swingx.icon.SizingConstants;
-import org.jdesktop.swingx.renderer.ComboBoxContext;
 
 import swingset.plaf.LaFUtils;
 
-/* ComboBoxDemo which uses an uneditable combo box with pets TODO rename to XComboBoxPets
+/* XComboBox which uses an uneditable combo box with pets.
  * copied from https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html#ComboBoxDemo
+ * All items are Strings, see XComboBoxPetsAndContributor with mixed Objects (of type String and Contributors.
  * 
- * ComboBoxDemo.java uses these additional files:
+ * uses these additional files:
  *   images/Bird.gif
  *   images/Cat.gif
  *   images/Dog.gif
@@ -73,7 +63,7 @@ import swingset.plaf.LaFUtils;
  *   images/Pig.gif
  */
 @SuppressWarnings("serial")
-public class ComboBoxDemo extends JPanel {
+public class XComboBoxPets extends JPanel {
 	
     public static void main(String[] args) {
     	if(args.length>0) LaFUtils.setLAFandTheme(Arrays.asList(args));
@@ -95,7 +85,7 @@ public class ComboBoxDemo extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Create and set up the content pane.
-        JComponent newContentPane = new ComboBoxDemo();
+        JComponent newContentPane = new XComboBoxPets();
         newContentPane.setOpaque(true); //content panes must be opaque
         frame.setContentPane(newContentPane);
 
@@ -107,13 +97,11 @@ public class ComboBoxDemo extends JPanel {
     JLabel picture;
     JXComboBox<String> cb;
 
-    public ComboBoxDemo() {
+    public XComboBoxPets() {
         super(new BorderLayout());
 
-        String[] emptyStrings = { };
         String[] petStrings = { "Rabbit", "Bird", "Pig", "Cat"
         		, "Text: Create the combo box, select the item at index 4."
-//        		, "Dog", "Rabbit", "Pig" };
         };
 
         //Create a sorted combo box, select the item at index 4.
@@ -152,17 +140,10 @@ public class ComboBoxDemo extends JPanel {
             updateLabel(petName);
         });
         
-//        petList.setEnabled(false);
         // setComboBoxIcon: 
-		RadianceIcon icon = ChevronIcon.of(SizingConstants.XS, SizingConstants.XS);
-		icon.setReflection(true); // for ChevronIcon same effect as icon.setRotation(RadianceIcon.SOUTH)
-        petList.setComboBoxIcon(icon, ChevronIcon.of(SizingConstants.XS, SizingConstants.XS));
-//        petList.setComboBoxIcon(FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-//        JXIcon personIcon = FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON);      
-//        petList.setComboBoxIcon(personIcon);
-        
-//        petList.setEditable(true);
-//        petList.setRenderer(new MyComboBoxRenderer());
+//		RadianceIcon icon = ChevronIcon.of(SizingConstants.XS, SizingConstants.XS);
+//		icon.setReflection(true); // for ChevronIcon same effect as icon.setRotation(RadianceIcon.SOUTH)
+//        petList.setComboBoxIcon(icon, ChevronIcon.of(SizingConstants.XS, SizingConstants.XS));
 
         //Set up the picture.
         picture = new JLabel();
@@ -204,94 +185,6 @@ public class ComboBoxDemo extends JPanel {
             System.err.println("Couldn't find file: " + path);
             return null;
         }
-    }
-
-    /**
-     * A subclass of BasicComboBoxRenderer to override the renderer property
-     * - border of the Label : EmptyNoFocusBorder,
-     *          of the List : EtchedBorder
-public class BasicComboBoxRenderer extends JLabel
-implements ListCellRenderer<Object>, Serializable {
-
-
-public class DefaultComboBoxRenderer<E> extends AbstractRenderer implements ListCellRenderer<E> {
-ComponentProvider<JLabel> componentProvider = new LabelProvider();
-DefaultComboBoxRenderer renderer = new DefaultComboBoxRenderer(ComponentProvider<?> componentProvider);
-     */
-//    class MyComboBoxRenderer extends BasicComboBoxRenderer {
-    class MyComboBoxRenderer extends JLabel implements ListCellRenderer<Object>, Serializable {
-
-        static Border etchedNoFocusBorder = BorderFactory.createEtchedBorder();
-
-        ComboBoxContext cc;
-        public MyComboBoxRenderer() {
-            super();
-//            CellContext cc = new ComboBoxContext();
-            cc = new ComboBoxContext();
-        }
-
-        Border getEmptyNoFocusBorder() {
-        	return new EmptyBorder(1, 1, 1, 1);
-        }
-
-        /*
-called with index -1 in 
-- BasicXComboBoxUI.getDisplaySize n times (...false, false) to calculate the dimension
-            	renderer.getListCellRendererComponent(listBox, prototypeValue, -1, false, false)
-                    Component c = renderer.getListCellRendererComponent(listBox, value, -1, false, false);
-
-- BasicXComboBoxUI.getDefaultSize 1x (...false, false) to calculate the dimension
-        Component comp = getDefaultListCellRenderer().getListCellRendererComponent(listBox, " ", -1, false, false);
-
-- getBaseline ??? with (...false, false)
-                Component component = renderer.getListCellRendererComponent(listBox, value, -1, false, false);
-
-- getBaselineResizeBehavior
-                Component component = renderer.getListCellRendererComponent(listBox, value, -1, false, false);
-
-- BasicXComboBoxUI.paintCurrentValue (...isSelected, cellHasFocus)
-            c = renderer.getListCellRendererComponent( listBox,
-                                                       comboBox.getSelectedItem(),
-                                                     -1, ...
-
-im renderer: wird bei index == -1 
-         */
-        @Override
-		public Component getListCellRendererComponent(JList<?> list, Object value, 
-				int index, boolean isSelected, boolean cellHasFocus) {
-
-//            public void installContext(JComboBox<?> component, Object value, int row, int column,
-//                    boolean selected, boolean focused, boolean expanded, boolean leaf) {
-            cc.installContext(ComboBoxDemo.this.cb, value, index, -1, isSelected, cellHasFocus, false, false);
-           
-
-    		System.out.println("ComboBoxDemo getListCellRendererComponent: list:"+list
-    			+"\n value:"+value+"/"+(value==null?"null":value.getClass())
-    			+"\n index="+index+" , isSelected="+isSelected+" , cellHasFocus="+cellHasFocus
-    			+"\n ListCellRendererComponent hashCode=@"+Integer.toHexString(this.hashCode())
-    				);
-    		
-			setBorder(index == -1 ? getEmptyNoFocusBorder() : etchedNoFocusBorder);
-
-			if (isSelected) {
-				setBackground(list.getSelectionBackground());
-				setForeground(list.getSelectionForeground());
-			} else {
-				setBackground(list.getBackground());
-				setForeground(list.getForeground());
-			}
-
-			setFont(list.getFont());
-
-			if (value instanceof Icon) {
-				setIcon((Icon) value);
-			} else {
-				setText((value == null) ? "" : value.toString());
-			}
-			
-			return this;
-		}
-
     }
 
 }
