@@ -349,14 +349,8 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
         sortCombo = new JComboBox<SortOrder>(new EnumComboBoxModel<SortOrder>(SortOrder.class));
         sortCombo.setName("sortCombo");
         sortCombo.setSelectedItem(SortOrder.ASCENDING);
-        /*
-BUG:
-	anfangs ist SortOrder.ASCENDING : OK
-	- ändert man in UNSORTED : OK
-	- ändert nam anschliessend in ASCENDING, so wird Comparator nicht berücksichtigt
-         */
         sortCombo.addActionListener(ae -> {
-        	LOG.info("---"+sortCombo.getSelectedItem()+"------"+ae);
+        	LOG.info("---"+sortCombo.getSelectedItem()+"------"+xcb.getComparator());
         	SortOrder so = (SortOrder)sortCombo.getSelectedItem();
         	xcb.setSortOrder(so);
         });
@@ -425,30 +419,6 @@ BUG:
         });
         panel.add(backgroundColor, cc.rc(5, 4));
         
-//        label = new JLabel("Painter:");
-//        panel.add(label, cc.rc(7, 2));
-//        
-//        backgroundPainter = new JComboBox<DisplayInfo<Painter<? super Component>>>(new ListComboBoxModel<DisplayInfo<Painter<? super Component>>>(getPainters()));
-//        backgroundPainter.setRenderer(new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
-//        panel.add(backgroundPainter, cc.rc(7, 4));
-//        
-//        label = new JLabel("Font Style:");
-//        panel.add(label, cc.rc(9, 2));
-//        
-//        ListComboBoxModel<DisplayInfo<Integer>> model = new ListComboBoxModel<DisplayInfo<Integer>>(getFontStyles());
-//        fontStyle = new JComboBox<DisplayInfo<Integer>>(model);
-//        fontStyle.setRenderer(new DefaultListRenderer(DisplayValues.DISPLAY_INFO_DESCRIPTION));
-//        panel.add(fontStyle, cc.rc(9, 4));
-
-//        bind();
-//
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
-//                focusCombo.requestFocusInWindow();
-//            }
-//        });
-
         return panel;
 	}
 
