@@ -31,30 +31,23 @@
 package org.jdesktop.swingx.demos.combobox;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.RowSorter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
 import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.demos.search.Contributor;
@@ -63,7 +56,9 @@ import org.jdesktop.swingx.demos.xlist.ListDemoConstants;
 import org.jdesktop.swingx.icon.ChevronIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.icon.SizingConstants;
-import org.jdesktop.swingx.renderer.ComboBoxContext;
+import org.jdesktop.swingx.renderer.DefaultListRenderer;
+import org.jdesktop.swingx.renderer.IconValue;
+import org.jdesktop.swingx.renderer.StringValue;
 
 import swingset.plaf.LaFUtils;
 
@@ -81,7 +76,7 @@ import swingset.plaf.LaFUtils;
  *   images/Pig.gif
  */
 @SuppressWarnings("serial")
-public class XComboBoxPetsAndContributor extends JPanel {
+public class XComboBoxPetsAndContributor extends JPanel implements ListDemoConstants {
 	
 	/**
 	 * String representation for pets (String) and persons of type Contributors.
@@ -94,7 +89,7 @@ public class XComboBoxPetsAndContributor extends JPanel {
 	 */
 	private static String preferredStringRepresentation(Object o) {
 		if(o==null) return "";
-    	return o instanceof Contributor c ? (c.getFirstName() + " " + c.getLastName() + " (" + c.getMerits() + ")") 
+    	return o instanceof Contributor c ? (c.getLastName() + ", " + c.getFirstName() + " (" + c.getMerits() + ")") 
     			: o.toString();		
 	}
 	
@@ -198,7 +193,16 @@ public class XComboBoxPetsAndContributor extends JPanel {
         petList.setComboBoxIcon(icon, ChevronIcon.of(SizingConstants.XS, SizingConstants.XS));
         
         // setRenderer(ListCellRenderer<? super E> renderer)
-        petList.setRenderer(new MyComboBoxRenderer());
+        StringValue sv = (Object value) -> {
+        	return preferredStringRepresentation(value);
+        };
+		IconValue iv = (Object value) -> {
+			if (value instanceof Contributor c) {
+				return flagIcons[(c.getMerits()) % flagIcons.length];
+			}
+			return IconValue.NULL_ICON;
+		};
+        petList.setRenderer(new DefaultListRenderer<Object>(sv, iv));
 
         //Set up the pet picture.
         picture = new JLabel();
@@ -240,98 +244,6 @@ public class XComboBoxPetsAndContributor extends JPanel {
             System.err.println("Couldn't find file: " + path);
             return null;
         }
-    }
-
-    /**
-     * A subclass of BasicComboBoxRenderer to override the renderer property
-     * - border of the Label : EmptyNoFocusBorder,
-     *          of the List : EtchedBorder
-public class BasicComboBoxRenderer extends JLabel
-implements ListCellRenderer<Object>, Serializable {
-
-
-public class DefaultComboBoxRenderer<E> extends AbstractRenderer implements ListCellRenderer<E> {
-ComponentProvider<JLabel> componentProvider = new LabelProvider();
-DefaultComboBoxRenderer renderer = new DefaultComboBoxRenderer(ComponentProvider<?> componentProvider);
-     */
-//    class MyComboBoxRenderer extends BasicComboBoxRenderer {
-    class MyComboBoxRenderer extends JLabel implements ListCellRenderer<Object>, Serializable, ListDemoConstants {
-
-        static Border etchedNoFocusBorder = BorderFactory.createEtchedBorder();
-
-        ComboBoxContext cc;
-        public MyComboBoxRenderer() {
-            super();
-            cc = new ComboBoxContext();
-        }
-
-        Border getEmptyNoFocusBorder() {
-        	return new EmptyBorder(1, 1, 1, 1);
-        }
-
-        /*
-called with index -1 in 
-- BasicXComboBoxUI.getDisplaySize n times (...false, false) to calculate the dimension
-            	renderer.getListCellRendererComponent(listBox, prototypeValue, -1, false, false)
-                    Component c = renderer.getListCellRendererComponent(listBox, value, -1, false, false);
-
-- BasicXComboBoxUI.getDefaultSize 1x (...false, false) to calculate the dimension
-        Component comp = getDefaultListCellRenderer().getListCellRendererComponent(listBox, " ", -1, false, false);
-
-- getBaseline ??? with (...false, false)
-                Component component = renderer.getListCellRendererComponent(listBox, value, -1, false, false);
-
-- getBaselineResizeBehavior
-                Component component = renderer.getListCellRendererComponent(listBox, value, -1, false, false);
-
-- BasicXComboBoxUI.paintCurrentValue (...isSelected, cellHasFocus)
-            c = renderer.getListCellRendererComponent( listBox,
-                                                       comboBox.getSelectedItem(),
-                                                     -1, ...
-
-im renderer: wird bei index == -1 
-         */
-        @Override
-		public Component getListCellRendererComponent(JList<?> list, Object value, 
-				int index, boolean isSelected, boolean cellHasFocus) {
-
-//            public void installContext(JComboBox<?> component, Object value, int row, int column,
-//                    boolean selected, boolean focused, boolean expanded, boolean leaf) {
-            cc.installContext(XComboBoxPetsAndContributor.this.cb, value, index, -1, isSelected, cellHasFocus, false, false);
-           
-
-    		System.out.println("XComboBoxPetsAndContributor getListCellRendererComponent: list:"+list
-    			+"\n value:"+value+"/"+(value==null?"null":value.getClass())
-    			+"\n index="+index+" , isSelected="+isSelected+" , cellHasFocus="+cellHasFocus
-    			+"\n ListCellRendererComponent hashCode=@"+Integer.toHexString(this.hashCode())
-    				);
-    		
-			setBorder(index == -1 ? getEmptyNoFocusBorder() : etchedNoFocusBorder);
-
-			if(isSelected) {
-				setBackground(list.getSelectionBackground());
-				setForeground(list.getSelectionForeground());
-			} else {
-				setBackground(list.getBackground());
-				setForeground(list.getForeground());
-			}
-
-			setFont(list.getFont());
-
-			if(value instanceof Icon icon) {
-				setIcon(icon);
-			} else {
-				setText(preferredStringRepresentation(value));
-				if(value instanceof Contributor c) {
-					setIcon(flagIcons[(c.getMerits()) % flagIcons.length]);
-				} else {
-					setIcon(null);
-				}
-			}
-			
-			return this;
-		}
-
     }
 
 }
