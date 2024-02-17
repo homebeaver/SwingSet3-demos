@@ -9,12 +9,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -39,8 +41,14 @@ import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
+import org.jdesktop.swingx.demos.search.Contributor;
+import org.jdesktop.swingx.demos.search.Contributors;
+import org.jdesktop.swingx.demos.xlist.ListDemoConstants;
 import org.jdesktop.swingx.icon.EmptyIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
+import org.jdesktop.swingx.renderer.DefaultListRenderer;
+import org.jdesktop.swingx.renderer.IconValue;
+import org.jdesktop.swingx.renderer.StringValue;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -53,10 +61,14 @@ import swingset.plaf.LaFUtils;
 
 /**
  * A demo to compare {@code JComboBox} with {@code JXComboBox}.
- *
+ * <p>
+ * Left: JComboBox with unsorted pet Strings
+ * <p>
+ * Right: JXComboBox with sorted Objects (pet Strings + contributors)
+ * 
  * @author EUGen https://github.com/homebeaver
  */
-public class XComboBoxDemo extends AbstractDemo {
+public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
 
 	private static final long serialVersionUID = 4404504405146801119L;
 	private static final Logger LOG = Logger.getLogger(XComboBoxDemo.class.getName());
@@ -83,12 +95,29 @@ public class XComboBoxDemo extends AbstractDemo {
         });
     }
 
-    private static final String[] petStrings = { "Dog", "Bird", "Cat", "Rabbit", "Pig" }; // unsorted
-    private static final String toolTipText = "Choose an animal name from the combo box to view its picture"; // TODO NLS
+	/**
+	 * String representation for pets (String) and persons of type Contributors.
+	 * 
+	 * We need the String representation in drop-down list to display the value of the items, see MyComboBoxRenderer
+	 * and for sorting the items, see Comparator.
+	 * 
+	 * @param o object item
+	 * @return preferred String representation of o
+	 */
+	private static String preferredStringRepresentation(Object o) {
+		if(o==null) return "";
+    	return o instanceof Contributor c ? (c.getLastName() + ", " + c.getFirstName() + " (" + c.getMerits() + ")") 
+    			: o.toString();		
+	}
 
+    // intentionally unsorted
+    private static final String[] petStrings = { "Tyrannosaurus Rex", "Dog", "Bird", "Cat", "Rabbit", "Pig" };
+    private static final String toolTipText = "Choose an animal name from the combo box to view its picture";
+    
     // abgeschrieben aus MirroringIconDemo
     private static final String DEFAULT = "DEFAULT";
-    private static final Map<String, String> nameToClassname = new HashMap<>(){
+    @SuppressWarnings("serial")
+	private static final Map<String, String> nameToClassname = new HashMap<>(){
         {
             put(DEFAULT,                "org.jdesktop.swingx.icon.EmptyIcon");
             put("arrow",                "org.jdesktop.swingx.icon.ArrowIcon");
@@ -100,7 +129,22 @@ public class XComboBoxDemo extends AbstractDemo {
     private String upperCasePrefix(String iconName) {
     	return Character.isLowerCase(iconName.charAt(0)) ? "FeatheR" : "";
     }
-    Class<?> iconClass = null;
+    private RadianceIcon getRadianceIcon(Class<?> iconClass, int size) {
+    	RadianceIcon icon = null;
+    	try {
+			Method method = iconClass.getMethod("of", int.class, int.class);
+			Object o = method.invoke(null, size, size); // width, height
+			icon = (RadianceIcon)o; // ClassCastException
+		} catch (NoSuchMethodException | SecurityException 
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+			return null;
+		}
+    	return icon;
+    }
+    private Class<?> iconClass = null;
     private Icon getRadianceIcon(String iconName, int size) {
     	int width=size;
     	int height=size;
@@ -113,7 +157,6 @@ public class XComboBoxDemo extends AbstractDemo {
 			try {
 				iconClass = Class.forName(className);  // throws ClassNotFoundException
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			}
@@ -121,45 +164,33 @@ public class XComboBoxDemo extends AbstractDemo {
     	if(iconName==DEFAULT) {
     		return new EmptyIcon(width, height);
     	}
-    	RadianceIcon icon = null;
-    	try {
-			Method method = iconClass.getMethod("of", int.class, int.class);
-			Object o = method.invoke(null, width, height);
-			icon = (RadianceIcon)o; // ClassCastException
-		} catch (NoSuchMethodException | SecurityException 
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-			return null;
-		}
-    	return icon;
+    	return getRadianceIcon(iconClass, size);
     }
 
     JSplitPane splitPane = null;
     JXPanel left, right;
     JComboBox<String> cb;
-    JXComboBox<String> xcb;
+    JXComboBox<Object> xcb;
     JLabel leftpic, rightpic;
 
     private JComponent createLeftPane() {
     	left = new JXPanel(new VerticalLayout(3));
     	left.setName("left");
     	
-        JXTitledSeparator sep = new JXTitledSeparator();
-        sep.setTitle("uneditable JComboBox:");
-        sep.setHorizontalAlignment(SwingConstants.CENTER);
-        left.add(sep);
+        JXTitledSeparator leftSeparator = new JXTitledSeparator();
+        leftSeparator.setTitle(getBundleString("left.separator.title", "uneditable JComboBox:"));
+        leftSeparator.setHorizontalAlignment(SwingConstants.CENTER);
+        left.add(leftSeparator);
         
         cb = new JComboBox<>(petStrings);
-        cb.setToolTipText(toolTipText);
+        cb.setToolTipText(getBundleString("cb.toolTipText", toolTipText));
         cb.addActionListener(ae -> {
         	String petName = (String)cb.getSelectedItem();
         	updateLabel(leftpic, petName);
         });
         left.add(cb, BorderLayout.PAGE_START); // NORTH
         
-        //Set up the picture.
+        //Set up the pet picture.
         leftpic = new JLabel();
         leftpic.setFont(leftpic.getFont().deriveFont(Font.ITALIC));
         leftpic.setHorizontalAlignment(JLabel.CENTER);
@@ -170,24 +201,62 @@ public class XComboBoxDemo extends AbstractDemo {
         left.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         return left;
     }
+    
     private JComponent createRightPane() {
         right = new JXPanel(new VerticalLayout(3));
         right.setName("right");
     	
         JXTitledSeparator sep = new JXTitledSeparator();
-        sep.setTitle("JXComboBox example:");
+        sep.setTitle(getBundleString("right.separator.title", "JXComboBox example:"));
         sep.setHorizontalAlignment(SwingConstants.CENTER);
         right.add(sep);
         
-        xcb = new JXComboBox<>(petStrings);
-        xcb.setToolTipText(toolTipText);
-        xcb.addActionListener(ae -> {
-        	String petName = (String)xcb.getSelectedItem();
-        	updateLabel(rightpic, petName);
+        //Create a sorted combo box with Object items; define a comparator
+        xcb = new JXComboBox<>(petStrings, true);
+        xcb.setComparator(new Comparator<Object>() {
+			@Override
+			public int compare(Object o1, Object o2) {
+				String s1 = preferredStringRepresentation(o1);
+				String s2 = preferredStringRepresentation(o2);
+//            	System.out.println("Comparator compare "+s1+" with "+s2);
+				return s1.compareToIgnoreCase(s2);
+			}        	
         });
-        right.add(xcb, BorderLayout.PAGE_START); // NORTH
+
+        // add some contributors
+        ComboBoxModel<Contributor> m = Contributors.getContributorModel();
+//		LOG.info("Contributor item count = "+m.getSize());
+        for(int c=0; c<3; c++) {
+        	xcb.addItem(m.getElementAt(c));
+        }
         
-        //Set up the picture.
+        // determine selected item (-1 indicates no selection, 0 is the default)
+        if(xcb.getModel().getSize()>0) xcb.setSelectedIndex(1);
+
+        xcb.setToolTipText(getBundleString("cb.toolTipText", toolTipText));
+        xcb.addActionListener(ae -> {
+            Object o = xcb.getSelectedItem();
+            if(o instanceof String petName) {
+                updateLabel(rightpic, petName);
+            } else {
+//                System.out.println("SelectedItem is not a String:"+o);
+                updateLabel(rightpic, o.toString());
+            }
+        });
+        // setRenderer(ListCellRenderer<? super E> renderer)
+        StringValue sv = (Object value) -> {
+        	return preferredStringRepresentation(value);
+        };
+		IconValue iv = (Object value) -> {
+			if (value instanceof Contributor c) {
+				return flagIcons[(c.getMerits()) % flagIcons.length];
+			}
+			return IconValue.NULL_ICON;
+		};
+        xcb.setRenderer(new DefaultListRenderer<Object>(sv, iv));
+        right.add(xcb, BorderLayout.CENTER);
+        
+        //Set up the item picture.
         rightpic = new JLabel();
         rightpic.setFont(rightpic.getFont().deriveFont(Font.ITALIC));
         rightpic.setHorizontalAlignment(JLabel.CENTER);
@@ -202,11 +271,11 @@ public class XComboBoxDemo extends AbstractDemo {
     	String path = "resources/images/"+name+".gif";
         ImageIcon icon = createImageIcon(path);
         picture.setIcon(icon);
-        picture.setToolTipText("A drawing of a " + name.toLowerCase());
+        picture.setToolTipText(getBundleString("picture.toolTipText", "A drawing of a " + name.toLowerCase()));
         if (icon != null) {
         	picture.setText(null);
         } else {
-        	picture.setText("Image not found");
+        	picture.setText(getBundleString("picture.text", "Image not found"));
         }
     }
     /** Returns an ImageIcon, or null if the path was invalid. */
@@ -275,11 +344,17 @@ public class XComboBoxDemo extends AbstractDemo {
         
         CellConstraints cc = new CellConstraints();
         
-        JLabel label = new JLabel("List Sort Order:");
-        panel.add(label, cc.rc(1, 2));
+        JLabel slabel = new JLabel(getBundleString("sortComboLabel.text", "List Sort Order:"));
+        panel.add(slabel, cc.rc(1, 2));
         sortCombo = new JComboBox<SortOrder>(new EnumComboBoxModel<SortOrder>(SortOrder.class));
         sortCombo.setName("sortCombo");
-        sortCombo.setSelectedItem(SortOrder.UNSORTED);
+        sortCombo.setSelectedItem(SortOrder.ASCENDING);
+        /*
+BUG:
+	anfangs ist SortOrder.ASCENDING : OK
+	- ändert man in UNSORTED : OK
+	- ändert nam anschliessend in ASCENDING, so wird Comparator nicht berücksichtigt
+         */
         sortCombo.addActionListener(ae -> {
         	LOG.info("---"+sortCombo.getSelectedItem()+"------"+ae);
         	SortOrder so = (SortOrder)sortCombo.getSelectedItem();
@@ -287,8 +362,8 @@ public class XComboBoxDemo extends AbstractDemo {
         });
         panel.add(sortCombo, cc.rc(1, 4));
         
-        label = new JLabel("Combo box icons:");
-        panel.add(label, cc.rc(3, 2));
+        JLabel ilabel = new JLabel(getBundleString("iconComboLabel.text", "Combo box icons:"));
+        panel.add(ilabel, cc.rc(3, 2));
         iconChooserCombo = new JComboBox<DisplayInfo<Icon>>();
         iconChooserCombo.setName("iconChooserCombo");
         MutableComboBoxModel<DisplayInfo<Icon>> model = new DefaultComboBoxModel<DisplayInfo<Icon>>();
@@ -310,16 +385,12 @@ public class XComboBoxDemo extends AbstractDemo {
 			Icon i = item.getValue();
 			if(i instanceof RadianceIcon ri) {
 				ri.setReflection(true, false); // horizontal spiegeln
-				RadianceIcon icon = null; // nicht gespiegelt
-				try {
-					Method method = ri.getClass().getMethod("of", int.class, int.class);
-					Object o = method.invoke(null, RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
-					icon = (RadianceIcon)o; // ClassCastException
-				} catch (NoSuchMethodException | SecurityException 
-						| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				}
+				RadianceIcon icon = getRadianceIcon(ri.getClass(), RadianceIcon.SMALL_ICON); // nicht gespiegelt
 				LOG.info("iconChooserCombo.SelectedItem=" + item.getDescription() + "\n "+ri + "\n "+icon);
 				xcb.setComboBoxIcon(ri, icon);
+				right.updateUI();
+			} else {
+				xcb.setComboBoxIcon(null);
 				right.updateUI();
 			}
 		});
