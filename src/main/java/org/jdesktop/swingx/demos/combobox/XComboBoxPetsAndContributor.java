@@ -46,6 +46,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
 import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -135,7 +136,17 @@ public class XComboBoxPetsAndContributor extends JPanel implements ListDemoConst
 
         //Create a sorted combo box, select the item at index 4.
         //Indices start at 0, so 4 specifies the long text.
-        JXComboBox<Object> petList = new JXComboBox<>(petStrings, true);
+//        JXComboBox<Object> petList = new JXComboBox<>(petStrings, true);
+// autoCreateRowSorter==true creates a RowSorter with SortOrder.ASCENDING ,
+// I intentionally start without a RowSorter to do some assertions.
+        JXComboBox<Object> petList = new JXComboBox<>(petStrings);
+        // JVM disables assertion validation by default: use -enableassertions to enable!
+        assert !petList.hasRowSorter(); // NO RowSorter present
+        petList.setSortOrder(null); // ==> SortOrder.UNSORTED expected
+        assert petList.hasRowSorter() : "JXComboBox petList expected to have a RowSorter";
+        assert petList.getSortOrder()==SortOrder.UNSORTED;
+        
+        petList.setSortOrder(SortOrder.ASCENDING);
         cb = petList;
         RowSorter<? extends ListModel<Object>> rs = petList.getRowSorter();
         System.out.println("ComboBoxDemo petList:"+petList
@@ -175,7 +186,7 @@ public class XComboBoxPetsAndContributor extends JPanel implements ListDemoConst
         petList.setToolTipText("Choose an animal name from the combo box to view its picture");
         
         // determine selected item (-1 indicates no selection, 0 is the default)
-        if(petList.getModel().getSize()>0) petList.setSelectedIndex(1);
+        if(petList.getModel().getSize()>0) petList.setSelectedIndex(4); // ==> pig
         
         petList.addActionListener(ae -> {
             Object o = petList.getSelectedItem();
