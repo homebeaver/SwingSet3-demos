@@ -132,7 +132,7 @@ public class CustomComboBoxDemo extends JPanel {
 
     /** Returns an ImageIcon, or null if the path was invalid. */
     private ImageIcon createImageIcon(String path) {
-    	URL imgURL = ComboBoxDemo.class.getResource(path);
+    	URL imgURL = XComboBoxPets.class.getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
