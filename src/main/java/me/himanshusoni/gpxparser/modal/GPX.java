@@ -82,7 +82,7 @@ public class GPX extends Extension {
 	/**
 	 * Returns the xmlns of this gpx object
 	 *
-	 * @return A HashMap<String, String> representing the xmlns of a gpx object
+	 * @return A {@code HashMap<String, String>} representing the xmlns of a gpx object
 	 */
         public HashMap<String, String> getXmlns() {
             return xmlns;
@@ -138,7 +138,7 @@ public class GPX extends Extension {
 	 * value.
 	 *
 	 * @param xmlns
-	 *            A HashMap<String, String> representing the xmlns of a gpx file.
+	 *            A {@code HashMap<String, String>} representing the xmlns of a gpx file.
 	 */
         public void setXmlns(HashMap<String, String> xmlns) {
             this.xmlns = xmlns;

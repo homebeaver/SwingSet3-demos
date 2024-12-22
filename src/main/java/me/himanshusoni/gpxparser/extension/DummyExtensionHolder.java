@@ -28,7 +28,7 @@ package me.himanshusoni.gpxparser.extension;
 import org.w3c.dom.NodeList;
 
 /**
- * Simple holder for node elements under <extensions>.
+ * Simple holder for node elements under {@code <extensions>}.
  * 
  * Is used by the default DummyExtensionParser in case no other
  * IExtensionParser are set. Otherwise the extensions would get lost 
