@@ -78,14 +78,14 @@ public class TextAndMnemonicUtils {
     // Resource properties for the mnemonic key defenition
     private static Properties properties = null;
 
-    static {
+    static { // clinit
     	Locale locale = JComponent.getDefaultLocale();
-    	LOG.info("ResourceBundle.getBundle(\""+RESOURCEBUNDLE_BASENAME+"\") ... Locale:"+locale);
+    	LOG.config("ResourceBundle.getBundle(\""+RESOURCEBUNDLE_BASENAME+"\") ... Locale:"+locale);
     	// Parameter: baseName the base name of the resource bundle, a fully qualified class name
     	// es gibt noch die Methode mit Locale:
         //public static final ResourceBundle getBundle(String baseName, Locale locale)
         bundle = ResourceBundle.getBundle(RESOURCEBUNDLE_BASENAME, locale);
-        LOG.info("bundle:"+bundle);
+        LOG.config("bundle:"+bundle);
 /*
 Throws:java.lang.NullPointerException - if baseName is null
 MissingResourceException - if no resource bundle for the specified base name can be found
@@ -101,9 +101,9 @@ MissingResourceException - if no resource bundle for the specified base name can
                 System.out.println("java.io.IOException: Couldn't load swingset.properties");
             }
         } else {
-        	LOG.info("bundle.Locale:"+bundle.getLocale()+"<<<<");
+        	LOG.info("bundle.BaseBundleName:"+bundle.getBaseBundleName()+"<<<<");
         	Enumeration<String> keys = bundle.getKeys();
-        	Iterator<String> iter =keys.asIterator();
+        	Iterator<String> iter = keys.asIterator();
         	int k=0;
         	while(iter.hasNext()) {
         		String key = iter.next();
@@ -113,16 +113,30 @@ MissingResourceException - if no resource bundle for the specified base name can
         	}
         	LOG.info("#properties="+k);
         }
+/* print the Swingset2 props:
         // +"_"+locale.getLanguage()
-//        try {
-//        	LOG.info("properties.load ...");
-//            properties.load(TextAndMnemonicUtils.class.getResourceAsStream("swingset.properties"));
-//        	LOG.fine("properties:"+properties);
-//        } catch (IOException ex) {
-//        	LOG.warning("------------------>"+ex.getMessage());
-//            System.out.println("java.io.IOException: Couldn't load swingset.properties");
-//        }
-    	LOG.info("ENDE properties - OK\n");
+        try {
+        	LOG.info("properties.load ...");
+            properties.load(TextAndMnemonicUtils.class.getResourceAsStream("swingset.properties"));
+        	LOG.info("properties#="+properties.size());
+        	// print sorted:
+        	List<String> keys = new ArrayList<String>();
+        	for(String key : properties.stringPropertyNames()) {
+        		keys.add(key);
+        	}
+        	Collections.sort(keys);
+        	keys.forEach( k -> {
+        		System.out.println("Key : " + k + ", Value : " + properties.getProperty(k));
+        	});
+// not sorted
+//        	properties.forEach(
+//        			(k, v) -> System.out.println("Key : " + k + ", Value : " + v));
+        } catch (IOException ex) {
+        	LOG.warning("------------------>"+ex.getMessage());
+            System.out.println("java.io.IOException: Couldn't load swingset.properties");
+        }
+ */
+    	LOG.info("clinit ENDE properties - OK\n");
     }
 
     /**
