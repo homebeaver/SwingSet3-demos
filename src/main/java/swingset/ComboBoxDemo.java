@@ -31,9 +31,7 @@ import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.decorator.Highlighter;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.decorator.IconHighlighter;
 import org.jdesktop.swingx.demos.svg.FeatheRuser;
 import org.jdesktop.swingx.icon.SizingConstants;
 
@@ -150,14 +148,13 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 		presetsPanel.add(presetCB);
 		presetsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		presetCB.setRenderer(new MyComboBoxRenderer());
-		Highlighter personIcon = new IconHighlighter(
-				FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
-		presetCB.addHighlighter(personIcon);
+		presetCB.setComboBoxIcon(FeatheRuser.of(SizingConstants.SMALL_ICON, SizingConstants.SMALL_ICON));
 		
 		l.setLabelFor(presetCB);
 		super.add(presetsPanel, BorderLayout.NORTH);
         
 		// to hold hairCB, eyesCB, mouthCB
+		@SuppressWarnings("serial")
 		JXPanel sidePanel = new JXPanel() {
             public Dimension getMaximumSize() {
                 return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
@@ -210,8 +207,8 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
 
     JXComboBox<String> presetCB;
 
-    @SuppressWarnings("rawtypes") // parts can be <String, ImageIcon> or reverse or <String, String>
-	private Hashtable parts = new Hashtable();
+//    @SuppressWarnings("rawtypes") // parts can be <String, ImageIcon> or reverse or <String, String>
+	private Hashtable<Object, Object> parts = new Hashtable<Object, Object>();
 
     @Override
 	public JXPanel getControlPane() {
@@ -219,18 +216,19 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
     	return emptyControlPane();
 	}
     
-    private JXPanel getComboPane() {
+    @SuppressWarnings("serial")
+	private JXPanel getComboPane() {
     	if(comboBoxPanel!=null) {
         	LOG.fine("---------------comboBoxPanel:"+comboBoxPanel);
     		return comboBoxPanel;
     	}
 
         // Create a panel to hold buttons
-        comboBoxPanel = new JXPanel() {
-                public Dimension getMaximumSize() {
-                    return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
-                }
-        };
+		comboBoxPanel = new JXPanel() {
+			public Dimension getMaximumSize() {
+				return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
+			}
+		};
         comboBoxPanel.setLayout(new BoxLayout(comboBoxPanel, BoxLayout.Y_AXIS));
 
         comboBoxPanel.add(Box.createRigidArea(VGAP15));
@@ -286,9 +284,15 @@ public class ComboBoxDemo extends AbstractDemo implements ActionListener {
         // Indicate that the hair, eyes and mouth combo boxes are controllers for the face panel.
         AccessibleRelation controllerForRelation =
             new AccessibleRelation(AccessibleRelation.CONTROLLER_FOR_PROPERTY, this);
-        hairCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
-        eyesCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
-        mouthCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
+        try {
+            hairCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
+            eyesCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
+            mouthCB.getAccessibleContext().getAccessibleRelationSet().add(controllerForRelation);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	LOG.warning(e.toString());
+        } finally {
+        }
 
         // load up the face parts
         addFace("brent",     getBundleString("brent"));
