@@ -41,13 +41,14 @@ import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
+import org.jdesktop.swingx.JXComboBox;
 
 import swingset.plaf.LaFUtils;
 
@@ -111,7 +112,7 @@ public class ComboBoxDemo2 extends JPanel {
         JLabel patternLabel1 = new JLabel("Enter the pattern string or");
         JLabel patternLabel2 = new JLabel("select one from the list:");
 
-        JComboBox<String> patternList = new JComboBox<>(patternExamples);
+        JXComboBox<String> patternList = new JXComboBox<>(patternExamples);
         patternList.setEditable(true);
         patternList.addActionListener(ae -> {
             String newSelection = (String)patternList.getSelectedItem();
