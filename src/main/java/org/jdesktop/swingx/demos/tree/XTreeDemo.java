@@ -174,13 +174,12 @@ public class XTreeDemo extends AbstractDemo {
     		// javax.swing.plaf.metal.MetalTreeUI.LINE_STYLE : the property name is private
     		Object lineStyle = getClientProperty(LINE_STYLE);
     		if(lineStyle==null) {
-        		LOG.warning("JTree.lineStyle="+lineStyle); // warum ist es null? es sollte "Angled" sein
+    			// warum ist es null? es sollte "Angled" sein
+        		LOG.warning("JTree.lineStyle="+lineStyle + " will be set to 'Horizontal'"); 
         		// null oder LEG_LINE_STYLE_STRING ist gleichwertig!! 
         		// siehe MetalTreeUI#144: lineStyle = LEG_LINE_STYLE; // default case
         		putClientProperty(LINE_STYLE, "Horizontal"); // macht es einen Unterschied? JA
-        		LOG.info("JTree.lineStyle="+
-        				getClientProperty(LINE_STYLE) + "\n"
-        		);
+        		LOG.fine("JTree.lineStyle=" + getClientProperty(LINE_STYLE) + "\n");
     		}
     		setRolloverEnabled(true); // to show a "live" rollover behaviour
     		setCellRenderer(musicCellRenderer()); 		
@@ -191,7 +190,8 @@ public class XTreeDemo extends AbstractDemo {
         }
         
         public void setEditable(boolean editable) {
-        	LOG.info("setEditable to "+editable+(isLargeModel()?", tree isLargeModel":"")+", cellEditor:"+cellEditor);
+        	LOG.config("setEditable to "+editable+(isLargeModel()?", tree isLargeModel":"")+", cellEditor:"+cellEditor);
+        	// cellEditor:org.jdesktop.swingx.tree.DefaultXTreeCellEditor
         	super.setEditable(editable);
         }
         
