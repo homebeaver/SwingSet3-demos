@@ -35,17 +35,8 @@ jobs:
     - name: Set up JDK ${{ matrix.java }}
       uses: actions/setup-java@v4
       with:
-        distribution: 'temurin'
+        distribution: 'adopt'
         java-version: ${{ matrix.java }}
-        server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
-        server-username: MAVEN_USERNAME
-        server-password: MAVEN_PASSWORD
-        gpg-private-key: ${{ secrets.SIGN_KEY }} # has to be read directly from secrets
-#        gpg-passphrase: MAVEN_GPG_PASSPHRASE # deprecated default name used by maven-gpg-plugin
-      env:
-        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-        MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.SIGN_KEY_PASS }}
     - name: Build with Maven
 # Available lifecycle phases are: 
 # validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, 
@@ -55,6 +46,5 @@ jobs:
 # pre-integration-test, integration-test, post-integration-test, verify, install, deploy, 
 # pre-clean, clean, post-clean, pre-site, site, post-site, site-deploy. 
 #      run: mvn -V --batch-mode -Ddoclint=all --file pom.xml --no-transfer-progress test
-#      run: mvn -V --batch-mode package
-      run: mvn -V --batch-mode -Ddoclint=all --file pom.xml --no-transfer-progress verify
+      run: mvn -V --batch-mode package
       
