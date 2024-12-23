@@ -37,6 +37,8 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: ${{ matrix.java }}
+        server-username: MAVEN_USERNAME
+        server-password: MAVEN_PASSWORD
         gpg-private-key: ${{ secrets.SIGN_KEY }} # has to be read directly from secrets
         gpg-passphrase: MAVEN_GPG_PASSPHRASE # deprecated default name used by maven-gpg-plugin
       env:
