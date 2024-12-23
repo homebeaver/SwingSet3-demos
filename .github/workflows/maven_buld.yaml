@@ -37,6 +37,9 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: ${{ matrix.java }}
+        gpg-private-key: ${{ secrets.SIGN_KEY }} # has to be read directly from secrets
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.SIGN_KEY_PASS }}
     - name: Build with Maven
 # Available lifecycle phases are: 
 # validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, 
@@ -48,3 +51,4 @@ jobs:
 #      run: mvn -V --batch-mode -Ddoclint=all --file pom.xml --no-transfer-progress test
 #      run: mvn -V --batch-mode package
       run: mvn -V --batch-mode -Ddoclint=all --file pom.xml --no-transfer-progress verify
+      
