@@ -21,8 +21,15 @@ jobs:
           gpg-private-key: ${{ secrets.SIGN_KEY }} # has to be read directly from secrets
 #          gpg-passphrase: SIGN_KEY_PASS # deprecated default name used by maven-gpg-plugin
       - name: Publish package
-        run: mvn --batch-mode deploy
-#        run: mvn -V --errors --show-version --batch-mode --no-transfer-progress -Ddoclint=all deploy
+# Available lifecycle phases are: 
+# validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, 
+# process-classes, generate-test-sources, process-test-sources, generate-test-resources, 
+# process-test-resources, test-compile, process-test-classes, test, 
+# prepare-package, package, 
+# pre-integration-test, integration-test, post-integration-test, verify, install, deploy, 
+# pre-clean, clean, post-clean, pre-site, site, post-site, site-deploy. 
+#        run: mvn --batch-mode deploy
+        run: mvn -V --errors --show-version --batch-mode --no-transfer-progress -Ddoclint=all deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
