@@ -40,6 +40,8 @@ jobs:
         gpg-private-key: ${{ secrets.SIGN_KEY }} # has to be read directly from secrets
  #      gpg-passphrase: SIGN_KEY_PASS # deprecated default name used by maven-gpg-plugin
       env:
+        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.SIGN_KEY_PASS }}
     - name: Build with Maven
 # Available lifecycle phases are: 
