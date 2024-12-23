@@ -38,7 +38,7 @@ jobs:
         distribution: 'adopt'
         java-version: ${{ matrix.java }}
         gpg-private-key: ${{ secrets.SIGN_KEY }} # has to be read directly from secrets
- #      gpg-passphrase: SIGN_KEY_PASS # deprecated default name used by maven-gpg-plugin
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE # deprecated default name used by maven-gpg-plugin
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
