@@ -180,7 +180,7 @@
         </executions>
       </plugin>
  
-<!-- see https://maven.apache.org/plugins/maven-gpg-plugin/usage.html -->
+<!-- see https://maven.apache.org/plugins/maven-gpg-plugin/usage.html
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
@@ -192,6 +192,26 @@
               <goal>sign</goal>
             </goals>
           </execution>
+        </executions>
+      </plugin>
+  -->
+<!-- or use simplify4u : https://www.simplify4u.org/sign-maven-plugin/
+Key configuration can be provided by environment variables: SIGN_KEY, SIGN_KEY_ID, SIGN_KEY_PASS
+ -->
+      <plugin>
+        <groupId>org.simplify4u.plugins</groupId>
+        <artifactId>sign-maven-plugin</artifactId>
+        <version>1.1.0</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>sign</goal>
+                </goals>
+				<configuration>
+					<!-- the same id as in ~/.m2/settings.xml -->
+					<serverId>sign-key-id</serverId>
+				</configuration>
+            </execution>
         </executions>
       </plugin>
 
