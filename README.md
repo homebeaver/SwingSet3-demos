@@ -26,6 +26,8 @@ Use it to try out different components and features.
 ComboBox Demo                         | MapKitDemo
 ![FadeOut](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/JXPaneAnimatedFadeOut.PNG) | ![JXPaneAnimatedFadeIn](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/JXPaneAnimatedFadeIn.PNG)
 JXPane Animated FadeOut               | JXPane Animated FadeIn
+![JXLoginToDB-en](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/JXLoginToDB-en.png) | ![JXLoginPane](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/JXLoginPane.png)
+JXLoginPane ...  | ... with Banner and Text
 
 The jar was
 - Created-By: Apache Maven 3.8.1
