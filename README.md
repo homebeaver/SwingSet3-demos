@@ -24,10 +24,8 @@ Use it to try out different components and features.
 ![ComboBoxDemo](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/ComboBoxDemo.png) | ![SwingSet-demos-v1.7.5-JXMapKit](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/MapKitDemo.png)
 ------------------------------------- | -------------
 ComboBox Demo                         | MapKitDemo
-
-
-
-
+![FadeOut](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/JXPaneAnimatedFadeOut.PNG) | ![JXPaneAnimatedFadeIn](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/JXPaneAnimatedFadeIn.PNG)
+JXPane Animated FadeOut               | JXPane Animated FadeIn
 
 The jar was
 - Created-By: Apache Maven 3.8.1
