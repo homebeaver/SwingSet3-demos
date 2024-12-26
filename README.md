@@ -1,9 +1,9 @@
 In Summer 2005 [SwingSet2 demo](https://github.com/homebeaver/SwingSet2-demos/releases/tag/1.0.0) has been  released for [J2SE 5.0](https://en.wikipedia.org/wiki/Java_version_history#J2SE_5.0).
 
-original 2005 and updated sun Splash: | SwingSet3 Splash:
------------- | -------------
+original 2005 and updated sun Splash: | SwingSet3 Splash and Demo:
+------------------------------------- | -------------
 ![SplashEpisode2](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/SplashEpisode2.jpg) ![splash.png](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/splash.png)| ![home_notext.png](src/main/resources/org/jdesktop/swingxset/resources/images/home_notext.png)
-
+![SwingSet-demos-v1.7.4-JXMonthView](src/main/resources/org/jdesktop/swingxset/resources/images/SwingSet-demos-v1.7.4-JXMonthView.PNG)
 
 
 This is a rewritten Version of SwingSet2 and SwingSet3 demos. In SwingSet2 there are 16 classes demonstrating 
@@ -21,9 +21,13 @@ Use it to try out different components and features.
 
 ```
 
-![SwingSet-demos-v1.7.4-JXMonthView](src/main/resources/org/jdesktop/swingxset/resources/images/SwingSet-demos-v1.7.4-JXMonthView.PNG)
+![ComboBoxDemo](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/ComboBoxDemo.png) | ![SwingSet-demos-v1.7.5-JXMapKit](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/MapKitDemo.png)
+------------------------------------- | -------------
+ComboBox Demo                         | MapKitDemo
 
-![SwingSet-demos-v1.7.5-JXMapKit](https://raw.githubusercontent.com/wiki/homebeaver/SwingSet/image/MapKitDemo.png)
+
+
+
 
 The jar was
 - Created-By: Apache Maven 3.8.1
