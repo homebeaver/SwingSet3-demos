@@ -5,6 +5,11 @@ original 2005 and updated sun Splash: | SwingSet3 Splash and Demo:
 ![SplashEpisode2](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/SplashEpisode2.jpg) ![splash.png](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/splash.png)| ![home_notext.png](src/main/resources/org/jdesktop/swingxset/resources/images/home_notext.png)
 ![SwingSet-demos-v1.7.4-JXMonthView](src/main/resources/org/jdesktop/swingxset/resources/images/SwingSet-demos-v1.7.4-JXMonthView.PNG)
 
+original 2005 and updated sun Splash: | SwingSet3 Splash and Demo:
+------------------------------------- | -------------
+![SplashEpisode2](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/SplashEpisode2.jpg) | ![home_notext.png](src/main/resources/org/jdesktop/swingxset/resources/images/home_notext.png)
+![splash.png](https://raw.githubusercontent.com/homebeaver/SwingSet2-demos/master/src/main/resources/swingset/images/splash.png) |
+![SwingSet-demos-v1.7.4-JXMonthView](src/main/resources/org/jdesktop/swingxset/resources/images/SwingSet-demos-v1.7.4-JXMonthView.PNG)
 
 This is a rewritten Version of SwingSet2 and SwingSet3 demos. In SwingSet2 there are 16 classes demonstrating 
 the abilities of the <a href="https://en.wikipedia.org/wiki/Swing_(Java)">Swing User Interface</a> 
