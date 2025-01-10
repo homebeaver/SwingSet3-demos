@@ -21,7 +21,7 @@
   
   <name>swingset3 demos</name>
   <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 and swingx aka swingset3</description>
-  <version>1.7.7</version>
+  <version>1.7.8-SNAPSHOT</version>
   
   <inceptionYear>2005</inceptionYear>
 
@@ -93,9 +93,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-        	<release>16</release>
-            <source>8</source>
-            <target>8</target>
+        	<release>17</release>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
             <encoding>${project.build.sourceEncoding}</encoding>
@@ -276,48 +274,43 @@ Key configuration can be provided by environment variables: SIGN_KEY, SIGN_KEY_I
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-core</artifactId>
-			<version>1.7.7</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-action</artifactId>
-			<version>1.7.7</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-autocomplete</artifactId>
-			<version>1.7.7</version>
-		</dependency>
-		<dependency>
-			<groupId>io.github.homebeaver</groupId>
-			<artifactId>swingx-plaf</artifactId>
-			<version>1.7.7</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-painters</artifactId>
-			<version>1.7.7</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-mapviewer</artifactId>
-			<version>1.7.7</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-graphics</artifactId>
-			<version>1.7.7</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-common</artifactId>
-			<version>1.7.7</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.homebeaver</groupId>
 			<artifactId>swingx-testsupport</artifactId>
-			<version>1.7.7</version>
-			<scope>provided</scope>
+			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.jgoodies/forms -->
