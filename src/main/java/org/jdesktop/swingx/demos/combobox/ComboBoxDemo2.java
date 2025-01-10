@@ -37,6 +37,7 @@ import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -49,6 +50,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.jdesktop.swingx.JXComboBox;
+import org.jdesktop.swingx.renderer.DefaultListRenderer;
+import org.jdesktop.swingx.renderer.StringValue;
 
 import swingset.plaf.LaFUtils;
 
@@ -59,6 +62,8 @@ import swingset.plaf.LaFUtils;
 @SuppressWarnings("serial")
 public class ComboBoxDemo2 extends JPanel {
 	
+    private static final Logger LOG = Logger.getLogger(ComboBoxDemo2.class.getName());
+
     public static void main(String[] args) {
     	if(args.length>0) LaFUtils.setLAFandTheme(Arrays.asList(args));
         //Schedule a job for the event-dispatching thread:
@@ -115,10 +120,16 @@ public class ComboBoxDemo2 extends JPanel {
         JXComboBox<String> patternList = new JXComboBox<>(patternExamples);
         patternList.setEditable(true);
         patternList.addActionListener(ae -> {
+        	LOG.fine("Action Event:"+ae);
             String newSelection = (String)patternList.getSelectedItem();
             currentPattern = newSelection;
+        	LOG.info("Action : pattern chenged to \""+newSelection+"\"");
             reformat();
         });
+        StringValue sv = (Object value) -> {
+        	return preferredStringRepresentation(value);
+        };
+        patternList.setRenderer(new DefaultListRenderer<Object>(sv));
 
         //Create the UI for displaying result.
         JLabel resultLabel = new JLabel("Current Date/Time",
@@ -167,5 +178,10 @@ public class ComboBoxDemo2 extends JPanel {
             result.setText("Error: " + iae.getMessage());
         }
     }
+
+	private static String preferredStringRepresentation(Object o) {
+		if(o==null) return "";
+    	return o.toString();		
+	}
 
 }
