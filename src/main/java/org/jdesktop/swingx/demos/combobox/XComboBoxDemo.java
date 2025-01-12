@@ -106,8 +106,12 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
 	 */
 	private static String preferredStringRepresentation(Object o) {
 		if(o==null) return "";
-    	return o instanceof Contributor c ? (c.getLastName() + ", " + c.getFirstName() + " (" + c.getMerits() + ")") 
-    			: o.toString();		
+		// to be used in JXComboBox<Object> xcb
+		if(o instanceof Contributor c) {
+			return c.getLastName() + ", " + c.getFirstName() + " (" + c.getMerits() + ")";
+		}
+		// to be used in controller JXComboBox<DisplayInfo<Icon>> iconChooserCombo
+    	return o.toString();		
 	}
 
     // intentionally unsorted
@@ -153,7 +157,7 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
         	className = "org.jdesktop.swingx.demos.svg."+upperCasePrefix(iconName)+iconName;
     	}
     	if(iconClass==null || !className.equals(iconClass.getName())) {
-    		LOG.info("load class "+className);
+    		LOG.config("load class "+className);
 			try {
 				iconClass = Class.forName(className);  // throws ClassNotFoundException
 			} catch (ClassNotFoundException e) {
@@ -239,7 +243,6 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
             if(o instanceof String petName) {
                 updateLabel(rightpic, petName);
             } else {
-//                System.out.println("SelectedItem is not a String:"+o);
                 updateLabel(rightpic, o.toString());
             }
         });
@@ -311,7 +314,7 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
 
 	// Controller:
     private JComboBox<SortOrder> sortCombo;
-    private JComboBox<DisplayInfo<Icon>> iconChooserCombo;
+    private JXComboBox<DisplayInfo<Icon>> iconChooserCombo;
 
     @Override
 	public JXPanel getControlPane() {
@@ -346,11 +349,11 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
         
         JLabel slabel = new JLabel(getBundleString("sortComboLabel.text", "List Sort Order:"));
         panel.add(slabel, cc.rc(1, 2));
-        sortCombo = new JComboBox<SortOrder>(new EnumComboBoxModel<SortOrder>(SortOrder.class));
+        sortCombo = new JXComboBox<SortOrder>(new EnumComboBoxModel<SortOrder>(SortOrder.class));
         sortCombo.setName("sortCombo");
         sortCombo.setSelectedItem(SortOrder.ASCENDING);
         sortCombo.addActionListener(ae -> {
-        	LOG.info("---"+sortCombo.getSelectedItem()+"------"+xcb.getComparator());
+        	LOG.config("---"+sortCombo.getSelectedItem()+"------"+xcb.getComparator());
         	SortOrder so = (SortOrder)sortCombo.getSelectedItem();
         	xcb.setSortOrder(so);
         });
@@ -358,8 +361,8 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
         
         JLabel ilabel = new JLabel(getBundleString("iconComboLabel.text", "Combo box icons:"));
         panel.add(ilabel, cc.rc(3, 2));
-        iconChooserCombo = new JComboBox<DisplayInfo<Icon>>();
-        iconChooserCombo.setName("iconChooserCombo");
+        
+        // iconChooserCombo
         MutableComboBoxModel<DisplayInfo<Icon>> model = new DefaultComboBoxModel<DisplayInfo<Icon>>();
         for (int i = 0; i < iconNames.length; i++) {
         	Icon ri = getRadianceIcon(iconNames[i], RadianceIcon.SMALL_ICON);
@@ -369,10 +372,25 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
                 model.addElement(new DisplayInfo<Icon>(iconNames[i], ri));
         	}
         }
-        iconChooserCombo.setModel(model);
-//        ComboBoxRenderer renderer = new ComboBoxRenderer();
-//        renderer.setPreferredSize(new Dimension(200, RadianceIcon.SMALL_ICON*3));
-//        iconChooserCombo.setRenderer(renderer);
+        iconChooserCombo = new JXComboBox<DisplayInfo<Icon>>(model);
+        iconChooserCombo.setName("iconChooserCombo");
+        /*
+         * Renderer for iconNames is DefaultListRenderer with
+         * StingValue sv the key of nameToClassname
+         * IconValue iv the value of nameToClassname
+         */
+        StringValue sv = (Object value) -> {
+        	return preferredStringRepresentation(value);
+        };
+		IconValue iv = (Object value) -> {
+			if (value instanceof DisplayInfo<?> di) {
+				Icon i = (Icon) di.getValue();
+				return i;
+			}
+			return IconValue.NULL_ICON;
+		};
+        iconChooserCombo.setRenderer(new DefaultListRenderer<Object>(sv, iv));
+        
 		iconChooserCombo.addActionListener(ae -> {
 			@SuppressWarnings("unchecked")
 			DisplayInfo<Icon> item = (DisplayInfo<Icon>)iconChooserCombo.getSelectedItem();
@@ -380,7 +398,7 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
 			if(i instanceof RadianceIcon ri) {
 				ri.setReflection(true, false); // horizontal spiegeln
 				RadianceIcon icon = getRadianceIcon(ri.getClass(), RadianceIcon.SMALL_ICON); // nicht gespiegelt
-				LOG.info("iconChooserCombo.SelectedItem=" + item.getDescription() + "\n "+ri + "\n "+icon);
+				LOG.config("iconChooserCombo.SelectedItem=" + item.getDescription() + "\n "+ri + "\n "+icon);
 				xcb.setComboBoxIcon(ri, icon);
 				right.updateUI();
 			} else {
@@ -388,16 +406,13 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
 				right.updateUI();
 			}
 		});
-//		iconChooserCombo.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
-//		controls.add(iconChooserCombo);
-//		selectLabel.setLabelFor(iconChooserCombo);
 		panel.add(iconChooserCombo, cc.rc(3, 4));
 
-        JButton foregroundColor = new JButton(new AbstractAction("Select Foreground") {
+        @SuppressWarnings("serial")
+		JButton foregroundColor = new JButton(new AbstractAction("Select Foreground") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Color color = JColorChooser.showDialog(XComboBoxDemo.this, "Foreground Color", cb.getForeground());
-                
+                Color color = JColorChooser.showDialog(XComboBoxDemo.this, "Foreground Color", cb.getForeground());              
                 if (color != null) {
                 	cb.setForeground(color);
                 	xcb.setForeground(color);
@@ -406,11 +421,11 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
         });
         panel.add(foregroundColor, cc.rc(5, 2));
         
-        JButton backgroundColor = new JButton(new AbstractAction("Select Background") {
+        @SuppressWarnings("serial")
+		JButton backgroundColor = new JButton(new AbstractAction("Select Background") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Color color = JColorChooser.showDialog(XComboBoxDemo.this, "Background Color", cb.getBackground());
-                
+                Color color = JColorChooser.showDialog(XComboBoxDemo.this, "Background Color", cb.getBackground());             
                 if (color != null) {
                 	cb.setBackground(color);
                 	xcb.setBackground(color);
