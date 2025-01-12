@@ -126,6 +126,10 @@ public class ComboBoxDemo2 extends JPanel {
         	LOG.info("Action : pattern chenged to \""+newSelection+"\"");
             reformat();
         });
+        // ab v1.7.8 ist setRenderer für JXComboBox<String> nicht notwendig, 
+        // denn für Strings wird der Renderer in JXComboBox#init gesetzt
+//        Jan. 12, 2025 3:12:58 PM org.jdesktop.swingx.JXComboBox init
+//        INFORMATION: set DefaultListRenderer for class java.lang.String StringValue
         StringValue sv = (Object value) -> {
         	return preferredStringRepresentation(value);
         };
