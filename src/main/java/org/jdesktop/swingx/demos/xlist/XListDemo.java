@@ -417,8 +417,16 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
         currentRow += 2;
 
         comparatorCombo = new JXComboBox<DisplayInfo<Comparator<?>>>();
-        comparatorCombo.setName("comparatorCombo");
         comparatorCombo.setModel(createComparators());
+        comparatorCombo.setName("comparatorCombo");
+        /*
+         * setRenderer, damit die Klappliste des Controllers korrekt ausklappt
+         */
+        StringValue sv = (Object value) -> {
+    		if(value==null) return "";
+        	return value.toString();		
+        };
+        comparatorCombo.setRenderer(new DefaultListRenderer<Object>(sv));
 
 		// set default Comparator, by display string:
         DisplayInfo<Comparator<?>> defaultComp = (DisplayInfo<Comparator<?>> )comparatorCombo.getItemAt(0);
@@ -482,9 +490,13 @@ public class XListDemo extends AbstractDemo implements ListDemoConstants {
 		builder.add(rolloverEnabledBox, cc.xywh(labelColumn, currentRow, 3, 1));
 		currentRow += 2;
 
-		highlighterCombo = new JXComboBox<DisplayInfo<Highlighter>>(createRolloverHighlighters());
+		highlighterCombo = new JXComboBox<>(createRolloverHighlighters());
 		highlighterCombo.setName("highlighterCombo");
-		highlighterCombo.setModel(createRolloverHighlighters());
+        StringValue svh = (Object value) -> {
+    		if(value==null) return "";
+        	return value.toString();		
+        };
+        highlighterCombo.setRenderer(new DefaultListRenderer<Object>(svh));
 		
 		// set default Highlighter:
 		DisplayInfo<Highlighter> defaultHl = (DisplayInfo<Highlighter>)highlighterCombo.getItemAt(0);
