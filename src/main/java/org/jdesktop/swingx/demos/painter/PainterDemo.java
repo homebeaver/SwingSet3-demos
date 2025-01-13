@@ -302,9 +302,9 @@ public class PainterDemo extends AbstractDemo {
 				Object uo = node.getUserObject();
 				LOG.info("selected Leaf user Object:"+uo);
 				DisplayInfo<?> di = (DisplayInfo<?>)uo;
-				if(di.getValue()!=null && di.getValue() instanceof Painter) {
-					LOG.fine("painter:"+di.getValue());
-					Painter<Component> painter = (Painter<Component>)di.getValue();
+				Object v = di.getValue();
+				if(v instanceof Painter<?> painter) {
+					LOG.fine("painter:"+painter);
 					bind(painter);
 				}
 			} else {
@@ -315,7 +315,8 @@ public class PainterDemo extends AbstractDemo {
         return panel;
 	}
 
-    private void bind(Painter<Component> painter) {
+    @SuppressWarnings("unchecked")
+	private void bind(Painter<?> painter) {
 		painterControl = new PainterControl();
 		painterControl.setPainter(painter);
 		bindSelection(painterDisplay, painterControl);
@@ -325,8 +326,8 @@ public class PainterDemo extends AbstractDemo {
         bindEnabled("baseEnabled", baseSeparator, interpolationBox, visibleBox, antialiasBox);
         // bind collapsed
         bindInversCollapsed("baseEnabled", layoutPainterControlPanel, basePainterControlPanel, areaPainterControlPanel);
-        
-		painterDisplay.setBackgroundPainter(painter);   	
+        // the cast is safe
+		painterDisplay.setBackgroundPainter((Painter<? super JComponent>)painter);   	
     }
     
     private void bindSelection(JXPanel backgroundPainter, PainterControl painter) {
@@ -1180,6 +1181,12 @@ public class PainterDemo extends AbstractDemo {
         int currentRow = 3;
         interpolationBox = new JXComboBox<Interpolation>();
         interpolationBox.setName("interpolationBox");
+        StringValue sv = (Object o) -> {
+    		if(o==null) return "";
+    		if(o instanceof Interpolation i) return i.name();
+        	return o.toString();		
+        };
+        interpolationBox.setRenderer(new DefaultListRenderer<Object>(sv));
 
         JLabel interpolationLabel = builder.addLabel("", cl.xywh(labelColumn, currentRow, 1, 1),
                 interpolationBox, cc.xywh(widgetColumn, currentRow, 1, 1));
@@ -1246,6 +1253,14 @@ public class PainterDemo extends AbstractDemo {
         
         horizontalAlignmentBox = new JXComboBox<HorizontalAlignment>();     
         verticalAlignmentBox = new JXComboBox<VerticalAlignment>();
+        StringValue sv = (Object o) -> {
+    		if(o==null) return "";
+    		if(o instanceof HorizontalAlignment i) return i.name();
+    		if(o instanceof VerticalAlignment i) return i.name();
+        	return o.toString();		
+        };
+        horizontalAlignmentBox.setRenderer(new DefaultListRenderer<Object>(sv));
+        verticalAlignmentBox.setRenderer(new DefaultListRenderer<Object>(sv));
 
         insetSlider = new JSlider(0, 100, 0);
         insetSlider.setPaintLabels(true);
@@ -1319,6 +1334,15 @@ public class PainterDemo extends AbstractDemo {
         int widgetColumn = labelColumn + 2;
         int currentRow = 3;
         styleBox = new JXComboBox<Style>();
+        StringValue sv = (Object o) -> {
+    		if(o==null) return "";
+    		// enum Style
+    		if(o instanceof Style i) return i.name();
+    		// for effectBox
+    		if(o instanceof DisplayInfo<?> i) return i.toString();
+        	return o.toString();		
+        };
+        styleBox.setRenderer(new DefaultListRenderer<Object>(sv));
         styleBox.setName("styleBox");
 
         JLabel styleBoxLabel = builder.addLabel("", cl.xywh(labelColumn, currentRow, 1, 1),
@@ -1329,6 +1353,7 @@ public class PainterDemo extends AbstractDemo {
         LabelHandler.bindLabelFor(styleBoxLabel, styleBox);
         
         effectBox = new JXComboBox<DisplayInfo<AreaEffect>>();
+        effectBox.setRenderer(new DefaultListRenderer<Object>(sv));
         effectBox.setName("areaEffectBox");
         
         JLabel effectLabel = builder.addLabel("", cl.xywh(labelColumn, currentRow, 1, 1),
