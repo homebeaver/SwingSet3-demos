@@ -22,7 +22,7 @@ jobs:
 #            experimental: true        
     strategy:
       matrix:
-        java: [ 16, 17, 21 ]
+        java: [ 17, 21 ]
         
     steps:
     - uses: actions/checkout@v4
