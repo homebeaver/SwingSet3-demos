@@ -63,6 +63,10 @@ import org.jdesktop.swingx.binding.DisplayInfoArrayConverter;
 import org.jdesktop.swingx.binding.DisplayInfoConverter;
 import org.jdesktop.swingx.binding.LabelHandler;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
+import org.jdesktop.swingx.demos.svg.FeatheRarrowInCircle;
+import org.jdesktop.swingx.demos.svg.FeatheRminus_circle;
+import org.jdesktop.swingx.icon.JXIcon;
+import org.jdesktop.swingx.icon.RadianceIcon;
 import org.jdesktop.swingx.painter.AbstractAreaPainter;
 import org.jdesktop.swingx.painter.AbstractAreaPainter.Style;
 import org.jdesktop.swingx.painter.AbstractLayoutPainter;
@@ -89,6 +93,7 @@ import org.jdesktop.swingx.painter.effects.NeonBorderEffect;
 import org.jdesktop.swingx.painter.effects.ShadowPathEffect;
 import org.jdesktop.swingx.renderer.DefaultListRenderer;
 import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
+import org.jdesktop.swingx.renderer.IconValue;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.util.PaintUtils;
 import org.jdesktop.swingx.util.ShapeUtils;
@@ -1259,8 +1264,58 @@ public class PainterDemo extends AbstractDemo {
     		if(o instanceof VerticalAlignment i) return i.name();
         	return o.toString();		
         };
-        horizontalAlignmentBox.setRenderer(new DefaultListRenderer<Object>(sv));
-        verticalAlignmentBox.setRenderer(new DefaultListRenderer<Object>(sv));
+		IconValue iv = (Object value) -> {
+			/* Welche icons sehen besser aus?
+			 * ArrowIcon in verschiedene Richtungen gedreht,
+			 * ( was nimmt man für CENTER ? )
+			 * oder 
+			 * FeatheRalign_left , FeatheRalign_center , right == left gedreht/gespiegelt
+			 * ( für VerticalAlignment sieht das komisch aus )
+			 * 
+			 * Habe mich für FeatheRarrowInCircle und FeatheRminus_circle entschieden
+			 */
+			if (value instanceof HorizontalAlignment ha) {
+				switch (ha) {
+	            case LEFT: 
+//	            	return FeatheRalign_left.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+	            	RadianceIcon ae = FeatheRarrowInCircle.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+	            	ae.setRotation(JXIcon.WEST);
+	            	return ae;
+	            case CENTER: 
+//	            	return FeatheRalign_center.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+	            	RadianceIcon ac = FeatheRminus_circle.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+	            	ac.setRotation(JXIcon.EAST);
+	            	return ac;
+	            case RIGHT: 
+//	            	align right <- FeatheRalign_left um 180° drehen :
+//	            	RadianceIcon ri = FeatheRalign_left.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+//	            	ri.setRotation(JXIcon.SOUTH);
+//	            	return ri;
+	            	RadianceIcon aw = FeatheRarrowInCircle.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+	            	aw.setRotation(JXIcon.EAST);
+	            	return aw;
+	            default:
+	    			return IconValue.NULL_ICON;
+				}
+			}
+			if (value instanceof VerticalAlignment ha) {
+				switch (ha) {
+	            case TOP: 
+	            	return FeatheRarrowInCircle.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+	            case CENTER: 
+	            	return FeatheRminus_circle.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+	            case BOTTOM: 
+	            	RadianceIcon as = FeatheRarrowInCircle.of(RadianceIcon.SMALL_ICON, RadianceIcon.SMALL_ICON);
+	            	as.setRotation(JXIcon.SOUTH);
+	            	return as;
+	            default:
+	    			return IconValue.NULL_ICON;
+				}
+			}
+			return IconValue.NULL_ICON;
+		};
+        horizontalAlignmentBox.setRenderer(new DefaultListRenderer<Object>(sv, iv));
+        verticalAlignmentBox.setRenderer(new DefaultListRenderer<Object>(sv, iv));
 
         insetSlider = new JSlider(0, 100, 0);
         insetSlider.setPaintLabels(true);
