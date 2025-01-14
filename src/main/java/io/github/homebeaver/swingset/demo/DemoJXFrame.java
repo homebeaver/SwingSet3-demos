@@ -109,8 +109,7 @@ public class DemoJXFrame extends JXFrame {
         // dieser key gilt nicht für Frame Titel, das macht:
 		Font font = UIManager.getFont(UI_KEY_FRAME_TITLEFONT);
 		UIManager.put(UI_KEY_FRAME_TITLEFONT, new Font(font.getName(), Font.PLAIN, font.getSize()));
-		LOG.info("UI key "+UI_KEY_FRAME_TITLEFONT+" changed to "+UIManager.getFont(UI_KEY_FRAME_TITLEFONT) + " was "+font);
-			
+//		LOG.info("UI key "+UI_KEY_FRAME_TITLEFONT+" changed to "+UIManager.getFont(UI_KEY_FRAME_TITLEFONT) + " was "+font);	
 //		LOG.info("InternalFrame.closeIcon:"+UIManager.getIcon("InternalFrame.closeIcon"));
 
 		if(isMETAL() && window_ID!=-1) { // root Window always OS controlled ID==-1
