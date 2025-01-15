@@ -29,19 +29,19 @@
  */
 package org.pushingpixels.radiance.theming.internal.ui;
 
-import org.pushingpixels.radiance.theming.api.RadianceThemingCortex;
-import org.pushingpixels.radiance.theming.internal.contrib.randelshofer.quaqua.Quaqua14ColorChooserUI;
-import org.pushingpixels.radiance.theming.internal.utils.RadianceCoreUtilities;
-
-import javax.swing.*;
-import javax.swing.colorchooser.AbstractColorChooserPanel;
-import javax.swing.plaf.ComponentUI;
 import java.lang.reflect.Method;
-import java.security.AccessControlException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.swing.JComponent;
+import javax.swing.UIManager;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
+import javax.swing.plaf.ComponentUI;
+
+import org.pushingpixels.radiance.theming.api.RadianceThemingCortex;
+import org.pushingpixels.radiance.theming.internal.contrib.randelshofer.quaqua.Quaqua14ColorChooserUI;
+import org.pushingpixels.radiance.theming.internal.utils.RadianceCoreUtilities;
 
 /**
  * UI for color chooser in <b>Radiance</b> look and feel.
@@ -79,7 +79,7 @@ public class RadianceColorChooserUI extends Quaqua14ColorChooserUI {
 				AbstractColorChooserPanel panel = (AbstractColorChooserPanel) Class
 						.forName(defaultChoosers[i]).getDeclaredConstructor().newInstance();
 				panelList.add(panel);
-			} catch (AccessControlException e) {
+			} catch (SecurityException e) {
 				// ignore - happens on unsigned apps in WebStart environment
 			} catch (Exception e) {
 				e.printStackTrace();

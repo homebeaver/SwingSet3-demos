@@ -29,15 +29,16 @@
  */
 package org.pushingpixels.radiance.theming.internal.utils;
 
-import org.pushingpixels.radiance.theming.internal.animation.StateTransitionTracker;
-
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicButtonListener;
-import java.awt.*;
+import java.awt.MouseInfo;
+import java.awt.PointerInfo;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
-import java.security.AccessControlException;
+
+import javax.swing.AbstractButton;
+import javax.swing.plaf.basic.BasicButtonListener;
+
+import org.pushingpixels.radiance.theming.internal.animation.StateTransitionTracker;
 
 /**
  * Button listener for rollover effects. Tracks the mouse motion and focus
@@ -147,7 +148,8 @@ public class RolloverButtonListener extends BasicButtonListener {
 				int px = pi.getLocation().x - this.button.getLocationOnScreen().x;
 				int py = pi.getLocation().y - this.button.getLocationOnScreen().y;
 				this.button.getModel().setRollover(this.button.contains(px, py));
-			} catch (AccessControlException ace) {
+//			} catch (AccessControlException ace) { // deprecated
+			} catch (SecurityException ace) {
 				// sandbox - give up
 			}
 		} finally {
