@@ -2,7 +2,7 @@
  * Created on 05.12.2008
  *
  */
-package org.jdesktop.swingx.util;
+package org.jdesktop.swingx.demos.search;
 
 import java.awt.Color;
 import java.awt.Component;

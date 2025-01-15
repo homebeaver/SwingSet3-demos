@@ -37,8 +37,6 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.SoftBevelBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
@@ -73,7 +71,6 @@ import org.jdesktop.swingx.search.SearchFactory;
 import org.jdesktop.swingx.search.Searchable;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModelAdapter;
-import org.jdesktop.swingx.util.DecoratorFactory;
 
 import swingset.AbstractDemo;
 
@@ -625,6 +622,8 @@ public class SearchDemo extends AbstractDemo {
         
         return tabbedPane;
     }
+    
+	@SuppressWarnings("serial")
 	class ContributorTreeTable extends JXTreeTable implements TableCellRenderer {
 
 		ContributorTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {

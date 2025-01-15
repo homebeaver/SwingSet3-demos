@@ -29,12 +29,12 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.action.AbstractActionExt;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.IconHighlighter;
+import org.jdesktop.swingx.demos.search.DecoratorFactory;
 import org.jdesktop.swingx.demos.search.MatchingTextHighlighter;
 import org.jdesktop.swingx.demos.search.XMatchingTextHighlighter;
 import org.jdesktop.swingx.renderer.DefaultTableRenderer;
 import org.jdesktop.swingx.search.AbstractSearchable;
 import org.jdesktop.swingx.search.SearchFactory;
-import org.jdesktop.swingx.util.DecoratorFactory;
 
 /**
  * A FindBar searching on a JXTable to visual test some special highlighter cases:
@@ -130,6 +130,7 @@ public class JXTableFindBarMatchHighlighterDemo {
 		collapsible.add(findBar);
 		collapsible.setCollapsed(false);
 
+		@SuppressWarnings("serial")
 		Action openFindBar = new AbstractActionExt() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -138,6 +139,7 @@ public class JXTableFindBarMatchHighlighterDemo {
 			}
 		};
 
+		@SuppressWarnings("serial")
 		Action closeFindBar = new AbstractActionExt() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -198,6 +200,7 @@ public class JXTableFindBarMatchHighlighterDemo {
 		}
 	}
 
+	@SuppressWarnings("serial")
 	private static class SampleTableModel extends AbstractTableModel {
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
