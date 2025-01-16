@@ -2,6 +2,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <name>swingset3 demos</name>
+  <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 and swingx aka swingset3</description>
+  <version>1.7.8</version> <!-- TODO 1.7.9-SNAPSHOT -->
   
   <groupId>io.github.homebeaver</groupId>
   <artifactId>swingset3-demos</artifactId>
@@ -18,10 +22,6 @@
 	<connection>scm:git:https://github.com/homebeaver/SwingSet3-demos.git</connection>
 	<developerConnection>scm:git:https://github.com/homebeaver/</developerConnection>
   </scm>
-  
-  <name>swingset3 demos</name>
-  <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 and swingx aka swingset3</description>
-  <version>1.7.8</version>
   
   <inceptionYear>2005</inceptionYear>
 
