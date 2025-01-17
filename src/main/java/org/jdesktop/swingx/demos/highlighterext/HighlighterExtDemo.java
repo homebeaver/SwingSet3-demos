@@ -16,11 +16,12 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTabbedPane;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
+import javax.swing.table.TableModel;
+import javax.swing.tree.TreeCellRenderer;
 
 import org.jdesktop.beans.AbstractBean;
 import org.jdesktop.swingx.JXFrame;
@@ -43,6 +44,9 @@ import org.jdesktop.swingx.renderer.DefaultTreeRenderer;
 import org.jdesktop.swingx.renderer.HyperlinkProvider;
 import org.jdesktop.swingx.renderer.StringValue;
 import org.jdesktop.swingx.renderer.StringValues;
+import org.jdesktop.swingx.table.ColumnFactory;
+import org.jdesktop.swingx.table.TableColumnExt;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModelAdapter;
 import org.jdesktop.swingx.util.PaintUtils;
 import org.jdesktop.swingxset.util.RelativePainterHighlighter;
@@ -95,18 +99,18 @@ public class HighlighterExtDemo extends AbstractDemo {
     }
 
     private Contributors contributors; // Data
-    private String[] keys = {"name", "date", "merits", "email"};
+    private String[] keys = {"name", "date", "merits", "email"}; // column keys
     private int meritColumn = 2;
     private JXTreeTable treeTable;
     private JXTree tree;
-    private JXList list;
+    private JXList<Contributor> list;
     private JXTable table;
+    private Map<String, StringValue> stringValues;
+    private HighlighterControl highlighterControl;
     
     // Controller:
     private JCheckBox extendedMarkerBox;
     private JButton raceButton;
-    private Map<String, StringValue> stringValues;
-    private HighlighterControl highlighterControl;
     private JButton fadeInButton;
 
     /**
@@ -120,14 +124,14 @@ public class HighlighterExtDemo extends AbstractDemo {
     	super.setPreferredSize(PREFERRED_SIZE);
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
+        contributors = new Contributors();
         initComponents();
         
 //      bind() :
-      contributors = new Contributors();
       table.setModel(contributors.getTableModel());
-      list.setModel(contributors.getListModel());
-      tree.setModel(new DefaultTreeModel(contributors.getRootNode()));
-      treeTable.setTreeTableModel(new TreeTableModelAdapter(tree.getModel(), contributors.getContributorNodeModel()));
+      
+      TreeTableModel ttm = new TreeTableModelAdapter(tree.getModel(), contributors.getContributorNodeModel());
+      treeTable.setTreeTableModel(ttm);
 
       // simple setup of per-column renderers, so can do only after binding
       installRenderers();
@@ -154,14 +158,14 @@ public class HighlighterExtDemo extends AbstractDemo {
 
         // init highlighter control
         highlighterControl = new HighlighterControl(); 
-//        raceButton.setAction(getAction("race")); so geht es direkter:
+//        raceButton.setAction(getAction("race")); mit lamda geht es direkter:
         raceButton.addActionListener( ae -> {
-        	LOG.info("actionEvent:"+ae + " selected="+raceButton.isSelected());
+        	LOG.config("actionEvent:"+ae + " selected="+raceButton.isSelected());
         	highlighterControl.race(); // Delegates to the highlighterControl
         });
 //        fadeInButton.setAction(getAction("fadeIn"));
         fadeInButton.addActionListener( ae -> {
-        	LOG.info("actionEvent:"+ae + " selected="+fadeInButton.isSelected());
+        	LOG.config("actionEvent:"+ae + " selected="+fadeInButton.isSelected());
         	highlighterControl.fadeIn(); // Delegates to the highlighterControl
         });
     
@@ -173,9 +177,30 @@ public class HighlighterExtDemo extends AbstractDemo {
 
     //------------------ init ui
     private void initComponents() {
+        ListModel<?> lmo = contributors.getListModel();
+        // the cast is safe:
+        list = new JXList<Contributor>((ListModel<Contributor>)lmo, true); // autoCreateRowSorter
+        
+        tree = new JXTree(contributors.getRootNode()) {
+			@Override
+			public TreeCellRenderer getCellRenderer() {
+				StringValue sv = (Object value) -> {
+					if (value instanceof Contributor c) {
+						return c.getFirstName() + " " + c.getLastName() + " (" + c.getMerits() + ")";
+					}
+					// UserObject is wrapped in DefaultMutableTreeNode instance
+					// auto-unwrap in WrappingProvider is switched off
+					if (value instanceof javax.swing.tree.DefaultMutableTreeNode dmtn) {
+						return StringValues.TO_STRING.getString(dmtn.getUserObject());
+					}
+					String simpleName = value.getClass().getSimpleName();
+					return simpleName + "(" + value + ")";
+				};
+				return new JXTree.DelegatingRenderer(sv);
+			}
+        };
+        
         table = new JXTable();
-        list = new JXList(true); // autoCreateRowSorter
-        tree = new JXTree();
         treeTable = new JXTreeTable();
         
         table.setColumnControlVisible(true);
@@ -185,9 +210,38 @@ public class HighlighterExtDemo extends AbstractDemo {
         tab.setName("highlightTabs");
         addTab(tab, table, "tableTabTitle", true);
         addTab(tab, list, "listTabTitle", true);
+// auskommentiert, da HighlighterControl race/fadeIn nicht tut      
 //        addTab(tab, tree, "treeTabTitle", true);
-//        addTab(tab, treeTable, "treeTableTabTitle", true);
+        addTab(tab, treeTable, "treeTableTabTitle", true); // value spalte0 korrekt (toString in Contributor)
+        // in treeTable beginnt der HighlighterControl in Spalte1 - dh die tree Spalte (HierarchicalColumn) tut auch hier nicht
         add(tab);
+        
+        // NOTE: setModel muss nach customColumnFactory gemacht werden, sonst sind column title nicht gesetzt
+        customColumnFactory();
+    }
+
+    private void customColumnFactory() {
+        // JXTable JXTreeTable column customization
+        // configure and install a custom columnFactory, arguably data related ;-)
+        ColumnFactory factory = new ColumnFactory() {
+//            String[] columnNameKeys = 
+//            	{ getBundleString("name")
+//            	, getBundleString("date")
+//            	, getBundleString("merits")
+//            	, getBundleString("email")
+//            	};
+
+            @Override
+            public void configureTableColumn(TableModel model, TableColumnExt columnExt) {
+                super.configureTableColumn(model, columnExt);
+                if (columnExt.getModelIndex() < keys.length) {
+                    columnExt.setTitle(keys[columnExt.getModelIndex()]);
+                }
+            }
+            
+        };
+        table.setColumnFactory(factory);
+        treeTable.setColumnFactory(factory);
     }
 
     /**
@@ -329,8 +383,13 @@ public class HighlighterExtDemo extends AbstractDemo {
         initStringRepresentation();
         StringValue sv = stringValues.get("name");
         table.setDefaultRenderer(Contributor.class, new DefaultTableRenderer(sv));
-        list.setCellRenderer(new DefaultListRenderer(sv));
-        tree.setCellRenderer(new DefaultTreeRenderer(sv));
+        list.setCellRenderer(new DefaultListRenderer<Contributor>(sv));
+    	tree.setCellRenderer(tree.getCellRenderer());
+    	
+    	TreeCellRenderer tcr = treeTable.getTreeCellRenderer();
+    	if(tcr instanceof JXTree.DelegatingRenderer dr) {
+        	System.out.println("treeTable.TreeCellRenderer:"+dr + dr.getComponentProvider());
+    	}
         treeTable.setTreeCellRenderer(new DefaultTreeRenderer(sv));
         
         for (int i = 1; i < keys.length; i++) {

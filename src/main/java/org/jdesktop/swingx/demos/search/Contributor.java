@@ -79,6 +79,10 @@ public class Contributor implements Comparable<Contributor> {
         return devnetMail;
     }
     
+    public String toString() {
+		return getFirstName() + " " + getLastName() + " (" + getMerits() + ")";
+    }
+    
     /**
      * @param rawData
      */
@@ -99,9 +103,6 @@ public class Contributor implements Comparable<Contributor> {
         
     }
 
-    /**
-     * @return
-     */
     private Date createRandomJoinedDate() {
         Calendar sinceBase = Calendar.getInstance();
         sinceBase.add(Calendar.YEAR, -5);
@@ -110,13 +111,9 @@ public class Contributor implements Comparable<Contributor> {
         return entry;
     }
 
-    /**
-     * @return
-     */
     private int createRandomMerits() {
     	return Double.valueOf(Math.random() * 100).intValue();
     }
-
 
     @Override // implements Comparable<Contributor> interface
     public int compareTo(Contributor o) {
