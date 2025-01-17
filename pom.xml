@@ -5,7 +5,7 @@
 
   <name>swingset3 demos</name>
   <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 and swingx aka swingset3</description>
-  <version>1.7.8</version> <!-- TODO 1.7.9-SNAPSHOT -->
+  <version>1.7.9-SNAPSHOT</version>
   
   <groupId>io.github.homebeaver</groupId>
   <artifactId>swingset3-demos</artifactId>
@@ -137,9 +137,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
+        <version>3.5.2</version>
         <configuration>
-            <forkMode>always</forkMode>
+            <forkCount>1</forkCount>
             <argLine>-enableassertions</argLine>
             <systemProperties>
                 <property>
@@ -210,6 +210,19 @@
 
 	<dependencies>
 	
+    	<dependency>
+	      <!-- this is an external source dependency for building ServiceLoader 
+    	    service files marking optional so we do not export this source only dependency 
+        	to our consumers specify here to ensure that file movement maintains correct 
+	        services across all modules -->
+    	  <groupId>org.kohsuke.metainf-services</groupId>
+	      <artifactId>metainf-services</artifactId>
+    	  <version>1.11</version>
+	      <type>jar</type>
+ 	      <scope>compile</scope>
+    	  <optional>true</optional>
+    	</dependency>
+    
 		<dependency>
 		  <groupId>org.pushing-pixels</groupId>
 		  <artifactId>radiance-trident</artifactId>
