@@ -1,4 +1,4 @@
-package org.jxmapviewer;
+package org.jxmapviewer.test;
 
 import static org.junit.Assert.*;
 
