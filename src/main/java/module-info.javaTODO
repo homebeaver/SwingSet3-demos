@@ -4,6 +4,7 @@ module swingx.demo {
 
 	requires transitive java.desktop;
 	requires java.logging;
+	requires java.xml;
 	requires transitive java.compiler;
 	
 	requires swingx.action;
