@@ -235,7 +235,9 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
         }
         
         // determine selected item (-1 indicates no selection, 0 is the default)
-        if(xcb.getModel().getSize()>0) xcb.setSelectedIndex(1);
+        if(xcb.getModel().getSize()>0) {
+        	xcb.setSelectedItem(petStrings[1]);
+        }
 
         xcb.setToolTipText(getBundleString("cb.toolTipText", toolTipText));
         xcb.addActionListener(ae -> {
@@ -263,7 +265,12 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
         rightpic = new JLabel();
         rightpic.setFont(rightpic.getFont().deriveFont(Font.ITALIC));
         rightpic.setHorizontalAlignment(JLabel.CENTER);
-        updateLabel(rightpic, petStrings[xcb.getSelectedIndex()]);
+        int si = xcb.getSelectedIndex();
+        if (si<0 || si>=petStrings.length) {
+        	updateLabel(rightpic, "unbekannt");
+        } else {
+        	updateLabel(rightpic, petStrings[si]);
+        }
         rightpic.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
         right.add(rightpic, BorderLayout.PAGE_END);
         
@@ -288,6 +295,7 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
             return new ImageIcon(imgURL);
         } else {
             System.err.println("Couldn't find file: " + path);
+            LOG.warning("Couldn't find file: " + path);
             return null;
         }
     }
