@@ -187,7 +187,7 @@ public class TreeTableDemo extends AbstractDemo {
 
 		ComponentTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
 			super(renderer);
-			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+			assert ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree() == renderer;
         	StringValue locSize = (Object value) -> {
 				int x;
 				int y;

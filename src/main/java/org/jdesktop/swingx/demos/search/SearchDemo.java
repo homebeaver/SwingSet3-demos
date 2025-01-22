@@ -628,7 +628,7 @@ public class SearchDemo extends AbstractDemo {
 
 		ContributorTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
 			super(renderer);
-			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;			
+			assert ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree() == renderer;			
 		}
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, 

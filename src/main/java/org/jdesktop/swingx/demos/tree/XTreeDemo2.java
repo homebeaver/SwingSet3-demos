@@ -144,7 +144,7 @@ public class XTreeDemo2 extends AbstractDemo {
 //        	, createMusicTreeTable(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         	, createMusicTree(new MusicTreeModel(getBundleString("music"), getClass().getResource("resources/tree.txt"))));
         tabbedpane.add(getBundleString("componentTree"), createComponentTree());
-//        tabbedpane.add(getBundleString("componentTreeTable"), createComponentTreeTable()); // experimental
+        tabbedpane.add(getBundleString("componentTreeTable"), createComponentTreeTable()); // experimental
         tabbedpane.setTabPlacement(JTabbedPane.TOP);
         tabbedpane.getModel().addChangeListener( changeEvent -> {
             SingleSelectionModel ssmodel = (SingleSelectionModel) changeEvent.getSource();
@@ -376,7 +376,7 @@ public class XTreeDemo2 extends AbstractDemo {
 
 		ComponentTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
 			super(renderer);
-			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+			assert ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree() == renderer;
         	StringValue locSize = (Object value) -> {
 				int x;
 				int y;
@@ -397,8 +397,8 @@ public class XTreeDemo2 extends AbstractDemo {
 	    @Override // code in super: return (TreeTableModel) renderer.getModel();
 	    public TreeTableModel getTreeTableModel() {
 			TableModel tm = this.getModel();
-			if(tm instanceof TreeTableModelAdapter mttma) {
-				return mttma.getTreeTableModel();
+			if(tm instanceof JXTreeTable.InternalTreeTableModelAdapter ittma) {
+				return ittma.getTreeTableModel();
 			}
 			return super.getTreeTableModel();
 	    }
@@ -414,7 +414,7 @@ public class XTreeDemo2 extends AbstractDemo {
 	    	if(ca.column == getHierarchicalColumn()) {
 	    		JXTree.DelegatingRenderer renderer = (JXTree.DelegatingRenderer)getTreeCellRenderer();
 		    	LOG.info("hierarchical column "+column + " isHierarchicalColumn!!! renderer:"+renderer);
-	    		JTree tree = ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree();
+	    		JTree tree = ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree();
 	    		JXTree xtree = (JXTree)tree;
 	    		return (JXTreeTable.TreeTableCellRenderer)xtree;
 	    	}
@@ -568,7 +568,7 @@ public class XTreeDemo2 extends AbstractDemo {
 
 		MusicTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
 			super(renderer);
-			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+			assert ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree() == renderer;
 			  		
     		// UI-Dependent Striping 
     		Highlighter alternateStriping = HighlighterFactory.createAlternateStriping();
@@ -602,7 +602,7 @@ public class XTreeDemo2 extends AbstractDemo {
 	    @Override // code in super: return (TreeTableModel) renderer.getModel();
 	    public TreeTableModel getTreeTableModel() {
 			TableModel tm = this.getModel();
-			if(tm instanceof TreeTableModelAdapter mttma) {
+			if(tm instanceof JXTreeTable.InternalTreeTableModelAdapter mttma) {
 				return mttma.getTreeTableModel();
 			}
 			return super.getTreeTableModel();
@@ -610,7 +610,7 @@ public class XTreeDemo2 extends AbstractDemo {
 	    @Override
 		public int getHierarchicalColumn() {
 			TableModel tm = this.getModel();
-			if(tm instanceof TreeTableModelAdapter mttma) {
+			if(tm instanceof JXTreeTable.InternalTreeTableModelAdapter mttma) {
 //				return mttma.getHierarchicalColumn(); // XXX ???
 				TreeTableModel ttm = mttma.getTreeTableModel();
 				if(ttm instanceof MusicTreeModel mtm) {
@@ -625,7 +625,7 @@ public class XTreeDemo2 extends AbstractDemo {
 	    	if(ca.column == getHierarchicalColumn()) {
 	    		JXTree.DelegatingRenderer renderer = (JXTree.DelegatingRenderer)getTreeCellRenderer();
 //		    	LOG.info("hierarchical column "+column + " isHierarchicalColumn!!! renderer:"+renderer);
-	    		JTree tree = ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree();
+	    		JTree tree = ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree();
 	    		JXTree xtree = (JXTree)tree;
 	    		return (JXTreeTable.TreeTableCellRenderer)xtree;
 	    	}

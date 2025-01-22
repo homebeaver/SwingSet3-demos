@@ -299,7 +299,7 @@ public class HighlighterDemo extends AbstractDemo {
 	class ComponentTreeTable extends JXTreeTable /*implements TableCellRenderer*/ {
 		ComponentTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
 			super(renderer);
-			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+			assert ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree() == renderer;
 		}
 	    public void setTreeCellRenderer(TreeCellRenderer cellRenderer) {
 	    	super.setTreeCellRenderer(cellRenderer);

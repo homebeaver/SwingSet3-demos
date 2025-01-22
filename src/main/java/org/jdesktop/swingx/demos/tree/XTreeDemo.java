@@ -440,7 +440,7 @@ public class XTreeDemo extends AbstractDemo {
 
 		ComponentTreeTable(JXTreeTable.TreeTableCellRenderer renderer) {
 			super(renderer);
-			assert ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree() == renderer;
+			assert ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree() == renderer;
         	StringValue locSize = (Object value) -> {
 				int x;
 				int y;
@@ -461,8 +461,8 @@ public class XTreeDemo extends AbstractDemo {
 	    @Override // code in super: return (TreeTableModel) renderer.getModel();
 	    public TreeTableModel getTreeTableModel() {
 			TableModel tm = this.getModel();
-			if(tm instanceof TreeTableModelAdapter mttma) {
-				return mttma.getTreeTableModel();
+			if(tm instanceof JXTreeTable.InternalTreeTableModelAdapter ittma) {
+				return ittma.getTreeTableModel();
 			}
 			return super.getTreeTableModel();
 	    }
@@ -478,7 +478,7 @@ public class XTreeDemo extends AbstractDemo {
 	    	if(ca.column == getHierarchicalColumn()) {
 	    		JXTree.DelegatingRenderer renderer = (JXTree.DelegatingRenderer)getTreeCellRenderer();
 		    	LOG.info("hierarchical column "+column + " isHierarchicalColumn!!! renderer:"+renderer);
-	    		JTree tree = ((JXTreeTable.TreeTableModelAdapter) getModel()).getTree();
+	    		JTree tree = ((JXTreeTable.InternalTreeTableModelAdapter) getModel()).getTree();
 	    		JXTree xtree = (JXTree)tree;
 	    		return (JXTreeTable.TreeTableCellRenderer)xtree;
 	    	}
