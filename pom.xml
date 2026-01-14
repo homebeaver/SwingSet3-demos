@@ -5,7 +5,7 @@
 
   <name>swingset3 demos</name>
   <description>Demonstrating the abilities of the Swing UI Toolkit swingset2 and swingx aka swingset3</description>
-  <version>1.7.9-SNAPSHOT</version>
+  <version>1.7.9</version>
   
   <groupId>io.github.homebeaver</groupId>
   <artifactId>swingset3-demos</artifactId>
