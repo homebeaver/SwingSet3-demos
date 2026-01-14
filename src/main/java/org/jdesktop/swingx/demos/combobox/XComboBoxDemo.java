@@ -120,7 +120,7 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
     
     // abgeschrieben aus MirroringIconDemo
     private static final String DEFAULT = "DEFAULT";
-    @SuppressWarnings("serial")
+
 	private static final Map<String, String> nameToClassname = new HashMap<>(){
         {
             put(DEFAULT,                "org.jdesktop.swingx.icon.EmptyIcon");
@@ -231,7 +231,12 @@ public class XComboBoxDemo extends AbstractDemo implements ListDemoConstants {
         ComboBoxModel<Contributor> m = Contributors.getContributorModel();
 //		LOG.info("Contributor item count = "+m.getSize());
         for(int c=0; c<3; c++) {
-        	xcb.addItem(m.getElementAt(c));
+        	// BUG when adding items in sorted tComboBoxModel
+        	try {
+            	xcb.addItem(m.getElementAt(c));
+        	} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+        		e.printStackTrace();
+        	}
         }
         
         // determine selected item (-1 indicates no selection, 0 is the default)
