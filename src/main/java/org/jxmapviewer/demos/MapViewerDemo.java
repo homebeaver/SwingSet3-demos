@@ -16,7 +16,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -31,6 +30,7 @@ import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.binding.DisplayInfo;
+import org.jdesktop.swingx.demos.svg.FeatheRmap;
 import org.jdesktop.swingx.demos.svg.FeatheRmap_pin;
 import org.jdesktop.swingx.icon.SizingConstants;
 import org.jdesktop.swingx.painter.CompoundPainter;
@@ -88,10 +88,8 @@ public class MapViewerDemo extends AbstractDemo {
     private JXMapViewer mapViewer;
 
     // controller:
-    private JComboBox<DisplayInfo<GeoPosition>> positionChooserCombo;
+    private JXComboBox<DisplayInfo<GeoPosition>> positionChooserCombo;
     private JSlider zoomSlider;
-    // controller prop name
-//	private static final String SLIDER = "zoomSlider";
 
     /**
      * Demo Constructor
@@ -105,7 +103,8 @@ public class MapViewerDemo extends AbstractDemo {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         // Create a TileFactoryInfo for OpenStreetMap
-        info = new OSMTileFactoryInfo();
+        info = new OSMTileFactoryInfo("OpenStreetMap", "https://tile.openstreetmap.org");
+		
         DefaultTileFactory tileFactory = new DefaultTileFactory(info);
 
         // Setup local file cache
@@ -150,7 +149,6 @@ public class MapViewerDemo extends AbstractDemo {
         add(mapViewer);
         
         mapViewer.addPropertyChangeListener("zoom", pce -> {
-        	LOG.info("---------------------pce:"+pce);
         	getPosAndZoom();
         });
         mapViewer.addPropertyChangeListener("center", pce -> {
@@ -201,17 +199,22 @@ public class MapViewerDemo extends AbstractDemo {
 		controls.add(selectLabel);
 
         // Create the combo chooser box:
-		positionChooserCombo = new JComboBox<DisplayInfo<GeoPosition>>();
+		positionChooserCombo = new JXComboBox<DisplayInfo<GeoPosition>>();
 		positionChooserCombo.setName("positionChooserCombo");
 		positionChooserCombo.setModel(createCBM());
 		positionChooserCombo.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
-//        ComboBoxRenderer renderer = new ComboBoxRenderer(); wie in MirroringIconDemo mit Flagge TODO
+		positionChooserCombo.setComboBoxIcon(FeatheRmap.of(SizingConstants.M, SizingConstants.M));
 		
 		positionChooserCombo.addActionListener(ae -> {
 			int index = positionChooserCombo.getSelectedIndex();
-			DisplayInfo<GeoPosition> item = (DisplayInfo<GeoPosition>)positionChooserCombo.getSelectedItem();
-			LOG.info("Combo.SelectedItem=" + item.getDescription());
-			mapViewer.setAddressLocation(item.getValue());
+			Object o = positionChooserCombo.getSelectedItem();
+			if (o instanceof DisplayInfo<?> item) {
+				LOG.info("positionChooserCombo.SelectedItem=" + item.getDescription());
+				Object v = item.getValue();
+				if (v instanceof GeoPosition geoPos) {
+					mapViewer.setAddressLocation(geoPos);
+				}
+			}
 	        mapViewer.setZoom(DEFAULT_ZOOM);
 	        zoomSlider.setValue(DEFAULT_ZOOM);
 			positionChooserCombo.setSelectedIndex(index);
@@ -219,20 +222,12 @@ public class MapViewerDemo extends AbstractDemo {
 		controls.add(positionChooserCombo);
 		selectLabel.setLabelFor(positionChooserCombo);
 
-//	    LOG.info("min/max/zoom:"+info.getMinimumZoomLevel()+" "+info.getMaximumZoomLevel()+" "+mapViewer.getZoom());
 	    zoomSlider = new JSlider(JSlider.VERTICAL, info.getMinimumZoomLevel(), info.getMaximumZoomLevel(), mapViewer.getZoom());
 	    zoomSlider.addChangeListener(changeEvent -> {
-	    	//LOG.info(""+zoomSlider.getValue());
 	    	mapViewer.setZoom(zoomSlider.getValue());
 	    });
 	    zoomSlider.setPaintTicks(true);
 	    zoomSlider.setMajorTickSpacing(1);
-//        Dictionary<Integer, JComponent> labels = new Hashtable<Integer, JComponent>();
-        // can we fill these labels from the properties file? Yes, we can! but I do not
-//        String labelTable = getBundleString(SLIDER+".labelTable");
-//        labels.put(zoomSlider.getMinimum(), new JLabel("zoom in"));
-//        labels.put(zoomSlider.getMaximum(), new JLabel("zoom out"));
-//        zoomSlider.setLabelTable(labels);
 
         // to fill up the remaining space
 		JPanel fill = new JPanel(new BorderLayout());
@@ -252,7 +247,6 @@ public class MapViewerDemo extends AbstractDemo {
         return model;
     }
 
-    @SuppressWarnings("serial")
 	private static final Map<String, GeoPosition> nameToGeoPosition = new HashMap<>(){
         {
             put("Berlin",               new GeoPosition(52,31,0, 13,24,0));

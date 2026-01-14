@@ -22,7 +22,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -32,12 +31,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.MouseInputListener;
 
+import org.jdesktop.swingx.JXComboBox;
 import org.jdesktop.swingx.JXFrame;
 import org.jdesktop.swingx.JXFrame.StartPosition;
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.binding.DisplayInfo;
 import org.jdesktop.swingx.demos.svg.FeatheRflag;
+import org.jdesktop.swingx.demos.svg.FeatheRmap;
 import org.jdesktop.swingx.icon.ChevronIcon;
 import org.jdesktop.swingx.icon.PlayIcon;
 import org.jdesktop.swingx.icon.RadianceIcon;
@@ -101,12 +102,10 @@ public class MapKitDemo extends AbstractDemo {
     private RoutePainter routePainter = new RoutePainter(Color.RED);
 
     // controller:
-    private JComboBox<DisplayInfo<GeoPosition>> positionChooserCombo;
+    private JXComboBox<DisplayInfo<GeoPosition>> positionChooserCombo;
     private JCheckBox drawTileBorder;
     private JCheckBox miniMapVisible;
     private JSlider zoomSlider; // JSlider extends JComponent
-    // controller prop name
-//	private static final String SLIDER = "zoomSlider";
     private JButton zoomOut;
     private JButton zoomIn;
     private JSlider trackSlider;
@@ -129,7 +128,7 @@ public class MapKitDemo extends AbstractDemo {
     	super.setBorder(new BevelBorder(BevelBorder.LOWERED));
 
         // Create a TileFactoryInfo for OpenStreetMap
-        info = new OSMTileFactoryInfo();
+        info = new OSMTileFactoryInfo("OpenStreetMap", "https://tile.openstreetmap.org");
         DefaultTileFactory tileFactory = new DefaultTileFactory(info);
 
         // Setup local file cache
@@ -204,7 +203,6 @@ public class MapKitDemo extends AbstractDemo {
         add(mapKit);
         
         mapKit.getMainMap().addPropertyChangeListener("zoom", pce -> {
-        	LOG.info("---------------------pce:"+pce);
         	getPosAndZoom();
         });
         mapKit.getMainMap().addPropertyChangeListener("center", pce -> {
@@ -255,7 +253,6 @@ public class MapKitDemo extends AbstractDemo {
 
     @Override
 	public JXPanel getControlPane() {
-		@SuppressWarnings("serial")
 		JXPanel controls = new JXPanel() {
 			public Dimension getMaximumSize() {
 				return new Dimension(getPreferredSize().width, super.getMaximumSize().height);
@@ -270,17 +267,21 @@ public class MapKitDemo extends AbstractDemo {
 		controls.add(selectLabel);
 
         // Create the combo chooser box:
-		positionChooserCombo = new JComboBox<DisplayInfo<GeoPosition>>();
+		positionChooserCombo = new JXComboBox<DisplayInfo<GeoPosition>>();
 		positionChooserCombo.setName("positionChooserCombo");
 		positionChooserCombo.setModel(createCBM());
-//		positionChooserCombo.setAlignmentX(JXComboBox.LEFT_ALIGNMENT);
-//        ComboBoxRenderer renderer = new ComboBoxRenderer(); wie in MirroringIconDemo mit Flagge TODO
+		positionChooserCombo.setComboBoxIcon(FeatheRmap.of(SizingConstants.M, SizingConstants.M));
 		
 		positionChooserCombo.addActionListener(ae -> {
 			int index = positionChooserCombo.getSelectedIndex();
-			DisplayInfo<GeoPosition> item = (DisplayInfo<GeoPosition>)positionChooserCombo.getSelectedItem();
-			LOG.info("Combo.SelectedItem=" + item.getDescription());
-			mapKit.setAddressLocation(item.getValue());
+			Object o = positionChooserCombo.getSelectedItem();
+			if (o instanceof DisplayInfo<?> item) {
+				LOG.info("positionChooserCombo.SelectedItem=" + item.getDescription());
+				Object v = item.getValue();
+				if (v instanceof GeoPosition geoPos) {
+					mapKit.setAddressLocation(geoPos);
+				}
+			}
 			mapKit.setZoom(DEFAULT_ZOOM);
 	        zoomSlider.setValue(DEFAULT_ZOOM);
 			positionChooserCombo.setSelectedIndex(index);
@@ -414,12 +415,10 @@ public class MapKitDemo extends AbstractDemo {
     		LOG.warning("already instantiated "+zoomSlider);
     		return zoomSlider;
     	}
-//	    LOG.info("min/max/zoom:"+info.getMinimumZoomLevel()+" "+info.getMaximumZoomLevel()+" "+mapViewer.getZoom());
-//	    zoomSlider = new JSlider(JSlider.HORIZONTAL, info.getMinimumZoomLevel(), info.getMaximumZoomLevel(), mapKit.getZoomSlider().getValue());
+    	// HORIZONTAL
 	    zoomSlider = new JSlider();
 	    zoomSlider.setName("zoomSlider");
 	    zoomSlider.setOpaque(false);
-	    //zoomSlider.setPaintLabels(true);
 	    zoomSlider.setMinimum(info.getMinimumZoomLevel());
 	    zoomSlider.setMaximum(info.getMaximumZoomLevel());
 	    zoomSlider.setValue(mapKit.getZoomSlider().getValue());
@@ -439,8 +438,7 @@ public class MapKitDemo extends AbstractDemo {
         return model;
     }
 
-    @SuppressWarnings("serial")
-	private static final Map<String, GeoPosition> nameToGeoPosition = new HashMap<>(){
+    private static final Map<String, GeoPosition> nameToGeoPosition = new HashMap<>(){
         {
             put("Berlin",            new GeoPosition(52,31,0, 13,24,0));
             put("Darmstadt",         new GeoPosition(49,52,0,  8,39,0));
