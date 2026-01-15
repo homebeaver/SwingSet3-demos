@@ -37,14 +37,9 @@
   </properties>
 
   <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
     <repository>
-      <id>ossrh</id>
-      <name>Central Repository OSSRH</name>
-      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <id>central</id>
+      <url>https://central.sonatype.com</url>
     </repository>
   </distributionManagement>
   
@@ -70,7 +65,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.4.2</version>
         <configuration>
             <archive>
                 <manifest>
@@ -91,9 +86,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.14.1</version>
         <configuration>
         	<release>17</release>
+        	<source>8</source>
+        	<target>8</target>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
             <encoding>${project.build.sourceEncoding}</encoding>
@@ -103,7 +100,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>3.3.1</version>
         <configuration>
             <encoding>${project.build.sourceEncoding}</encoding>
         </configuration>
@@ -112,7 +109,7 @@
 	  <plugin>
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-assembly-plugin</artifactId>
-		<version>3.3.0</version>
+		<version>3.7.1</version>
             <configuration>
                 <descriptorRefs>
                 	<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -137,7 +134,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.5.2</version>
+        <version>3.5.4</version>
         <configuration>
             <forkCount>1</forkCount>
             <argLine>-enableassertions</argLine>
@@ -153,7 +150,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.1</version>
         <executions>
             <execution>
                 <id>attach-sources</id>
@@ -167,7 +164,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.11.2</version>
         <executions>
             <execution>
                 <id>attach-javadocs</id>
@@ -181,27 +178,32 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>3.2.7</version>
+        <version>3.2.8</version>
         <executions>
           <execution>
             <phase>verify</phase>
             <goals>
               <goal>sign</goal>
             </goals>
+            <!-- signing files with key default (the first key in the keyring) -->
+            <configuration>
+            <!-- keyname maps to gpg option local-user and gpg takes another key: 
+              <keyname>0x90E058F7</keyname>
+              or use mvn verify -Dgpg.keyname=0x90E058F7
+              -->
+            </configuration>
           </execution>
         </executions>
       </plugin>
 
-<!-- see https://central.sonatype.org/publish/publish-maven/#distribution-management-and-authentication -->
+      <!-- this is the open source for org.sonatype.central:central-publishing-maven-plugin-->
       <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.13</version>
+        <groupId>io.github.mavenplugins</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>1.1.1</version>
         <extensions>true</extensions>
         <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+          <publishingServerId>central</publishingServerId>
         </configuration>
       </plugin>
 
@@ -239,7 +241,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
+			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -323,7 +325,7 @@
 		<dependency>
 		    <groupId>org.apache.xmlgraphics</groupId>
 		    <artifactId>batik-bridge</artifactId>
-		    <version>1.18</version>
+		    <version>1.19</version>
 		    <exclusions>
 		    	<exclusion>
 		    		<groupId>xml-apis</groupId>
@@ -335,13 +337,13 @@
 		<dependency>
 		    <groupId>org.apache.xmlgraphics</groupId>
 		    <artifactId>batik-swing</artifactId>
-		    <version>1.17</version>
+		    <version>1.19</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder -->
 		<dependency>
 		    <groupId>org.apache.xmlgraphics</groupId>
 		    <artifactId>batik-transcoder</artifactId>
-		    <version>1.17</version>
+		    <version>1.19</version>
 		</dependency>
 
 	</dependencies>
